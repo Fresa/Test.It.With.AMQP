@@ -46,7 +46,6 @@
     <Compile Include="CachedConnectionDecorator.cs" />
     <Compile Include="CachedTestConnectionFactoryDecorator.cs" />
     <Compile Include="NetworkClient\NetworkClientStream.cs" />
-    <Compile Include="TestApplication.cs" />
     <Compile Include="DisposeNotifyingModelDecorator.cs" />
     <Compile Include="NetworkClient\INetworkClient.cs" />
     <Compile Include="ISerializer.cs" />

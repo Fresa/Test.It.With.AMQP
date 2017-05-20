@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Testing.RabbitMQ.NetworkClient;
 
 namespace Testing.RabbitMQ.MessageClient

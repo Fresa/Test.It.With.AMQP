@@ -1,3 +1,7 @@
 packages/
 Testing.RabbitMQ/obj/
 Testing.RabbitMQ/bin/
+Testing.Framework/obj/
+Testing.Framework/bin/
+Tests/Testing.RabbitMQ.Tests/bin/
+Tests/Testing.RabbitMQ.Tests/obj/
