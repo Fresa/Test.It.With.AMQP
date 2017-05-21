@@ -5,3 +5,6 @@ Testing.Framework/obj/
 Testing.Framework/bin/
 Tests/Testing.RabbitMQ.Tests/bin/
 Tests/Testing.RabbitMQ.Tests/obj/
+Tests/Logging.Tests/bin/
+Logging/obj/
+Tests/Logging.Tests/obj/
