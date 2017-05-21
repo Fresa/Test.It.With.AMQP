@@ -35,7 +35,14 @@ namespace Testing.RabbitMQ
         {
             lock (_reader)
             {
-                return Frame.ReadFrom(_reader);
+                try
+                {
+                    return Frame.ReadFrom(_reader);
+                }
+                catch
+                {
+                    return new Frame();
+                }
             }
         }
 
@@ -92,10 +99,10 @@ namespace Testing.RabbitMQ
         }
 
         public AmqpTcpEndpoint Endpoint { get; } = new AmqpTcpEndpoint();
-        public EndPoint LocalEndPoint { get; } = new IPEndPoint(IPAddress.Any, -1);
-        public int LocalPort { get; } = -1;
-        public EndPoint RemoteEndPoint { get; } = new IPEndPoint(IPAddress.Any, -1);
-        public int RemotePort { get; } = -1;
+        public EndPoint LocalEndPoint { get; } = new IPEndPoint(IPAddress.Any, 0);
+        public int LocalPort { get; } = 0;
+        public EndPoint RemoteEndPoint { get; } = new IPEndPoint(IPAddress.Any, 0);
+        public int RemotePort { get; } = 0;
 
         public int ReadTimeout
         {

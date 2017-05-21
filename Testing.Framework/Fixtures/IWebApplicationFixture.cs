@@ -4,7 +4,7 @@ using Testing.Framework.Specifications;
 
 namespace Testing.Framework.Fixtures
 {
-    public interface IWebHostingFixture : IDisposable
+    public interface IWebApplicationFixture : IDisposable
     {
         HttpClient Start(ITestConfigurer testConfigurer);
     }

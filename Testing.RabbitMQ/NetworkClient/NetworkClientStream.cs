@@ -5,9 +5,8 @@ namespace Testing.RabbitMQ.NetworkClient
     public class NetworkClientStream : Stream
     {
         private readonly INetworkClient _networkClient;
-        private long _length;
-        private readonly BufferedStream _bufferedReadStream = new BufferedStream(new MemoryStream());
-        private readonly BufferedStream _bufferedWriteStream = new BufferedStream(new MemoryStream());
+        private readonly MemoryStream _bufferedReadStream = new MemoryStream();
+        private readonly MemoryStream _bufferedWriteStream = new MemoryStream();
 
         public NetworkClientStream(INetworkClient networkClient)
         {
@@ -18,32 +17,30 @@ namespace Testing.RabbitMQ.NetworkClient
 
         public override void Flush()
         {
-            byte[] buffer = { };
+            var buffer = new byte[2048];
             lock (_bufferedWriteStream)
             {
-                var offset = 0;
-                while (_bufferedWriteStream.Length > 0)
+                int bytesRead;
+                _bufferedWriteStream.Position = 0;
+                while ((bytesRead = _bufferedWriteStream.Read(buffer, 0, buffer.Length)) > 0)
                 {
-                    var length = int.MaxValue;
-                    if (_bufferedWriteStream.Length <= int.MaxValue)
-                    {
-                        length = (int)_bufferedWriteStream.Length;
-                    }
-                    _bufferedWriteStream.Read(buffer, 0, length);
-                    _networkClient.Send(buffer, offset, length);
-                    offset += length;
+                    _networkClient.Send(buffer, 0, bytesRead);
                 }
             }
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            throw new System.NotImplementedException();
+            if (CanSeek)
+            {
+                return _bufferedReadStream.Seek(offset, origin);
+            }
+            return -1;
         }
 
         public override void SetLength(long value)
         {
-            _length = value;
+            _bufferedReadStream.SetLength(value);
         }
 
         public override int Read(byte[] buffer, int offset, int count)
@@ -56,10 +53,15 @@ namespace Testing.RabbitMQ.NetworkClient
             _bufferedWriteStream.Write(buffer, offset, count);
         }
 
-        public override bool CanRead { get; } = false;
-        public override bool CanSeek { get; } = false;
-        public override bool CanWrite { get; } = true;
-        public override long Length => _length;
-        public override long Position { get; set; }
+        public override bool CanRead => _bufferedReadStream.CanRead;
+        public override bool CanSeek => _bufferedReadStream.CanSeek;
+        public override bool CanWrite => _bufferedWriteStream.CanWrite;
+        public override long Length => _bufferedReadStream.Length;
+
+        public override long Position
+        {
+            get => _bufferedReadStream.Position;
+            set => _bufferedReadStream.Position = value;
+        }
     }
 }

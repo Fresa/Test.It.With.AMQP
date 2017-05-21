@@ -2,7 +2,7 @@
 
 namespace Testing.Framework
 {
-    public interface IServiceContainer
+    public interface IServiceContainer : IDisposable
     {
         void Register<TImplementation>(Func<TImplementation> configurer) 
             where TImplementation : class;
@@ -15,5 +15,6 @@ namespace Testing.Framework
             where TService : class
             where TImplementation : class, TService;
         TService Resolve<TService>() where TService : class;
+        void Verify();
     }
 }

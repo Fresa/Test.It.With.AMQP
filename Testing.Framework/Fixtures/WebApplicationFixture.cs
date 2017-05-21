@@ -5,7 +5,7 @@ using Testing.Framework.Specifications;
 
 namespace Testing.Framework.Fixtures
 {
-    public class WebHostingFixture<TApplicationBuilder> : IWebHostingFixture 
+    public class WebApplicationFixture<TApplicationBuilder> : IWebApplicationFixture 
         where TApplicationBuilder : IApplicationBuilder, new()
     {
         private TestServer _testServer;
@@ -13,7 +13,6 @@ namespace Testing.Framework.Fixtures
         public HttpClient Start(ITestConfigurer testConfigurer)
         {
             var applicationBuilder = new TApplicationBuilder();
-
             _testServer = TestServer.Create(applicationBuilder.CreateWith(testConfigurer).Start);
 
             return _testServer.HttpClient;

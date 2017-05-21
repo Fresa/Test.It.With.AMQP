@@ -4,7 +4,7 @@ using Testing.Framework.Fixtures;
 namespace Testing.Framework.Specifications
 {
     public abstract class WebSpecification<TFixture> : IUseFixture<TFixture> 
-        where TFixture : IWebHostingFixture, new()
+        where TFixture : IWebApplicationFixture, new()
     {
         protected HttpClient Client;
 

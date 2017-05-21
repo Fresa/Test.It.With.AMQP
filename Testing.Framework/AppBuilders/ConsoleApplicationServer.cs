@@ -6,7 +6,7 @@ using Testing.Framework.Fixtures;
 
 namespace Testing.Framework.AppBuilders
 {
-    public class ConsoleApplicationServer : IAppBuilder
+    public class ConsoleApplicationServer : IAppBuilder, IDisposable
     {
         public IClient Client { get; private set; }
 
@@ -14,7 +14,7 @@ namespace Testing.Framework.AppBuilders
         {
             if (middleware.GetType().GetInterfaces().Any(type => type == typeof(IClient)) == false)
             {
-                throw new ArgumentException(nameof(middleware) + " must implement " + typeof(IClient).FullName);
+                throw new ArgumentException($"{nameof(middleware)} must implement {typeof(IClient).FullName}");
             }
 
             Client = (IClient)middleware;
@@ -46,6 +46,11 @@ namespace Testing.Framework.AppBuilders
             return new ConsoleApplicationServer();
         }
 
-        public IDictionary<string, object> Properties { get; }
+        public IDictionary<string, object> Properties { get; } = new Dictionary<string, object>();
+
+        public void Dispose()
+        {
+            Client.Dispose();
+        }
     }
 }

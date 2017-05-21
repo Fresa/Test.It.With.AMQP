@@ -1,29 +1,38 @@
-﻿using SimpleInjector;
+﻿using System.Text;
+using RabbitMQ.Client;
+using SimpleInjector;
 
 namespace Testing.RabbitMQ.Tests
 {
     public class TestApplicationSpecification
     {
-        private readonly SimpleInjectorDependencyResolver _configurer;
-
-        public TestApplicationSpecification()
-        {
-            _configurer = new SimpleInjectorDependencyResolver(new Container());
-        }
+        private SimpleInjectorDependencyResolver _configurer;
+        private TestApplication _application;
 
         public SimpleInjectorDependencyResolver Configure()
         {
+            var container = new Container();
+            container.RegisterSingleton<IConnectionFactory, ConnectionFactory>();
+            container.RegisterSingleton<ISerializer>(() => new NewtonsoftSerializer(Encoding.UTF8));
+
+            _configurer = new SimpleInjectorDependencyResolver(container);
             return _configurer;
         }
 
-        public void Start()
+        public IMessageQueueApplication Start()
         {
-            _configurer.Resolve<TestApplication>().Main();
+            _configurer.Verify();
+
+            _application = _configurer.Resolve<TestApplication>();
+            _application.Start();
+
+            return _application;
         }
 
         public void Stop()
         {
-            
+            _application.Dispose();
+            _configurer.Dispose();
         }
     }
 }

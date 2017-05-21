@@ -4,7 +4,8 @@ using Testing.Framework.Specifications;
 
 namespace Testing.Framework.Fixtures
 {
-    public class WindowsServiceHostingFixture<TApplicationBuilder> : IWindowsServiceFixture where TApplicationBuilder : IApplicationBuilder, new()
+    public class WindowsServiceFixture<TApplicationBuilder> : IWindowsServiceFixture 
+        where TApplicationBuilder : IApplicationBuilder, new()
     {
         private WindowsServiceApplicationServer _server;
 

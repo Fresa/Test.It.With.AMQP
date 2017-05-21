@@ -1,42 +1,62 @@
 ﻿using System;
-using System.Text;
 using RabbitMQ.Client;
 
 namespace Testing.RabbitMQ.Tests
 {
-    public class TestApplication
+    public class TestApplication : IDisposable, IMessageQueueApplication
     {
         private readonly IConnectionFactory _connectionFactory;
+        private readonly ISerializer _serializer;
+        private IConnection _connection;
+        private IModel _channel;
 
-        public TestApplication(IConnectionFactory connectionFactory)
+        public TestApplication(IConnectionFactory connectionFactory, ISerializer serializer)
         {
             _connectionFactory = connectionFactory;
+            _serializer = serializer;
         }
 
-        public void Main()
+        public void Start()
         {
-            using (var connection = _connectionFactory.CreateConnection())
-            {
-                using (var channel = connection.CreateModel())
-                {
-                    channel.QueueDeclare("hello",
-                        false,
-                        false,
-                        false,
-                        null);
+            _connection = _connectionFactory.CreateConnection();
+            _channel = _connection.CreateModel();
+        }
 
-                    const string message = "Hello World";
-                    var body = Encoding.UTF8.GetBytes(message);
+        public void DeclareExchange(string exchange)
+        {
+            _channel.ExchangeDeclare(exchange, "topic");
+        }
 
-                    channel.BasicPublish("",
-                        "hello",
-                        null,
-                        body);
-                    Console.WriteLine($"Sent {message}");
-                }
-            }
+        public void DeclareQueue(string queue)
+        {
+            _channel.QueueDeclare(queue,
+                false,
+                false,
+                false,
+                null);
+        }
+
+        public void BindQueueToExchange(string queue, string exchange, string routingkey)
+        {
+            _channel.QueueBind(queue, exchange, routingkey);
+        }
+
+        public void Send<TMessage>(TMessage message)
+        {
+            _channel.BasicPublish("",
+                "hello",
+                null,
+                _serializer.Serialize(message));
+            Console.WriteLine($"Sent {message}");
+        }
+
+        public void Dispose()
+        {
+            _channel.Close();
+            _channel.Dispose();
+            
+            _connection.Close();
+            _connection.Dispose();
         }
     }
-
-
 }

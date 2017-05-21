@@ -44,5 +44,25 @@ namespace Testing.RabbitMQ.Tests
         {
             return _container.GetInstance<TService>();
         }
+
+        public void Verify()
+        {
+            _container.Verify();
+        }
+
+        public void Dispose()
+        {
+            _container.Dispose();
+        }
+
+        public void AllowOverridingRegistrations()
+        {
+            _container.Options.AllowOverridingRegistrations = true;
+        }
+
+        public void DisallowOverridingRegistrations()
+        {
+            _container.Options.AllowOverridingRegistrations = false;
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace Testing.RabbitMQ.NetworkClient
 {
@@ -11,6 +12,7 @@ namespace Testing.RabbitMQ.NetworkClient
 
         public void Send(byte[] buffer, int offset, int count)
         {
+            Console.Write("Sending: " + Encoding.UTF8.GetString(buffer));
             SendReceived?.Invoke(this, new ReceivedEventArgs(buffer, offset, count));
         }
 
@@ -21,6 +23,7 @@ namespace Testing.RabbitMQ.NetworkClient
 
         public void TriggerReceive(object sender, ReceivedEventArgs e)
         {
+            Console.Write("Receiving: " + Encoding.UTF8.GetString(e.Buffer));
             BufferReceived?.Invoke(sender, e);
         }
     }
