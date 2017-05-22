@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B7ED557C-F0EC-4099-862A-026B10B98903}</ProjectGuid>
+    <ProjectGuid>{6D60A611-7B44-4D93-A298-B2E6AB2C9C49}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Logging.Tests</RootNamespace>
-    <AssemblyName>Logging.Tests</AssemblyName>
+    <RootNamespace>Logging.NLog.Tests</RootNamespace>
+    <AssemblyName>Logging.NLog.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,6 +32,9 @@
   <ItemGroup>
     <Reference Include="FakeItEasy, Version=3.3.2.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FakeItEasy.3.3.2\lib\net40\FakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.4.4.9\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Should.Fluent, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ShouldFluent.1.1.19\lib\Should.Fluent.dll</HintPath>
@@ -58,14 +61,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FakeLogger.cs" />
-    <Compile Include="FakeLoggerFactory.cs" />
-    <Compile Include="LoggerFactoryTests.cs" />
-    <Compile Include="LogicalThreadContextTests.cs" />
+    <Compile Include="NLogLogContextRendererLayoutTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="XUnitSpecification.cs" />
+    <Compile Include="TestTarget.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Logging.NLog\Logging.NLog.csproj">
+      <Project>{FDC0C80A-5CC5-4FCC-AB6D-712AAC99A8A5}</Project>
+      <Name>Logging.NLog</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Logging\Logging.csproj">
       <Project>{F09B5ACB-273C-4537-954E-18F11850EBBB}</Project>
       <Name>Logging</Name>
@@ -75,10 +83,5 @@
       <Name>Testing.Framework</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

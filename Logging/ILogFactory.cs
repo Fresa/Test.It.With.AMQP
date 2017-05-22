@@ -1,6 +1,4 @@
-﻿using Logging.Loggers;
-
-namespace Logging
+﻿namespace Logging
 {
     public interface ILogFactory
     {

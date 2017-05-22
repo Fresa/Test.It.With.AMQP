@@ -1,17 +1,17 @@
 ﻿using System;
 using NLog;
 
-namespace Logging.Loggers.NLog
+namespace Logging.NLog
 {
     public class NLogLogger : ILogger
     {
         private readonly Logger _logger;
-        private readonly NLogMappedDiagnosticsLogicalContext _logicalContext;
+        private readonly ILogContext _logContext;
 
-        public NLogLogger(string type)
+        public NLogLogger(string type, ILogContext logContext)
         {
             _logger = LogManager.GetLogger(type);
-            _logicalContext = new NLogMappedDiagnosticsLogicalContext();
+            _logContext = logContext;
         }
 
 
@@ -201,6 +201,6 @@ namespace Logging.Loggers.NLog
         }
 
 
-        public ILogContext LogicalThread => _logicalContext;
+        public ILogContext LogicalThread => _logContext;
     }
 }

@@ -1,10 +1,10 @@
-﻿namespace Logging.Loggers.NLog
+﻿namespace Logging.NLog
 {
     public class NLogLoggerFactory : ILoggerFactory
     {
         public ILogFactory Create()
         {
-            return new NLogFactory();
+            return new NLogFactory(new LogicalThreadContext());
         }
     }
 }

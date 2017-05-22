@@ -1,5 +1,4 @@
 using System;
-using Logging.Loggers;
 
 namespace Logging.Tests
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Logging.Annotations;
 
-namespace Logging.Loggers
+namespace Logging
 {
     public interface ILogger
     {

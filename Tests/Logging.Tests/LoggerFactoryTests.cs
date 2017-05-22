@@ -1,22 +1,15 @@
-﻿using Logging.Loggers;
-using Should.Fluent;
-using Testing.Framework.Specifications;
+﻿using Should.Fluent;
 using Xunit;
 
 namespace Logging.Tests
 {
-    public class When_creating_a_logger : Specification
+    public class When_creating_a_logger : XUnitSpecification
     {
         private ILogger _createdLogger;
         
-        public When_creating_a_logger()
-        {
-            Setup();
-        }
-        
         protected override void When()
         {
-            _createdLogger = LoggerFactory.Create<When_creating_a_logger>();
+            _createdLogger = LogFactory.Create<When_creating_a_logger>();
         }
         
         [Fact]

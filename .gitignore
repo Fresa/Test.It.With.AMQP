@@ -8,3 +8,7 @@ Tests/Testing.RabbitMQ.Tests/obj/
 Tests/Logging.Tests/bin/
 Logging/obj/
 Tests/Logging.Tests/obj/
+Tests/Logging.NLog.Tests/obj/
+Tests/Logging.NLog.Tests/bin/
+Logging.NLog/obj/
+Logging.NLog/bin/

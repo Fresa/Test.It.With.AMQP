@@ -2,7 +2,7 @@
 {
     public abstract class Specification
     {
-        public void Setup()
+        protected void Setup()
         {
             Given();
             When();

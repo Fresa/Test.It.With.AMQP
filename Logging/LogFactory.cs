@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace Logging
 {
-    public static class LoggerFactory
+    public static class LogFactory
     {
         private static readonly ILogFactory Factory;
 
         private const string LoggingSection = "Logging";
 
-        static LoggerFactory()
+        static LogFactory()
         {
             var loggingSection = ConfigurationManager.GetSection(LoggingSection) as LoggingSection;
             if (loggingSection == null)

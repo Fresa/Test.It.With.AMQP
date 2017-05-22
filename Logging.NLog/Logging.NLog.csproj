@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F09B5ACB-273C-4537-954E-18F11850EBBB}</ProjectGuid>
+    <ProjectGuid>{FDC0C80A-5CC5-4FCC-AB6D-712AAC99A8A5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Logging</RootNamespace>
-    <AssemblyName>Logging</AssemblyName>
+    <RootNamespace>Logging.NLog</RootNamespace>
+    <AssemblyName>Logging.NLog</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,10 +30,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.9\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,16 +43,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Annotations\ResharperAnnotations.cs" />
-    <Compile Include="ILogFactory.cs" />
-    <Compile Include="ILoggerFactory.cs" />
-    <Compile Include="LogFactory.cs" />
-    <Compile Include="LoggerFactory.cs" />
-    <Compile Include="ILogContext.cs" />
-    <Compile Include="ILogger.cs" />
-    <Compile Include="LoggingSection.cs" />
-    <Compile Include="LogicalThreadContext.cs" />
+    <Compile Include="NLogFactory.cs" />
+    <Compile Include="NLogLogger.cs" />
+    <Compile Include="NLogLoggerFactory.cs" />
+    <Compile Include="NLogLogContextLayoutRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Logging\Logging.csproj">
+      <Project>{F09B5ACB-273C-4537-954E-18F11850EBBB}</Project>
+      <Name>Logging</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
