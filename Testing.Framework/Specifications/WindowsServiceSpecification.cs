@@ -1,6 +1,6 @@
-﻿using Testing.Framework.Fixtures;
+﻿using Test.It.Fixtures;
 
-namespace Testing.Framework.Specifications
+namespace Test.It.Specifications
 {
     public abstract class WindowsServiceSpecification<TWindowsServiceFixture> : IUseFixture<TWindowsServiceFixture>
         where TWindowsServiceFixture : IWindowsServiceFixture, new()

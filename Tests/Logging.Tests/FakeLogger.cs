@@ -1,6 +1,7 @@
 using System;
+using Log.It;
 
-namespace Logging.Tests
+namespace Test.It.Tests
 {
     public class FakeLogger : ILogger
     {

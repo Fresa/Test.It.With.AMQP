@@ -1,8 +1,8 @@
 ﻿using System;
 using Owin;
-using Testing.Framework.Fixtures;
+using Test.It.Fixtures;
 
-namespace Testing.Framework.AppBuilders
+namespace Test.It.AppBuilders
 {
     public static class AppBuilderExtensions
     {

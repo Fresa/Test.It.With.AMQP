@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Owin;
-using Testing.Framework.Fixtures;
 
-namespace Testing.Framework.AppBuilders
+namespace Test.It.AppBuilders
 {
     public class WindowsServiceApplicationServer : IAppBuilder, IDisposable
     {

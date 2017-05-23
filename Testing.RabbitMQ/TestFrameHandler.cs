@@ -4,9 +4,9 @@ using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Impl;
 using RabbitMQ.Util;
-using Testing.RabbitMQ.NetworkClient;
+using Test.It.With.RabbitMQ.NetworkClient;
 
-namespace Testing.RabbitMQ
+namespace Test.It.With.RabbitMQ
 {
     public class TestFrameHandler : IFrameHandler
     {

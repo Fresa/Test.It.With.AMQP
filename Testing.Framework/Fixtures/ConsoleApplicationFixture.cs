@@ -1,8 +1,8 @@
-﻿using Testing.Framework.AppBuilders;
-using Testing.Framework.ApplicationBuilders;
-using Testing.Framework.Specifications;
+﻿using Test.It.AppBuilders;
+using Test.It.ApplicationBuilders;
+using Test.It.Specifications;
 
-namespace Testing.Framework.Fixtures
+namespace Test.It.Fixtures
 {
     public class ConsoleApplicationFixture<TApplicationBuilder> : IConsoleApplicationFixture 
         where TApplicationBuilder : IApplicationBuilder, new()

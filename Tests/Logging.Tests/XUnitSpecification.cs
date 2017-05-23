@@ -1,7 +1,7 @@
-﻿using Testing.Framework.Specifications;
+﻿using Test.It.Specifications;
 using Xunit;
 
-namespace Logging.Tests
+namespace Test.It.Tests
 {
     public abstract class XUnitSpecification : Specification, IClassFixture<XUnitSpecification.StartUpFixture>
     {

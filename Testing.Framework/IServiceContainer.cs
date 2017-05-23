@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Testing.Framework
+namespace Test.It
 {
     public interface IServiceContainer : IDisposable
     {

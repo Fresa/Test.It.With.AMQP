@@ -7,8 +7,8 @@
     <ProjectGuid>{5CDFB500-369F-46BB-BFAC-00960BF47FB9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Testing.Framework</RootNamespace>
-    <AssemblyName>Testing.Framework</AssemblyName>
+    <RootNamespace>Test.It</RootNamespace>
+    <AssemblyName>Test.It</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

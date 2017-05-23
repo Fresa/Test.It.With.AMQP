@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
+using Log.It;
 
-namespace Logging.Tests
+namespace Test.It.Tests
 {
     public class FakeLoggerFactory : ILoggerFactory
     {

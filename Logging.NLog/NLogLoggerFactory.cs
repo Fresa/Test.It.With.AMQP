@@ -1,4 +1,4 @@
-﻿namespace Logging.NLog
+﻿namespace Log.It.With.NLog
 {
     public class NLogLoggerFactory : ILoggerFactory
     {

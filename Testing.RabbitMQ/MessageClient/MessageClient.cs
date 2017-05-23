@@ -1,8 +1,7 @@
 using System;
-using System.Text;
-using Testing.RabbitMQ.NetworkClient;
+using Test.It.With.RabbitMQ.NetworkClient;
 
-namespace Testing.RabbitMQ.MessageClient
+namespace Test.It.With.RabbitMQ.MessageClient
 {
     internal class MessageClient : IMessageClient
     {

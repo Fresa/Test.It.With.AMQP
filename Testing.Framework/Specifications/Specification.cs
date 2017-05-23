@@ -1,4 +1,4 @@
-﻿namespace Testing.Framework.Specifications
+﻿namespace Test.It.Specifications
 {
     public abstract class Specification
     {

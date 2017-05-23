@@ -1,6 +1,6 @@
 using System;
 
-namespace Testing.RabbitMQ.MessageClient
+namespace Test.It.With.RabbitMQ.MessageClient
 {
     internal interface ITypedMessageClient
     {

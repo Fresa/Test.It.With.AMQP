@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Owin;
-using Testing.Framework.Fixtures;
+using Test.It.Fixtures;
 
-namespace Testing.Framework.AppBuilders
+namespace Test.It.AppBuilders
 {
     public class ConsoleApplicationServer : IAppBuilder, IDisposable
     {

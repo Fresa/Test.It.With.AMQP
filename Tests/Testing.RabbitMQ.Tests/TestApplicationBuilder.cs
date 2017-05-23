@@ -1,8 +1,7 @@
-﻿using Testing.Framework;
-using Testing.Framework.ApplicationBuilders;
-using Testing.Framework.Starters;
+﻿using Test.It.ApplicationBuilders;
+using Test.It.Starters;
 
-namespace Testing.RabbitMQ.Tests
+namespace Test.It.With.RabbitMQ.Tests
 {
     public class TestApplicationBuilder : ApplicationBuilder
     {

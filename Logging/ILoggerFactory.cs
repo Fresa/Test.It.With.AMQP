@@ -1,4 +1,4 @@
-﻿namespace Logging
+﻿namespace Log.It
 {
     public interface ILoggerFactory
     {

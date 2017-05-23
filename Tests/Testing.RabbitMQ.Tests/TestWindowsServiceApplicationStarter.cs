@@ -1,7 +1,6 @@
-﻿using Testing.Framework;
-using Testing.Framework.Starters;
+﻿using Test.It.Starters;
 
-namespace Testing.RabbitMQ.Tests
+namespace Test.It.With.RabbitMQ.Tests
 {
     public class TestWindowsServiceApplicationStarter : WindowsServiceStarter
     {

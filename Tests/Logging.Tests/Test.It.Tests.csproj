@@ -7,8 +7,8 @@
     <ProjectGuid>{B7ED557C-F0EC-4099-862A-026B10B98903}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Logging.Tests</RootNamespace>
-    <AssemblyName>Logging.Tests</AssemblyName>
+    <RootNamespace>Test.It.Tests</RootNamespace>
+    <AssemblyName>Test.It.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -66,13 +66,13 @@
     <Compile Include="XUnitSpecification.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Logging\Logging.csproj">
+    <ProjectReference Include="..\..\Logging\Log.It.csproj">
       <Project>{F09B5ACB-273C-4537-954E-18F11850EBBB}</Project>
-      <Name>Logging</Name>
+      <Name>Log.It</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Testing.Framework\Testing.Framework.csproj">
+    <ProjectReference Include="..\..\Testing.Framework\Test.It.csproj">
       <Project>{5CDFB500-369F-46BB-BFAC-00960BF47FB9}</Project>
-      <Name>Testing.Framework</Name>
+      <Name>Test.It</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

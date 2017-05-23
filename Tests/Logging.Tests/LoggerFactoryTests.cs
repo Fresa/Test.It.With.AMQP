@@ -1,7 +1,8 @@
-﻿using Should.Fluent;
+﻿using Log.It;
+using Should.Fluent;
 using Xunit;
 
-namespace Logging.Tests
+namespace Test.It.Tests
 {
     public class When_creating_a_logger : XUnitSpecification
     {

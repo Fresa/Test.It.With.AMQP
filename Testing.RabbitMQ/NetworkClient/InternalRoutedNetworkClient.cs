@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Testing.RabbitMQ.NetworkClient
+namespace Test.It.With.RabbitMQ.NetworkClient
 {
     internal class InternalRoutedNetworkClient : INetworkClient
     {

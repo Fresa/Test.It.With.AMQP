@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Testing.Framework.Fixtures
+namespace Test.It.Fixtures
 {
     public interface IClient : IDisposable
     {

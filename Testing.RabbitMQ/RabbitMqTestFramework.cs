@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
 using RabbitMQ.Client;
-using Testing.RabbitMQ.MessageClient;
-using Testing.RabbitMQ.NetworkClient;
+using Test.It.With.RabbitMQ.MessageClient;
+using Test.It.With.RabbitMQ.NetworkClient;
 
-namespace Testing.RabbitMQ
+namespace Test.It.With.RabbitMQ
 {
     public class RabbitMqTestFramework : IDisposable
     {

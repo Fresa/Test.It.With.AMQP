@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Testing.RabbitMQ
+namespace Test.It.With.RabbitMQ
 {
     internal class DisposeNotifyingModelDecorator : IModel
     {

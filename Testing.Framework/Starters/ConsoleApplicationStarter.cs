@@ -1,8 +1,8 @@
 ﻿using Owin;
-using Testing.Framework.AppBuilders;
-using Testing.Framework.Fixtures;
+using Test.It.AppBuilders;
+using Test.It.Fixtures;
 
-namespace Testing.Framework.Starters
+namespace Test.It.Starters
 {
     public abstract class ConsoleApplicationStarter : IApplicationStarter
     {

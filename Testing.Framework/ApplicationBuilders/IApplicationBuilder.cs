@@ -1,7 +1,7 @@
-﻿using Testing.Framework.Specifications;
-using Testing.Framework.Starters;
+﻿using Test.It.Specifications;
+using Test.It.Starters;
 
-namespace Testing.Framework.ApplicationBuilders
+namespace Test.It.ApplicationBuilders
 {
     public interface IApplicationBuilder
     {

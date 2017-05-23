@@ -2,7 +2,7 @@
 using System.Configuration;
 using System.Linq;
 
-namespace Logging
+namespace Log.It
 {
     public static class LogFactory
     {

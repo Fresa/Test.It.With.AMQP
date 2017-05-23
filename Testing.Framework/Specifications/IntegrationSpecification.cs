@@ -1,6 +1,6 @@
 using System;
 
-namespace Testing.Framework.Specifications
+namespace Test.It.Specifications
 {
     internal class IntegrationSpecification
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{6D60A611-7B44-4D93-A298-B2E6AB2C9C49}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Logging.NLog.Tests</RootNamespace>
-    <AssemblyName>Logging.NLog.Tests</AssemblyName>
+    <RootNamespace>Log.It.With.NLog.Tests</RootNamespace>
+    <AssemblyName>Log.It.With.NLog.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -70,17 +70,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Logging.NLog\Logging.NLog.csproj">
+    <ProjectReference Include="..\..\Logging.NLog\Log.It.With.NLog.csproj">
       <Project>{FDC0C80A-5CC5-4FCC-AB6D-712AAC99A8A5}</Project>
-      <Name>Logging.NLog</Name>
+      <Name>Log.It.With.NLog</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Logging\Logging.csproj">
+    <ProjectReference Include="..\..\Logging\Log.It.csproj">
       <Project>{F09B5ACB-273C-4537-954E-18F11850EBBB}</Project>
-      <Name>Logging</Name>
+      <Name>Log.It</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Testing.Framework\Testing.Framework.csproj">
+    <ProjectReference Include="..\..\Testing.Framework\Test.It.csproj">
       <Project>{5CDFB500-369F-46BB-BFAC-00960BF47FB9}</Project>
-      <Name>Testing.Framework</Name>
+      <Name>Test.It</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,4 +1,4 @@
-namespace Testing.RabbitMQ.NetworkClient
+namespace Test.It.With.RabbitMQ.NetworkClient
 {
     internal class InternalRoutedNetworkClientFactory : INetworkClientFactory
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Remoting.Messaging;
 
-namespace Logging
+namespace Log.It
 {
     public class LogicalThreadContext : ILogContext
     {

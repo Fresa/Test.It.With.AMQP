@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing.Impl;
-using Testing.RabbitMQ.NetworkClient;
+using Test.It.With.RabbitMQ.NetworkClient;
 
-namespace Testing.RabbitMQ
+namespace Test.It.With.RabbitMQ
 {
     internal class TestConnectionFactoryDecorator : ConnectionFactoryBase, IConnectionFactory
     {

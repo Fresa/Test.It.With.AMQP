@@ -2,13 +2,11 @@
 using System.Text;
 using RabbitMQ.Client;
 using Should.Fluent;
-using Testing.Framework;
-using Testing.Framework.ApplicationBuilders;
-using Testing.Framework.Fixtures;
-using Testing.Framework.Specifications;
+using Test.It.Fixtures;
+using Test.It.Specifications;
 using Xunit;
 
-namespace Testing.RabbitMQ.Tests
+namespace Test.It.With.RabbitMQ.Tests
 {
     public class When_publishing_a_message : XUnitWindowsServiceSpecification<WindowsServiceFixture<TestApplicationBuilder>>
     {

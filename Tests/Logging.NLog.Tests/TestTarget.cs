@@ -1,7 +1,7 @@
 ﻿using NLog;
 using NLog.Targets;
 
-namespace Logging.NLog.Tests
+namespace Log.It.With.NLog.Tests
 {
     [Target("Test")]
     public sealed class TestTarget : TargetWithLayout

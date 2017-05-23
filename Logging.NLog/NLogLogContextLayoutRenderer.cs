@@ -3,7 +3,7 @@ using NLog;
 using NLog.Config;
 using NLog.LayoutRenderers;
 
-namespace Logging.NLog
+namespace Log.It.With.NLog
 {
     [LayoutRenderer("lc")]
     public class NLogLogContextLayoutRenderer : LayoutRenderer

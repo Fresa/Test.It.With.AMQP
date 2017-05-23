@@ -1,4 +1,4 @@
-namespace Testing.Framework
+namespace Test.It
 {
     public interface IUseFixture<in TFixture>
     {

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Testing.RabbitMQ.NetworkClient
+namespace Test.It.With.RabbitMQ.NetworkClient
 {
     public class NetworkClientStream : Stream
     {

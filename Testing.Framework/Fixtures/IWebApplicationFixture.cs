@@ -1,8 +1,8 @@
 using System;
 using System.Net.Http;
-using Testing.Framework.Specifications;
+using Test.It.Specifications;
 
-namespace Testing.Framework.Fixtures
+namespace Test.It.Fixtures
 {
     public interface IWebApplicationFixture : IDisposable
     {

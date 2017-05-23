@@ -1,9 +1,9 @@
 ﻿using FakeItEasy;
 using NLog.Config;
-using Testing.Framework.Specifications;
+using Test.It.Specifications;
 using Xunit;
 
-namespace Logging.NLog.Tests
+namespace Log.It.With.NLog.Tests
 {
     public class NLogLogContextRendererLayoutTests : XUnitSpecification
     {

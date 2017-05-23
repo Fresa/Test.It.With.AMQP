@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Log.It;
 using Should.Fluent;
 using Xunit;
 
-namespace Logging.Tests
+namespace Test.It.Tests
 {
     public class When_setting_a_context_in_a_child_thread : XUnitSpecification
     {

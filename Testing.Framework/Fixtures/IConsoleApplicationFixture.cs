@@ -1,6 +1,6 @@
-﻿using Testing.Framework.Specifications;
+﻿using Test.It.Specifications;
 
-namespace Testing.Framework.Fixtures
+namespace Test.It.Fixtures
 {
     public interface IConsoleApplicationFixture
     {

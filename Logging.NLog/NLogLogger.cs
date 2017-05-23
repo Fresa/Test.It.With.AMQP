@@ -1,7 +1,7 @@
 ﻿using System;
 using NLog;
 
-namespace Logging.NLog
+namespace Log.It.With.NLog
 {
     public class NLogLogger : ILogger
     {

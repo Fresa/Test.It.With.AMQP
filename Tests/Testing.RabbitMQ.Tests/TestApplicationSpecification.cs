@@ -2,7 +2,7 @@
 using RabbitMQ.Client;
 using SimpleInjector;
 
-namespace Testing.RabbitMQ.Tests
+namespace Test.It.With.RabbitMQ.Tests
 {
     public class TestApplicationSpecification
     {

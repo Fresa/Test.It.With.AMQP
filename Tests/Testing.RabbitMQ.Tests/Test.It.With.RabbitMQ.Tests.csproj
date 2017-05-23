@@ -7,8 +7,8 @@
     <ProjectGuid>{7AA8B5EB-D671-4D79-A013-0A055626A901}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Testing.RabbitMQ.Tests</RootNamespace>
-    <AssemblyName>Testing.RabbitMQ.Tests</AssemblyName>
+    <RootNamespace>Test.It.With.RabbitMQ.Tests</RootNamespace>
+    <AssemblyName>Test.It.With.RabbitMQ.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -95,13 +95,13 @@
     <Compile Include="TestApplicationBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Testing.Framework\Testing.Framework.csproj">
+    <ProjectReference Include="..\..\Testing.Framework\Test.It.csproj">
       <Project>{5CDFB500-369F-46BB-BFAC-00960BF47FB9}</Project>
-      <Name>Testing.Framework</Name>
+      <Name>Test.It</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Testing.RabbitMQ\Testing.RabbitMQ.csproj">
+    <ProjectReference Include="..\..\Testing.RabbitMQ\Test.It.With.RabbitMQ.csproj">
       <Project>{4012460B-68EE-414C-868F-938443DE9680}</Project>
-      <Name>Testing.RabbitMQ</Name>
+      <Name>Test.It.With.RabbitMQ</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

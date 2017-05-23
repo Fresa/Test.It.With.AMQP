@@ -1,7 +1,7 @@
 ﻿using System;
 using RabbitMQ.Client;
 
-namespace Testing.RabbitMQ.Tests
+namespace Test.It.With.RabbitMQ.Tests
 {
     public class TestApplication : IDisposable, IMessageQueueApplication
     {

@@ -1,8 +1,7 @@
 using System;
 using SimpleInjector;
-using Testing.Framework;
 
-namespace Testing.RabbitMQ.Tests
+namespace Test.It.With.RabbitMQ.Tests
 {
     public class SimpleInjectorDependencyResolver : IServiceContainer
     {

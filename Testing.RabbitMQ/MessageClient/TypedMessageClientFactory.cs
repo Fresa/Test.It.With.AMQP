@@ -1,4 +1,4 @@
-namespace Testing.RabbitMQ.MessageClient
+namespace Test.It.With.RabbitMQ.MessageClient
 {
     internal class TypedMessageClientFactory
     {

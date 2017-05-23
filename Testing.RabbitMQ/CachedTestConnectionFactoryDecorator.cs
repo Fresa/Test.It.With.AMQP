@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 
-namespace Testing.RabbitMQ
+namespace Test.It.With.RabbitMQ
 {
     internal class CachedTestConnectionFactoryDecorator : IConnectionFactory
     {

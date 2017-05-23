@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Configuration;
 
-namespace Logging
+namespace Log.It
 {
     public class LoggingSection : ConfigurationSection
     {

@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.RabbitMQ", "Testing.RabbitMQ\Testing.RabbitMQ.csproj", "{4012460B-68EE-414C-868F-938443DE9680}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.RabbitMQ", "Testing.RabbitMQ\Test.It.With.RabbitMQ.csproj", "{4012460B-68EE-414C-868F-938443DE9680}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.RabbitMQ.Tests", "Tests\Testing.RabbitMQ.Tests\Testing.RabbitMQ.Tests.csproj", "{7AA8B5EB-D671-4D79-A013-0A055626A901}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.RabbitMQ.Tests", "Tests\Testing.RabbitMQ.Tests\Test.It.With.RabbitMQ.Tests.csproj", "{7AA8B5EB-D671-4D79-A013-0A055626A901}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4AA9FA82-1CF5-4017-8D0B-588B446CA315}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Framework", "Testing.Framework\Testing.Framework.csproj", "{5CDFB500-369F-46BB-BFAC-00960BF47FB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It", "Testing.Framework\Test.It.csproj", "{5CDFB500-369F-46BB-BFAC-00960BF47FB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logging", "Logging\Logging.csproj", "{F09B5ACB-273C-4537-954E-18F11850EBBB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log.It", "Logging\Log.It.csproj", "{F09B5ACB-273C-4537-954E-18F11850EBBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logging.Tests", "Tests\Logging.Tests\Logging.Tests.csproj", "{B7ED557C-F0EC-4099-862A-026B10B98903}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.Tests", "Tests\Logging.Tests\Test.It.Tests.csproj", "{B7ED557C-F0EC-4099-862A-026B10B98903}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logging.NLog", "Logging.NLog\Logging.NLog.csproj", "{FDC0C80A-5CC5-4FCC-AB6D-712AAC99A8A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log.It.With.NLog", "Logging.NLog\Log.It.With.NLog.csproj", "{FDC0C80A-5CC5-4FCC-AB6D-712AAC99A8A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logging.NLog.Tests", "Tests\Logging.NLog.Tests\Logging.NLog.Tests.csproj", "{6D60A611-7B44-4D93-A298-B2E6AB2C9C49}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log.It.With.NLog.Tests", "Tests\Logging.NLog.Tests\Log.It.With.NLog.Tests.csproj", "{6D60A611-7B44-4D93-A298-B2E6AB2C9C49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

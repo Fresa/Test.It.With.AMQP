@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4012460B-68EE-414C-868F-938443DE9680}</ProjectGuid>
+    <ProjectGuid>{FDC0C80A-5CC5-4FCC-AB6D-712AAC99A8A5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Testing.RabbitMQ</RootNamespace>
-    <AssemblyName>Testing.RabbitMQ</AssemblyName>
+    <RootNamespace>Log.It.With.NLog</RootNamespace>
+    <AssemblyName>Log.It.With.NLog</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RabbitMQ.Client, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>packages\RabbitMQ.Client.4.1.3\lib\net451\RabbitMQ.Client.dll</HintPath>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.9\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,28 +43,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CachedConnectionDecorator.cs" />
-    <Compile Include="CachedTestConnectionFactoryDecorator.cs" />
-    <Compile Include="NetworkClient\NetworkClientStream.cs" />
-    <Compile Include="DisposeNotifyingModelDecorator.cs" />
-    <Compile Include="NetworkClient\INetworkClient.cs" />
-    <Compile Include="ISerializer.cs" />
-    <Compile Include="MessageClient\IMessageClient.cs" />
-    <Compile Include="MessageClient\ITypedMessageClient.cs" />
-    <Compile Include="MessageClient\MessageClient.cs" />
-    <Compile Include="MessageClient\TypedMessageClient.cs" />
-    <Compile Include="MessageClient\TypedMessageClientFactory.cs" />
-    <Compile Include="NetworkClient\INetworkClientFactory.cs" />
-    <Compile Include="NetworkClient\InternalRoutedNetworkClient.cs" />
-    <Compile Include="NetworkClient\InternalRoutedNetworkClientFactory.cs" />
+    <Compile Include="NLogFactory.cs" />
+    <Compile Include="NLogLogger.cs" />
+    <Compile Include="NLogLoggerFactory.cs" />
+    <Compile Include="NLogLogContextLayoutRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RabbitMqTestFramework.cs" />
-    <Compile Include="NetworkClient\ReceivedEventArgs.cs" />
-    <Compile Include="TestConnectionFactoryDecorator.cs" />
-    <Compile Include="TestFrameHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Logging\Log.It.csproj">
+      <Project>{F09B5ACB-273C-4537-954E-18F11850EBBB}</Project>
+      <Name>Log.It</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,6 @@
 ﻿using Owin;
 
-namespace Testing.Framework.Starters
+namespace Test.It.Starters
 {
     public interface IApplicationStarter
     {

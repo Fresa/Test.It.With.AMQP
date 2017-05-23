@@ -1,7 +1,7 @@
 ﻿using System;
-using Testing.Framework.Specifications;
+using Test.It.Specifications;
 
-namespace Testing.Framework.Fixtures
+namespace Test.It.Fixtures
 {
     public interface IWindowsServiceFixture : IDisposable
     {

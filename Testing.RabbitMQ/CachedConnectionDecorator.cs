@@ -5,7 +5,7 @@ using System.Linq;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Testing.RabbitMQ
+namespace Test.It.With.RabbitMQ
 {
     internal class CachedConnectionDecorator : IConnection
     {
