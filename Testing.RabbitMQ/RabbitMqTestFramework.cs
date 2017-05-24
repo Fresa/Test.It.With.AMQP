@@ -1,6 +1,7 @@
 ﻿using System;
 using RabbitMQ.Client;
-using Test.It.With.RabbitMQ.MessageClient;
+using Test.It.MessageClient;
+using Test.It.NetworkClient;
 using Test.It.With.RabbitMQ.NetworkClient;
 
 namespace Test.It.With.RabbitMQ
@@ -10,7 +11,8 @@ namespace Test.It.With.RabbitMQ
         private readonly ISerializer _serializer;
         private readonly INetworkClient _serverNetworkClient;
         private readonly CachedTestConnectionFactoryDecorator _connectionFactory;
-        
+        private TypedMessageClientFactory _typedNetworkClientFactory;
+
         public RabbitMqTestFramework(ISerializer serializer, Lazy<IConnectionFactory> lazyConnectionFactory)
         {
             _serializer = serializer;
@@ -20,19 +22,21 @@ namespace Test.It.With.RabbitMQ
             _connectionFactory = new CachedTestConnectionFactoryDecorator(
                 new TestConnectionFactoryDecorator(
                     lazyConnectionFactory, networkClientFactory));
+
+            _typedNetworkClientFactory = new TypedMessageClientFactory(serializer);
         }
         
         public IConnectionFactory ConnectionFactory => _connectionFactory;
 
         public void Consume<TMessage>(ServerEnvelope<TMessage> envelope)
         {
-            var server = new TypedMessageClient(new MessageClient.MessageClient(_serverNetworkClient, _serializer), _serializer);
+            var server = _typedNetworkClientFactory.Create<ServerEnvelope<TMessage>>(new MessageClient.MessageClient(_serverNetworkClient, _serializer));
             server.Send(envelope);
         }
 
         public void OnPublish<TMessage>(Action<ClientEnvelope<TMessage>> messageProvider)
         {
-            var server = new TypedMessageClient<ClientEnvelope<TMessage>>(new MessageClient.MessageClient(_serverNetworkClient, _serializer), _serializer);
+            var server = _typedNetworkClientFactory.Create<ClientEnvelope<TMessage>>(new MessageClient.MessageClient(_serverNetworkClient, _serializer));
             server.BufferReceived += (sender, envelope) => messageProvider(envelope);
         }
 

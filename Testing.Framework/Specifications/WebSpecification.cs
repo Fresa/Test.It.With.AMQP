@@ -10,7 +10,7 @@ namespace Test.It.Specifications
 
         public void SetFixture(TFixture webHostingFixture)
         {
-            Client = webHostingFixture.Start(new IntegrationSpecificationConfigurer(new IntegrationSpecification(Given, When)));
+            Client = webHostingFixture.Start(new IntegrationSpecificationConfigurer(Given));
 
             When();
         }

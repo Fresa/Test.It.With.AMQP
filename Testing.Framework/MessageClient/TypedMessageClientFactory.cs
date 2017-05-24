@@ -1,6 +1,6 @@
-namespace Test.It.With.RabbitMQ.MessageClient
+namespace Test.It.MessageClient
 {
-    internal class TypedMessageClientFactory
+    public class TypedMessageClientFactory
     {
         private readonly ISerializer _serializer;
 
@@ -9,17 +9,14 @@ namespace Test.It.With.RabbitMQ.MessageClient
             _serializer = serializer;
         }
 
-        public ITypedMessageClient Create(IMessageClient messageClient)
-        {
-            return new TypedMessageClient(messageClient, _serializer);
-        }
-
         public ITypedMessageClient<TMessage> Create<TMessage>(IMessageClient messageClient)
         {
             return new TypedMessageClient<TMessage>(messageClient, _serializer);
         }
-    }
 
-
-    
+        public ITypedMessageClient<TReceiveMessage, TSendMessage> Create<TReceiveMessage, TSendMessage>(IMessageClient messageClient)
+        {
+            return new TypedMessageClient<TReceiveMessage, TSendMessage>(messageClient, _serializer);
+        }
+    }    
 }

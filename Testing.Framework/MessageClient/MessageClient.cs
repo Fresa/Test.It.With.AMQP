@@ -1,9 +1,9 @@
 using System;
-using Test.It.With.RabbitMQ.NetworkClient;
+using Test.It.NetworkClient;
 
-namespace Test.It.With.RabbitMQ.MessageClient
+namespace Test.It.MessageClient
 {
-    internal class MessageClient : IMessageClient
+    public class MessageClient : IMessageClient
     {
         private readonly INetworkClient _networkClient;
         private readonly ISerializer _serializer;
@@ -28,18 +28,6 @@ namespace Test.It.With.RabbitMQ.MessageClient
         {
             var bytes = _serializer.Serialize(envelope);
             _networkClient.Send(bytes, 0, bytes.Length);
-        }
-
-        internal class MessageEnvelope
-        {
-            public MessageEnvelope(Type type, byte[] message)
-            {
-                Type = type;
-                Message = message;
-            }
-
-            public Type Type { get; }
-            public byte[] Message { get; }
         }
 
         public void Dispose()

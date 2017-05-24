@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Test.It.With.RabbitMQ
+namespace Test.It
 {
     public interface ISerializer
     {

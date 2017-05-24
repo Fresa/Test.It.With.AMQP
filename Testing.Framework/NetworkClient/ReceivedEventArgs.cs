@@ -1,6 +1,6 @@
 using System;
 
-namespace Test.It.With.RabbitMQ.NetworkClient
+namespace Test.It.NetworkClient
 {
     public class ReceivedEventArgs : EventArgs
     {

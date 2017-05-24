@@ -7,7 +7,7 @@ namespace Test.It.Specifications
     {
         public void SetFixture(TWindowsServiceFixture fixture)
         {
-            fixture.Start(new IntegrationSpecificationConfigurer(new IntegrationSpecification(Given, When)));
+            fixture.Start(new IntegrationSpecificationConfigurer(Given));
 
             When();
         }

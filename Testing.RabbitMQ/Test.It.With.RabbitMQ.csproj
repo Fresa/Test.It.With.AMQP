@@ -45,26 +45,22 @@
   <ItemGroup>
     <Compile Include="CachedConnectionDecorator.cs" />
     <Compile Include="CachedTestConnectionFactoryDecorator.cs" />
-    <Compile Include="NetworkClient\NetworkClientStream.cs" />
     <Compile Include="DisposeNotifyingModelDecorator.cs" />
-    <Compile Include="NetworkClient\INetworkClient.cs" />
-    <Compile Include="ISerializer.cs" />
-    <Compile Include="MessageClient\IMessageClient.cs" />
-    <Compile Include="MessageClient\ITypedMessageClient.cs" />
-    <Compile Include="MessageClient\MessageClient.cs" />
-    <Compile Include="MessageClient\TypedMessageClient.cs" />
-    <Compile Include="MessageClient\TypedMessageClientFactory.cs" />
-    <Compile Include="NetworkClient\INetworkClientFactory.cs" />
     <Compile Include="NetworkClient\InternalRoutedNetworkClient.cs" />
     <Compile Include="NetworkClient\InternalRoutedNetworkClientFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RabbitMqTestFramework.cs" />
-    <Compile Include="NetworkClient\ReceivedEventArgs.cs" />
     <Compile Include="TestConnectionFactoryDecorator.cs" />
     <Compile Include="TestFrameHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Testing.Framework\Test.It.csproj">
+      <Project>{5CDFB500-369F-46BB-BFAC-00960BF47FB9}</Project>
+      <Name>Test.It</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

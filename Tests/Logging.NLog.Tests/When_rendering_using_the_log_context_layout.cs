@@ -1,11 +1,10 @@
 ﻿using FakeItEasy;
 using NLog.Config;
-using Test.It.Specifications;
 using Xunit;
 
 namespace Log.It.With.NLog.Tests
 {
-    public class NLogLogContextRendererLayoutTests : XUnitSpecification
+    public class When_rendering_using_the_log_context_layout : XUnitSpecification
     {
         private NLogLogger _logger;
         private IWrite _writer;
@@ -40,20 +39,5 @@ namespace Log.It.With.NLog.Tests
         {
             A.CallTo(() => _writer.Write("item1=value1, item2=")).MustHaveHappened();
         }
-    }
-
-    public interface IWrite
-    {
-        void Write(string message);
-    }
-
-    public abstract class XUnitSpecification : Specification, IClassFixture<XUnitSpecification.StartUpFixture>
-    {
-        protected XUnitSpecification()
-        {
-            Setup();
-        }
-
-        internal class StartUpFixture { }
     }
 }

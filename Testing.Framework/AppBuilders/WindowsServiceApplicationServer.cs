@@ -46,7 +46,7 @@ namespace Test.It.AppBuilders
             return new WindowsServiceApplicationServer();
         }
 
-        public IDictionary<string, object> Properties { get; }
+        public IDictionary<string, object> Properties { get; } = new Dictionary<string, object>();
 
         public void Dispose()
         {

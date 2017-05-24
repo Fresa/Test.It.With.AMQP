@@ -2,8 +2,9 @@
 
 namespace Test.It.Fixtures
 {
-    public interface IClient : IDisposable
-    {
-        void Send<TMessage>(TMessage message);
-    }
+    //public interface IClient : IDisposable
+    //{
+    //    event EventHandler MessageHandler;
+    //    void Send<TMessage>(TMessage message);
+    //}
 }

@@ -1,17 +1,19 @@
+using System;
+
 namespace Test.It.Specifications
 {
     internal class IntegrationSpecificationConfigurer : ITestConfigurer
     {
-        private readonly IntegrationSpecification _webSpecification;
+        private readonly Action<IServiceContainer> _configurer;
 
-        public IntegrationSpecificationConfigurer(IntegrationSpecification webSpecification)
+        public IntegrationSpecificationConfigurer(Action<IServiceContainer> configurer)
         {
-            _webSpecification = webSpecification;
+            _configurer = configurer;
         }
         
         public void Configure(IServiceContainer serviceContainer)
         {
-            _webSpecification.Given(serviceContainer);
+            _configurer(serviceContainer);
         }
     }
 }
