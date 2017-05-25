@@ -64,12 +64,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppBuilders\ClientProvidingAppBuilder.cs" />
     <Compile Include="AppBuilders\ConsoleApplicationTestServer.cs" />
+    <Compile Include="AppBuilders\IAppBuilder.cs" />
     <Compile Include="AppBuilders\WindowsServiceApplicationServer.cs" />
     <Compile Include="ApplicationBuilders\ApplicationBuilder.cs" />
     <Compile Include="ApplicationBuilders\IApplicationBuilder.cs" />
+    <Compile Include="Console.cs" />
     <Compile Include="Fixtures\IWebApplicationFixture.cs" />
     <Compile Include="Fixtures\IWindowsServiceFixture.cs" />
+    <Compile Include="IConsole.cs" />
+    <Compile Include="IConsoleClient.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="MessageClient\BaseTypedMessageClient.cs" />
     <Compile Include="MessageClient\IMessageClient.cs" />
@@ -87,6 +92,7 @@
     <Compile Include="Specifications\WebSpecification.cs" />
     <Compile Include="Starters\ConsoleApplicationStarter.cs" />
     <Compile Include="Starters\IApplicationStarter.cs" />
+    <Compile Include="Middleware\TaskStartingMiddleware.cs" />
     <Compile Include="Starters\WindowsServiceStarter.cs" />
     <Compile Include="Fixtures\StandardConsoleApplicationFixture.cs" />
     <Compile Include="Fixtures\IClient.cs" />

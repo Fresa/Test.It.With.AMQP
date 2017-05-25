@@ -7,4 +7,9 @@ namespace Test.It.ApplicationBuilders
     {
         IApplicationStarter CreateWith(ITestConfigurer configurer);
     }
+
+    public interface IApplicationBuilder<out TClient>
+    {
+        IApplicationStarter<TClient> CreateWith(ITestConfigurer configurer);
+    }
 }

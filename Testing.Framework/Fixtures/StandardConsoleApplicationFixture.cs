@@ -6,9 +6,9 @@ using Test.It.Specifications;
 namespace Test.It.Fixtures
 {
     public class StandardConsoleApplicationFixture<TApplicationBuilder> : IConsoleApplicationFixture 
-        where TApplicationBuilder : IApplicationBuilder, new()
+        where TApplicationBuilder : IApplicationBuilder<IConsoleClient>, new()
     {
-        public ITypedMessageClient<string, string> Start(ITestConfigurer testConfigurer)
+        public IConsoleClient Start(ITestConfigurer testConfigurer)
         {
             var applicationBuilder = new TApplicationBuilder();
             var server = ConsoleApplicationTestServer.Create(applicationBuilder.CreateWith(testConfigurer).Start);

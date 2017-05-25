@@ -47,7 +47,7 @@ namespace Test.It.With.RabbitMQ.Tests
                 "hello",
                 null,
                 _serializer.Serialize(message));
-            Console.WriteLine($"Sent {message}");
+            System.Console.WriteLine($"Sent {message}");
         }
 
         public void Dispose()

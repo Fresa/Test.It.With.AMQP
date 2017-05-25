@@ -17,14 +17,14 @@ namespace Test.It.MessageClient
                 if (envelope.Type == typeof(TMessageReceive))
                 {
                     var message = (TMessageReceive)_serializer.Deserialize(envelope.Type, envelope.Message);
-                    BufferReceived?.Invoke(this, message);
+                    Received?.Invoke(this, message);
                 }
             };
 
             _messageClient.Disconnected += Disconnected;
         }
 
-        protected event EventHandler<TMessageReceive> BufferReceived;
+        protected event EventHandler<TMessageReceive> Received;
         protected event EventHandler Disconnected;
 
         protected void Send<TMessage>(TMessage message)

@@ -6,11 +6,11 @@ namespace Test.It.MessageClient
     {
         public TypedMessageClient(IMessageClient messageClient, ISerializer serializer) : base(messageClient, serializer)
         {
-            base.BufferReceived += BufferReceived;
+            base.Received += Received;
             base.Disconnected += Disconnected;
         }
 
-        public new event EventHandler<TMessageReceive> BufferReceived;
+        public new event EventHandler<TMessageReceive> Received;
         public new event EventHandler Disconnected;
 
         public new void Send<TMessage>(TMessage message)
@@ -23,11 +23,11 @@ namespace Test.It.MessageClient
     {
         public TypedMessageClient(IMessageClient messageClient, ISerializer serializer) : base(messageClient, serializer)
         {
-            base.BufferReceived += BufferReceived;
+            base.Received += Received;
             base.Disconnected += Disconnected;
         }
 
-        public new event EventHandler<TMessageReceive> BufferReceived;
+        public new event EventHandler<TMessageReceive> Received;
         public new event EventHandler Disconnected;
 
         public void Send(TMessageSend message)

@@ -13,7 +13,7 @@ namespace Test.It.With.RabbitMQ.NetworkClient
 
         public void Send(byte[] buffer, int offset, int count)
         {
-            Console.Write("Sending: " + Encoding.UTF8.GetString(buffer));
+            System.Console.Write("Sending: " + Encoding.UTF8.GetString(buffer));
             SendReceived?.Invoke(this, new ReceivedEventArgs(buffer, offset, count));
         }
 
@@ -24,7 +24,7 @@ namespace Test.It.With.RabbitMQ.NetworkClient
 
         public void TriggerReceive(object sender, ReceivedEventArgs e)
         {
-            Console.Write("Receiving: " + Encoding.UTF8.GetString(e.Buffer));
+            System.Console.Write("Receiving: " + Encoding.UTF8.GetString(e.Buffer));
             BufferReceived?.Invoke(sender, e);
         }
     }

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Should.Core.Exceptions;
 using Should.Fluent;
-using Test.It.ApplicationBuilders;
 using Test.It.Fixtures;
 using Test.It.MessageClient;
 using Test.It.NetworkClient;
-using Test.It.Specifications;
-using Test.It.Starters;
 using Xunit;
 using TimeoutException = Should.Core.Exceptions.TimeoutException;
 
@@ -25,26 +23,21 @@ namespace Test.It.Tests
         protected override void When()
         {
             _wait = new AutoResetEvent(false);
-            Client.Disconnected += (sender, args) => Done();
+            Client.Disconnected += (sender, args) => _wait.Set();
 
-            Client.BufferReceived += (sender, s) => _got = s;
-            Client.Send("test");
+            Client.OutputReceived += (sender, message) => _got = message;
+            Client.Input("test");
             Wait();
         }
 
         private void Wait()
         {
-            if (_wait.WaitOne(TimeSpan.FromSeconds(5)) == false)
+            if (_wait.WaitOne(TimeSpan.FromSeconds(500)) == false)
             {
-                throw new TimeoutException(3);
+                throw new TimeoutException(5000);
             }
         }
-
-        private void Done()
-        {
-            _wait.Set();
-        }
-
+        
         [Fact]
         public void It_should_have_responded()
         {
@@ -52,164 +45,133 @@ namespace Test.It.Tests
         }
     }
 
-    public class TestConsoleClient : ITypedMessageClient<string, string>
+    internal class ConsoleClient : IConsoleClient
     {
-        private readonly Queue<string> _sentMessages = new Queue<string>(new []{"test"});
+        private readonly TestConsole _console;
 
-        public TestConsoleClient(TestConsole console)
+        public ConsoleClient(TestConsole console)
         {
-            // todo: make it async since the application tested is started async
-            console.OnWriteLine(s => BufferReceived?.Invoke(this, s));
-            console.OnReadLine(_sentMessages.Dequeue);
+            _console = console;
+
+            _console.OutputReceived += OutputReceived;
+            _console.Disconnected += Disconnected;
         }
 
-        public event EventHandler<string> BufferReceived;
-        public event EventHandler Disconnected;
-        public void Send(string message)
+        // todo: is null if no receivers are registered. Should defer.
+        public event EventHandler<string> OutputReceived;
+
+        public void Input(string message)
         {
-            _sentMessages.Enqueue(message);
+            _console.Input(message);
         }
 
-        public void TriggerDisconnected(int exitCode)
-        {
-            Disconnected?.Invoke(this, EventArgs.Empty);
-        }
+        public event EventHandler<int> Disconnected;
     }
-
-    public interface IConsoleApplication
-    {
-        void Start(params string[] args);
-    }
-
-    public interface IEmitCtrlC
-    {
-        event EventHandler OnCtrlC;
-    }
-
-    public class DefaultConsoleMiddleware<TConsoleApplication> : IConsoleMiddleware
-        where TConsoleApplication : class, IConsoleApplication
-    {
-        private readonly TConsoleApplication _consoleApplication;
-
-        public DefaultConsoleMiddleware(TConsoleApplication consoleApplication)
-        {
-            _consoleApplication = consoleApplication;
-            SetupCtrlCEvent(consoleApplication);
-        }
-
-        private void SetupCtrlCEvent(object app)
-        {
-            var iEmmitCtrlC = (IEmitCtrlC)app;
-            if (iEmmitCtrlC != null)
-            {
-                iEmmitCtrlC.OnCtrlC += OnCtrlC;
-            }
-        }
-
-        public void Start(params string[] args)
-        {
-            Task.Run(() =>
-            {
-                _consoleApplication.Start(args);
-                OnClose?.Invoke(this, null);
-            });
-        }
-
-        public event EventHandler OnCtrlC;
-        public event EventHandler OnClose;
-    }
-
-    public interface IConsoleMiddleware
-    {
-        void Start(params string[] args);
-        event EventHandler OnCtrlC;
-        event EventHandler OnClose;
-    }
-
-    public class TestConsoleApplicationStarter : ConsoleApplicationStarter
-    {
-        private readonly TestConsoleApp _app;
-        private readonly TestConsoleClient _console;
-
-        public TestConsoleApplicationStarter(TestConsoleApp app, TestConsole console)
-        {
-            _app = app;
-            _console = new TestConsoleClient(console);
-            Starter = () =>
-            {
-                var exitCode = app.Start();
-                _console.TriggerDisconnected(exitCode);
-            };
-        }
-
-        protected override ITypedMessageClient<string, string> GetClient()
-        {
-            return _console;
-        }
-
-        //protected void Start(params string[] args)
-        //{
-        //    var exitCode = _app.Start(args);
-        //    _console.TriggerDisconnected(exitCode);
-        //}
-
-        protected override Action Starter { get; }
-    }
-
-    public class TestConsoleApplicationBuilder : IApplicationBuilder
-    {
-        public IApplicationStarter CreateWith(ITestConfigurer configurer)
-        {
-            var console = new TestConsole();
-
-            var app = new TestConsoleApp(container =>
-            {
-                container.Register<IConsole>(() => console);
-                configurer.Configure(container);
-            });
-            return new TestConsoleApplicationStarter(app, console);
-        }
-    }
-
-    public class XUnitConsoleApplicationSpecification<TFixture> : ConsoleApplicationSpecification<TFixture>, Xunit.IClassFixture<TFixture>
-        where TFixture : class, IConsoleApplicationFixture, new()
-    {
-        public XUnitConsoleApplicationSpecification()
-        {
-            SetFixture(new TFixture());
-        }
-    }
-
-    public interface IConsole
-    {
-        void WriteLine(string message);
-        string ReadLine();
-    }
-
 
     public class TestConsole : IConsole
     {
-        private Func<string> _lineReader;
-        private Action<string> _lineWriter;
+        private readonly ConcurrentQueue<string> _readableLines = new ConcurrentQueue<string>();
+        private readonly ManualResetEventSlim _readLineWaiter = new ManualResetEventSlim();
+
+        private readonly ConcurrentQueue<string> _output = new ConcurrentQueue<string>();
+        private readonly object _outputLock = new object();
 
         public void WriteLine(string message)
         {
-            _lineWriter(message);
+            lock (_outputLock)
+            {
+                if (OutputReceivedPrivate == null)
+                {
+                    _output.Enqueue(message);
+                    return;
+                }
+                OutputReceivedPrivate.Invoke(this, message);
+            }
         }
 
+        private event EventHandler<string> OutputReceivedPrivate;
+        public event EventHandler<string> OutputReceived
+        {
+            add
+            {
+                lock (_outputLock)
+                {
+                    while (_output.TryDequeue(out var message))
+                    {
+                        value.Invoke(this, message);
+                    }
+                    OutputReceivedPrivate += value;
+                }
+            }
+            remove
+            {
+                lock (_outputLock)
+                {
+                    OutputReceivedPrivate -= value;
+                }
+            }
+        }
+
+        private const int ReadTimeoutInSeconds = 5;
         public string ReadLine()
         {
-            return _lineReader();
+            if (_readableLines.TryDequeue(out var readLine))
+            {
+                return readLine;
+            }
+
+            if (_readLineWaiter.Wait(TimeSpan.FromSeconds(ReadTimeoutInSeconds)))
+            {
+                // ReSharper disable once TailRecursiveCall (Cannot loop since this is an async dependent. Getting a read line event does not mean there is a message ready to be read by THIS instance; it's a race condition.)
+                return ReadLine();
+            }
+
+            throw new System.TimeoutException($"Waited for input for {ReadTimeoutInSeconds} seconds.");
         }
 
-        public void OnWriteLine(Action<string> lineWriter)
+        public string Title { get; set; }
+
+        public void Input(string line)
         {
-            _lineWriter = lineWriter;
+            _readableLines.Enqueue(line);
+            _readLineWaiter.Set();
         }
 
-        public void OnReadLine(Func<string> lineReader)
+        private event EventHandler<int> DisconnectedPrivate;
+        public event EventHandler<int> Disconnected
         {
-            _lineReader = lineReader;
+            add
+            {
+                lock (_disconnectLock)
+                {
+                    if (_disconnected)
+                    {
+                        value.Invoke(this, _exitCode);
+                    }
+                    DisconnectedPrivate += value;
+                }
+            }
+            remove
+            {
+                lock (_disconnectLock)
+                {
+                    DisconnectedPrivate -= value;
+                }
+            }
         }
-    }
+
+        private readonly object _disconnectLock = new object();
+        private bool _disconnected;
+        private int _exitCode;
+
+        public void Disconnect(int exitCode)
+        {
+            lock (_disconnectLock)
+            {
+                _disconnected = true;
+                _exitCode = exitCode;
+            }
+            DisconnectedPrivate?.Invoke(this, exitCode);
+        }
+    }    
 }

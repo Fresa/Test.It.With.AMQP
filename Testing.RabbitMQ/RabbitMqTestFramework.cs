@@ -37,7 +37,7 @@ namespace Test.It.With.RabbitMQ
         public void OnPublish<TMessage>(Action<ClientEnvelope<TMessage>> messageProvider)
         {
             var server = _typedNetworkClientFactory.Create<ClientEnvelope<TMessage>>(new MessageClient.MessageClient(_serverNetworkClient, _serializer));
-            server.BufferReceived += (sender, envelope) => messageProvider(envelope);
+            server.Received += (sender, envelope) => messageProvider(envelope);
         }
 
         public class ClientEnvelope<TMessage>

@@ -1,5 +1,4 @@
 ﻿using Test.It.Fixtures;
-using Test.It.MessageClient;
 
 namespace Test.It.Specifications
 {
@@ -13,7 +12,7 @@ namespace Test.It.Specifications
             When();
         }
 
-        protected ITypedMessageClient<string, string> Client { get; private set; }
+        protected IConsoleClient Client { get; private set; }
 
         protected virtual void Given(IServiceContainer configurer) { }
         protected virtual void When() { }

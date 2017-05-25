@@ -4,15 +4,15 @@ namespace Test.It.MessageClient
 {    
     public interface ITypedMessageClient<TMessageReceive>
     {
-        event EventHandler<TMessageReceive> BufferReceived;
+        event EventHandler<TMessageReceive> Received;
         event EventHandler Disconnected;
         void Send<TMessage>(TMessage message);
     }
 
-    public interface ITypedMessageClient<TMessageReceive, in TMessageSend>
+    public interface ITypedMessageClient<TReceive, in TSend>
     {
-        event EventHandler<TMessageReceive> BufferReceived;
+        event EventHandler<TReceive> Received;
         event EventHandler Disconnected;
-        void Send(TMessageSend message);
+        void Send(TSend message);
     }
 }
