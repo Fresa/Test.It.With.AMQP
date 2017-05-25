@@ -2,6 +2,11 @@
 
 namespace Test.It
 {
+    public interface IServerConsoleClient : IConsoleClient
+    {
+        void Disconnect(int exitCode);
+    }
+
     public interface IConsoleClient
     {
         event EventHandler<string> OutputReceived;

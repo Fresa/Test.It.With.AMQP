@@ -68,9 +68,14 @@
     <Compile Include="AppBuilders\ConsoleApplicationTestServer.cs" />
     <Compile Include="AppBuilders\IAppBuilder.cs" />
     <Compile Include="AppBuilders\WindowsServiceApplicationServer.cs" />
-    <Compile Include="ApplicationBuilders\ApplicationBuilder.cs" />
+    <Compile Include="ApplicationBuilders\BaseApplicationBuilder.cs" />
+    <Compile Include="ApplicationBuilders\BaseConsoleApplicationBuilder.cs" />
+    <Compile Include="ApplicationBuilders\DefaultConsoleApplicationBuilder.cs" />
     <Compile Include="ApplicationBuilders\IApplicationBuilder.cs" />
+    <Compile Include="ApplicationBuilders\IConsoleApplicationBuilder.cs" />
     <Compile Include="Console.cs" />
+    <Compile Include="ConsoleClient.cs" />
+    <Compile Include="DefaultConsoleApplicationStarter.cs" />
     <Compile Include="Fixtures\IWebApplicationFixture.cs" />
     <Compile Include="Fixtures\IWindowsServiceFixture.cs" />
     <Compile Include="IConsole.cs" />
@@ -90,7 +95,7 @@
     <Compile Include="Specifications\IntegrationSpecificationConfigurer.cs" />
     <Compile Include="Specifications\ITestConfigurer.cs" />
     <Compile Include="Specifications\WebSpecification.cs" />
-    <Compile Include="Starters\ConsoleApplicationStarter.cs" />
+    <Compile Include="Starters\BaseConsoleApplicationStarter.cs" />
     <Compile Include="Starters\IApplicationStarter.cs" />
     <Compile Include="Middleware\TaskStartingMiddleware.cs" />
     <Compile Include="Starters\WindowsServiceStarter.cs" />
@@ -106,6 +111,7 @@
     <Compile Include="Specifications\ConsoleApplicationSpecification.cs" />
     <Compile Include="Specifications\WindowsServiceSpecification.cs" />
     <Compile Include="Fixtures\WebApplicationFixture.cs" />
+    <Compile Include="TestConsole.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

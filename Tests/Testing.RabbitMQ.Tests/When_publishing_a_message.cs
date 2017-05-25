@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Test.It.With.RabbitMQ.Tests
 {
-    public class When_publishing_a_message : XUnitWindowsServiceSpecification<WindowsServiceFixture<TestApplicationBuilder>>
+    public class When_publishing_a_message : XUnitWindowsServiceSpecification<WindowsServiceFixture<TestBaseApplicationBuilder>>
     {
         private RabbitMqTestFramework.ClientEnvelope<TestMessage> _testMessagePublished;
 

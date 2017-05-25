@@ -20,9 +20,11 @@ namespace Test.It.Tests
         {
             var console = _serviceContainer.Resolve<IConsole>();
             console.WriteLine(console.ReadLine());
+            Stopped?.Invoke(this, 0);
             return 0;
         }
 
+        public event EventHandler<int> Stopped;
 
         public static void Main(params string[] args)
         {

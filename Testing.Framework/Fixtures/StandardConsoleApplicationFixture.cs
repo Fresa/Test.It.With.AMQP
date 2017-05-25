@@ -6,7 +6,7 @@ using Test.It.Specifications;
 namespace Test.It.Fixtures
 {
     public class StandardConsoleApplicationFixture<TApplicationBuilder> : IConsoleApplicationFixture 
-        where TApplicationBuilder : IApplicationBuilder<IConsoleClient>, new()
+        where TApplicationBuilder : IConsoleApplicationBuilder<IConsoleClient>, new()
     {
         public IConsoleClient Start(ITestConfigurer testConfigurer)
         {

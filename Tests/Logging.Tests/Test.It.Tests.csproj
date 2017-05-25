@@ -66,7 +66,6 @@
     <Compile Include="SimpleServiceContainer.cs" />
     <Compile Include="TestConsoleApp.cs" />
     <Compile Include="TestConsoleApplicationBuilder.cs" />
-    <Compile Include="TestConsoleApplicationStarter.cs" />
     <Compile Include="When_testing_a_console_application.cs" />
     <Compile Include="XUnitConsoleApplicationSpecification.cs" />
     <Compile Include="XUnitSpecification.cs" />

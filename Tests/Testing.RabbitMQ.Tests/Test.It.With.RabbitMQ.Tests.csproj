@@ -92,7 +92,7 @@
     <Compile Include="TestWindowsServiceApplicationStarter.cs" />
     <Compile Include="When_publishing_a_message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestApplicationBuilder.cs" />
+    <Compile Include="TestBaseApplicationBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Testing.Framework\Test.It.csproj">
