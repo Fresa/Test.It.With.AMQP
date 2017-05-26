@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
-using Test.It.Fixtures;
+using Test.It.Hosting.A.ConsoleApplication.Consoles;
 
-namespace Test.It.Specifications
+namespace Test.It.Hosting.A.ConsoleApplication
 {
     public abstract class ConsoleApplicationSpecification<TFixture> : IUseFixture<TFixture>
         where TFixture : class, IConsoleApplicationFixture, new()
@@ -12,7 +12,7 @@ namespace Test.It.Specifications
         /// <summary>
         /// Execution timeout. Defaults to 3 seconds.
         /// </summary>
-        protected TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(3);
+        protected TimeSpan Timeout { private get; set; } = TimeSpan.FromSeconds(3);
 
         /// <summary>
         /// Bootstrap the hosted application and start the test fixture.

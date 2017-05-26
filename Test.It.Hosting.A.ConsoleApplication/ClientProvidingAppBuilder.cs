@@ -1,6 +1,7 @@
 ﻿using Owin;
+using Test.It.AppBuilders;
 
-namespace Test.It.AppBuilders
+namespace Test.It.Hosting.A.ConsoleApplication
 {
     internal class ClientProvidingAppBuilder<TClient> : IAppBuilder<TClient>
     {

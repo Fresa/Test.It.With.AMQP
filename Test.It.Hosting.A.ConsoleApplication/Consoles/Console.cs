@@ -1,4 +1,4 @@
-﻿namespace Test.It
+﻿namespace Test.It.Hosting.A.ConsoleApplication.Consoles
 {
     public class Console : IConsole
     {

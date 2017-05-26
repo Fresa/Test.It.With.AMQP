@@ -1,8 +1,9 @@
 using System;
+using Test.It.Specifications;
 
-namespace Test.It.Specifications
+namespace Test.It
 {
-    internal class IntegrationSpecificationConfigurer : ITestConfigurer
+    public class IntegrationSpecificationConfigurer : ITestConfigurer
     {
         private readonly Action<IServiceContainer> _configurer;
 

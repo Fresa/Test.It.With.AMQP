@@ -75,6 +75,10 @@
       <Project>{F09B5ACB-273C-4537-954E-18F11850EBBB}</Project>
       <Name>Log.It</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Test.It.Hosting.A.ConsoleApplication\Test.It.Hosting.A.ConsoleApplication.csproj">
+      <Project>{308B052E-6122-4336-8DCA-76B6BE2BBD28}</Project>
+      <Name>Test.It.Hosting.A.ConsoleApplication</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Testing.Framework\Test.It.csproj">
       <Project>{5CDFB500-369F-46BB-BFAC-00960BF47FB9}</Project>
       <Name>Test.It</Name>

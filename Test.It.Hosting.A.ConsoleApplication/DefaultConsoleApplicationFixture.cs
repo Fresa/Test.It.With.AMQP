@@ -1,12 +1,10 @@
-﻿using Test.It.AppBuilders;
-using Test.It.ApplicationBuilders;
-using Test.It.MessageClient;
+﻿using Test.It.Hosting.A.ConsoleApplication.Consoles;
 using Test.It.Specifications;
 
-namespace Test.It.Fixtures
+namespace Test.It.Hosting.A.ConsoleApplication
 {
-    public class StandardConsoleApplicationFixture<TApplicationBuilder> : IConsoleApplicationFixture 
-        where TApplicationBuilder : IConsoleApplicationBuilder<IConsoleClient>, new()
+    public class DefaultConsoleApplicationFixture<TApplicationBuilder> : IConsoleApplicationFixture 
+        where TApplicationBuilder : IConsoleApplicationBuilder, new()
     {
         public IConsoleClient Start(ITestConfigurer testConfigurer)
         {

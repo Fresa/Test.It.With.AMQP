@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Owin.Builder;
-using Test.It.MessageClient;
+using Test.It.AppBuilders;
+using Test.It.Hosting.A.ConsoleApplication.Consoles;
 
-namespace Test.It.AppBuilders
+namespace Test.It.Hosting.A.ConsoleApplication
 {
     public class ConsoleApplicationTestServer : IDisposable
     {

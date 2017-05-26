@@ -1,4 +1,5 @@
 using Test.It.Fixtures;
+using Test.It.Hosting.A.ConsoleApplication;
 using Test.It.Specifications;
 
 namespace Test.It.Tests

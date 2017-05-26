@@ -1,5 +1,4 @@
-﻿using Test.It.MessageClient;
-using Test.It.Specifications;
+﻿using Test.It.Specifications;
 using Test.It.Starters;
 
 namespace Test.It.ApplicationBuilders

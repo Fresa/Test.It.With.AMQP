@@ -1,10 +1,11 @@
 ﻿using Should.Fluent;
 using Test.It.Fixtures;
+using Test.It.Hosting.A.ConsoleApplication;
 using Xunit;
 
 namespace Test.It.Tests
 {
-    public class When_testing_a_console_application : XUnitConsoleApplicationSpecification<StandardConsoleApplicationFixture<TestConsoleApplicationBuilder>>
+    public class When_testing_a_console_application : XUnitConsoleApplicationSpecification<DefaultConsoleApplicationFixture<TestConsoleApplicationBuilder>>
     {
         private string _output;
         

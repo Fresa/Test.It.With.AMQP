@@ -3,12 +3,12 @@ using Test.It.Starters;
 
 namespace Test.It.With.RabbitMQ.Tests
 {
-    public class TestBaseApplicationBuilder : BaseApplicationBuilder
+    public class TestApplicationBuilder : BaseApplicationBuilder
     {
         private readonly TestApplicationSpecification _testApplicationSpecification;
         private SimpleInjectorDependencyResolver _configurer;
 
-        public TestBaseApplicationBuilder()
+        public TestApplicationBuilder()
         {
             _testApplicationSpecification = new TestApplicationSpecification();
         }

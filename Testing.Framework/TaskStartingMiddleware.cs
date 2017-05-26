@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Test.It.Middleware
+namespace Test.It
 {
-    internal class TaskStartingMiddleware
+    public class TaskStartingMiddleware
     {
         private readonly Action _bootup;
 

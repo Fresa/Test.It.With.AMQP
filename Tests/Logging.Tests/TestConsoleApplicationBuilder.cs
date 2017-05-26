@@ -1,22 +1,31 @@
 using System;
-using Test.It.ApplicationBuilders;
-using Test.It.MessageClient;
+using Test.It.Hosting.A.ConsoleApplication;
 using Test.It.Specifications;
-using Test.It.Starters;
 
 namespace Test.It.Tests
 {
     public class TestConsoleApplicationBuilder : DefaultConsoleApplicationBuilder
     {
-        public override Func<int> CreateStarter(ITestConfigurer configurer)
+        public override IConsoleApplication Create(ITestConfigurer configurer)
         {
-            var app = new TestConsoleApp(container =>
-            {
-                container.Register(() => Console);
-                configurer.Configure(container);
-            });
+            var app = new TestConsoleApp(configurer.Configure);
 
-            return () => app.Start();
+            return new TestConsoleApplicationWrapper(app);
+        }
+
+        private class TestConsoleApplicationWrapper : IConsoleApplication
+        {
+            private readonly TestConsoleApp _app;
+
+            public TestConsoleApplicationWrapper(TestConsoleApp app)
+            {
+                _app = app;
+            }
+
+            public int Start()
+            {
+                return _app.Start();
+            }
         }
     }
 }

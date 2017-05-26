@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Test.It
+namespace Test.It.Hosting.A.ConsoleApplication.Consoles
 {
-    internal class ConsoleClient : IServerConsoleClient
+    internal class ConsoleClient : IConsoleClient
     {
         private readonly TestConsole _console;
 
@@ -21,12 +21,7 @@ namespace Test.It
         {
             _console.Input(message);
         }
-
-        public void Disconnect(int exitCode)
-        {
-            _console.Disconnect(exitCode);
-        }
-
+        
         public event EventHandler<int> Disconnected
         {
             add => _console.Disconnected += value;

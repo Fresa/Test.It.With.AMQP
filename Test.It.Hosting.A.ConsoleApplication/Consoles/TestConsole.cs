@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Test.It
+namespace Test.It.Hosting.A.ConsoleApplication.Consoles
 {
     internal class TestConsole : IConsole
     {
@@ -64,7 +64,7 @@ namespace Test.It
                     continue;
                 }
 
-                throw new System.TimeoutException($"Waited for input for {ReadTimeoutInSeconds} seconds.");
+                throw new TimeoutException($"Waited for input for {ReadTimeoutInSeconds} seconds.");
             }
         }
 

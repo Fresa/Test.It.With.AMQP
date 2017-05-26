@@ -64,22 +64,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppBuilders\ClientProvidingAppBuilder.cs" />
-    <Compile Include="AppBuilders\ConsoleApplicationTestServer.cs" />
     <Compile Include="AppBuilders\IAppBuilder.cs" />
     <Compile Include="AppBuilders\WindowsServiceApplicationServer.cs" />
     <Compile Include="ApplicationBuilders\BaseApplicationBuilder.cs" />
-    <Compile Include="ApplicationBuilders\BaseConsoleApplicationBuilder.cs" />
-    <Compile Include="ApplicationBuilders\DefaultConsoleApplicationBuilder.cs" />
     <Compile Include="ApplicationBuilders\IApplicationBuilder.cs" />
-    <Compile Include="ApplicationBuilders\IConsoleApplicationBuilder.cs" />
-    <Compile Include="Console.cs" />
-    <Compile Include="ConsoleClient.cs" />
-    <Compile Include="DefaultConsoleApplicationStarter.cs" />
     <Compile Include="Fixtures\IWebApplicationFixture.cs" />
     <Compile Include="Fixtures\IWindowsServiceFixture.cs" />
-    <Compile Include="IConsole.cs" />
-    <Compile Include="IConsoleClient.cs" />
+    <Compile Include="IntegrationSpecificationConfigurer.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="MessageClient\BaseTypedMessageClient.cs" />
     <Compile Include="MessageClient\IMessageClient.cs" />
@@ -92,31 +83,27 @@
     <Compile Include="NetworkClient\INetworkClientFactory.cs" />
     <Compile Include="NetworkClient\NetworkClientStream.cs" />
     <Compile Include="NetworkClient\ReceivedEventArgs.cs" />
-    <Compile Include="Specifications\IntegrationSpecificationConfigurer.cs" />
     <Compile Include="Specifications\ITestConfigurer.cs" />
     <Compile Include="Specifications\WebSpecification.cs" />
-    <Compile Include="Starters\BaseConsoleApplicationStarter.cs" />
     <Compile Include="Starters\IApplicationStarter.cs" />
-    <Compile Include="Middleware\TaskStartingMiddleware.cs" />
     <Compile Include="Starters\WindowsServiceStarter.cs" />
-    <Compile Include="Fixtures\StandardConsoleApplicationFixture.cs" />
-    <Compile Include="Fixtures\IClient.cs" />
-    <Compile Include="Fixtures\IConsoleApplicationFixture.cs" />
     <Compile Include="IWindowsServiceController.cs" />
     <Compile Include="Fixtures\WindowsServiceFixture.cs" />
     <Compile Include="IServiceContainer.cs" />
     <Compile Include="IUseFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specifications\Specification.cs" />
-    <Compile Include="Specifications\ConsoleApplicationSpecification.cs" />
     <Compile Include="Specifications\WindowsServiceSpecification.cs" />
     <Compile Include="Fixtures\WebApplicationFixture.cs" />
-    <Compile Include="TestConsole.cs" />
+    <Compile Include="TaskStartingMiddleware.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Consoles\" />
+    <Folder Include="Middleware\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
