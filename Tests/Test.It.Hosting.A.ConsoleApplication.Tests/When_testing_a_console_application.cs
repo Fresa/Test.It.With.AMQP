@@ -1,9 +1,7 @@
 ﻿using Should.Fluent;
-using Test.It.Fixtures;
-using Test.It.Hosting.A.ConsoleApplication;
 using Xunit;
 
-namespace Test.It.Tests
+namespace Test.It.Hosting.A.ConsoleApplication.Tests
 {
     public class When_testing_a_console_application : XUnitConsoleApplicationSpecification<DefaultConsoleApplicationFixture<TestConsoleApplicationBuilder>>
     {

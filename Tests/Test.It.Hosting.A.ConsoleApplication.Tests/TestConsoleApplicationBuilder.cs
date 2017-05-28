@@ -1,8 +1,6 @@
-using System;
-using Test.It.Hosting.A.ConsoleApplication;
 using Test.It.Specifications;
 
-namespace Test.It.Tests
+namespace Test.It.Hosting.A.ConsoleApplication.Tests
 {
     public class TestConsoleApplicationBuilder : DefaultConsoleApplicationBuilder
     {

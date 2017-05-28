@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Test.It.Tests
+namespace Test.It.Hosting.A.ConsoleApplication.Tests
 {
     public class SimpleServiceContainer : IServiceContainer
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Test.It.Hosting.A.ConsoleApplication.Consoles;
 
-namespace Test.It.Tests
+namespace Test.It.Hosting.A.ConsoleApplication.Tests
 {
     public class TestConsoleApp
     {
@@ -11,7 +11,7 @@ namespace Test.It.Tests
         public TestConsoleApp(Action<IServiceContainer> reconfigurer)
         {
             _serviceContainer = new SimpleServiceContainer();
-            _serviceContainer.RegisterSingleton<IConsole, Hosting.A.ConsoleApplication.Consoles.Console>();
+            _serviceContainer.RegisterSingleton<IConsole, Consoles.Console>();
 
             reconfigurer(_serviceContainer);
             _serviceContainer.Verify();

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.RabbitMQ", "Testing.RabbitMQ\Test.It.With.RabbitMQ.csproj", "{4012460B-68EE-414C-868F-938443DE9680}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log.It.With.NLog.Tests", "Tests\Logging.NLog.Tests\Log.It.With.NLog.Tests.csproj", "{6D60A611-7B44-4D93-A298-B2E6AB2C9C49}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.Hosting.A.ConsoleApplication", "Test.It.Hosting.A.ConsoleApplication\Test.It.Hosting.A.ConsoleApplication.csproj", "{308B052E-6122-4336-8DCA-76B6BE2BBD28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.Hosting.A.ConsoleApplication.Tests", "Tests\Test.It.Hosting.A.ConsoleApplication.Tests\Test.It.Hosting.A.ConsoleApplication.Tests.csproj", "{8F311140-5A43-4638-B3AA-6C07745DFD4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{308B052E-6122-4336-8DCA-76B6BE2BBD28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{308B052E-6122-4336-8DCA-76B6BE2BBD28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{308B052E-6122-4336-8DCA-76B6BE2BBD28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F311140-5A43-4638-B3AA-6C07745DFD4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F311140-5A43-4638-B3AA-6C07745DFD4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F311140-5A43-4638-B3AA-6C07745DFD4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F311140-5A43-4638-B3AA-6C07745DFD4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,5 +73,6 @@ Global
 		{7AA8B5EB-D671-4D79-A013-0A055626A901} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
 		{B7ED557C-F0EC-4099-862A-026B10B98903} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
 		{6D60A611-7B44-4D93-A298-B2E6AB2C9C49} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
+		{8F311140-5A43-4638-B3AA-6C07745DFD4D} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
 	EndGlobalSection
 EndGlobal
