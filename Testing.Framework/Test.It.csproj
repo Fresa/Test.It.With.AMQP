@@ -65,11 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppBuilders\IAppBuilder.cs" />
-    <Compile Include="AppBuilders\WindowsServiceApplicationServer.cs" />
-    <Compile Include="ApplicationBuilders\BaseApplicationBuilder.cs" />
     <Compile Include="ApplicationBuilders\IApplicationBuilder.cs" />
+    <Compile Include="ClientProvidingAppBuilder.cs" />
     <Compile Include="Fixtures\IWebApplicationFixture.cs" />
-    <Compile Include="Fixtures\IWindowsServiceFixture.cs" />
     <Compile Include="IntegrationSpecificationConfigurer.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="MessageClient\BaseTypedMessageClient.cs" />
@@ -86,14 +84,10 @@
     <Compile Include="Specifications\ITestConfigurer.cs" />
     <Compile Include="Specifications\WebSpecification.cs" />
     <Compile Include="Starters\IApplicationStarter.cs" />
-    <Compile Include="Starters\WindowsServiceStarter.cs" />
-    <Compile Include="IWindowsServiceController.cs" />
-    <Compile Include="Fixtures\WindowsServiceFixture.cs" />
     <Compile Include="IServiceContainer.cs" />
     <Compile Include="IUseFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specifications\Specification.cs" />
-    <Compile Include="Specifications\WindowsServiceSpecification.cs" />
     <Compile Include="Fixtures\WebApplicationFixture.cs" />
     <Compile Include="TaskStartingMiddleware.cs" />
   </ItemGroup>
@@ -101,9 +95,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Consoles\" />
-    <Folder Include="Middleware\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

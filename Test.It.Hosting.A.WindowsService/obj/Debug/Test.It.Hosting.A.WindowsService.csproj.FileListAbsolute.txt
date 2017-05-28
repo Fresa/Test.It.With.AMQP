@@ -1,0 +1,16 @@
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\obj\Debug\Test.It.Hosting.A.WindowsService.csprojResolveAssemblyReference.cache
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Test.It.Hosting.A.WindowsService.dll.config
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Test.It.Hosting.A.WindowsService.dll
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Test.It.Hosting.A.WindowsService.pdb
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Microsoft.Owin.dll
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Owin.dll
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Test.It.dll
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Microsoft.Owin.Testing.dll
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Microsoft.Owin.Hosting.dll
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Test.It.pdb
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Test.It.dll.config
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Microsoft.Owin.xml
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Microsoft.Owin.Testing.xml
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\bin\Debug\Microsoft.Owin.Hosting.xml
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\obj\Debug\Test.It.Hosting.A.WindowsService.dll
+C:\Projects\Testing.RabbitMQ\Test.It.Hosting.A.WindowsService\obj\Debug\Test.It.Hosting.A.WindowsService.pdb

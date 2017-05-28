@@ -1,0 +1,1 @@
+C:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\obj\Debug\Test.It.Hosting.A.WindowsService.Tests.csprojResolveAssemblyReference.cache

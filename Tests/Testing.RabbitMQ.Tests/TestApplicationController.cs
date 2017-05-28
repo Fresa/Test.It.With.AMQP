@@ -1,6 +1,8 @@
-﻿namespace Test.It.With.RabbitMQ.Tests
+﻿using Test.It.Hosting.A.WindowsService;
+
+namespace Test.It.With.RabbitMQ.Tests
 {
-    public class TestApplicationController : IWindowsServiceController
+    public class TestApplicationController : IWindowsService
     {
         private readonly TestApplicationSpecification _app;
 

@@ -1,29 +1,39 @@
-﻿using Test.It.ApplicationBuilders;
-using Test.It.Starters;
+﻿using Test.It.Hosting.A.WindowsService;
+using Test.It.Specifications;
 
 namespace Test.It.With.RabbitMQ.Tests
 {
-    public class TestApplicationBuilder : BaseApplicationBuilder
+    public class TestApplicationBuilder : DefaultWindowsServiceBuilder
     {
-        private readonly TestApplicationSpecification _testApplicationSpecification;
-        private SimpleInjectorDependencyResolver _configurer;
-
-        public TestApplicationBuilder()
+        public override IWindowsService Create(ITestConfigurer configurer)
         {
-            _testApplicationSpecification = new TestApplicationSpecification();
+            var testApplicationSpecification = new TestApplicationSpecification();
+            var resolver = testApplicationSpecification.Configure();
+            resolver.AllowOverridingRegistrations();
+            configurer.Configure(resolver);
+            resolver.DisallowOverridingRegistrations();
+
+            return new TestConsoleApplicationWrapper(testApplicationSpecification);
         }
 
-        protected override IServiceContainer UseServiceContainer()
+        private class TestConsoleApplicationWrapper : IWindowsService
         {
-            _configurer = _testApplicationSpecification.Configure();
-            _configurer.AllowOverridingRegistrations();
-            return _configurer;
-        }
+            private readonly TestApplicationSpecification _app;
 
-        protected override IApplicationStarter GetApplicationStarter()
-        {
-            _configurer.DisallowOverridingRegistrations();
-            return new TestWindowsServiceApplicationStarter(_testApplicationSpecification);
+            public TestConsoleApplicationWrapper(TestApplicationSpecification app)
+            {
+                _app = app;
+            }
+
+            public void Start()
+            {
+                _app.Start();
+            }
+
+            public void Stop()
+            {
+                _app.Stop();
+            }
         }
     }
 }

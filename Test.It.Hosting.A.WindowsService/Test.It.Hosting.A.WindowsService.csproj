@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{308B052E-6122-4336-8DCA-76B6BE2BBD28}</ProjectGuid>
+    <ProjectGuid>{4F89109E-1D2B-4B00-AA3D-818C839650AD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test.It.Hosting.A.ConsoleApplication</RootNamespace>
-    <AssemblyName>Test.It.Hosting.A.ConsoleApplication</AssemblyName>
+    <RootNamespace>Test.It.Hosting.A.WindowsService</RootNamespace>
+    <AssemblyName>Test.It.Hosting.A.WindowsService</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -46,21 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseConsoleApplicationStarter.cs" />
-    <Compile Include="ConsoleApplicationSpecification.cs" />
-    <Compile Include="ConsoleApplicationTestServer.cs" />
-    <Compile Include="Consoles\Console.cs" />
-    <Compile Include="Consoles\ConsoleClient.cs" />
-    <Compile Include="Consoles\IConsole.cs" />
-    <Compile Include="Consoles\IConsoleClient.cs" />
-    <Compile Include="Consoles\TestConsole.cs" />
-    <Compile Include="DefaultConsoleApplicationBuilder.cs" />
-    <Compile Include="DefaultConsoleApplicationFixture.cs" />
-    <Compile Include="DefaultConsoleApplicationStarter.cs" />
-    <Compile Include="IConsoleApplication.cs" />
+    <Compile Include="DefaultWIndowsServiceBuilder.cs" />
+    <Compile Include="DefaultWindowsServiceStarter.cs" />
     <Compile Include="IConsoleApplicationBuilder.cs" />
-    <Compile Include="IConsoleApplicationFixture.cs" />
+    <Compile Include="IWindowsServiceFixture.cs" />
+    <Compile Include="IWindowsServiceClient.cs" />
+    <Compile Include="IWindowsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WindowsServiceController.cs" />
+    <Compile Include="WindowsServiceSpecification.cs" />
+    <Compile Include="WindowsServiceTestServer.cs" />
+    <Compile Include="DefaultWindowsServiceFixture.cs" />
+    <Compile Include="WindowsServiceStarter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Testing.Framework\Test.It.csproj">

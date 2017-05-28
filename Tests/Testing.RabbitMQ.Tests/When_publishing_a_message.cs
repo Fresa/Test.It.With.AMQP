@@ -3,12 +3,13 @@ using System.Text;
 using RabbitMQ.Client;
 using Should.Fluent;
 using Test.It.Fixtures;
+using Test.It.Hosting.A.WindowsService;
 using Test.It.Specifications;
 using Xunit;
 
 namespace Test.It.With.RabbitMQ.Tests
 {
-    public class When_publishing_a_message : XUnitWindowsServiceSpecification<WindowsServiceFixture<TestApplicationBuilder>>
+    public class When_publishing_a_message : XUnitWindowsServiceSpecification<DefaultWindowsServiceFixture<TestApplicationBuilder>>
     {
         private RabbitMqTestFramework.ClientEnvelope<TestMessage> _testMessagePublished;
 
