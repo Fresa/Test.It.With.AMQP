@@ -11,7 +11,7 @@ namespace Test.It.Hosting.A.WindowsService.Tests
         public TestWindowsServiceApp(Action<IServiceContainer> reconfigurer)
         {
             _serviceContainer = new SimpleServiceContainer();
-            _serviceContainer.RegisterSingleton<IMessageClient>(() => new MessageClient.MessageClient());, Consoles.Console>();
+            _serviceContainer.RegisterSingleton<ITestApp>(() => new TestApp());
 
             reconfigurer(_serviceContainer);
             _serviceContainer.Verify();
@@ -19,18 +19,10 @@ namespace Test.It.Hosting.A.WindowsService.Tests
 
         public int Start(params string[] args)
         {
-            var console = _serviceContainer.Resolve<IConsole>();
-            console.WriteLine(console.ReadLine());
-            Stopped?.Invoke(this, 0);
+            var app = _serviceContainer.Resolve<ITestApp>();
+            app.HaveStarted = true;
             return 0;
         }
-
-        public void Stop()
-        {
-            
-        }
-
-        public event EventHandler<int> Stopped;
 
         public static void Main(params string[] args)
         {

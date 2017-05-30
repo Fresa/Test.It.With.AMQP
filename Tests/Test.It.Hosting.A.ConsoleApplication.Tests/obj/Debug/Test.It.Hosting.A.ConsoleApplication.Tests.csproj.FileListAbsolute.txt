@@ -26,3 +26,6 @@ C:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.ConsoleApplication.Tests\bi
 C:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.ConsoleApplication.Tests\bin\Debug\xunit.execution.desktop.dll
 C:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.ConsoleApplication.Tests\bin\Debug\xunit.assert.xml
 C:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.ConsoleApplication.Tests\bin\Debug\xunit.execution.desktop.xml
+C:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.ConsoleApplication.Tests\bin\Debug\FakeItEasy.dll
+C:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.ConsoleApplication.Tests\bin\Debug\FakeItEasy.pdb
+C:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.ConsoleApplication.Tests\bin\Debug\FakeItEasy.xml

@@ -1,11 +1,21 @@
+using System;
+
 namespace Test.It.Hosting.A.WindowsService.Tests
 {
-    public class XUnitWindowsServiceSpecification<TFixture> : WindowsServiceSpecification<TFixture>, Xunit.IClassFixture<TFixture>
+    public class XUnitWindowsServiceSpecification<TFixture> : WindowsServiceSpecification<TFixture>, Xunit.IClassFixture<TFixture>, IDisposable
         where TFixture : class, IWindowsServiceFixture, new()
     {
+        private readonly TFixture _fixture;
+        
         public XUnitWindowsServiceSpecification()
         {
-            SetFixture(new TFixture());
+            _fixture = new TFixture();
+            SetFixture(_fixture);
+        }
+        
+        public void Dispose()
+        {
+            _fixture.Dispose();
         }
     }
 }

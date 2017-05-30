@@ -16,7 +16,7 @@ namespace Test.It.Hosting.A.WindowsService
 
         public void Dispose()
         {
-            _server.Dispose();
+            _server?.Dispose();
         }
     }
 }

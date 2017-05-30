@@ -24,10 +24,11 @@ namespace Test.It.With.RabbitMQ.Tests
             {
                 _app = app;
             }
-
-            public void Start()
+            
+            public int Start(params string[] args)
             {
-                _app.Start();
+                return 0;
+                //return _app.Start(args);
             }
 
             public void Stop()
