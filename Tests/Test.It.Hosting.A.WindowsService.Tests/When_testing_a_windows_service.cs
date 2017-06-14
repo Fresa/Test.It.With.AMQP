@@ -11,7 +11,11 @@ namespace Test.It.Hosting.A.WindowsService.Tests
         protected override void Given(IServiceContainer configurer)
         {
             var app = FakeItEasy.A.Fake<ITestApp>();
-            FakeItEasy.A.CallToSet(() => app.HaveStarted).To(true).Invokes(() => _started = true);
+            FakeItEasy.A.CallToSet(() => app.HaveStarted).To(true).Invokes(() =>
+            {
+                _started = true;
+                Client.Disconnect();
+            });
             configurer.Register(() => app);
         }
         

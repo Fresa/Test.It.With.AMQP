@@ -1,4 +1,5 @@
-﻿using Test.It.Specifications;
+﻿using System;
+using Test.It.Specifications;
 
 namespace Test.It.Hosting.A.WindowsService
 {
@@ -7,11 +8,11 @@ namespace Test.It.Hosting.A.WindowsService
     {
         private WindowsServiceTestServer _server;
 
-        public IWindowsServiceClient Start(ITestConfigurer testConfigurer)
+        public IWindowsServiceController Start(ITestConfigurer testConfigurer)
         {
             var applicationBuilder = new TApplicationBuilder();
             _server = WindowsServiceTestServer.Create(applicationBuilder.CreateWith(testConfigurer).Start);
-            return _server.Client;
+            return _server.Controller;
         }
 
         public void Dispose()

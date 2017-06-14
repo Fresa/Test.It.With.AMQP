@@ -66,7 +66,7 @@
   <ItemGroup>
     <Compile Include="AppBuilders\IAppBuilder.cs" />
     <Compile Include="ApplicationBuilders\IApplicationBuilder.cs" />
-    <Compile Include="ClientProvidingAppBuilder.cs" />
+    <Compile Include="ControllerProvidingAppBuilder.cs" />
     <Compile Include="Fixtures\IWebApplicationFixture.cs" />
     <Compile Include="IntegrationSpecificationConfigurer.cs" />
     <Compile Include="ISerializer.cs" />

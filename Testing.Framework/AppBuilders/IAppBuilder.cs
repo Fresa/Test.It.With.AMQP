@@ -2,8 +2,8 @@
 
 namespace Test.It.AppBuilders
 {
-    public interface IAppBuilder<in TClient>
+    public interface IAppBuilder<in TController>
     {
-        IAppBuilder WithClient(TClient client);
+        IAppBuilder WithController(TController controller);
     }
 }

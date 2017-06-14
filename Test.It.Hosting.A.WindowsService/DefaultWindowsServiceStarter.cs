@@ -3,7 +3,7 @@
 namespace Test.It.Hosting.A.WindowsService
 {
     internal class DefaultWindowsServiceStarter<TClient> : BaseWindowsServiceStarter<TClient>
-        where TClient : IWindowsServiceClient
+        where TClient : IWindowsServiceController
     {
         public DefaultWindowsServiceStarter(Action starter, TClient client)
         {

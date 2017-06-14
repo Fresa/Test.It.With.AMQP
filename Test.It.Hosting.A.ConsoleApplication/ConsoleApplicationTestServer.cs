@@ -11,9 +11,9 @@ namespace Test.It.Hosting.A.ConsoleApplication
         private ConsoleApplicationTestServer(Action<IAppBuilder<IConsoleClient>> startup)
         {
             var appBuilder = new AppBuilder();
-            var builder = new ClientProvidingAppBuilder<IConsoleClient>(appBuilder);
+            var builder = new ControllerProvidingAppBuilder<IConsoleClient>(appBuilder);
             startup(builder);
-            Client = builder.Client;
+            Client = builder.Controller;
             appBuilder.Build()(new Dictionary<string, object>());
         }
 

@@ -5,6 +5,6 @@ namespace Test.It.Hosting.A.WindowsService
 {
     public interface IWindowsServiceBuilder
     {
-        IApplicationStarter<IWindowsServiceClient> CreateWith(ITestConfigurer configurer);
+        IApplicationStarter<IWindowsServiceController> CreateWith(ITestConfigurer configurer);
     }
 }

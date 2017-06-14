@@ -5,21 +5,20 @@ namespace Test.It.Hosting.A.WindowsService
 {
     public abstract class DefaultWindowsServiceBuilder : IWindowsServiceBuilder
     {
-        private static readonly WindowsServiceController WindowsServiceController = new WindowsServiceController();
+        private static readonly DefaultWindowsServiceController WindowsServiceController = new DefaultWindowsServiceController();
         
         public abstract IWindowsService Create(ITestConfigurer configurer);
         
-        public IApplicationStarter<IWindowsServiceClient> CreateWith(ITestConfigurer configurer)
+        public IApplicationStarter<IWindowsServiceController> CreateWith(ITestConfigurer configurer)
         {            
             var application = Create(configurer);
 
             void InternalStarter()
             {
                 application.Start();
-                WindowsServiceController.Disconnect();
             }
 
-            return new DefaultWindowsServiceStarter<IWindowsServiceClient>(InternalStarter, WindowsServiceController);
+            return new DefaultWindowsServiceStarter<IWindowsServiceController>(InternalStarter, WindowsServiceController);
         }
     }
 }

@@ -5,6 +5,6 @@ namespace Test.It.Hosting.A.WindowsService
 {
     public interface IWindowsServiceFixture : IDisposable
     {
-        IWindowsServiceClient Start(ITestConfigurer testConfigurer);
+        IWindowsServiceController Start(ITestConfigurer testConfigurer);
     }
 }

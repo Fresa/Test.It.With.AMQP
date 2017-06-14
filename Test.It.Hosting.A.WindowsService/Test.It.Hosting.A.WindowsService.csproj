@@ -47,13 +47,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultWIndowsServiceBuilder.cs" />
+    <Compile Include="DefaultWindowsServiceClient.cs" />
     <Compile Include="DefaultWindowsServiceStarter.cs" />
     <Compile Include="IConsoleApplicationBuilder.cs" />
     <Compile Include="IWindowsServiceFixture.cs" />
     <Compile Include="IWindowsServiceClient.cs" />
     <Compile Include="IWindowsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WindowsServiceController.cs" />
+    <Compile Include="DefaultWindowsServiceController.cs" />
     <Compile Include="WindowsServiceSpecification.cs" />
     <Compile Include="WindowsServiceTestServer.cs" />
     <Compile Include="DefaultWindowsServiceFixture.cs" />

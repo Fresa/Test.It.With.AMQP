@@ -2,9 +2,8 @@
 using System.Text;
 using RabbitMQ.Client;
 using Should.Fluent;
-using Test.It.Fixtures;
 using Test.It.Hosting.A.WindowsService;
-using Test.It.Specifications;
+using Test.It.With.RabbitMQ.Tests.TestApplication;
 using Xunit;
 
 namespace Test.It.With.RabbitMQ.Tests
@@ -17,35 +16,25 @@ namespace Test.It.With.RabbitMQ.Tests
         {
             var rabbitMqTestServer = new RabbitMqTestFramework(new NewtonsoftSerializer(Encoding.UTF8), new Lazy<IConnectionFactory>(() => new ConnectionFactory()
             {
-                ContinuationTimeout = new TimeSpan(0,0,0,10),
+                ContinuationTimeout = new TimeSpan(0, 0, 0, 10),
                 HandshakeContinuationTimeout = new TimeSpan(0, 0, 0, 10),
                 RequestedConnectionTimeout = 1000,
                 SocketReadTimeout = 1000,
                 SocketWriteTimeout = 1000
             }));
-            rabbitMqTestServer.OnPublish<TestMessage>(envelope => _testMessagePublished = envelope);
+            rabbitMqTestServer.OnPublish<TestMessage>(envelope =>
+            {
+                _testMessagePublished = envelope;
+                Client.Disconnect();
+            });
 
             container.Register(() => rabbitMqTestServer.ConnectionFactory);
-        }
-
-        protected override void When()
-        {
-
         }
 
         [Fact]
         public void It_should_have_published_the_message()
         {
             _testMessagePublished.Should().Not.Be.Null();
-        }
-    }
-
-    public class XUnitWindowsServiceSpecification<TFixture> : WindowsServiceSpecification<TFixture>, IClassFixture<TFixture> 
-        where TFixture : class, IWindowsServiceFixture, new()
-    {
-        public XUnitWindowsServiceSpecification()
-        {
-            SetFixture(new TFixture());
         }
     }
 }

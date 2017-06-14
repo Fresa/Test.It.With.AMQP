@@ -15,6 +15,5 @@ namespace Test.It
             where TService : class
             where TImplementation : class, TService;
         TService Resolve<TService>() where TService : class;
-        void Verify();
     }
 }

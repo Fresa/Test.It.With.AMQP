@@ -1,5 +1,6 @@
 ﻿using Test.It.Hosting.A.WindowsService;
 using Test.It.Specifications;
+using Test.It.With.RabbitMQ.Tests.TestApplication;
 
 namespace Test.It.With.RabbitMQ.Tests
 {
@@ -27,8 +28,8 @@ namespace Test.It.With.RabbitMQ.Tests
             
             public int Start(params string[] args)
             {
+                _app.Start();
                 return 0;
-                //return _app.Start(args);
             }
 
             public void Stop()

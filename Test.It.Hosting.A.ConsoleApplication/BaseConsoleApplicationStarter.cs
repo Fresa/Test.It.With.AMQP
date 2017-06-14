@@ -13,7 +13,7 @@ namespace Test.It.Hosting.A.ConsoleApplication
 
         public void Start(IAppBuilder<TConsoleClient> applicationBuilder)
         {
-            applicationBuilder.WithClient(Client).Use(new TaskStartingMiddleware(Starter));
+            applicationBuilder.WithController(Client).Use(new TaskStartingMiddleware(Starter));
         }        
     }
 }
