@@ -12,3 +12,5 @@ Tests/Logging.NLog.Tests/obj/
 Tests/Logging.NLog.Tests/bin/
 Logging.NLog/obj/
 Logging.NLog/bin/
+Test.It.Hosting.A.WindowsService/obj/Debug/Test.It.Hosting.A.WindowsService.csproj.FileListAbsolute.txt
+Tests/Test.It.Hosting.A.ConsoleApplication.Tests/obj/Debug/Test.It.Hosting.A.ConsoleApplication.Tests.csproj.FileListAbsolute.txt
