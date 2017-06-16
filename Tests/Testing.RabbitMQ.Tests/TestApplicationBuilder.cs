@@ -9,11 +9,12 @@ namespace Test.It.With.RabbitMQ.Tests
         public override IWindowsService Create(ITestConfigurer configurer)
         {
             var testApplicationSpecification = new TestApplicationSpecification();
-            var resolver = testApplicationSpecification.Configure();
-            resolver.AllowOverridingRegistrations();
-            configurer.Configure(resolver);
-            resolver.DisallowOverridingRegistrations();
-
+            testApplicationSpecification.Configure(resolver =>
+            {
+                resolver.AllowOverridingRegistrations();
+                configurer.Configure(resolver);
+                resolver.DisallowOverridingRegistrations();
+            });
             return new TestConsoleApplicationWrapper(testApplicationSpecification);
         }
 

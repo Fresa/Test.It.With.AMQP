@@ -14,14 +14,7 @@ namespace Test.It.With.RabbitMQ.Tests
 
         protected override void Given(IServiceContainer container)
         {
-            var rabbitMqTestServer = new RabbitMqTestFramework(new NewtonsoftSerializer(Encoding.UTF8), new Lazy<IConnectionFactory>(() => new ConnectionFactory()
-            {
-                ContinuationTimeout = new TimeSpan(0, 0, 0, 10),
-                HandshakeContinuationTimeout = new TimeSpan(0, 0, 0, 10),
-                RequestedConnectionTimeout = 1000,
-                SocketReadTimeout = 1000,
-                SocketWriteTimeout = 1000
-            }));
+            var rabbitMqTestServer = new RabbitMqTestFramework(new NewtonsoftSerializer(Encoding.UTF8), new Lazy<IConnectionFactory>(() => new ConnectionFactory()));
             rabbitMqTestServer.OnPublish<TestMessage>(envelope =>
             {
                 _testMessagePublished = envelope;

@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using RabbitMQ.Client;
 using SimpleInjector;
 
@@ -9,21 +11,21 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
         private SimpleInjectorDependencyResolver _configurer;
         private IMessagePublisher _messagePublisher;
 
-        public SimpleInjectorDependencyResolver Configure()
+        public void Configure(Action<SimpleInjectorDependencyResolver> reconfigurer)
         {
             var container = new Container();
             container.RegisterSingleton<IConnectionFactory, ConnectionFactory>();
+            container.RegisterSingleton(() => container.GetInstance<IConnectionFactory>().CreateConnection());
             container.RegisterSingleton<ISerializer>(() => new NewtonsoftSerializer(Encoding.UTF8));
             container.RegisterSingleton<IMessagePublisherFactory, RabbitMqMessagePublisherFactory>();
 
             _configurer = new SimpleInjectorDependencyResolver(container);
-            return _configurer;
+            reconfigurer(_configurer);
+            _configurer.Verify();
         }
 
         public void Start()
         {
-            _configurer.Verify();
-
             var messagePublisherFactory = _configurer.Resolve<IMessagePublisherFactory>();
             _messagePublisher = messagePublisherFactory.Create("myExchange");
 
