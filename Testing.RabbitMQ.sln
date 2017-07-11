@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.RabbitMQ", "Testing.RabbitMQ\Test.It.With.RabbitMQ.csproj", "{4012460B-68EE-414C-868F-938443DE9680}"
 EndProject
@@ -26,6 +26,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.Hosting.A.WindowsService.Tests", "Tests\Test.It.Hosting.A.WindowsService.Tests\Test.It.Hosting.A.WindowsService.Tests.csproj", "{D29F47E5-1776-4115-95A6-926649D2DA92}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.Hosting.A.WindowsService", "Test.It.Hosting.A.WindowsService\Test.It.Hosting.A.WindowsService.csproj", "{4F89109E-1D2B-4B00-AA3D-818C839650AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.XUnit", "Test.It.With.XUnit\Test.It.With.XUnit.csproj", "{A6ED849B-4934-4DC2-85D4-E34E7D68F404}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{4F89109E-1D2B-4B00-AA3D-818C839650AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F89109E-1D2B-4B00-AA3D-818C839650AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F89109E-1D2B-4B00-AA3D-818C839650AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6ED849B-4934-4DC2-85D4-E34E7D68F404}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6ED849B-4934-4DC2-85D4-E34E7D68F404}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6ED849B-4934-4DC2-85D4-E34E7D68F404}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6ED849B-4934-4DC2-85D4-E34E7D68F404}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

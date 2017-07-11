@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6D60A611-7B44-4D93-A298-B2E6AB2C9C49}</ProjectGuid>
+    <ProjectGuid>{A6ED849B-4934-4DC2-85D4-E34E7D68F404}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Log.It.With.NLog.Tests</RootNamespace>
-    <AssemblyName>Log.It.With.NLog.Tests</AssemblyName>
+    <RootNamespace>Test.It.With.XUnit</RootNamespace>
+    <AssemblyName>Test.It.With.XUnit</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -29,21 +31,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FakeItEasy, Version=3.3.2.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FakeItEasy.3.3.2\lib\net40\FakeItEasy.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.4.4.9\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="Should.Fluent, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ShouldFluent.1.1.19\lib\Should.Fluent.dll</HintPath>
-    </Reference>
-    <Reference Include="SimpleInjector, Version=4.0.7.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SimpleInjector.4.0.7\lib\net45\SimpleInjector.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,45 +44,29 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
+      <HintPath>..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
     </Reference>
     <Reference Include="xunit.assert, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\xunit.assert.2.2.0\lib\netstandard1.1\xunit.assert.dll</HintPath>
+      <HintPath>..\packages\xunit.assert.2.2.0\lib\netstandard1.1\xunit.assert.dll</HintPath>
     </Reference>
     <Reference Include="xunit.core, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\xunit.extensibility.core.2.2.0\lib\netstandard1.1\xunit.core.dll</HintPath>
+      <HintPath>..\packages\xunit.extensibility.core.2.2.0\lib\netstandard1.1\xunit.core.dll</HintPath>
     </Reference>
     <Reference Include="xunit.execution.desktop, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\xunit.extensibility.execution.2.2.0\lib\net452\xunit.execution.desktop.dll</HintPath>
+      <HintPath>..\packages\xunit.extensibility.execution.2.2.0\lib\net452\xunit.execution.desktop.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IWrite.cs" />
-    <Compile Include="When_rendering_using_the_log_context_layout.cs" />
+    <Compile Include="DummyTestOutputHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestTarget.cs" />
-    <Compile Include="XUnit2Target.cs" />
+    <Compile Include="TestOutputHelperTextWriter.cs" />
+    <Compile Include="XUnit2Specification.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Logging.NLog\Log.It.With.NLog.csproj">
-      <Project>{FDC0C80A-5CC5-4FCC-AB6D-712AAC99A8A5}</Project>
-      <Name>Log.It.With.NLog</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Logging\Log.It.csproj">
-      <Project>{F09B5ACB-273C-4537-954E-18F11850EBBB}</Project>
-      <Name>Log.It</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Test.It.With.XUnit\Test.It.With.XUnit.csproj">
-      <Project>{A6ED849B-4934-4DC2-85D4-E34E7D68F404}</Project>
-      <Name>Test.It.With.XUnit</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Testing.Framework\Test.It.csproj">
+    <ProjectReference Include="..\Testing.Framework\Test.It.csproj">
       <Project>{5CDFB500-369F-46BB-BFAC-00960BF47FB9}</Project>
       <Name>Test.It</Name>
     </ProjectReference>

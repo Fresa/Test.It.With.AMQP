@@ -46,7 +46,6 @@
     <Compile Include="ILogFactory.cs" />
     <Compile Include="ILoggerFactory.cs" />
     <Compile Include="LogFactory.cs" />
-    <Compile Include="LoggerFactory.cs" />
     <Compile Include="ILogContext.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="LoggingSection.cs" />
