@@ -16,3 +16,5 @@ Test.It.Hosting.A.WindowsService/obj/Debug/Test.It.Hosting.A.WindowsService.cspr
 Tests/Test.It.Hosting.A.ConsoleApplication.Tests/obj/Debug/Test.It.Hosting.A.ConsoleApplication.Tests.csproj.FileListAbsolute.txt
 Test.It.With.XUnit/obj/
 Test.It.With.XUnit/bin/
+Test.It.Hosting.A.WebServer/obj/
+Test.It.Hosting.A.WebServer/bin/

@@ -22,7 +22,7 @@ namespace Test.It.Hosting.A.WindowsService
         /// <param name="windowsServiceFixture">Windows service fixture</param>
         public void SetFixture(TFixture windowsServiceFixture)
         {
-            var controller = windowsServiceFixture.Start(new IntegrationSpecificationConfigurer(Given));
+            var controller = windowsServiceFixture.Start(new SimpleTestConfigurer(Given));
             Client = controller.Client;
 
             controller.Disconnected += (sender, exitCode) =>

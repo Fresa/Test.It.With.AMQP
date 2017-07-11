@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.Hosting.A.WindowsSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.XUnit", "Test.It.With.XUnit\Test.It.With.XUnit.csproj", "{A6ED849B-4934-4DC2-85D4-E34E7D68F404}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.Hosting.A.WebServer", "Test.It.Hosting.A.WebServer\Test.It.Hosting.A.WebServer.csproj", "{4E3F5B9A-CDEB-4020-A85A-33F65DC3925C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{A6ED849B-4934-4DC2-85D4-E34E7D68F404}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6ED849B-4934-4DC2-85D4-E34E7D68F404}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6ED849B-4934-4DC2-85D4-E34E7D68F404}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E3F5B9A-CDEB-4020-A85A-33F65DC3925C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E3F5B9A-CDEB-4020-A85A-33F65DC3925C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E3F5B9A-CDEB-4020-A85A-33F65DC3925C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E3F5B9A-CDEB-4020-A85A-33F65DC3925C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,9 @@
 ﻿using System.Net.Http;
 using Microsoft.Owin.Testing;
-using Test.It.ApplicationBuilders;
+using Test.It.Hosting.A.WebServer.ApplicationBuilders;
 using Test.It.Specifications;
 
-namespace Test.It.Fixtures
+namespace Test.It.Hosting.A.WebServer.Fixtures
 {
     public class WebApplicationFixture<TApplicationBuilder> : IWebApplicationFixture 
         where TApplicationBuilder : IApplicationBuilder, new()

@@ -1,7 +1,7 @@
 ﻿using Test.It.Specifications;
 using Test.It.Starters;
 
-namespace Test.It.ApplicationBuilders
+namespace Test.It.Hosting.A.WebServer.ApplicationBuilders
 {
     public interface IApplicationBuilder
     {

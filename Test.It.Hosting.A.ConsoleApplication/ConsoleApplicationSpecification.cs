@@ -20,7 +20,7 @@ namespace Test.It.Hosting.A.ConsoleApplication
         /// <param name="consoleApplicationFixture">Console application fixture</param>
         public void SetFixture(TFixture consoleApplicationFixture)
         {
-            Client = consoleApplicationFixture.Start(new IntegrationSpecificationConfigurer(Given));
+            Client = consoleApplicationFixture.Start(new SimpleTestConfigurer(Given));
             Client.Disconnected += (sender, exitCode) => _wait.Set();
 
             When();

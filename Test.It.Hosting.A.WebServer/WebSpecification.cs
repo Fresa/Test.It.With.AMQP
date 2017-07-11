@@ -1,7 +1,7 @@
 using System.Net.Http;
-using Test.It.Fixtures;
+using Test.It.Hosting.A.WebServer.Fixtures;
 
-namespace Test.It.Specifications
+namespace Test.It.Hosting.A.WebServer
 {
     public abstract class WebSpecification<TFixture> : IUseFixture<TFixture> 
         where TFixture : IWebApplicationFixture, new()
@@ -10,7 +10,7 @@ namespace Test.It.Specifications
 
         public void SetFixture(TFixture webHostingFixture)
         {
-            Client = webHostingFixture.Start(new IntegrationSpecificationConfigurer(Given));
+            Client = webHostingFixture.Start(new SimpleTestConfigurer(Given));
 
             When();
         }

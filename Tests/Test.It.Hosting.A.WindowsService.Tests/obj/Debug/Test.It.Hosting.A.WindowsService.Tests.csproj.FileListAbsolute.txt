@@ -11,8 +11,6 @@ F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\De
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\xunit.execution.desktop.dll
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\Microsoft.Owin.dll
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\Owin.dll
-F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\Microsoft.Owin.Testing.dll
-F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\Microsoft.Owin.Hosting.dll
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\Test.It.Hosting.A.WindowsService.pdb
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\Test.It.Hosting.A.WindowsService.dll.config
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\Test.It.pdb
@@ -24,8 +22,6 @@ F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\De
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\xunit.core.xml
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\xunit.execution.desktop.xml
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\Microsoft.Owin.xml
-F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\Microsoft.Owin.Testing.xml
-F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\bin\Debug\Microsoft.Owin.Hosting.xml
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\obj\Debug\Test.It.Hosting.A.WindowsService.Tests.csprojResolveAssemblyReference.cache
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\obj\Debug\Test.It.Hosting.A.WindowsService.Tests.dll
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.Hosting.A.WindowsService.Tests\obj\Debug\Test.It.Hosting.A.WindowsService.Tests.pdb

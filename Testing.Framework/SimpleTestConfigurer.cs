@@ -3,11 +3,11 @@ using Test.It.Specifications;
 
 namespace Test.It
 {
-    public class IntegrationSpecificationConfigurer : ITestConfigurer
+    public class SimpleTestConfigurer : ITestConfigurer
     {
         private readonly Action<IServiceContainer> _configurer;
 
-        public IntegrationSpecificationConfigurer(Action<IServiceContainer> configurer)
+        public SimpleTestConfigurer(Action<IServiceContainer> configurer)
         {
             _configurer = configurer;
         }
