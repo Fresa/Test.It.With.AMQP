@@ -1,7 +1,7 @@
 using System;
-using Test.It.NetworkClient;
+using Test.It.With.RabbitMQ.NetworkClient;
 
-namespace Test.It.MessageClient
+namespace Test.It.With.RabbitMQ.MessageClient
 {
     public class MessageClient : IMessageClient
     {

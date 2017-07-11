@@ -1,6 +1,6 @@
 using System;
 
-namespace Test.It.MessageClient
+namespace Test.It.With.RabbitMQ.MessageClient
 {
     public interface IMessageClient : IDisposable
     {

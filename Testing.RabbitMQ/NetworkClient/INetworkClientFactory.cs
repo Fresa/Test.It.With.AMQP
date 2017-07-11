@@ -1,4 +1,4 @@
-namespace Test.It.NetworkClient
+namespace Test.It.With.RabbitMQ.NetworkClient
 {
     public interface INetworkClientFactory
     {

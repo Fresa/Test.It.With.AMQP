@@ -1,7 +1,6 @@
 ﻿using System;
 using RabbitMQ.Client;
-using Test.It.MessageClient;
-using Test.It.NetworkClient;
+using Test.It.With.RabbitMQ.MessageClient;
 using Test.It.With.RabbitMQ.NetworkClient;
 
 namespace Test.It.With.RabbitMQ

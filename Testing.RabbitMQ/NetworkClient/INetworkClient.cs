@@ -1,6 +1,6 @@
 using System;
 
-namespace Test.It.NetworkClient
+namespace Test.It.With.RabbitMQ.NetworkClient
 {
     public interface INetworkClient : IDisposable
     {

@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using Test.It.NetworkClient;
 
 namespace Test.It.With.RabbitMQ.NetworkClient
 {

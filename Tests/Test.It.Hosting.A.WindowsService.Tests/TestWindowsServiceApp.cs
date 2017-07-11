@@ -1,5 +1,4 @@
 ﻿using System;
-using Test.It.MessageClient;
 
 namespace Test.It.Hosting.A.WindowsService.Tests
 {
