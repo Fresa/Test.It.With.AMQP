@@ -10,12 +10,12 @@ namespace Test.It.With.RabbitMQ.Tests
 {
     public class When_publishing_a_message : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<TestApplicationBuilder>>
     {
-        private RabbitMqTestFramework.ClientEnvelope<TestMessage> _testMessagePublished;
+        private RabbitMqTestFramework2.ClientEnvelope<TestMessage> _testMessagePublished;
 
         protected override void Given(IServiceContainer container)
         {
-            var rabbitMqTestServer = new RabbitMqTestFramework(new NewtonsoftSerializer(Encoding.UTF8), new Lazy<IConnectionFactory>(() => new ConnectionFactory()));
-            rabbitMqTestServer.OnPublish<TestMessage>(envelope =>
+            var rabbitMqTestServer = new RabbitMqTestFramework2(new NewtonsoftSerializer(Encoding.UTF8), new Lazy<IConnectionFactory>(() => new ConnectionFactory()));
+            rabbitMqTestServer.Consume<TestMessage>(envelope =>
             {
                 _testMessagePublished = envelope;
                 Client.Disconnect();

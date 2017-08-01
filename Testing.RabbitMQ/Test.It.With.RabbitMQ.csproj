@@ -61,7 +61,7 @@
     <Compile Include="NetworkClient\NetworkClientStream.cs" />
     <Compile Include="NetworkClient\ReceivedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RabbitMqTestFramework.cs" />
+    <Compile Include="RabbitMqTestFramework2.cs" />
     <Compile Include="TestConnectionFactoryDecorator.cs" />
     <Compile Include="TestFrameHandler.cs" />
   </ItemGroup>
