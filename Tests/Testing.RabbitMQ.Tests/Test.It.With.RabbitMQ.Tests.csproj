@@ -68,6 +68,12 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Test.It, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Test.It.1.1.0\lib\net462\Test.It.dll</HintPath>
+    </Reference>
+    <Reference Include="Test.It.While.Hosting.Your.Windows.Service, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Test.It.While.Hosting.Your.Windows.Service.1.1.0\lib\net462\Test.It.While.Hosting.Your.Windows.Service.dll</HintPath>
+    </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
     </Reference>
@@ -97,21 +103,15 @@
     <Compile Include="XUnitWindowsServiceSpecification.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Test.It.Hosting.A.WindowsService\Test.It.Hosting.A.WindowsService.csproj">
-      <Project>{4F89109E-1D2B-4B00-AA3D-818C839650AD}</Project>
-      <Name>Test.It.Hosting.A.WindowsService</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Testing.Framework\Test.It.csproj">
-      <Project>{5CDFB500-369F-46BB-BFAC-00960BF47FB9}</Project>
-      <Name>Test.It</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Testing.RabbitMQ\Test.It.With.RabbitMQ.csproj">
       <Project>{4012460B-68EE-414C-868F-938443DE9680}</Project>
       <Name>Test.It.With.RabbitMQ</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

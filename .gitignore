@@ -18,3 +18,4 @@ Test.It.With.XUnit/obj/
 Test.It.With.XUnit/bin/
 Test.It.Hosting.A.WebServer/obj/
 Test.It.Hosting.A.WebServer/bin/
+Test.It.Hosting.A.WindowsService/obj/

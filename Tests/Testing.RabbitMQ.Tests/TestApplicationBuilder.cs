@@ -1,5 +1,5 @@
-﻿using Test.It.Hosting.A.WindowsService;
-using Test.It.Specifications;
+﻿using Test.It.Specifications;
+using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.RabbitMQ.Tests.TestApplication;
 
 namespace Test.It.With.RabbitMQ.Tests

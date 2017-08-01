@@ -1,14 +1,14 @@
-﻿using Test.It.Hosting.A.WindowsService;
+﻿using Test.It.While.Hosting.Your.Windows.Service;
 using Xunit;
 
 namespace Test.It.With.RabbitMQ.Tests
 {
-    public class XUnitWindowsServiceSpecification<TFixture> : WindowsServiceSpecification<TFixture>, IClassFixture<TFixture> 
-        where TFixture : class, IWindowsServiceFixture, new()
+    public class XUnitWindowsServiceSpecification<THostStarter> : WindowsServiceSpecification<THostStarter>, IClassFixture<THostStarter> 
+        where THostStarter : class, IWindowsServiceHostStarter, new()
     {
         public XUnitWindowsServiceSpecification()
         {
-            SetFixture(new TFixture());
+            SetConfiguration(new THostStarter());
         }
     }
 }
