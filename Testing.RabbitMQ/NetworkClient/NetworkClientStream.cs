@@ -1,15 +1,19 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Test.It.With.RabbitMQ.NetworkClient
 {
     public class NetworkClientStream : Stream
     {
         private readonly INetworkClient _networkClient;
-        private readonly MemoryStream _bufferedReadStream = new MemoryStream();
+        private readonly BlockingStream _bufferedReadStream = new BlockingStream();
         private readonly MemoryStream _bufferedWriteStream = new MemoryStream();
 
         public NetworkClientStream(INetworkClient networkClient)
         {
+            _bufferedReadStream.ReadTimeout = 5000;
+
             _networkClient = networkClient;
             _networkClient.BufferReceived +=
                 (sender, args) => _bufferedReadStream.Write(args.Buffer, args.Offset, args.Count);
@@ -17,15 +21,12 @@ namespace Test.It.With.RabbitMQ.NetworkClient
 
         public override void Flush()
         {
-            var buffer = new byte[2048];
+            var buffer = new byte[_bufferedWriteStream.Length];
             lock (_bufferedWriteStream)
             {
-                int bytesRead;
                 _bufferedWriteStream.Position = 0;
-                while ((bytesRead = _bufferedWriteStream.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    _networkClient.Send(buffer, 0, bytesRead);
-                }
+                var bytesRead = _bufferedWriteStream.Read(buffer, 0, buffer.Length);
+                _networkClient.Send(buffer, 0, bytesRead);
             }
         }
 

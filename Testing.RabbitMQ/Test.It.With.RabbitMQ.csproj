@@ -30,8 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RabbitMQ.Client, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>packages\RabbitMQ.Client.4.1.3\lib\net451\RabbitMQ.Client.dll</HintPath>
+    <Reference Include="Log.It, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Log.It.1.0.0\lib\net462\Log.It.dll</HintPath>
+    </Reference>
+    <Reference Include="Log.It.With.NLog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Log.It.With.NLog.1.0.0\lib\net462\Log.It.With.NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.0.0\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,6 +60,7 @@
     <Compile Include="MessageClient\MessageEnvelope.cs" />
     <Compile Include="MessageClient\TypedMessageClient.cs" />
     <Compile Include="MessageClient\TypedMessageClientFactory.cs" />
+    <Compile Include="NetworkClient\BlockingStream.cs" />
     <Compile Include="NetworkClient\INetworkClient.cs" />
     <Compile Include="NetworkClient\INetworkClientFactory.cs" />
     <Compile Include="NetworkClient\InternalRoutedNetworkClient.cs" />
@@ -67,6 +74,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\External\rabbitmq-dotnet-client\projects\client\RabbitMQ.Client\RabbitMQ.Client.csproj">
+      <Project>{1B37E63B-3EC1-426C-A83E-A68D058D1892}</Project>
+      <Name>RabbitMQ.Client</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

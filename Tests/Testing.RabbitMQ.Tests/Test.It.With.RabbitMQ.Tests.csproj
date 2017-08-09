@@ -33,17 +33,23 @@
     <Reference Include="FakeItEasy, Version=3.3.2.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FakeItEasy.3.3.2\lib\net40\FakeItEasy.dll</HintPath>
     </Reference>
+    <Reference Include="Log.It, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Log.It.1.0.0\lib\net462\Log.It.dll</HintPath>
+    </Reference>
+    <Reference Include="Log.It.With.NLog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Log.It.With.NLog.1.0.0\lib\net462\Log.It.With.NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.4.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="RabbitMQ.Client">
-      <HintPath>..\..\Testing.RabbitMQ\packages\RabbitMQ.Client.4.1.3\lib\net451\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="Should.Fluent, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ShouldFluent.1.1.19\lib\Should.Fluent.dll</HintPath>
@@ -74,6 +80,9 @@
     <Reference Include="Test.It.While.Hosting.Your.Windows.Service, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Test.It.While.Hosting.Your.Windows.Service.1.1.0\lib\net462\Test.It.While.Hosting.Your.Windows.Service.dll</HintPath>
     </Reference>
+    <Reference Include="Test.It.With.XUnit, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Test.It.With.XUnit.1.0.1\lib\net462\Test.It.With.XUnit.dll</HintPath>
+    </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
     </Reference>
@@ -88,6 +97,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockingMemoryStreamTests.cs" />
     <Compile Include="TestApplication\IMessagePublisher.cs" />
     <Compile Include="TestApplication\IMessagePublisherFactory.cs" />
     <Compile Include="TestApplication\IMessageQueueApplication.cs" />
@@ -100,9 +110,14 @@
     <Compile Include="When_publishing_a_message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestApplicationBuilder.cs" />
+    <Compile Include="XUnit2Target.cs" />
     <Compile Include="XUnitWindowsServiceSpecification.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\External\rabbitmq-dotnet-client\projects\client\RabbitMQ.Client\RabbitMQ.Client.csproj">
+      <Project>{1B37E63B-3EC1-426C-A83E-A68D058D1892}</Project>
+      <Name>RabbitMQ.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Testing.RabbitMQ\Test.It.With.RabbitMQ.csproj">
       <Project>{4012460B-68EE-414C-868F-938443DE9680}</Project>
       <Name>Test.It.With.RabbitMQ</Name>

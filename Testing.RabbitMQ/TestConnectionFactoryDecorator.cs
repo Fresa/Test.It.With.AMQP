@@ -19,6 +19,8 @@ namespace Test.It.With.RabbitMQ
             _networkClientFactory = networkClientFactory;
         }
 
+        public Uri Uri { get; set; }
+
         public AuthMechanismFactory AuthMechanismFactory(IList<string> mechanismNames)
         {
             return ConnectionFactory.AuthMechanismFactory(mechanismNames);
@@ -42,6 +44,11 @@ namespace Test.It.With.RabbitMQ
         public IConnection CreateConnection(IList<string> hostnames, string clientProvidedName)
         {
             return new Connection(this, false, new TestFrameHandler(_networkClientFactory.Create()), clientProvidedName);
+        }
+
+        public IConnection CreateConnection(IList<AmqpTcpEndpoint> endpoints)
+        {
+            throw new NotImplementedException();
         }
 
         public IDictionary<string, object> ClientProperties

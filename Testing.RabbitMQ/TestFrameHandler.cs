@@ -15,8 +15,9 @@ namespace Test.It.With.RabbitMQ
 
         public TestFrameHandler(INetworkClient networkClient)
         {
-            _reader = new NetworkBinaryReader(new NetworkClientStream(networkClient));
-            _writer = new NetworkBinaryWriter(new NetworkClientStream(networkClient));
+            var stream = new NetworkClientStream(networkClient);
+            _reader = new NetworkBinaryReader(stream);
+            _writer = new NetworkBinaryWriter(stream);
         }
 
         public void Close()
@@ -41,7 +42,8 @@ namespace Test.It.With.RabbitMQ
                 }
                 catch
                 {
-                    return new Frame();
+                    // Send heartbeat
+                    return new Frame(8, 0);
                 }
             }
         }

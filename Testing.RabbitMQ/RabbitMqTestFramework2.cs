@@ -121,9 +121,11 @@ namespace Test.It.With.RabbitMQ
         {
             _serializer = serializer;
 
+            ConnectionFactory = new TestConnectionFactory();
+
         }
 
-        //public IConnectionFactory ConnectionFactory => _connectionFactory;
+        public IConnectionFactory ConnectionFactory { get; }
 
         public void Publish<TMessage>(ServerEnvelope<TMessage> envelope)
         {
@@ -235,6 +237,8 @@ namespace Test.It.With.RabbitMQ
 
     internal class TestConnectionFactory : IConnectionFactory
     {
+        public Uri Uri { get; set; }
+
         public AuthMechanismFactory AuthMechanismFactory(IList<string> mechanismNames)
         {
             // Todo: add test delgate to customize handler
@@ -261,6 +265,11 @@ namespace Test.It.With.RabbitMQ
             return new TestConnection(hostnames, clientProvidedName);
         }
 
+        public IConnection CreateConnection(IList<AmqpTcpEndpoint> endpoints)
+        {
+            throw new NotImplementedException();
+        }
+
         public IDictionary<string, object> ClientProperties { get; set; }
         public string Password { get; set; }
         public ushort RequestedChannelMax { get; set; }
@@ -278,6 +287,8 @@ namespace Test.It.With.RabbitMQ
     {
         public IList<string> Hostnames { get; } = new List<string>();
         public string ClientProviderName { get; } = "";
+
+        private List<IModel> _models = new List<IModel>();
 
         public TestConnection()
         {
@@ -298,11 +309,11 @@ namespace Test.It.With.RabbitMQ
             ClientProviderName = clientProviderName;
         }
 
-        public int LocalPort { get; } = -1;
-        public int RemotePort { get; } = -1;
+        public int LocalPort { get; } = 0;
+        public int RemotePort { get; } = 0;
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _models.Clear();
         }
 
         public void Abort()
@@ -347,7 +358,10 @@ namespace Test.It.With.RabbitMQ
 
         public IModel CreateModel()
         {
-            return new TestModel();
+            var model = new TestModel();
+            _models.Add(model);
+            model.OnDispose += (sender, args) => _models.Remove(model);
+            return model;
         }
 
         public void HandleConnectionBlocked(string reason)
@@ -375,6 +389,8 @@ namespace Test.It.With.RabbitMQ
         public string ClientProvidedName { get; }
         public ConsumerWorkService ConsumerWorkService { get; }
         public event EventHandler<CallbackExceptionEventArgs> CallbackException;
+        public event EventHandler<EventArgs> RecoverySucceeded;
+        public event EventHandler<ConnectionRecoveryErrorEventArgs> ConnectionRecoveryError;
         public event EventHandler<ConnectionBlockedEventArgs> ConnectionBlocked;
         public event EventHandler<ShutdownEventArgs> ConnectionShutdown;
         public event EventHandler<EventArgs> ConnectionUnblocked;
