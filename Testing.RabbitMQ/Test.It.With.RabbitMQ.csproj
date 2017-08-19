@@ -53,6 +53,7 @@
     <Compile Include="CachedTestConnectionFactoryDecorator.cs" />
     <Compile Include="DisposeNotifyingModelDecorator.cs" />
     <Compile Include="ISerializer.cs" />
+    <Compile Include="MessageClient\AmqpReader.cs" />
     <Compile Include="MessageClient\BaseTypedMessageClient.cs" />
     <Compile Include="MessageClient\IMessageClient.cs" />
     <Compile Include="MessageClient\ITypedMessageClient.cs" />

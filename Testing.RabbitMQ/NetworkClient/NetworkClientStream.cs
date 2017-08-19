@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace Test.It.With.RabbitMQ.NetworkClient
 {
@@ -8,7 +7,7 @@ namespace Test.It.With.RabbitMQ.NetworkClient
     {
         private readonly INetworkClient _networkClient;
         private readonly BlockingStream _bufferedReadStream = new BlockingStream();
-        private readonly MemoryStream _bufferedWriteStream = new MemoryStream();
+        private MemoryStream _bufferedWriteStream = new MemoryStream();
 
         public NetworkClientStream(INetworkClient networkClient)
         {
@@ -22,26 +21,19 @@ namespace Test.It.With.RabbitMQ.NetworkClient
         public override void Flush()
         {
             var buffer = new byte[_bufferedWriteStream.Length];
-            lock (_bufferedWriteStream)
-            {
-                _bufferedWriteStream.Position = 0;
-                var bytesRead = _bufferedWriteStream.Read(buffer, 0, buffer.Length);
-                _networkClient.Send(buffer, 0, bytesRead);
-            }
+            _bufferedWriteStream.Position = 0;
+            var bytesRead = _bufferedWriteStream.Read(buffer, 0, buffer.Length);
+            _networkClient.Send(buffer, 0, bytesRead);
+            _bufferedWriteStream = new MemoryStream();
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            if (CanSeek)
-            {
-                return _bufferedReadStream.Seek(offset, origin);
-            }
-            return -1;
+            throw new NotImplementedException();
         }
 
         public override void SetLength(long value)
         {
-            _bufferedReadStream.SetLength(value);
         }
 
         public override int Read(byte[] buffer, int offset, int count)
@@ -54,15 +46,15 @@ namespace Test.It.With.RabbitMQ.NetworkClient
             _bufferedWriteStream.Write(buffer, offset, count);
         }
 
-        public override bool CanRead => _bufferedReadStream.CanRead;
-        public override bool CanSeek => _bufferedReadStream.CanSeek;
-        public override bool CanWrite => _bufferedWriteStream.CanWrite;
-        public override long Length => _bufferedReadStream.Length;
+        public override bool CanRead => true;
+        public override bool CanSeek => false;
+        public override bool CanWrite => true;
+        public override long Length => 0;
 
         public override long Position
         {
-            get => _bufferedReadStream.Position;
-            set => _bufferedReadStream.Position = value;
+            get { return 0; }
+            set { }
         }
     }
 }
