@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -15,12 +14,7 @@ namespace Test.It.With.RabbitMQ.MessageClient
         {
             _buffer = buffer;
         }
-
-        //public Stream GetStream()
-        //{
-        //    return new MemoryStream(_buffer, _position, _buffer.Length);
-        //}
-
+        
         public ushort ReadShortUnsignedInteger()
         {
             return BitConverter.ToUInt16(ReadAsBigEndian(2), 0);
@@ -223,7 +217,7 @@ namespace Test.It.With.RabbitMQ.MessageClient
 
         private byte[] Read(int length)
         {
-            if (_buffer.Length <= _position + length)
+            if (_buffer.Length < _position + length)
             {
                 throw new ArgumentOutOfRangeException();
             }
