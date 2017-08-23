@@ -271,6 +271,28 @@ namespace Test.It.With.RabbitMQ.Tests
         }
     }
 
+    public class When_reading_a_negative_decimal_via_amqp : XUnit2Specification
+    {
+        private AmqpReader _reader;
+        private object _readData;
+
+        protected override void Given()
+        {
+            _reader = new AmqpReader(new byte[] { 2, 255, 255, 255, 252, 5 });
+        }
+
+        protected override void When()
+        {
+            _readData = _reader.ReadDecimal();
+        }
+
+        [Fact]
+        public void It_should_parse_correctly()
+        {
+            _readData.Should().Equal((decimal)-0.04);
+        }
+    }
+
     public class When_reading_long_integer_via_amqp : XUnit2Specification
     {
         private AmqpReader _reader;
@@ -669,6 +691,28 @@ namespace Test.It.With.RabbitMQ.Tests
         }
     }
 
+    public class When_reading_a_negative_decimal_field_value_via_amqp : XUnit2Specification
+    {
+        private AmqpReader _reader;
+        private object _readData;
+
+        protected override void Given()
+        {
+            _reader = new AmqpReader(new byte[] { (byte)'D', 2, 255, 255, 255, 252, 5 });
+        }
+
+        protected override void When()
+        {
+            _readData = _reader.ReadFieldValue();
+        }
+
+        [Fact]
+        public void It_should_parse_correctly()
+        {
+            _readData.Should().Equal((decimal)-0.04);
+        }
+    }
+
     public class When_reading_a_short_string_field_value_via_amqp : XUnit2Specification
     {
         private AmqpReader _reader;
@@ -824,7 +868,7 @@ namespace Test.It.With.RabbitMQ.Tests
         [Fact]
         public void It_should_parse_correctly()
         {
-            _readData
+            ((ByteArray)_readData).Bytes
                 .Should().Equal(new byte[] { 0, 6, 1, 2, 3 });
         }
     }

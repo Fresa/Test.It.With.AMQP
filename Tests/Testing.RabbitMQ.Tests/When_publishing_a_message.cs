@@ -78,7 +78,7 @@ namespace Test.It.With.RabbitMQ.Tests
             lock (_lock)
             {
                 _testOutputHelper.WriteLine(_value);
-                _value = string.Empty;
+                _value = string.Empty; 
             }
         }
 

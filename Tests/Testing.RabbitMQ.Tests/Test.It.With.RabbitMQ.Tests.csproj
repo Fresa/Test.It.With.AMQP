@@ -97,6 +97,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmqpWriterTests.cs" />
     <Compile Include="AmqpReaderTests.cs" />
     <Compile Include="BlockingMemoryStreamTests.cs" />
     <Compile Include="TestApplication\IMessagePublisher.cs" />

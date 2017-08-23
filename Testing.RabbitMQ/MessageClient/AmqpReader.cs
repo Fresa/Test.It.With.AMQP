@@ -119,14 +119,21 @@ namespace Test.It.With.RabbitMQ.MessageClient
             return BitConverter.ToInt64(ReadAsBigEndian(8), 0);
         }
 
+
         public decimal ReadDecimal()
         {
             var scale = ReadByte();
-            var value = ReadLongUnsignedInteger();
+            if (scale > 28)
+            {
+                throw new NotSupportedException("Decimals support up to a precision/scale of 28 digits.");
+            }
 
-            var i = unchecked((int)value);
+            // NOTE! Contradiction in the AMQP 0.9.1 protocol description. 4.2.5.5 says "They are encoded as an octet representing the number of places followed by a long signed integer." But the 4.2.1. formal protocol grammar states a decimal as "scale long-uint". 
+            // http://www.amqp.org/specification/0-9-1/amqp-org-download
+            // We treat the value as signed integer (long-int).
+            var value = ReadLongInteger();
 
-            return new decimal(Math.Abs(i), 0, 0, i < 0, scale);
+            return new decimal(Math.Abs(value), 0, 0, value < 0, scale);
         }
 
         public object ReadFieldValue()
@@ -174,7 +181,7 @@ namespace Test.It.With.RabbitMQ.MessageClient
 
                 // NOTE! RabbitMQ / Qpid special, https://www.rabbitmq.com/amqp-0-9-1-errata.html#section_3
                 case 'x':
-                    return ReadLongString();
+                    return new ByteArray(ReadLongString());
 
                 default:
                     throw new InvalidOperationException($"Unknown field: {name}");
