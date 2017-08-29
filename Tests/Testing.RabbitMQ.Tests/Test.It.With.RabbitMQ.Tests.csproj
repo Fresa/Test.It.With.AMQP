@@ -100,6 +100,7 @@
     <Compile Include="AmqpWriterTests.cs" />
     <Compile Include="AmqpReaderTests.cs" />
     <Compile Include="BlockingMemoryStreamTests.cs" />
+    <Compile Include="ProtocolTest.cs" />
     <Compile Include="TestApplication\IMessagePublisher.cs" />
     <Compile Include="TestApplication\IMessagePublisherFactory.cs" />
     <Compile Include="TestApplication\IMessageQueueApplication.cs" />
@@ -130,6 +131,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
