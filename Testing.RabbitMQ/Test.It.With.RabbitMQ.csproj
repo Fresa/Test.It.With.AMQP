@@ -55,6 +55,10 @@
     <Compile Include="CachedConnectionDecorator.cs" />
     <Compile Include="CachedTestConnectionFactoryDecorator.cs" />
     <Compile Include="DisposeNotifyingModelDecorator.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\XmlElementExtensions.cs" />
+    <Compile Include="Extensions\XmlNodeListExtensions.cs" />
+    <Compile Include="Extensions\XPathNavigatorExtensions.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="MessageClient\AmqpWriter.cs" />
     <Compile Include="MessageClient\AmqpReader.cs" />
@@ -75,8 +79,16 @@
     <Compile Include="NetworkClient\ReceivedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\Assert.cs" />
+    <Compile Include="Protocol\Chassis.cs" />
+    <Compile Include="Protocol\ChassisName.cs" />
+    <Compile Include="Protocol\Class.cs" />
     <Compile Include="Protocol\Constant.cs" />
     <Compile Include="Protocol\Domain.cs" />
+    <Compile Include="Protocol\Exceptions\MissingXmlAttributeException.cs" />
+    <Compile Include="Protocol\Exceptions\MissingXmlNodeException.cs" />
+    <Compile Include="Protocol\Exceptions\MissingXmlNodesException.cs" />
+    <Compile Include="Protocol\Field.cs" />
+    <Compile Include="Protocol\Method.cs" />
     <Compile Include="Protocol\Protocol.cs" />
     <Compile Include="Protocol\ProtocolGenerator.cs">
       <DependentUpon>ProtocolGenerator.tt</DependentUpon>
@@ -84,6 +96,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Protocol\ProtocolGenerator.Instansiator.cs" />
+    <Compile Include="Protocol\Response.cs" />
     <Compile Include="Protocol\Rule.cs" />
     <Compile Include="RabbitMqTestFramework2.cs" />
     <Compile Include="TestConnectionFactoryDecorator.cs" />

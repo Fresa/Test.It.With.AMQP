@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Xml;
-using System.Xml.XPath;
-using JetBrains.Annotations;
+using Test.It.With.RabbitMQ.Extensions;
+using Test.It.With.RabbitMQ.Protocol.Exceptions;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
@@ -28,13 +28,15 @@ namespace Test.It.With.RabbitMQ.Protocol
 
             Constants = ParseConstants(amqpNode);
             Domains = ParseDomains(amqpNode);
+            Classes = ParseClasses(amqpNode, this);
         }
-
+        
         public int Major { get; }
         public int Minor { get; }
         public int Revision { get; }
         public IDictionary<string, Constant> Constants { get; }
         public IDictionary<string, Domain> Domains { get; }
+        public IDictionary<string, Class> Classes { get; }
 
         private static IDictionary<string, Constant> ParseConstants(XmlNode amqpNode)
         {
@@ -72,7 +74,6 @@ namespace Test.It.With.RabbitMQ.Protocol
 
             return constants;
         }
-
 
 
         private static IDictionary<string, Domain> ParseDomains(XmlNode amqpNode)
@@ -129,19 +130,13 @@ namespace Test.It.With.RabbitMQ.Protocol
 
             foreach (XmlElement ruleNode in ruleNodes)
             {
-                var name = ruleNode.GetAttribute("name");
-                if (string.IsNullOrEmpty(name))
-                {
-                    throw new MissingXmlAttributeException("name", domainNode);
-                }
+                var name = ruleNode.GetMandatoryAttribute<string>("name");
 
-                var rule = new Rule(name);
-
-                var docNode = ruleNode.SelectSingleNode("doc");
-                if (docNode != null)
+                var rule = new Rule(name)
                 {
-                    rule.Documentation = docNode.InnerText;
-                }
+                    Documentation = GetDocumentation(ruleNode),
+                    ScenarioDocumentation = GetDocumentation(ruleNode, DocumentationTypes.Grammar),
+                };
 
                 yield return rule;
             }
@@ -172,90 +167,173 @@ namespace Test.It.With.RabbitMQ.Protocol
 
                 if (assertNode.HasAttribute("method"))
                 {
-                    rule.Value = assertNode.GetAttribute("method");
+                    rule.Method = assertNode.GetAttribute("method");
                 }
 
                 if (assertNode.HasAttribute("field"))
                 {
-                    rule.Value = assertNode.GetAttribute("field");
+                    rule.Field = assertNode.GetAttribute("field");
                 }
 
                 yield return rule;
             }
         }
-    }
 
-    public static class XPathNavigatorExtensions
-    {
-        public static string GetPath(this XPathNavigator navigator)
+        private static IDictionary<string, Class> ParseClasses(XmlNode node, Protocol protocol)
         {
-            var path = new StringBuilder();
-            for (var node = navigator.UnderlyingObject as XmlNode; node != null; node = node.ParentNode)
+            var classNodes = node.SelectNodes("class");
+            if (classNodes.IsNullOrEmpty())
             {
-                var append = "/" + path;
-
-                if (node.ParentNode != null && node.ParentNode.ChildNodes.Count > 1)
-                {
-                    append += "[";
-
-                    var index = 0;
-                    var sibling = node;
-                    while (sibling.PreviousSibling != null)
-                    {
-                        index++;
-                        sibling = sibling.PreviousSibling;
-                    }
-
-                    append += index;
-                    append += "]";
-                }
-
-                path.Insert(0, append);
+                throw new MissingXmlNodeException("class", node);
             }
 
-            return path.ToString();
-        }
-    }
+            var classes = new Dictionary<string, Class>();
+            foreach (XmlElement classNode in classNodes)
+            {
+                var name = classNode.GetMandatoryAttribute<string>("name");
+                var handler = classNode.GetMandatoryAttribute<string>("handler");
+                var index = classNode.GetMandatoryAttribute<int>("index");
 
-    public static class XmlNodeListExtensions
-    {
-        [ContractAnnotation("null => true")]
-        public static bool IsNullOrEmpty(this XmlNodeList list)
-        {
-            return list == null || list.Count == 0;
-        }
+                var @class = new Class(name, handler, index, ParseMethods(classNode, protocol))
+                {
+                    Label = classNode.GetOptionalAttribute<string>("label"),
+                    Documentation = GetDocumentation(classNode),
+                    GrammarDocumentation = GetGrammarDocumentation(classNode),
+                    Chassis = ParseChassis(classNode)
+                };
 
-        [ContractAnnotation("null => true")]
-        public static bool IsNull(this XmlNodeList list)
-        {
-            return list == null;
-        }
-
-    }
-
-    public class MissingXmlNodeException : Exception
-    {
-        public MissingXmlNodeException(string name, IXPathNavigable currentNode)
-            : base(BuildMessage(name, currentNode))
-        {
+                classes.Add(name, @class);
+            }
+            return classes;
         }
 
-        private static string BuildMessage(string name, IXPathNavigable currentNode)
+        private static IReadOnlyDictionary<string, Method> ParseMethods(XmlNode node, Protocol protocol)
         {
-            return $"Missing node: {currentNode.CreateNavigator().GetPath()}/{name}";
-        }
-    }
+            var methodNodes = node.SelectNodes("method");
+            if (methodNodes.IsNullOrEmpty())
+            {
+                throw new MissingXmlNodeException("method", node);
+            }
 
-    public class MissingXmlAttributeException : Exception
-    {
-        public MissingXmlAttributeException(string name, IXPathNavigable currentNode)
-            : base(BuildMessage(name, currentNode))
-        {
+            var methods = new Dictionary<string, Method>();
+            foreach (XmlElement methodNode in methodNodes)
+            {
+                var name = methodNode.GetMandatoryAttribute<string>("name");
+                var index = methodNode.GetMandatoryAttribute<int>("index");
+                var label = methodNode.GetOptionalAttribute<string>("label");
+
+                var method = new Method(name, index)
+                {
+                    Synchronous = methodNode.GetOptionalAttribute<int>("synchronous") == 1,
+                    Label = label,
+                    Documentation = GetDocumentation(methodNode),
+                    Rules = ParseRules(methodNode),
+                    Responses = ParseResponse(methodNode),
+                    Fields = ParseFields(methodNode, protocol)
+                };
+                methods.Add(name, method);
+            }
+            return methods;
         }
 
-        private static string BuildMessage(string name, IXPathNavigable currentNode)
+        private static IReadOnlyDictionary<string, Field> ParseFields(XmlNode node, Protocol protocol)
         {
-            return $"Missing attribute: {currentNode.CreateNavigator().GetPath()}/@{name}";
+            var fieldNodes = node.SelectNodes("field");
+            var fields = new Dictionary<string, Field>();
+            if (fieldNodes.IsNullOrEmpty())
+            {
+                return fields;
+            }
+
+            foreach (XmlElement fieldNode in fieldNodes)
+            {
+                var name = fieldNode.GetMandatoryAttribute<string>("name");
+                var domain = fieldNode.GetOptionalAttribute<string>("domain");
+                if (string.IsNullOrEmpty(domain))
+                {
+                    domain = fieldNode.GetOptionalAttribute<string>("type");
+                    if (string.IsNullOrEmpty(domain))
+                    {
+                        throw new MissingXmlAttributeException("domain and type", fieldNode);
+                    }
+                }
+
+                if (protocol.Domains.ContainsKey(domain) == false)
+                {
+                    throw new XmlException($"Missing domain '{domain}'. Found {string.Join(", ", protocol.Domains.Keys.Select(key => $"'{key}'"))}");
+                }
+
+                var field = new Field(name, protocol.Domains[domain])
+                {
+                    Label = fieldNode.GetOptionalAttribute<string>("label"),
+                    Documentation = GetDocumentation(fieldNode),
+                    Rules = ParseRules(fieldNode),
+                    Asserts = ParseAsserts(fieldNode)
+                };
+
+                fields.Add(name, field);
+            }
+            return fields;
+        }
+
+        private static IReadOnlyDictionary<string, Response> ParseResponse(XmlNode node)
+        {
+            var responseNodes = node.SelectNodes("response");
+            var responses = new Dictionary<string, Response>();
+            if (responseNodes.IsNullOrEmpty())
+            {
+                return responses;
+            }
+
+            foreach (XmlElement responseNode in responseNodes)
+            {
+                var name = responseNode.GetMandatoryAttribute<string>("name");
+                var response = new Response(name);
+                responses.Add(name, response);
+            }
+
+            return responses;
+        }
+
+        private static IEnumerable<Chassis> ParseChassis(XmlNode node)
+        {
+            return node
+                .SelectNodes("chassis")
+                .CastOrEmptyList<XmlElement>()
+                .Select(element => new Chassis(
+                    (ChassisName)Enum.Parse(typeof(ChassisName), element.GetMandatoryAttribute<string>("name")),
+                    element.GetMandatoryAttribute<string>("implement") == "MUST"));
+        }
+
+        private static string GetDocumentation(XmlNode node, params DocumentationTypes[] attributeNames)
+        {
+            return node
+                .SelectNodes("doc")
+                .CastOrEmptyList<XmlElement>()
+                .Where(xmlNode => attributeNames
+                    .Select(documentationType => Enum
+                        .GetName(typeof(DocumentationTypes), documentationType)
+                        .SeperateOnCase('-')
+                        .ToLower())
+                    .All(xmlNode.HasAttribute))
+                .Select(element => element.InnerText)
+                .FirstOrDefault();
+        }
+
+        private enum DocumentationTypes
+        {
+            Scenario,
+            Grammar
+        }
+
+        private static string GetGrammarDocumentation(XmlNode node)
+        {
+            return node
+                .SelectNodes("doc")
+                .CastOrEmptyList<XmlElement>()
+                .Where(xmlNode => xmlNode.HasAttribute("grammar"))
+                .Select(element => element.InnerText)
+                .FirstOrDefault();
         }
     }
 }

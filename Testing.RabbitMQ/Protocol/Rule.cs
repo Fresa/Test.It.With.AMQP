@@ -9,5 +9,6 @@ namespace Test.It.With.RabbitMQ.Protocol
 
         public string Name { get; }
         public string Documentation { get; set; }
+        public string ScenarioDocumentation { get; set; }
     }
 }
