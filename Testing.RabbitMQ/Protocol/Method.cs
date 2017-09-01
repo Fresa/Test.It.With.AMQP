@@ -14,6 +14,7 @@ namespace Test.It.With.RabbitMQ.Protocol
         public string Label { get; set; }
         public string Documentation { get; set; }
         public IEnumerable<Rule> Rules { get; set; } = Enumerable.Empty<Rule>();
+        public IEnumerable<Chassis> Chassis { get; set; } = Enumerable.Empty<Chassis>();
 
         public Method(string name, int index)
         {

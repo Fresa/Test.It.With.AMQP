@@ -11,29 +11,32 @@ namespace Test.It.With.RabbitMQ.Protocol
     {
         public Protocol(XmlNode definition)
         {
-            var amqpNode = definition.SelectSingleNode("amqp");
-            if (amqpNode == null)
+            var amqpNodes = definition.SelectNodes("amqp");
+            if (amqpNodes.IsNullOrEmpty())
             {
-                throw new NotSupportedException("Missing amqp root definition");
+                throw new MissingXmlNodeException("amqp", definition);
             }
 
-            if (amqpNode.Attributes == null)
+            if (amqpNodes.Count > 1)
             {
-                throw new NotSupportedException("Missing amq protocol version");
+                throw new ToManyXmlNodesException("amqp", definition, 1, amqpNodes.Count);
             }
 
-            Major = int.Parse(amqpNode.Attributes["major"].Value);
-            Minor = int.Parse(amqpNode.Attributes["minor"].Value);
-            Revision = int.Parse(amqpNode.Attributes["revision"].Value);
+            var amqpNode = amqpNodes.Cast<XmlElement>().First();
+            
+            Major = amqpNode.GetMandatoryAttribute<int>("major");
+            Minor = amqpNode.GetMandatoryAttribute<int>("minor");
+            Revision = amqpNode.GetMandatoryAttribute<int>("revision");
 
             Constants = ParseConstants(amqpNode);
-            Domains = ParseDomains(amqpNode);
+            Domains = ParseDomains(amqpNode, this);
             Classes = ParseClasses(amqpNode, this);
         }
-        
+
         public int Major { get; }
         public int Minor { get; }
         public int Revision { get; }
+
         public IDictionary<string, Constant> Constants { get; }
         public IDictionary<string, Domain> Domains { get; }
         public IDictionary<string, Class> Classes { get; }
@@ -41,33 +44,22 @@ namespace Test.It.With.RabbitMQ.Protocol
         private static IDictionary<string, Constant> ParseConstants(XmlNode amqpNode)
         {
             var constantNodes = amqpNode.SelectNodes("constant");
-            if (constantNodes == null || constantNodes.Count == 0)
+            if (constantNodes.IsNullOrEmpty())
             {
-                throw new NotSupportedException("Missing constants");
+                throw new MissingXmlNodesException("constant", amqpNode);
             }
 
             var constants = new Dictionary<string, Constant>();
             foreach (XmlElement constantNode in constantNodes)
             {
-                var name = constantNode.GetAttribute("name");
-                if (string.IsNullOrEmpty(name))
-                {
-                    throw new NotSupportedException("Missing constant name.");
-                }
-                var value = int.Parse(constantNode.GetAttribute("value"));
+                var name = constantNode.GetMandatoryAttribute<string>("name");
+                var value = constantNode.GetMandatoryAttribute<int>("value");
 
-                var constant = new Constant(name, value);
-
-                if (constantNode.HasAttribute("class"))
+                var constant = new Constant(name, value)
                 {
-                    constant.Class = constantNode.GetAttribute("class");
-                }
-
-                var docNode = constantNode.SelectSingleNode("doc");
-                if (docNode != null)
-                {
-                    constant.Documentation = docNode.InnerText;
-                }
+                    Class = constantNode.GetOptionalAttribute<string>("class"),
+                    Documentation = GetFirstDocumentation(constantNode)
+                };
 
                 constants.Add(name, constant);
             }
@@ -75,8 +67,7 @@ namespace Test.It.With.RabbitMQ.Protocol
             return constants;
         }
 
-
-        private static IDictionary<string, Domain> ParseDomains(XmlNode amqpNode)
+        private static IDictionary<string, Domain> ParseDomains(XmlNode amqpNode, Protocol protocol)
         {
             var domainNodes = amqpNode.SelectNodes("domain");
             if (domainNodes.IsNullOrEmpty())
@@ -87,33 +78,16 @@ namespace Test.It.With.RabbitMQ.Protocol
             var domains = new Dictionary<string, Domain>();
             foreach (XmlElement domainNode in domainNodes)
             {
-                var name = domainNode.GetAttribute("name");
-                if (string.IsNullOrEmpty(name))
+                var name = domainNode.GetMandatoryAttribute<string>("name");
+                var type = domainNode.GetMandatoryAttribute<string>("type");
+
+                var domain = new Domain(name, type)
                 {
-                    throw new MissingXmlAttributeException("name", domainNode);
-                }
-
-                var type = domainNode.GetAttribute("type");
-                if (string.IsNullOrEmpty(type))
-                {
-                    throw new MissingXmlAttributeException("type", domainNode);
-                }
-
-                var domain = new Domain(name, type);
-
-                if (domainNode.HasAttribute("label"))
-                {
-                    domain.Label = domainNode.GetAttribute("label");
-                }
-
-                var docNode = domainNode.SelectSingleNode("doc");
-                if (docNode != null)
-                {
-                    domain.Documentation = docNode.InnerText;
-                }
-
-                domain.Rules = ParseRules(domainNode);
-                domain.Asserts = ParseAsserts(domainNode);
+                    Label = domainNode.GetOptionalAttribute<string>("label"),
+                    Documentation = GetFirstDocumentation(domainNode),
+                    Rules = ParseRules(domainNode),
+                    Asserts = ParseAsserts(domainNode, protocol)
+                };
 
                 domains.Add(name, domain);
             }
@@ -134,15 +108,15 @@ namespace Test.It.With.RabbitMQ.Protocol
 
                 var rule = new Rule(name)
                 {
-                    Documentation = GetDocumentation(ruleNode),
-                    ScenarioDocumentation = GetDocumentation(ruleNode, DocumentationTypes.Grammar),
+                    Documentation = GetFirstDocumentation(ruleNode),
+                    ScenarioDocumentation = GetFirstDocumentationType(ruleNode, ScenarioDocumentation)
                 };
 
                 yield return rule;
             }
         }
 
-        private static IEnumerable<Assert> ParseAsserts(XmlNode node)
+        private static IEnumerable<Assert> ParseAsserts(XmlNode node, Protocol protocol)
         {
             var assertNodes = node.SelectNodes("assert");
             if (assertNodes.IsNull())
@@ -152,29 +126,41 @@ namespace Test.It.With.RabbitMQ.Protocol
 
             foreach (XmlElement assertNode in assertNodes)
             {
-                var check = assertNode.GetAttribute("check");
-                if (string.IsNullOrEmpty(check))
+                var check = assertNode.GetMandatoryAttribute<string>("check");
+
+                var method = assertNode.GetOptionalAttribute<string>("method");
+                var fieldResolver = new Lazy<Field>(() => null);
+                if (string.IsNullOrEmpty(method) == false)
                 {
-                    throw new MissingXmlAttributeException("check", assertNode);
+                    var field = assertNode.GetMandatoryAttribute<string>("field");
+
+                    fieldResolver = new Lazy<Field>(() =>
+                    {
+                        var matchingMethods =
+                            protocol.Classes.SelectMany(
+                                pair => pair.Value.Methods.Where(valuePair => valuePair.Key == method)).ToList();
+                        if (matchingMethods.Any() == false)
+                        {
+                            throw new MissingMethodException("unknown", method);
+                        }
+
+                        var matchingFields =
+                            matchingMethods.SelectMany(
+                                valuePair => valuePair.Value.Fields.Where(keyValuePair => keyValuePair.Key == field)).ToList();
+                        if (matchingFields.Any() == false)
+                        {
+                            throw new MissingFieldException(method, field);
+                        }
+
+                        return matchingFields.First().Value;
+                    });
                 }
 
-                var rule = new Assert(check);
-
-                if (assertNode.HasAttribute("value"))
+                var rule = new Assert(check, fieldResolver)
                 {
-                    rule.Value = assertNode.GetAttribute("value");
-                }
-
-                if (assertNode.HasAttribute("method"))
-                {
-                    rule.Method = assertNode.GetAttribute("method");
-                }
-
-                if (assertNode.HasAttribute("field"))
-                {
-                    rule.Field = assertNode.GetAttribute("field");
-                }
-
+                    Value = assertNode.GetOptionalAttribute<string>("value"),
+                };
+                
                 yield return rule;
             }
         }
@@ -197,8 +183,8 @@ namespace Test.It.With.RabbitMQ.Protocol
                 var @class = new Class(name, handler, index, ParseMethods(classNode, protocol))
                 {
                     Label = classNode.GetOptionalAttribute<string>("label"),
-                    Documentation = GetDocumentation(classNode),
-                    GrammarDocumentation = GetGrammarDocumentation(classNode),
+                    Documentation = GetFirstDocumentation(classNode),
+                    GrammarDocumentation = GetFirstDocumentationType(classNode, GrammarDocumentation),
                     Chassis = ParseChassis(classNode)
                 };
 
@@ -226,10 +212,11 @@ namespace Test.It.With.RabbitMQ.Protocol
                 {
                     Synchronous = methodNode.GetOptionalAttribute<int>("synchronous") == 1,
                     Label = label,
-                    Documentation = GetDocumentation(methodNode),
+                    Documentation = GetFirstDocumentation(methodNode),
                     Rules = ParseRules(methodNode),
-                    Responses = ParseResponse(methodNode),
-                    Fields = ParseFields(methodNode, protocol)
+                    Responses = ParseResponse(methodNode, protocol),
+                    Fields = ParseFields(methodNode, protocol),
+                    Chassis = ParseChassis(methodNode)
                 };
                 methods.Add(name, method);
             }
@@ -254,7 +241,7 @@ namespace Test.It.With.RabbitMQ.Protocol
                     domain = fieldNode.GetOptionalAttribute<string>("type");
                     if (string.IsNullOrEmpty(domain))
                     {
-                        throw new MissingXmlAttributeException("domain and type", fieldNode);
+                        throw new MissingXmlAttributeException("domain or type", fieldNode);
                     }
                 }
 
@@ -266,9 +253,9 @@ namespace Test.It.With.RabbitMQ.Protocol
                 var field = new Field(name, protocol.Domains[domain])
                 {
                     Label = fieldNode.GetOptionalAttribute<string>("label"),
-                    Documentation = GetDocumentation(fieldNode),
+                    Documentation = GetFirstDocumentation(fieldNode),
                     Rules = ParseRules(fieldNode),
-                    Asserts = ParseAsserts(fieldNode)
+                    Asserts = ParseAsserts(fieldNode, protocol)
                 };
 
                 fields.Add(name, field);
@@ -276,7 +263,7 @@ namespace Test.It.With.RabbitMQ.Protocol
             return fields;
         }
 
-        private static IReadOnlyDictionary<string, Response> ParseResponse(XmlNode node)
+        private static IReadOnlyDictionary<string, Response> ParseResponse(XmlNode node, Protocol protocol)
         {
             var responseNodes = node.SelectNodes("response");
             var responses = new Dictionary<string, Response>();
@@ -288,7 +275,21 @@ namespace Test.It.With.RabbitMQ.Protocol
             foreach (XmlElement responseNode in responseNodes)
             {
                 var name = responseNode.GetMandatoryAttribute<string>("name");
-                var response = new Response(name);
+
+                var methodResolver = new Lazy<Method>(() =>
+                {
+                    var matchingMethods = protocol.Classes
+                        .SelectMany(pair => pair.Value.Methods.Where(valuePair => valuePair.Key == name)).ToList();
+
+                    if (matchingMethods.Any() == false)
+                    {
+                        throw new MissingMethodException("unknown", name);
+                    }
+
+                    return matchingMethods.First().Value;
+                });
+
+                var response = new Response(methodResolver);
                 responses.Add(name, response);
             }
 
@@ -301,39 +302,31 @@ namespace Test.It.With.RabbitMQ.Protocol
                 .SelectNodes("chassis")
                 .CastOrEmptyList<XmlElement>()
                 .Select(element => new Chassis(
-                    (ChassisName)Enum.Parse(typeof(ChassisName), element.GetMandatoryAttribute<string>("name")),
+                    (ChassisName)Enum.Parse(typeof(ChassisName), element.GetMandatoryAttribute<string>("name"), true),
                     element.GetMandatoryAttribute<string>("implement") == "MUST"));
         }
 
-        private static string GetDocumentation(XmlNode node, params DocumentationTypes[] attributeNames)
+        private static string GetFirstDocumentation(XmlNode node)
         {
             return node
                 .SelectNodes("doc")
                 .CastOrEmptyList<XmlElement>()
-                .Where(xmlNode => attributeNames
-                    .Select(documentationType => Enum
-                        .GetName(typeof(DocumentationTypes), documentationType)
-                        .SeperateOnCase('-')
-                        .ToLower())
-                    .All(xmlNode.HasAttribute))
+                .Where(xmlNode => xmlNode.HasAttribute("type") == false)
                 .Select(element => element.InnerText)
                 .FirstOrDefault();
         }
 
-        private enum DocumentationTypes
-        {
-            Scenario,
-            Grammar
-        }
-
-        private static string GetGrammarDocumentation(XmlNode node)
+        private static string GetFirstDocumentationType(XmlNode node, string type)
         {
             return node
                 .SelectNodes("doc")
                 .CastOrEmptyList<XmlElement>()
-                .Where(xmlNode => xmlNode.HasAttribute("grammar"))
+                .Where(xmlNode => xmlNode.HasAttribute("type") && xmlNode.GetAttribute("type") == type)
                 .Select(element => element.InnerText)
                 .FirstOrDefault();
         }
+
+        private const string ScenarioDocumentation = "scenario";
+        private const string GrammarDocumentation = "grammar";
     }
 }

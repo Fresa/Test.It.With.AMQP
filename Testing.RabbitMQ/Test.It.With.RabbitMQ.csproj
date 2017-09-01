@@ -87,6 +87,7 @@
     <Compile Include="Protocol\Exceptions\MissingXmlAttributeException.cs" />
     <Compile Include="Protocol\Exceptions\MissingXmlNodeException.cs" />
     <Compile Include="Protocol\Exceptions\MissingXmlNodesException.cs" />
+    <Compile Include="Protocol\Exceptions\ToManyXmlNodesException.cs" />
     <Compile Include="Protocol\Field.cs" />
     <Compile Include="Protocol\Method.cs" />
     <Compile Include="Protocol\Protocol.cs" />

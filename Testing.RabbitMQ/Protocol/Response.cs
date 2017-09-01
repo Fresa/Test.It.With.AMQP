@@ -1,12 +1,15 @@
+using System;
+
 namespace Test.It.With.RabbitMQ.Protocol
 {
     internal class Response
     {
-        public string MethodName { get; }
+        private readonly Lazy<Method> _methodResolver;
+        public Method Method => _methodResolver.Value;
 
-        public Response(string methodName)
+        public Response(Lazy<Method> methodResolver)
         {
-            MethodName = methodName;
+            _methodResolver = methodResolver;
         }
     }
 }
