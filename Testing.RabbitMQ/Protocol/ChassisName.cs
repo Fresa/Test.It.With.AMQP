@@ -1,6 +1,6 @@
 namespace Test.It.With.RabbitMQ.Protocol
 {
-    internal enum ChassisName
+    public enum ChassisName
     {
         Client,
         Server

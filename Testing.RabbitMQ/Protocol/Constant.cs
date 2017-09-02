@@ -1,6 +1,6 @@
 ﻿namespace Test.It.With.RabbitMQ.Protocol
 {
-    internal class Constant
+    public class Constant
     {
         public Constant(string name, int value)
         {

@@ -2,7 +2,7 @@ using System;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
-    internal class Response
+    public class Response
     {
         private readonly Lazy<Method> _methodResolver;
         public Method Method => _methodResolver.Value;

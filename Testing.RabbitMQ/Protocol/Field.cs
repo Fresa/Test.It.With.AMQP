@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
-    internal class Field
+    public class Field
     {
         public string Name { get; }
         public Domain Domain { get; }

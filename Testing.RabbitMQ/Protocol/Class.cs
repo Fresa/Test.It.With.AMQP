@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
-    internal class Class
+    public class Class
     {
         public string Name { get; }
         public string Handler { get; }

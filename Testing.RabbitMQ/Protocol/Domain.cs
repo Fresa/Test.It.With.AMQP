@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
-    internal class Domain
+    public class Domain
     {
         public Domain(string name, string type)
         {

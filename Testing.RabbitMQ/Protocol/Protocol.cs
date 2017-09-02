@@ -7,7 +7,7 @@ using Test.It.With.RabbitMQ.Protocol.Exceptions;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
-    internal class Protocol
+    public class Protocol
     {
         public Protocol(XmlNode definition)
         {

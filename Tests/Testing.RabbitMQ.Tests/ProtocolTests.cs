@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Test.It.With.RabbitMQ.Tests
 {
-    public class When_parsing_a_091_protocol : XUnit2Specification
+    public class When_parsing_the_amqp_0_9_1_protocol : XUnit2Specification
     {
         private XmlDocument _definition;
         private Protocol.Protocol _protocol;

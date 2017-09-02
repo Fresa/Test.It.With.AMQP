@@ -1,12 +1,26 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
+using Validation;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
-    public partial class ProtocolGenerator
+    //internal partial class ProtocolGenerator
+    //{
+    //    public ProtocolGenerator(Protocol protocol)
+    //    {
+    //        _protocol = protocol;
+    //    }
+    //}
+
+    public struct ShortString
     {
-        public ProtocolGenerator(XmlDocument protocolDefinition)
+        public ShortString(string str)
         {
-            _protocolDefinition = protocolDefinition;
+            Requires.NotNull(str, nameof(str));
+            Requires.Range(str.Length <= 127, nameof(str));
+
+       
         }
     }
+
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
-    internal class Assert
+    public class Assert
     {
         private readonly Lazy<Field> _fieldResolver;
 

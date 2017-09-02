@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
-    internal class Method
+    public class Method
     {
         public string Name { get; }
         public int Index { get; }

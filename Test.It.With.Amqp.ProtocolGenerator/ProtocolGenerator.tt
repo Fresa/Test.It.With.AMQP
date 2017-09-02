@@ -1,0 +1,105 @@
+﻿<#@ template language="C#" visibility="internal" debug="false" hostspecific="true" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Text.RegularExpressions" #>
+<#@ assembly name="$(SolutionDir)\Testing.RabbitMQ\bin\Debug\Test.It.With.RabbitMQ.dll" #>
+<#@ import namespace="Test.It.With.RabbitMQ.Protocol" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="Test.It.With.RabbitMQ" #>
+<#@ import namespace="Test.It.With.RabbitMQ.Extensions" #>
+<#
+	var path = Path.Combine(Host.ResolvePath(@"amqp0-9-1\amqp0-9-1.xml"));
+	var definition = new XmlDocument();
+	definition.Load(path);
+	var protocol = new Protocol(definition);
+
+    var typeConverter = new ProtocolDomainTypeConverter();
+    const string tab = "\t";
+
+    void Indent()
+    {
+        PushIndent(tab);       
+    }
+
+    void Dedent()
+    {
+        PopIndent();
+    }
+
+    void Tab(Action action)
+    {
+        Indent();
+        action();
+		Dedent();
+    }
+
+    void GenerateAssertion(Assert assert, string parameterName)
+    {
+        Tab(() => {
+			switch (assert.Check.ToLower())
+			{
+				case "notnull":
+					#>Requires.NotNullAllowStructs(<#= parameterName #>, nameof(<#= parameterName #>));<# 
+					return;
+				case "length": 
+					#>Requires.Range(<#= parameterName #>.Length <= <#= assert.Value #>, nameof(<#= parameterName #>));<#
+				    return;
+				case "regexp":
+					#>Requires.That(Regex.IsMatch(<#= parameterName #>, "<#= assert.Value #>"), nameof(<#= parameterName #>), "Value must meet the following regex criteria: <#= assert.Value #>");<#
+				    return;
+				case "le":
+					throw new NotImplementedException("How should we implement this?");
+			}
+
+            throw new NotSupportedException($"Unknown assertion: '{assert.Check}'.");
+        });
+    }
+
+
+#>
+// WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
+
+using Validation;
+using System.Text.RegularExpressions;
+
+namespace Test.It.With.RabbitMQ
+{
+<#
+    Tab(() =>
+    {
+		foreach (var domain in protocol.Domains.Values.WithIndex())
+		{
+			var className = domain.Value.Name.ToPascalCase('-');
+			var constructorParameterName = $"@{className.ToCamelCase()}";
+		    var type = typeConverter.Convert(domain.Value.Type);
+			if (domain.Key > 0)
+			{
+				this.WriteNewLine();
+			}
+			#>internal struct <#= className #> <# 
+			this.WriteNewLine();
+			#>{<#
+		    Tab(() => {
+				this.WriteNewLine();
+				#>internal <#= className #>(<#= type #> <#= constructorParameterName #>)<#
+				this.WriteNewLine();
+				#>{<#
+					foreach (var assert in domain.Value.Asserts)
+					{
+						this.WriteNewLine();
+						GenerateAssertion(assert, constructorParameterName);
+					}
+					this.WriteNewLine();
+				#>}<#
+			});
+			this.WriteNewLine();
+			#>}<#
+		    this.WriteNewLine();
+		}
+    });
+#>
+}

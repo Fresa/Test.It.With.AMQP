@@ -1,6 +1,6 @@
 namespace Test.It.With.RabbitMQ.Protocol
 {
-    internal class Chassis
+    public class Chassis
     {
         public ChassisName Name { get; }
         public bool MustImplement { get; }
