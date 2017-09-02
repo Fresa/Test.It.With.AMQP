@@ -279,7 +279,9 @@ namespace Test.It.With.RabbitMQ.Protocol
                 var methodResolver = new Lazy<Method>(() =>
                 {
                     var matchingMethods = protocol.Classes
-                        .SelectMany(pair => pair.Value.Methods.Where(valuePair => valuePair.Key == name)).ToList();
+                        .SelectMany(classes => 
+                            classes.Value.Methods.Where(methods => 
+                                methods.Key == name)).ToList();
 
                     if (matchingMethods.Any() == false)
                     {
@@ -303,7 +305,7 @@ namespace Test.It.With.RabbitMQ.Protocol
                 .CastOrEmptyList<XmlElement>()
                 .Select(element => new Chassis(
                     (ChassisName)Enum.Parse(typeof(ChassisName), element.GetMandatoryAttribute<string>("name"), true),
-                    element.GetMandatoryAttribute<string>("implement") == "MUST"));
+                    string.Equals(element.GetMandatoryAttribute<string>("implement"), "must", StringComparison.CurrentCultureIgnoreCase)));
         }
 
         private static string GetFirstDocumentation(XmlNode node)
@@ -321,7 +323,7 @@ namespace Test.It.With.RabbitMQ.Protocol
             return node
                 .SelectNodes("doc")
                 .CastOrEmptyList<XmlElement>()
-                .Where(xmlNode => xmlNode.HasAttribute("type") && xmlNode.GetAttribute("type") == type)
+                .Where(xmlNode => xmlNode.HasAttribute("type") && string.Equals(xmlNode.GetAttribute("type"), type, StringComparison.CurrentCultureIgnoreCase))
                 .Select(element => element.InnerText)
                 .FirstOrDefault();
         }

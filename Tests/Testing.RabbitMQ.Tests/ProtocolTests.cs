@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using Should.Fluent;
@@ -16,7 +17,7 @@ namespace Test.It.With.RabbitMQ.Tests
 
         protected override void Given()
         {
-            var path = "C:\\Users\\Fresa\\Downloads\\amqp0-9-1\\amqp0-9-1.xml";
+            var path = Path.Combine(Environment.CurrentDirectory, @"Resources\amqp0-9-1\amqp0-9-1.xml");
             _definition = new XmlDocument();
             _definition.Load(path);
         }
@@ -99,8 +100,7 @@ namespace Test.It.With.RabbitMQ.Tests
                         field.Value.Rules.Count() == 1 &&
                         field.Value.Rules.Any(rule => 
                             rule.Documentation.Trim().StartsWith("If the client specifies a channel max that is higher than the value provided") &&
-                            rule.Name == "upper-limit")))
-                );
+                            rule.Name == "upper-limit"))));
         }
         
         [Fact]
@@ -139,14 +139,6 @@ namespace Test.It.With.RabbitMQ.Tests
             }
 
             resolvedAssertFields.Count.Should().Be.GreaterThan(0);
-        }
-    }
-
-    internal static class EnumerableExtensions
-    {
-        public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> list)
-        {
-            return list.Where(item => item != null);
         }
     }
 }
