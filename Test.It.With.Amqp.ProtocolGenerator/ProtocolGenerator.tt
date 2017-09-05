@@ -12,94 +12,165 @@
 <#@ import namespace="Test.It.With.RabbitMQ" #>
 <#@ import namespace="Test.It.With.RabbitMQ.Extensions" #>
 <#
-	var path = Path.Combine(Host.ResolvePath(@"amqp0-9-1\amqp0-9-1.xml"));
-	var definition = new XmlDocument();
-	definition.Load(path);
-	var protocol = new Protocol(definition);
-
+    var path = Path.Combine(Host.ResolvePath(@"amqp0-9-1\amqp0-9-1.xml"));
+    var definition = new XmlDocument();
+    definition.Load(path);
+    var protocol = new Protocol(definition);
     var typeConverter = new ProtocolDomainTypeConverter();
-    const string tab = "\t";
 
-    void Indent()
-    {
-        PushIndent(tab);       
-    }
-
-    void Dedent()
-    {
-        PopIndent();
-    }
-
-    void Tab(Action action)
-    {
-        Indent();
-        action();
-		Dedent();
-    }
+	void Tab(Action action) { this.Tab(action); }
+    void Block(Action action) { this.Block(action); }
+	void PrintOnNewRowForEach<TValue>(IEnumerable<TValue> iterator, Action<TValue> action) { this.PrintOnNewRowForEach(iterator, action); }
+	void PrintOnNewRowForEachWithIndex<TValue>(IEnumerable<TValue> iterator, ActionDelegateWithIndexAndLength<TValue> action) { this.PrintOnNewRowForEach(iterator, action); }
+	void WriteNewLine(int count = 1) { this.WriteNewLine(count); }
 
     void GenerateAssertion(Assert assert, string parameterName)
     {
-        Tab(() => {
-			switch (assert.Check.ToLower())
-			{
-				case "notnull":
-					#>Requires.NotNullAllowStructs(<#= parameterName #>, nameof(<#= parameterName #>));<# 
-					return;
-				case "length": 
-					#>Requires.Range(<#= parameterName #>.Length <= <#= assert.Value #>, nameof(<#= parameterName #>));<#
-				    return;
-				case "regexp":
-					#>Requires.That(Regex.IsMatch(<#= parameterName #>, "<#= assert.Value #>"), nameof(<#= parameterName #>), "Value must meet the following regex criteria: <#= assert.Value #>");<#
-				    return;
-				case "le":
-					throw new NotImplementedException("How should we implement this?");
-			}
+        switch (assert.Check.ToLower())
+        {
+            case "notnull":
+                #>Requires.NotNullAllowStructs(<#= parameterName #>, nameof(<#= parameterName #>));<#
+                return;
+			case "length":
+                #>Requires.Range(<#= parameterName #>.Length <= <#= assert.Value #>, nameof(<#= parameterName #>));<#
+                return;
+			case "regexp":
+                #>Requires.That(Regex.IsMatch(<#= parameterName #>, "<#= assert.Value #>"), nameof(<#= parameterName #>), "Value must meet the following regex criteria: <#= assert.Value #>");<#
+                return;
+            case "le":
+                // todo: How should we implement this?
+                return;
+        }
 
-            throw new NotSupportedException($"Unknown assertion: '{assert.Check}'.");
-        });
+        throw new NotSupportedException($"Unknown assertion: '{assert.Check}'.");
     }
 
+	void GenerateDocumentation(string documentation)
+    {
+        if (string.IsNullOrEmpty(documentation))
+        {
+            return;
+        }
 
+        #>/// <summary><#
+        WriteNewLine();
+        foreach (var documentationRow in documentation.Trim().Split('\n'))
+        {
+            #>/// <#= documentationRow.Trim() #><#
+            WriteNewLine();
+        }
+		#>/// </summary><#
+        WriteNewLine();
+    }
 #>
 // WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
 
 using Validation;
 using System.Text.RegularExpressions;
+using Test.It.With.RabbitMQ.MessageClient;
 
-namespace Test.It.With.RabbitMQ
+namespace Test.It.With.RabbitMQ<#
+Block(() =>
 {
-<#
-    Tab(() =>
+	// Constants
+    #>internal class Constants<#
+	Block(() =>
     {
-		foreach (var domain in protocol.Domains.Values.WithIndex())
-		{
-			var className = domain.Value.Name.ToPascalCase('-');
-			var constructorParameterName = $"@{className.ToCamelCase()}";
-		    var type = typeConverter.Convert(domain.Value.Type);
-			if (domain.Key > 0)
-			{
-				this.WriteNewLine();
-			}
-			#>internal struct <#= className #> <# 
-			this.WriteNewLine();
-			#>{<#
-		    Tab(() => {
-				this.WriteNewLine();
-				#>internal <#= className #>(<#= type #> <#= constructorParameterName #>)<#
-				this.WriteNewLine();
-				#>{<#
-					foreach (var assert in domain.Value.Asserts)
-					{
-						this.WriteNewLine();
-						GenerateAssertion(assert, constructorParameterName);
-					}
-					this.WriteNewLine();
-				#>}<#
-			});
-			this.WriteNewLine();
-			#>}<#
-		    this.WriteNewLine();
-		}
+        PrintOnNewRowForEachWithIndex(protocol.Constants.Values, (constant, index, count) =>
+        {
+            GenerateDocumentation(constant.Documentation);
+            #>private const int <#= constant.Name.ToPascalCase('-') #> = <#= constant.Value #>;<#
+            if (index + 1 != count) WriteNewLine();
+        });
     });
+    
+    WriteNewLine(2);
+
+    // Domain types
+    PrintOnNewRowForEach(protocol.Domains.Values, domain =>
+    {
+        var className = domain.Name.ToPascalCase('-');
+        var type = typeConverter.Convert(domain.Type).GetPrettyFullName();
+
+        GenerateDocumentation(domain.Documentation);
+        #>public struct <#= className #> <# 
+		Block(() =>
+        {
+            #>public <#= type #> Value { get; }<#
+            WriteNewLine(2);
+            #>internal <#= className #>(<#= type #> value)<#
+			Block(() =>
+            {
+                PrintOnNewRowForEach(domain.Asserts, assert => { GenerateAssertion(assert, "value"); });
+                #>Value = value;<#
+            });
+        });
+        WriteNewLine();
+    });
+    
+    // Methods
+    PrintOnNewRowForEach(protocol.Classes.Values, @class =>
+    {
+        var className = @class.Name.ToPascalCase('-');
+
+        PrintOnNewRowForEach(@class.Methods.Values, method =>
+        {
+            WriteNewLine();
+
+            var methodName = method.Name.ToPascalCase('-');
+
+            GenerateDocumentation(method.Documentation);
+            #>public class <#= className + methodName #><#
+			Block(() =>
+            {
+                #>public const int ClassId = <#= @class.Index #>;<#
+                WriteNewLine();
+                #>public const int MethodId = <#= @method.Index #>;<#
+                WriteNewLine();
+
+                PrintOnNewRowForEach(method.Fields.Values, field =>
+                {
+                    GenerateDocumentation(field.Documentation);
+
+                    #>private <#= field.Domain.Name.ToPascalCase('-') #> _<#= field.Name.ToCamelCase('-') #>;<#
+                    WriteNewLine();
+                    #>public <#= field.Domain.Name.ToPascalCase('-') #> <#= field.Name.ToPascalCase('-') #>_<# 
+					Block(() =>
+                    {
+                        #>get<#
+						Block(() =>
+                        {
+                            #>return _<#= field.Name.ToCamelCase('-') #>;<#
+                        });
+                        WriteNewLine();
+                        #>set<#
+						Block(() =>
+                        {
+                            if (field.Asserts.Any())
+                            {
+                                PrintOnNewRowForEach(field.Asserts, fieldAssert =>
+                                {
+                                    GenerateAssertion(fieldAssert, "value.Value");
+                                });
+                                WriteNewLine();
+                            }
+                            #>_<#= field.Name.ToCamelCase('-') #> = value;<#
+                        });
+                    });
+                    WriteNewLine();
+                });
+
+                WriteNewLine();
+                #>public void ReadFrom(AmqpReader reader)<#
+				Block(() =>
+                {
+                    PrintOnNewRowForEach(method.Fields.Values, field =>
+                    {
+                        #>_<#= field.Name.ToCamelCase('-') #> = new <#= field.Domain.Name.ToPascalCase('-') #>(reader.<#= typeConverter.GetReaderMethod(field.Domain.Type) #>());<#
+                    });
+                });
+            });
+        });
+    });
+});
 #>
-}

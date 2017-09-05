@@ -13,6 +13,11 @@ namespace Test.It.With.RabbitMQ.Extensions
 
         public static string ToPascalCase(this string str, char delimiter)
         {
+            if (string.IsNullOrEmpty(str))
+            {
+                return str;
+            }
+
             var sections = str
                 .ToLower()
                 .Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries)
@@ -21,14 +26,19 @@ namespace Test.It.With.RabbitMQ.Extensions
             return string.Concat(sections);
         }
 
-        public static string ToCamelCase(this string str)
+        public static string ToCamelCase(this string str, char delimiter)
         {
             if (string.IsNullOrEmpty(str))
             {
                 return str;
             }
 
-            return str.First().ToString().ToLower() + string.Concat(str.Skip(1));
+            var sections = str
+                .ToLower()
+                .Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(section => section.First().ToString().ToLower() + string.Join(string.Empty, section.Skip(1)));
+
+            return string.Concat(sections);
         }
     }
 }

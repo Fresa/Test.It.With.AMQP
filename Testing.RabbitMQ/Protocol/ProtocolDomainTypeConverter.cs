@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data;
+using System.Collections.Generic;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
@@ -22,11 +22,11 @@ namespace Test.It.With.RabbitMQ.Protocol
                 case "shortstr":
                     return Type<string>();
                 case "longstr":
-                    return Type<string>();
+                    return Type<byte[]>();
                 case "timestamp":
                     return Type<DateTime>();
                 case "table":
-                    return Type<DataTable>();
+                    return Type<IDictionary<string, object>>();
             }
 
             throw new NotSupportedException($"Unknown type '{type}'.");
@@ -35,6 +35,33 @@ namespace Test.It.With.RabbitMQ.Protocol
         private static Type Type<T>()
         {
             return typeof(T);
+        }
+
+        public string GetReaderMethod(string type)
+        {
+            switch (type.ToLower())
+            {
+                case "bit":
+                    return "ReadBoolean";
+                case "octet":
+                    return "ReadByte";
+                case "short":
+                    return "ReadShortInteger";
+                case "long":
+                    return "ReadLongInteger";
+                case "longlong":
+                    return "ReadLongLongInteger";
+                case "shortstr":
+                    return "ReadShortString";
+                case "longstr":
+                    return "ReadLongString";
+                case "timestamp":
+                    return "ReadTimestamp";
+                case "table":
+                    return "ReadTable";
+            }
+
+            throw new NotSupportedException($"Unknown type '{type}'.");
         }
     }
 }
