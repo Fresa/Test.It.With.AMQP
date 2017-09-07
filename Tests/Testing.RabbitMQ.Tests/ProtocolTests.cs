@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml;
 using Should.Fluent;
 using Test.It.With.RabbitMQ.Protocol;
+using Test.It.With.RabbitMQ.Protocol.Definitions;
 using Test.It.With.XUnit;
 using Xunit;
 
@@ -13,7 +14,7 @@ namespace Test.It.With.RabbitMQ.Tests
     public class When_parsing_the_amqp_0_9_1_protocol : XUnit2Specification
     {
         private XmlDocument _definition;
-        private Protocol.Protocol _protocol;
+        private Protocol.Definitions.Protocol _protocol;
 
         protected override void Given()
         {
@@ -24,7 +25,7 @@ namespace Test.It.With.RabbitMQ.Tests
 
         protected override void When()
         {
-            _protocol = new Protocol.Protocol(_definition);
+            _protocol = new Protocol.Definitions.Protocol(_definition);
         }
 
         [Fact]

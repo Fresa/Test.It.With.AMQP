@@ -5,7 +5,7 @@ using System.Xml;
 using Test.It.With.RabbitMQ.Extensions;
 using Test.It.With.RabbitMQ.Protocol.Exceptions;
 
-namespace Test.It.With.RabbitMQ.Protocol
+namespace Test.It.With.RabbitMQ.Protocol.Definitions
 {
     public class Protocol
     {

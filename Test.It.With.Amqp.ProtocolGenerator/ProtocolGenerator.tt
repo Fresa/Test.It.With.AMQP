@@ -5,12 +5,11 @@
 <#@ assembly name="$(SolutionDir)\Testing.RabbitMQ\bin\Debug\Test.It.With.RabbitMQ.dll" #>
 <#@ import namespace="Test.It.With.RabbitMQ.Protocol" #>
 <#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Xml" #>
-<#@ import namespace="Test.It.With.RabbitMQ" #>
 <#@ import namespace="Test.It.With.RabbitMQ.Extensions" #>
+<#@ import namespace="Test.It.With.RabbitMQ.Protocol.Definitions" #>
 <#
     var path = Path.Combine(Host.ResolvePath(@"amqp0-9-1\amqp0-9-1.xml"));
     var definition = new XmlDocument();
@@ -65,13 +64,81 @@
 #>
 // WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
 
+using System;
 using Validation;
 using System.Text.RegularExpressions;
 using Test.It.With.RabbitMQ.MessageClient;
+using Test.It.With.RabbitMQ.Protocol;
+using System.Collections.Generic;
 
 namespace Test.It.With.RabbitMQ<#
 Block(() =>
 {
+	// Protocol
+	#>internal class AmqProtocol : IProtocol<#
+	Block(() =>
+	{
+	    #>public IVersion Version { get; } = new ProtocolVersion(); <#
+	    WriteNewLine(2);
+	    #>public IMethod GetMethod(AmqpReader reader)<#
+	    Block(() =>
+	    {
+			#>var classId = reader.ReadShortUnsignedInteger();<#
+			WriteNewLine();
+			#>var methodId = reader.ReadShortUnsignedInteger();<#
+	        WriteNewLine(2);
+			#>var method = _methodFactory[classId][methodId]();<#
+			WriteNewLine();
+			#>method.ReadFrom(reader);<#
+			WriteNewLine();
+			#>return method;<#
+	    });
+
+	    WriteNewLine(2);
+
+	    #>private readonly Dictionary<int, Dictionary<int, Func<IMethod>>> _methodFactory = new Dictionary<int, Dictionary<int, Func<IMethod>>><#
+	    Block(() =>
+	    {
+			PrintOnNewRowForEachWithIndex(protocol.Classes.Values, (@class, index, length) =>
+			{
+				#>{ <#= @class.Index #>, new Dictionary<int, Func<IMethod>> { <#
+				WriteNewLine();
+			    Tab(() =>
+			    {
+			        PrintOnNewRowForEachWithIndex(@class.Methods.Values, (method, methodIndex, methodCount) =>
+			        {
+						#>{ <#= method.Index #>, () => new <#= @class.Name.ToPascalCase('-') #>.<#= method.Name.ToPascalCase('-') #>() }<#
+
+						if (methodIndex + 1 != methodCount)
+						{
+							#>,<#
+						}
+			        });
+			    });
+				#>}}<#
+
+			    if (index + 1 != length)
+			    {
+			        #>,<#
+			    }
+			});
+	    });
+		#>;<#
+		WriteNewLine(2);
+
+		#>private class ProtocolVersion : IVersion<#
+	    Block(() =>
+	    {
+	        #>public int Major { get; } = <#= protocol.Major #>;<#
+	        WriteNewLine();
+	        #>public int Minor { get; } = <#= protocol.Minor #>;<#
+	        WriteNewLine();
+	        #>public int Revision { get; } = <#= protocol.Revision #>;<#
+	    });
+	});
+
+    WriteNewLine(2);
+
 	// Constants
     #>internal class Constants<#
 	Block(() =>
@@ -113,64 +180,83 @@ Block(() =>
     {
         var className = @class.Name.ToPascalCase('-');
 
-        PrintOnNewRowForEach(@class.Methods.Values, method =>
-        {
-            WriteNewLine();
+		WriteNewLine();
+		GenerateDocumentation(@class.Documentation);
+		#>public class <#= className #><#
+		Block(() => 
+		{
+			PrintOnNewRowForEachWithIndex(@class.Methods.Values, (method, index, length) =>
+			{
+				var methodName = method.Name.ToPascalCase('-');
 
-            var methodName = method.Name.ToPascalCase('-');
-
-            GenerateDocumentation(method.Documentation);
-            #>public class <#= className + methodName #><#
-			Block(() =>
-            {
-                #>public const int ClassId = <#= @class.Index #>;<#
-                WriteNewLine();
-                #>public const int MethodId = <#= @method.Index #>;<#
-                WriteNewLine();
-
-                PrintOnNewRowForEach(method.Fields.Values, field =>
-                {
-                    GenerateDocumentation(field.Documentation);
-
-                    #>private <#= field.Domain.Name.ToPascalCase('-') #> _<#= field.Name.ToCamelCase('-') #>;<#
-                    WriteNewLine();
-                    #>public <#= field.Domain.Name.ToPascalCase('-') #> <#= field.Name.ToPascalCase('-') #>_<# 
-					Block(() =>
-                    {
-                        #>get<#
-						Block(() =>
-                        {
-                            #>return _<#= field.Name.ToCamelCase('-') #>;<#
-                        });
-                        WriteNewLine();
-                        #>set<#
-						Block(() =>
-                        {
-                            if (field.Asserts.Any())
-                            {
-                                PrintOnNewRowForEach(field.Asserts, fieldAssert =>
-                                {
-                                    GenerateAssertion(fieldAssert, "value.Value");
-                                });
-                                WriteNewLine();
-                            }
-                            #>_<#= field.Name.ToCamelCase('-') #> = value;<#
-                        });
-                    });
-                    WriteNewLine();
-                });
-
-                WriteNewLine();
-                #>public void ReadFrom(AmqpReader reader)<#
+				GenerateDocumentation(method.Documentation);
+				#>public class <#= methodName #> : IMethod<#
 				Block(() =>
-                {
-                    PrintOnNewRowForEach(method.Fields.Values, field =>
-                    {
-                        #>_<#= field.Name.ToCamelCase('-') #> = new <#= field.Domain.Name.ToPascalCase('-') #>(reader.<#= typeConverter.GetReaderMethod(field.Domain.Type) #>());<#
-                    });
-                });
-            });
-        });
+				{
+					#>public int ClassId { get; } = <#= @class.Index #>;<#
+					WriteNewLine();
+					#>public int MethodId { get; } = <#= @method.Index #>;<#
+					WriteNewLine();
+
+					PrintOnNewRowForEach(method.Fields.Values, field =>
+					{
+						GenerateDocumentation(field.Documentation);
+
+						#>private <#= field.Domain.Name.ToPascalCase('-') #> _<#= field.Name.ToCamelCase('-') #>;<#
+						WriteNewLine();
+						#>public <#= field.Domain.Name.ToPascalCase('-') #> <#= field.Name.ToPascalCase('-') #>_<# 
+						Block(() =>
+						{
+							#>get<#
+							Block(() =>
+							{
+								#>return _<#= field.Name.ToCamelCase('-') #>;<#
+							});
+							WriteNewLine();
+							#>set<#
+							Block(() =>
+							{
+								if (field.Asserts.Any())
+								{
+									PrintOnNewRowForEach(field.Asserts, fieldAssert =>
+									{
+										GenerateAssertion(fieldAssert, "value.Value");
+									});
+									WriteNewLine();
+								}
+								#>_<#= field.Name.ToCamelCase('-') #> = value;<#
+							});
+						});
+						WriteNewLine();
+					});
+
+					WriteNewLine();
+					#>public void ReadFrom(AmqpReader reader)<#
+					Block(() =>
+					{
+						PrintOnNewRowForEach(method.Fields.Values, field =>
+						{
+							#>_<#= field.Name.ToCamelCase('-') #> = new <#= field.Domain.Name.ToPascalCase('-') #>(reader.<#= typeConverter.GetReaderMethod(field.Domain.Type) #>());<#
+						});
+					});
+
+					WriteNewLine(2);
+					#>public void WriteTo(AmqpWriter writer)<#
+					Block(() =>
+					{
+						PrintOnNewRowForEach(method.Fields.Values, field =>
+						{
+							#>writer.<#= typeConverter.GetWriterMethod(field.Domain.Type) #>(_<#= field.Name.ToCamelCase('-') #>.Value);<#
+						});
+					});
+				});
+
+			    if (index + 1 != length)
+			    {
+			        WriteNewLine();			        
+			    }
+			});
+		});
     });
 });
 #>

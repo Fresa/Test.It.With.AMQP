@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Test.It.With.RabbitMQ.Protocol
+namespace Test.It.With.RabbitMQ.Protocol.Definitions
 {
     public class Class
     {

@@ -63,5 +63,32 @@ namespace Test.It.With.RabbitMQ.Protocol
 
             throw new NotSupportedException($"Unknown type '{type}'.");
         }
+
+        public string GetWriterMethod(string type)
+        {
+            switch (type.ToLower())
+            {
+                case "bit":
+                    return "WriteBoolean";
+                case "octet":
+                    return "WriteByte";
+                case "short":
+                    return "WriteShortInteger";
+                case "long":
+                    return "WriteLongInteger";
+                case "longlong":
+                    return "WriteLongLongInteger";
+                case "shortstr":
+                    return "WriteShortString";
+                case "longstr":
+                    return "WriteLongString";
+                case "timestamp":
+                    return "WriteTimestamp";
+                case "table":
+                    return "WriteTable";
+            }
+
+            throw new NotSupportedException($"Unknown type '{type}'.");
+        }
     }
 }

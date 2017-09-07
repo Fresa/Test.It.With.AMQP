@@ -1,4 +1,4 @@
-namespace Test.It.With.RabbitMQ.Protocol
+namespace Test.It.With.RabbitMQ.Protocol.Definitions
 {
     public enum ChassisName
     {

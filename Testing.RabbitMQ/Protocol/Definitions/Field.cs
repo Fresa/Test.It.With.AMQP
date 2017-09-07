@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Test.It.With.RabbitMQ.Protocol
+namespace Test.It.With.RabbitMQ.Protocol.Definitions
 {
     public class Field
     {
