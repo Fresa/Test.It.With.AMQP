@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Should.Fluent;
+using Test.It.With.Amqp.Protocol;
 using Test.It.With.RabbitMQ.MessageClient;
 using Test.It.With.XUnit;
 using Xunit;

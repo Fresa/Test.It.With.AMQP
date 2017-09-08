@@ -1,13 +1,12 @@
 ﻿// WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
 
 using System;
-using Validation;
-using System.Text.RegularExpressions;
-using Test.It.With.RabbitMQ.MessageClient;
-using Test.It.With.RabbitMQ.Protocol;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using Validation;
+using Test.It.With.Amqp.Protocol;
 
-namespace Test.It.With.RabbitMQ
+namespace Test.It.With.Amqp
 {
 	internal class AmqProtocol : IProtocol
 	{
@@ -16,9 +15,20 @@ namespace Test.It.With.RabbitMQ
 		public IMethod GetMethod(AmqpReader reader)
 		{
 			var classId = reader.ReadShortUnsignedInteger();
+
+			if (_methodFactory.TryGetValue(classId, out Dictionary<int, Func<IMethod>> methodRegister) == false)
+			{
+				throw new InvalidOperationException($"There is no class with id {classId} defined.");
+			}
+
 			var methodId = reader.ReadShortUnsignedInteger();
 
-			var method = _methodFactory[classId][methodId]();
+			if (methodRegister.TryGetValue(methodId, out Func<IMethod> factory) == false)
+			{
+				throw new InvalidOperationException($"There is no method defined with id {methodId} in class with id {classId}.");
+			}
+
+			var method = factory();
 			method.ReadFrom(reader);
 			return method;
 		}
@@ -96,129 +106,129 @@ namespace Test.It.With.RabbitMQ
 
 	internal class Constants
 	{
-		private const int FrameMethod = 1;
+		internal const int FrameMethod = 1;
 
-		private const int FrameHeader = 2;
+		internal const int FrameHeader = 2;
 
-		private const int FrameBody = 3;
+		internal const int FrameBody = 3;
 
-		private const int FrameHeartbeat = 8;
+		internal const int FrameHeartbeat = 8;
 
-		private const int FrameMinSize = 4096;
+		internal const int FrameMinSize = 4096;
 
-		private const int FrameEnd = 206;
+		internal const int FrameEnd = 206;
 
 		/// <summary>
 		/// Indicates that the method completed successfully. This reply code is
 		/// reserved for future use - the current protocol design does not use positive
 		/// confirmation and reply codes are sent only in case of an error.
 		/// </summary>
-		private const int ReplySuccess = 200;
+		internal const int ReplySuccess = 200;
 
 		/// <summary>
 		/// The client attempted to transfer content larger than the server could accept
 		/// at the present time. The client may retry at a later time.
 		/// </summary>
-		private const int ContentTooLarge = 311;
+		internal const int ContentTooLarge = 311;
 
 		/// <summary>
 		/// When the exchange cannot deliver to a consumer when the immediate flag is
 		/// set. As a result of pending data on the queue or the absence of any
 		/// consumers of the queue.
 		/// </summary>
-		private const int NoConsumers = 313;
+		internal const int NoConsumers = 313;
 
 		/// <summary>
 		/// An operator intervened to close the connection for some reason. The client
 		/// may retry at some later date.
 		/// </summary>
-		private const int ConnectionForced = 320;
+		internal const int ConnectionForced = 320;
 
 		/// <summary>
 		/// The client tried to work with an unknown virtual host.
 		/// </summary>
-		private const int InvalidPath = 402;
+		internal const int InvalidPath = 402;
 
 		/// <summary>
 		/// The client attempted to work with a server entity to which it has no
 		/// access due to security settings.
 		/// </summary>
-		private const int AccessRefused = 403;
+		internal const int AccessRefused = 403;
 
 		/// <summary>
 		/// The client attempted to work with a server entity that does not exist.
 		/// </summary>
-		private const int NotFound = 404;
+		internal const int NotFound = 404;
 
 		/// <summary>
 		/// The client attempted to work with a server entity to which it has no
 		/// access because another client is working with it.
 		/// </summary>
-		private const int ResourceLocked = 405;
+		internal const int ResourceLocked = 405;
 
 		/// <summary>
 		/// The client requested a method that was not allowed because some precondition
 		/// failed.
 		/// </summary>
-		private const int PreconditionFailed = 406;
+		internal const int PreconditionFailed = 406;
 
 		/// <summary>
 		/// The sender sent a malformed frame that the recipient could not decode.
 		/// This strongly implies a programming error in the sending peer.
 		/// </summary>
-		private const int FrameError = 501;
+		internal const int FrameError = 501;
 
 		/// <summary>
 		/// The sender sent a frame that contained illegal values for one or more
 		/// fields. This strongly implies a programming error in the sending peer.
 		/// </summary>
-		private const int SyntaxError = 502;
+		internal const int SyntaxError = 502;
 
 		/// <summary>
 		/// The client sent an invalid sequence of frames, attempting to perform an
 		/// operation that was considered invalid by the server. This usually implies
 		/// a programming error in the client.
 		/// </summary>
-		private const int CommandInvalid = 503;
+		internal const int CommandInvalid = 503;
 
 		/// <summary>
 		/// The client attempted to work with a channel that had not been correctly
 		/// opened. This most likely indicates a fault in the client layer.
 		/// </summary>
-		private const int ChannelError = 504;
+		internal const int ChannelError = 504;
 
 		/// <summary>
 		/// The peer sent a frame that was not expected, usually in the context of
 		/// a content header and body.  This strongly indicates a fault in the peer's
 		/// content processing.
 		/// </summary>
-		private const int UnexpectedFrame = 505;
+		internal const int UnexpectedFrame = 505;
 
 		/// <summary>
 		/// The server could not complete the method because it lacked sufficient
 		/// resources. This may be due to the client creating too many of some type
 		/// of entity.
 		/// </summary>
-		private const int ResourceError = 506;
+		internal const int ResourceError = 506;
 
 		/// <summary>
 		/// The client tried to work with some entity in a manner that is prohibited
 		/// by the server, due to security settings or by some other criteria.
 		/// </summary>
-		private const int NotAllowed = 530;
+		internal const int NotAllowed = 530;
 
 		/// <summary>
 		/// The client tried to use functionality that is not implemented in the
 		/// server.
 		/// </summary>
-		private const int NotImplemented = 540;
+		internal const int NotImplemented = 540;
 
 		/// <summary>
 		/// The server could not complete the method because of an internal error.
 		/// The server may require intervention by an operator in order to resume
 		/// normal operations.
 		/// </summary>
-		private const int InternalError = 541;
+		internal const int InternalError = 541;
 	}
 
 	public struct ClassId 
@@ -538,6 +548,7 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 10;
 			public int MethodId { get; } = 10;
+
 			/// <summary>
 			/// The major version number can take any value from 0 to 99 as defined in the
 			/// AMQP specification.
@@ -545,10 +556,7 @@ namespace Test.It.With.RabbitMQ
 			private Octet _versionmajor;
 			public Octet VersionMajor_
 			{
-				get
-				{
-					return _versionmajor;
-				}
+				get => _versionmajor;
 				set
 				{
 					_versionmajor = value;
@@ -562,10 +570,7 @@ namespace Test.It.With.RabbitMQ
 			private Octet _versionminor;
 			public Octet VersionMinor_
 			{
-				get
-				{
-					return _versionminor;
-				}
+				get => _versionminor;
 				set
 				{
 					_versionminor = value;
@@ -575,10 +580,7 @@ namespace Test.It.With.RabbitMQ
 			private PeerProperties _serverproperties;
 			public PeerProperties ServerProperties_
 			{
-				get
-				{
-					return _serverproperties;
-				}
+				get => _serverproperties;
 				set
 				{
 					_serverproperties = value;
@@ -591,10 +593,7 @@ namespace Test.It.With.RabbitMQ
 			private Longstr _mechanisms;
 			public Longstr Mechanisms_
 			{
-				get
-				{
-					return _mechanisms;
-				}
+				get => _mechanisms;
 				set
 				{
 					Requires.NotNullAllowStructs(value.Value, nameof(value.Value));
@@ -609,10 +608,7 @@ namespace Test.It.With.RabbitMQ
 			private Longstr _locales;
 			public Longstr Locales_
 			{
-				get
-				{
-					return _locales;
-				}
+				get => _locales;
 				set
 				{
 					Requires.NotNullAllowStructs(value.Value, nameof(value.Value));
@@ -646,13 +642,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 10;
 			public int MethodId { get; } = 11;
+
 			private PeerProperties _clientproperties;
 			public PeerProperties ClientProperties_
 			{
-				get
-				{
-					return _clientproperties;
-				}
+				get => _clientproperties;
 				set
 				{
 					_clientproperties = value;
@@ -666,10 +660,7 @@ namespace Test.It.With.RabbitMQ
 			private Shortstr _mechanism;
 			public Shortstr Mechanism_
 			{
-				get
-				{
-					return _mechanism;
-				}
+				get => _mechanism;
 				set
 				{
 					Requires.NotNullAllowStructs(value.Value, nameof(value.Value));
@@ -684,10 +675,7 @@ namespace Test.It.With.RabbitMQ
 			private Longstr _response;
 			public Longstr Response_
 			{
-				get
-				{
-					return _response;
-				}
+				get => _response;
 				set
 				{
 					Requires.NotNullAllowStructs(value.Value, nameof(value.Value));
@@ -702,10 +690,7 @@ namespace Test.It.With.RabbitMQ
 			private Shortstr _locale;
 			public Shortstr Locale_
 			{
-				get
-				{
-					return _locale;
-				}
+				get => _locale;
 				set
 				{
 					Requires.NotNullAllowStructs(value.Value, nameof(value.Value));
@@ -739,6 +724,7 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 10;
 			public int MethodId { get; } = 20;
+
 			/// <summary>
 			/// Challenge information, a block of opaque binary data passed to the security
 			/// mechanism.
@@ -746,10 +732,7 @@ namespace Test.It.With.RabbitMQ
 			private Longstr _challenge;
 			public Longstr Challenge_
 			{
-				get
-				{
-					return _challenge;
-				}
+				get => _challenge;
 				set
 				{
 					_challenge = value;
@@ -775,6 +758,7 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 10;
 			public int MethodId { get; } = 21;
+
 			/// <summary>
 			/// A block of opaque data passed to the security mechanism. The contents of this
 			/// data are defined by the SASL security mechanism.
@@ -782,10 +766,7 @@ namespace Test.It.With.RabbitMQ
 			private Longstr _response;
 			public Longstr Response_
 			{
-				get
-				{
-					return _response;
-				}
+				get => _response;
 				set
 				{
 					Requires.NotNullAllowStructs(value.Value, nameof(value.Value));
@@ -812,6 +793,7 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 10;
 			public int MethodId { get; } = 30;
+
 			/// <summary>
 			/// Specifies highest channel number that the server permits.  Usable channel numbers
 			/// are in the range 1..channel-max.  Zero indicates no specified limit.
@@ -819,10 +801,7 @@ namespace Test.It.With.RabbitMQ
 			private Short _channelmax;
 			public Short ChannelMax_
 			{
-				get
-				{
-					return _channelmax;
-				}
+				get => _channelmax;
 				set
 				{
 					_channelmax = value;
@@ -838,10 +817,7 @@ namespace Test.It.With.RabbitMQ
 			private Long _framemax;
 			public Long FrameMax_
 			{
-				get
-				{
-					return _framemax;
-				}
+				get => _framemax;
 				set
 				{
 					_framemax = value;
@@ -855,10 +831,7 @@ namespace Test.It.With.RabbitMQ
 			private Short _heartbeat;
 			public Short Heartbeat_
 			{
-				get
-				{
-					return _heartbeat;
-				}
+				get => _heartbeat;
 				set
 				{
 					_heartbeat = value;
@@ -888,16 +861,14 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 10;
 			public int MethodId { get; } = 31;
+
 			/// <summary>
 			/// The maximum total number of channels that the client will use per connection.
 			/// </summary>
 			private Short _channelmax;
 			public Short ChannelMax_
 			{
-				get
-				{
-					return _channelmax;
-				}
+				get => _channelmax;
 				set
 				{
 					Requires.NotNullAllowStructs(value.Value, nameof(value.Value));
@@ -916,10 +887,7 @@ namespace Test.It.With.RabbitMQ
 			private Long _framemax;
 			public Long FrameMax_
 			{
-				get
-				{
-					return _framemax;
-				}
+				get => _framemax;
 				set
 				{
 					_framemax = value;
@@ -933,10 +901,7 @@ namespace Test.It.With.RabbitMQ
 			private Short _heartbeat;
 			public Short Heartbeat_
 			{
-				get
-				{
-					return _heartbeat;
-				}
+				get => _heartbeat;
 				set
 				{
 					_heartbeat = value;
@@ -968,16 +933,14 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 10;
 			public int MethodId { get; } = 40;
+
 			/// <summary>
 			/// The name of the virtual host to work with.
 			/// </summary>
 			private Path _virtualhost;
 			public Path VirtualHost_
 			{
-				get
-				{
-					return _virtualhost;
-				}
+				get => _virtualhost;
 				set
 				{
 					_virtualhost = value;
@@ -987,10 +950,7 @@ namespace Test.It.With.RabbitMQ
 			private Shortstr _reserved1;
 			public Shortstr Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -1000,10 +960,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _reserved2;
 			public Bit Reserved2_
 			{
-				get
-				{
-					return _reserved2;
-				}
+				get => _reserved2;
 				set
 				{
 					_reserved2 = value;
@@ -1032,13 +989,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 10;
 			public int MethodId { get; } = 41;
+
 			private Shortstr _reserved1;
 			public Shortstr Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -1066,13 +1021,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 10;
 			public int MethodId { get; } = 50;
+
 			private ReplyCode _replycode;
 			public ReplyCode ReplyCode_
 			{
-				get
-				{
-					return _replycode;
-				}
+				get => _replycode;
 				set
 				{
 					_replycode = value;
@@ -1082,10 +1035,7 @@ namespace Test.It.With.RabbitMQ
 			private ReplyText _replytext;
 			public ReplyText ReplyText_
 			{
-				get
-				{
-					return _replytext;
-				}
+				get => _replytext;
 				set
 				{
 					_replytext = value;
@@ -1099,10 +1049,7 @@ namespace Test.It.With.RabbitMQ
 			private ClassId _classid;
 			public ClassId ClassId_
 			{
-				get
-				{
-					return _classid;
-				}
+				get => _classid;
 				set
 				{
 					_classid = value;
@@ -1115,10 +1062,7 @@ namespace Test.It.With.RabbitMQ
 			private MethodId _methodid;
 			public MethodId MethodId_
 			{
-				get
-				{
-					return _methodid;
-				}
+				get => _methodid;
 				set
 				{
 					_methodid = value;
@@ -1176,13 +1120,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 20;
 			public int MethodId { get; } = 10;
+
 			private Shortstr _reserved1;
 			public Shortstr Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -1207,13 +1149,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 20;
 			public int MethodId { get; } = 11;
+
 			private Longstr _reserved1;
 			public Longstr Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -1242,6 +1182,7 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 20;
 			public int MethodId { get; } = 20;
+
 			/// <summary>
 			/// If 1, the peer starts sending content frames. If 0, the peer stops sending
 			/// content frames.
@@ -1249,10 +1190,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _active;
 			public Bit Active_
 			{
-				get
-				{
-					return _active;
-				}
+				get => _active;
 				set
 				{
 					_active = value;
@@ -1277,6 +1215,7 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 20;
 			public int MethodId { get; } = 21;
+
 			/// <summary>
 			/// Confirms the setting of the processed flow method: 1 means the peer will start
 			/// sending or continue to send content frames; 0 means it will not.
@@ -1284,10 +1223,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _active;
 			public Bit Active_
 			{
-				get
-				{
-					return _active;
-				}
+				get => _active;
 				set
 				{
 					_active = value;
@@ -1315,13 +1251,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 20;
 			public int MethodId { get; } = 40;
+
 			private ReplyCode _replycode;
 			public ReplyCode ReplyCode_
 			{
-				get
-				{
-					return _replycode;
-				}
+				get => _replycode;
 				set
 				{
 					_replycode = value;
@@ -1331,10 +1265,7 @@ namespace Test.It.With.RabbitMQ
 			private ReplyText _replytext;
 			public ReplyText ReplyText_
 			{
-				get
-				{
-					return _replytext;
-				}
+				get => _replytext;
 				set
 				{
 					_replytext = value;
@@ -1348,10 +1279,7 @@ namespace Test.It.With.RabbitMQ
 			private ClassId _classid;
 			public ClassId ClassId_
 			{
-				get
-				{
-					return _classid;
-				}
+				get => _classid;
 				set
 				{
 					_classid = value;
@@ -1364,10 +1292,7 @@ namespace Test.It.With.RabbitMQ
 			private MethodId _methodid;
 			public MethodId MethodId_
 			{
-				get
-				{
-					return _methodid;
-				}
+				get => _methodid;
 				set
 				{
 					_methodid = value;
@@ -1426,13 +1351,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 40;
 			public int MethodId { get; } = 10;
+
 			private Short _reserved1;
 			public Short Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -1442,10 +1365,7 @@ namespace Test.It.With.RabbitMQ
 			private ExchangeName _exchange;
 			public ExchangeName Exchange_
 			{
-				get
-				{
-					return _exchange;
-				}
+				get => _exchange;
 				set
 				{
 					Requires.NotNullAllowStructs(value.Value, nameof(value.Value));
@@ -1462,10 +1382,7 @@ namespace Test.It.With.RabbitMQ
 			private Shortstr _type;
 			public Shortstr Type_
 			{
-				get
-				{
-					return _type;
-				}
+				get => _type;
 				set
 				{
 					_type = value;
@@ -1483,10 +1400,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _passive;
 			public Bit Passive_
 			{
-				get
-				{
-					return _passive;
-				}
+				get => _passive;
 				set
 				{
 					_passive = value;
@@ -1501,10 +1415,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _durable;
 			public Bit Durable_
 			{
-				get
-				{
-					return _durable;
-				}
+				get => _durable;
 				set
 				{
 					_durable = value;
@@ -1514,10 +1425,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _reserved2;
 			public Bit Reserved2_
 			{
-				get
-				{
-					return _reserved2;
-				}
+				get => _reserved2;
 				set
 				{
 					_reserved2 = value;
@@ -1527,10 +1435,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _reserved3;
 			public Bit Reserved3_
 			{
-				get
-				{
-					return _reserved3;
-				}
+				get => _reserved3;
 				set
 				{
 					_reserved3 = value;
@@ -1540,10 +1445,7 @@ namespace Test.It.With.RabbitMQ
 			private NoWait _nowait;
 			public NoWait NoWait_
 			{
-				get
-				{
-					return _nowait;
-				}
+				get => _nowait;
 				set
 				{
 					_nowait = value;
@@ -1557,10 +1459,7 @@ namespace Test.It.With.RabbitMQ
 			private Table _arguments;
 			public Table Arguments_
 			{
-				get
-				{
-					return _arguments;
-				}
+				get => _arguments;
 				set
 				{
 					_arguments = value;
@@ -1622,13 +1521,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 40;
 			public int MethodId { get; } = 20;
+
 			private Short _reserved1;
 			public Short Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -1638,10 +1535,7 @@ namespace Test.It.With.RabbitMQ
 			private ExchangeName _exchange;
 			public ExchangeName Exchange_
 			{
-				get
-				{
-					return _exchange;
-				}
+				get => _exchange;
 				set
 				{
 					Requires.NotNullAllowStructs(value.Value, nameof(value.Value));
@@ -1657,10 +1551,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _ifunused;
 			public Bit IfUnused_
 			{
-				get
-				{
-					return _ifunused;
-				}
+				get => _ifunused;
 				set
 				{
 					_ifunused = value;
@@ -1670,10 +1561,7 @@ namespace Test.It.With.RabbitMQ
 			private NoWait _nowait;
 			public NoWait NoWait_
 			{
-				get
-				{
-					return _nowait;
-				}
+				get => _nowait;
 				set
 				{
 					_nowait = value;
@@ -1733,13 +1621,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 50;
 			public int MethodId { get; } = 10;
+
 			private Short _reserved1;
 			public Short Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -1749,10 +1635,7 @@ namespace Test.It.With.RabbitMQ
 			private QueueName _queue;
 			public QueueName Queue_
 			{
-				get
-				{
-					return _queue;
-				}
+				get => _queue;
 				set
 				{
 					_queue = value;
@@ -1770,10 +1653,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _passive;
 			public Bit Passive_
 			{
-				get
-				{
-					return _passive;
-				}
+				get => _passive;
 				set
 				{
 					_passive = value;
@@ -1790,10 +1670,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _durable;
 			public Bit Durable_
 			{
-				get
-				{
-					return _durable;
-				}
+				get => _durable;
 				set
 				{
 					_durable = value;
@@ -1808,10 +1685,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _exclusive;
 			public Bit Exclusive_
 			{
-				get
-				{
-					return _exclusive;
-				}
+				get => _exclusive;
 				set
 				{
 					_exclusive = value;
@@ -1827,10 +1701,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _autodelete;
 			public Bit AutoDelete_
 			{
-				get
-				{
-					return _autodelete;
-				}
+				get => _autodelete;
 				set
 				{
 					_autodelete = value;
@@ -1840,10 +1711,7 @@ namespace Test.It.With.RabbitMQ
 			private NoWait _nowait;
 			public NoWait NoWait_
 			{
-				get
-				{
-					return _nowait;
-				}
+				get => _nowait;
 				set
 				{
 					_nowait = value;
@@ -1857,10 +1725,7 @@ namespace Test.It.With.RabbitMQ
 			private Table _arguments;
 			public Table Arguments_
 			{
-				get
-				{
-					return _arguments;
-				}
+				get => _arguments;
 				set
 				{
 					_arguments = value;
@@ -1900,6 +1765,7 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 50;
 			public int MethodId { get; } = 11;
+
 			/// <summary>
 			/// Reports the name of the queue. If the server generated a queue name, this field
 			/// contains that name.
@@ -1907,10 +1773,7 @@ namespace Test.It.With.RabbitMQ
 			private QueueName _queue;
 			public QueueName Queue_
 			{
-				get
-				{
-					return _queue;
-				}
+				get => _queue;
 				set
 				{
 					Requires.NotNullAllowStructs(value.Value, nameof(value.Value));
@@ -1921,10 +1784,7 @@ namespace Test.It.With.RabbitMQ
 			private MessageCount _messagecount;
 			public MessageCount MessageCount_
 			{
-				get
-				{
-					return _messagecount;
-				}
+				get => _messagecount;
 				set
 				{
 					_messagecount = value;
@@ -1938,10 +1798,7 @@ namespace Test.It.With.RabbitMQ
 			private Long _consumercount;
 			public Long ConsumerCount_
 			{
-				get
-				{
-					return _consumercount;
-				}
+				get => _consumercount;
 				set
 				{
 					_consumercount = value;
@@ -1973,13 +1830,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 50;
 			public int MethodId { get; } = 20;
+
 			private Short _reserved1;
 			public Short Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -1992,10 +1847,7 @@ namespace Test.It.With.RabbitMQ
 			private QueueName _queue;
 			public QueueName Queue_
 			{
-				get
-				{
-					return _queue;
-				}
+				get => _queue;
 				set
 				{
 					_queue = value;
@@ -2005,10 +1857,7 @@ namespace Test.It.With.RabbitMQ
 			private ExchangeName _exchange;
 			public ExchangeName Exchange_
 			{
-				get
-				{
-					return _exchange;
-				}
+				get => _exchange;
 				set
 				{
 					_exchange = value;
@@ -2028,10 +1877,7 @@ namespace Test.It.With.RabbitMQ
 			private Shortstr _routingkey;
 			public Shortstr RoutingKey_
 			{
-				get
-				{
-					return _routingkey;
-				}
+				get => _routingkey;
 				set
 				{
 					_routingkey = value;
@@ -2041,10 +1887,7 @@ namespace Test.It.With.RabbitMQ
 			private NoWait _nowait;
 			public NoWait NoWait_
 			{
-				get
-				{
-					return _nowait;
-				}
+				get => _nowait;
 				set
 				{
 					_nowait = value;
@@ -2058,10 +1901,7 @@ namespace Test.It.With.RabbitMQ
 			private Table _arguments;
 			public Table Arguments_
 			{
-				get
-				{
-					return _arguments;
-				}
+				get => _arguments;
 				set
 				{
 					_arguments = value;
@@ -2115,13 +1955,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 50;
 			public int MethodId { get; } = 50;
+
 			private Short _reserved1;
 			public Short Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -2134,10 +1972,7 @@ namespace Test.It.With.RabbitMQ
 			private QueueName _queue;
 			public QueueName Queue_
 			{
-				get
-				{
-					return _queue;
-				}
+				get => _queue;
 				set
 				{
 					_queue = value;
@@ -2150,10 +1985,7 @@ namespace Test.It.With.RabbitMQ
 			private ExchangeName _exchange;
 			public ExchangeName Exchange_
 			{
-				get
-				{
-					return _exchange;
-				}
+				get => _exchange;
 				set
 				{
 					_exchange = value;
@@ -2166,10 +1998,7 @@ namespace Test.It.With.RabbitMQ
 			private Shortstr _routingkey;
 			public Shortstr RoutingKey_
 			{
-				get
-				{
-					return _routingkey;
-				}
+				get => _routingkey;
 				set
 				{
 					_routingkey = value;
@@ -2182,10 +2011,7 @@ namespace Test.It.With.RabbitMQ
 			private Table _arguments;
 			public Table Arguments_
 			{
-				get
-				{
-					return _arguments;
-				}
+				get => _arguments;
 				set
 				{
 					_arguments = value;
@@ -2238,13 +2064,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 50;
 			public int MethodId { get; } = 30;
+
 			private Short _reserved1;
 			public Short Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -2257,10 +2081,7 @@ namespace Test.It.With.RabbitMQ
 			private QueueName _queue;
 			public QueueName Queue_
 			{
-				get
-				{
-					return _queue;
-				}
+				get => _queue;
 				set
 				{
 					_queue = value;
@@ -2270,10 +2091,7 @@ namespace Test.It.With.RabbitMQ
 			private NoWait _nowait;
 			public NoWait NoWait_
 			{
-				get
-				{
-					return _nowait;
-				}
+				get => _nowait;
 				set
 				{
 					_nowait = value;
@@ -2302,16 +2120,14 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 50;
 			public int MethodId { get; } = 31;
+
 			/// <summary>
 			/// Reports the number of messages purged.
 			/// </summary>
 			private MessageCount _messagecount;
 			public MessageCount MessageCount_
 			{
-				get
-				{
-					return _messagecount;
-				}
+				get => _messagecount;
 				set
 				{
 					_messagecount = value;
@@ -2338,13 +2154,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 50;
 			public int MethodId { get; } = 40;
+
 			private Short _reserved1;
 			public Short Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -2357,10 +2171,7 @@ namespace Test.It.With.RabbitMQ
 			private QueueName _queue;
 			public QueueName Queue_
 			{
-				get
-				{
-					return _queue;
-				}
+				get => _queue;
 				set
 				{
 					_queue = value;
@@ -2375,10 +2186,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _ifunused;
 			public Bit IfUnused_
 			{
-				get
-				{
-					return _ifunused;
-				}
+				get => _ifunused;
 				set
 				{
 					_ifunused = value;
@@ -2391,10 +2199,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _ifempty;
 			public Bit IfEmpty_
 			{
-				get
-				{
-					return _ifempty;
-				}
+				get => _ifempty;
 				set
 				{
 					_ifempty = value;
@@ -2404,10 +2209,7 @@ namespace Test.It.With.RabbitMQ
 			private NoWait _nowait;
 			public NoWait NoWait_
 			{
-				get
-				{
-					return _nowait;
-				}
+				get => _nowait;
 				set
 				{
 					_nowait = value;
@@ -2440,16 +2242,14 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 50;
 			public int MethodId { get; } = 41;
+
 			/// <summary>
 			/// Reports the number of messages deleted.
 			/// </summary>
 			private MessageCount _messagecount;
 			public MessageCount MessageCount_
 			{
-				get
-				{
-					return _messagecount;
-				}
+				get => _messagecount;
 				set
 				{
 					_messagecount = value;
@@ -2484,6 +2284,7 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 10;
+
 			/// <summary>
 			/// The client can request that messages be sent in advance so that when the client
 			/// finishes processing a message, the following message is already held locally,
@@ -2497,10 +2298,7 @@ namespace Test.It.With.RabbitMQ
 			private Long _prefetchsize;
 			public Long PrefetchSize_
 			{
-				get
-				{
-					return _prefetchsize;
-				}
+				get => _prefetchsize;
 				set
 				{
 					_prefetchsize = value;
@@ -2516,10 +2314,7 @@ namespace Test.It.With.RabbitMQ
 			private Short _prefetchcount;
 			public Short PrefetchCount_
 			{
-				get
-				{
-					return _prefetchcount;
-				}
+				get => _prefetchcount;
 				set
 				{
 					_prefetchcount = value;
@@ -2533,10 +2328,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _global;
 			public Bit Global_
 			{
-				get
-				{
-					return _global;
-				}
+				get => _global;
 				set
 				{
 					_global = value;
@@ -2588,13 +2380,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 20;
+
 			private Short _reserved1;
 			public Short Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -2607,10 +2397,7 @@ namespace Test.It.With.RabbitMQ
 			private QueueName _queue;
 			public QueueName Queue_
 			{
-				get
-				{
-					return _queue;
-				}
+				get => _queue;
 				set
 				{
 					_queue = value;
@@ -2625,10 +2412,7 @@ namespace Test.It.With.RabbitMQ
 			private ConsumerTag _consumertag;
 			public ConsumerTag ConsumerTag_
 			{
-				get
-				{
-					return _consumertag;
-				}
+				get => _consumertag;
 				set
 				{
 					_consumertag = value;
@@ -2638,10 +2422,7 @@ namespace Test.It.With.RabbitMQ
 			private NoLocal _nolocal;
 			public NoLocal NoLocal_
 			{
-				get
-				{
-					return _nolocal;
-				}
+				get => _nolocal;
 				set
 				{
 					_nolocal = value;
@@ -2651,10 +2432,7 @@ namespace Test.It.With.RabbitMQ
 			private NoAck _noack;
 			public NoAck NoAck_
 			{
-				get
-				{
-					return _noack;
-				}
+				get => _noack;
 				set
 				{
 					_noack = value;
@@ -2668,10 +2446,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _exclusive;
 			public Bit Exclusive_
 			{
-				get
-				{
-					return _exclusive;
-				}
+				get => _exclusive;
 				set
 				{
 					_exclusive = value;
@@ -2681,10 +2456,7 @@ namespace Test.It.With.RabbitMQ
 			private NoWait _nowait;
 			public NoWait NoWait_
 			{
-				get
-				{
-					return _nowait;
-				}
+				get => _nowait;
 				set
 				{
 					_nowait = value;
@@ -2698,10 +2470,7 @@ namespace Test.It.With.RabbitMQ
 			private Table _arguments;
 			public Table Arguments_
 			{
-				get
-				{
-					return _arguments;
-				}
+				get => _arguments;
 				set
 				{
 					_arguments = value;
@@ -2741,16 +2510,14 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 21;
+
 			/// <summary>
 			/// Holds the consumer tag specified by the client or provided by the server.
 			/// </summary>
 			private ConsumerTag _consumertag;
 			public ConsumerTag ConsumerTag_
 			{
-				get
-				{
-					return _consumertag;
-				}
+				get => _consumertag;
 				set
 				{
 					_consumertag = value;
@@ -2778,13 +2545,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 30;
+
 			private ConsumerTag _consumertag;
 			public ConsumerTag ConsumerTag_
 			{
-				get
-				{
-					return _consumertag;
-				}
+				get => _consumertag;
 				set
 				{
 					_consumertag = value;
@@ -2794,10 +2559,7 @@ namespace Test.It.With.RabbitMQ
 			private NoWait _nowait;
 			public NoWait NoWait_
 			{
-				get
-				{
-					return _nowait;
-				}
+				get => _nowait;
 				set
 				{
 					_nowait = value;
@@ -2824,13 +2586,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 31;
+
 			private ConsumerTag _consumertag;
 			public ConsumerTag ConsumerTag_
 			{
-				get
-				{
-					return _consumertag;
-				}
+				get => _consumertag;
 				set
 				{
 					_consumertag = value;
@@ -2857,13 +2617,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 40;
+
 			private Short _reserved1;
 			public Short Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -2878,10 +2636,7 @@ namespace Test.It.With.RabbitMQ
 			private ExchangeName _exchange;
 			public ExchangeName Exchange_
 			{
-				get
-				{
-					return _exchange;
-				}
+				get => _exchange;
 				set
 				{
 					_exchange = value;
@@ -2895,10 +2650,7 @@ namespace Test.It.With.RabbitMQ
 			private Shortstr _routingkey;
 			public Shortstr RoutingKey_
 			{
-				get
-				{
-					return _routingkey;
-				}
+				get => _routingkey;
 				set
 				{
 					_routingkey = value;
@@ -2913,10 +2665,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _mandatory;
 			public Bit Mandatory_
 			{
-				get
-				{
-					return _mandatory;
-				}
+				get => _mandatory;
 				set
 				{
 					_mandatory = value;
@@ -2932,10 +2681,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _immediate;
 			public Bit Immediate_
 			{
-				get
-				{
-					return _immediate;
-				}
+				get => _immediate;
 				set
 				{
 					_immediate = value;
@@ -2971,13 +2717,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 50;
+
 			private ReplyCode _replycode;
 			public ReplyCode ReplyCode_
 			{
-				get
-				{
-					return _replycode;
-				}
+				get => _replycode;
 				set
 				{
 					_replycode = value;
@@ -2987,10 +2731,7 @@ namespace Test.It.With.RabbitMQ
 			private ReplyText _replytext;
 			public ReplyText ReplyText_
 			{
-				get
-				{
-					return _replytext;
-				}
+				get => _replytext;
 				set
 				{
 					_replytext = value;
@@ -3004,10 +2745,7 @@ namespace Test.It.With.RabbitMQ
 			private ExchangeName _exchange;
 			public ExchangeName Exchange_
 			{
-				get
-				{
-					return _exchange;
-				}
+				get => _exchange;
 				set
 				{
 					_exchange = value;
@@ -3020,10 +2758,7 @@ namespace Test.It.With.RabbitMQ
 			private Shortstr _routingkey;
 			public Shortstr RoutingKey_
 			{
-				get
-				{
-					return _routingkey;
-				}
+				get => _routingkey;
 				set
 				{
 					_routingkey = value;
@@ -3057,13 +2792,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 60;
+
 			private ConsumerTag _consumertag;
 			public ConsumerTag ConsumerTag_
 			{
-				get
-				{
-					return _consumertag;
-				}
+				get => _consumertag;
 				set
 				{
 					_consumertag = value;
@@ -3073,10 +2806,7 @@ namespace Test.It.With.RabbitMQ
 			private DeliveryTag _deliverytag;
 			public DeliveryTag DeliveryTag_
 			{
-				get
-				{
-					return _deliverytag;
-				}
+				get => _deliverytag;
 				set
 				{
 					_deliverytag = value;
@@ -3086,10 +2816,7 @@ namespace Test.It.With.RabbitMQ
 			private Redelivered _redelivered;
 			public Redelivered Redelivered_
 			{
-				get
-				{
-					return _redelivered;
-				}
+				get => _redelivered;
 				set
 				{
 					_redelivered = value;
@@ -3103,10 +2830,7 @@ namespace Test.It.With.RabbitMQ
 			private ExchangeName _exchange;
 			public ExchangeName Exchange_
 			{
-				get
-				{
-					return _exchange;
-				}
+				get => _exchange;
 				set
 				{
 					_exchange = value;
@@ -3119,10 +2843,7 @@ namespace Test.It.With.RabbitMQ
 			private Shortstr _routingkey;
 			public Shortstr RoutingKey_
 			{
-				get
-				{
-					return _routingkey;
-				}
+				get => _routingkey;
 				set
 				{
 					_routingkey = value;
@@ -3157,13 +2878,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 70;
+
 			private Short _reserved1;
 			public Short Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -3176,10 +2895,7 @@ namespace Test.It.With.RabbitMQ
 			private QueueName _queue;
 			public QueueName Queue_
 			{
-				get
-				{
-					return _queue;
-				}
+				get => _queue;
 				set
 				{
 					_queue = value;
@@ -3189,10 +2905,7 @@ namespace Test.It.With.RabbitMQ
 			private NoAck _noack;
 			public NoAck NoAck_
 			{
-				get
-				{
-					return _noack;
-				}
+				get => _noack;
 				set
 				{
 					_noack = value;
@@ -3223,13 +2936,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 71;
+
 			private DeliveryTag _deliverytag;
 			public DeliveryTag DeliveryTag_
 			{
-				get
-				{
-					return _deliverytag;
-				}
+				get => _deliverytag;
 				set
 				{
 					_deliverytag = value;
@@ -3239,10 +2950,7 @@ namespace Test.It.With.RabbitMQ
 			private Redelivered _redelivered;
 			public Redelivered Redelivered_
 			{
-				get
-				{
-					return _redelivered;
-				}
+				get => _redelivered;
 				set
 				{
 					_redelivered = value;
@@ -3256,10 +2964,7 @@ namespace Test.It.With.RabbitMQ
 			private ExchangeName _exchange;
 			public ExchangeName Exchange_
 			{
-				get
-				{
-					return _exchange;
-				}
+				get => _exchange;
 				set
 				{
 					_exchange = value;
@@ -3272,10 +2977,7 @@ namespace Test.It.With.RabbitMQ
 			private Shortstr _routingkey;
 			public Shortstr RoutingKey_
 			{
-				get
-				{
-					return _routingkey;
-				}
+				get => _routingkey;
 				set
 				{
 					_routingkey = value;
@@ -3285,10 +2987,7 @@ namespace Test.It.With.RabbitMQ
 			private MessageCount _messagecount;
 			public MessageCount MessageCount_
 			{
-				get
-				{
-					return _messagecount;
-				}
+				get => _messagecount;
 				set
 				{
 					_messagecount = value;
@@ -3322,13 +3021,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 72;
+
 			private Shortstr _reserved1;
 			public Shortstr Reserved1_
 			{
-				get
-				{
-					return _reserved1;
-				}
+				get => _reserved1;
 				set
 				{
 					_reserved1 = value;
@@ -3355,13 +3052,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 80;
+
 			private DeliveryTag _deliverytag;
 			public DeliveryTag DeliveryTag_
 			{
-				get
-				{
-					return _deliverytag;
-				}
+				get => _deliverytag;
 				set
 				{
 					_deliverytag = value;
@@ -3377,10 +3072,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _multiple;
 			public Bit Multiple_
 			{
-				get
-				{
-					return _multiple;
-				}
+				get => _multiple;
 				set
 				{
 					_multiple = value;
@@ -3409,13 +3101,11 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 90;
+
 			private DeliveryTag _deliverytag;
 			public DeliveryTag DeliveryTag_
 			{
-				get
-				{
-					return _deliverytag;
-				}
+				get => _deliverytag;
 				set
 				{
 					_deliverytag = value;
@@ -3429,10 +3119,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _requeue;
 			public Bit Requeue_
 			{
-				get
-				{
-					return _requeue;
-				}
+				get => _requeue;
 				set
 				{
 					_requeue = value;
@@ -3461,6 +3148,7 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 100;
+
 			/// <summary>
 			/// If this field is zero, the message will be redelivered to the original
 			/// recipient. If this bit is 1, the server will attempt to requeue the message,
@@ -3469,10 +3157,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _requeue;
 			public Bit Requeue_
 			{
-				get
-				{
-					return _requeue;
-				}
+				get => _requeue;
 				set
 				{
 					_requeue = value;
@@ -3499,6 +3184,7 @@ namespace Test.It.With.RabbitMQ
 		{
 			public int ClassId { get; } = 60;
 			public int MethodId { get; } = 110;
+
 			/// <summary>
 			/// If this field is zero, the message will be redelivered to the original
 			/// recipient. If this bit is 1, the server will attempt to requeue the message,
@@ -3507,10 +3193,7 @@ namespace Test.It.With.RabbitMQ
 			private Bit _requeue;
 			public Bit Requeue_
 			{
-				get
-				{
-					return _requeue;
-				}
+				get => _requeue;
 				set
 				{
 					_requeue = value;

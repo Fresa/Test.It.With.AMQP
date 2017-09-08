@@ -5,23 +5,23 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Test.It.With.Amqp.ProtocolGenerator")]
+[assembly: AssemblyTitle("Test.It.With.Amqp.Protocol")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Test.It.With.Amqp.ProtocolGenerator")]
+[assembly: AssemblyProduct("Test.It.With.Amqp.Protocol")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: InternalsVisibleTo("Test.It.With.RabbitMQ")]
+[assembly: InternalsVisibleTo("Test.It.With.RabbitMQ.Tests")]
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f630b0ce-0e14-416c-b6c6-0239aabd6859")]
+[assembly: Guid("672ec94a-a850-4018-a656-93a1eabc1da0")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -101,7 +101,6 @@
     <Compile Include="AmqpReaderTests.cs" />
     <Compile Include="BlockingMemoryStreamTests.cs" />
     <Compile Include="EnumerableExtensions.cs" />
-    <Compile Include="ProtocolGeneratorTests.cs" />
     <Compile Include="ProtocolTests.cs" />
     <Compile Include="StringExtensionTests.cs" />
     <Compile Include="TestApplication\IMessagePublisher.cs" />
@@ -123,6 +122,10 @@
     <ProjectReference Include="..\..\..\External\rabbitmq-dotnet-client\projects\client\RabbitMQ.Client\RabbitMQ.Client.csproj">
       <Project>{1B37E63B-3EC1-426C-A83E-A68D058D1892}</Project>
       <Name>RabbitMQ.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj">
+      <Project>{672EC94A-A850-4018-A656-93A1EABC1DA0}</Project>
+      <Name>Test.It.With.Amqp.Protocol</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Testing.RabbitMQ\Test.It.With.RabbitMQ.csproj">
       <Project>{4012460B-68EE-414C-868F-938443DE9680}</Project>

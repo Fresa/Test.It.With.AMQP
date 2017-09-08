@@ -1,5 +1,5 @@
 ﻿using Should.Fluent;
-using Test.It.With.RabbitMQ.Extensions;
+using Test.It.With.Amqp.Protocol.Extensions;
 using Test.It.With.XUnit;
 using Xunit;
 

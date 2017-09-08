@@ -1,15 +1,15 @@
-﻿<#@ template language="C#" visibility="internal" debug="false" hostspecific="true" #>
+﻿<#@ template language="C#" debug="true" hostspecific="true" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Xml" #>
 <#@ assembly name="System.Text.RegularExpressions" #>
-<#@ assembly name="$(SolutionDir)\Testing.RabbitMQ\bin\Debug\Test.It.With.RabbitMQ.dll" #>
-<#@ import namespace="Test.It.With.RabbitMQ.Protocol" #>
+<#@ assembly name="$(SolutionDir)\Test.It.With.Amqp.Protocol\bin\Debug\Test.It.With.Amqp.Protocol.dll" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Xml" #>
-<#@ import namespace="Test.It.With.RabbitMQ.Extensions" #>
-<#@ import namespace="Test.It.With.RabbitMQ.Protocol.Definitions" #>
+<#@ import namespace="Test.It.With.Amqp.Protocol" #>
+<#@ import namespace="Test.It.With.Amqp.Protocol.Definitions" #>
+<#@ import namespace="Test.It.With.Amqp.Protocol.Extensions" #>
 <#
     var path = Path.Combine(Host.ResolvePath(@"amqp0-9-1\amqp0-9-1.xml"));
     var definition = new XmlDocument();
@@ -21,8 +21,8 @@
     void Block(Action action) { this.Block(action); }
 	void PrintOnNewRowForEach<TValue>(IEnumerable<TValue> iterator, Action<TValue> action) { this.PrintOnNewRowForEach(iterator, action); }
 	void PrintOnNewRowForEachWithIndex<TValue>(IEnumerable<TValue> iterator, ActionDelegateWithIndexAndLength<TValue> action) { this.PrintOnNewRowForEach(iterator, action); }
-	void WriteNewLine(int count = 1) { this.WriteNewLine(count); }
-
+	void _(int count = 1) { this.WriteNewLine(count); }
+    
     void GenerateAssertion(Assert assert, string parameterName)
     {
         switch (assert.Check.ToLower())
@@ -51,107 +51,93 @@
             return;
         }
 
-        #>/// <summary><#
-        WriteNewLine();
+        #>/// <summary><# _();
         foreach (var documentationRow in documentation.Trim().Split('\n'))
         {
-            #>/// <#= documentationRow.Trim() #><#
-            WriteNewLine();
+            #>/// <#= documentationRow.Trim() #><# _();
         }
-		#>/// </summary><#
-        WriteNewLine();
+		#>/// </summary><# _();
     }
 #>
 // WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
 
 using System;
-using Validation;
-using System.Text.RegularExpressions;
-using Test.It.With.RabbitMQ.MessageClient;
-using Test.It.With.RabbitMQ.Protocol;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using Validation;
+using Test.It.With.Amqp.Protocol;
 
-namespace Test.It.With.RabbitMQ<#
-Block(() =>
+namespace Test.It.With.Amqp<# Block(() =>
 {
 	// Protocol
-	#>internal class AmqProtocol : IProtocol<#
-	Block(() =>
+	#>internal class AmqProtocol : IProtocol<# Block(() =>
 	{
-	    #>public IVersion Version { get; } = new ProtocolVersion(); <#
-	    WriteNewLine(2);
-	    #>public IMethod GetMethod(AmqpReader reader)<#
-	    Block(() =>
+	    #>public IVersion Version { get; } = new ProtocolVersion(); <# _(2);
+
+	    #>public IMethod GetMethod(AmqpReader reader)<# Block(() =>
 	    {
-			#>var classId = reader.ReadShortUnsignedInteger();<#
-			WriteNewLine();
-			#>var methodId = reader.ReadShortUnsignedInteger();<#
-	        WriteNewLine(2);
-			#>var method = _methodFactory[classId][methodId]();<#
-			WriteNewLine();
-			#>method.ReadFrom(reader);<#
-			WriteNewLine();
+			#>var classId = reader.ReadShortUnsignedInteger();<# _(2);
+			
+			#>if (_methodFactory.TryGetValue(classId, out Dictionary<int, Func<IMethod>> methodRegister) == false)<# Block(() =>
+			{
+			    #>throw new InvalidOperationException($"There is no class with id {classId} defined.");<#
+			}); _(2);
+			
+			#>var methodId = reader.ReadShortUnsignedInteger();<# _(2);
+
+			#>if (methodRegister.TryGetValue(methodId, out Func<IMethod> factory) == false)<# Block(() =>
+			{
+			    #>throw new InvalidOperationException($"There is no method defined with id {methodId} in class with id {classId}.");<#
+			}); _(2);
+			
+			#>var method = factory();<# _();			
+			#>method.ReadFrom(reader);<# _();
 			#>return method;<#
-	    });
+	    }); _(2);
 
-	    WriteNewLine(2);
-
-	    #>private readonly Dictionary<int, Dictionary<int, Func<IMethod>>> _methodFactory = new Dictionary<int, Dictionary<int, Func<IMethod>>><#
-	    Block(() =>
+	    #>private readonly Dictionary<int, Dictionary<int, Func<IMethod>>> _methodFactory = new Dictionary<int, Dictionary<int, Func<IMethod>>><# Block(() =>
 	    {
 			PrintOnNewRowForEachWithIndex(protocol.Classes.Values, (@class, index, length) =>
 			{
 				#>{ <#= @class.Index #>, new Dictionary<int, Func<IMethod>> { <#
-				WriteNewLine();
+				_();
 			    Tab(() =>
 			    {
 			        PrintOnNewRowForEachWithIndex(@class.Methods.Values, (method, methodIndex, methodCount) =>
 			        {
 						#>{ <#= method.Index #>, () => new <#= @class.Name.ToPascalCase('-') #>.<#= method.Name.ToPascalCase('-') #>() }<#
 
-						if (methodIndex + 1 != methodCount)
-						{
-							#>,<#
-						}
+						if (methodIndex + 1 != methodCount) {#>,<#}
 			        });
 			    });
 				#>}}<#
 
-			    if (index + 1 != length)
-			    {
-			        #>,<#
-			    }
+			    if (index + 1 != length) {#>,<#}
 			});
 	    });
-		#>;<#
-		WriteNewLine(2);
+		#>;<# _(2);
 
-		#>private class ProtocolVersion : IVersion<#
-	    Block(() =>
+		#>private class ProtocolVersion : IVersion<# Block(() =>
 	    {
-	        #>public int Major { get; } = <#= protocol.Major #>;<#
-	        WriteNewLine();
-	        #>public int Minor { get; } = <#= protocol.Minor #>;<#
-	        WriteNewLine();
+	        #>public int Major { get; } = <#= protocol.Major #>;<# _();
+	        #>public int Minor { get; } = <#= protocol.Minor #>;<# _();
 	        #>public int Revision { get; } = <#= protocol.Revision #>;<#
 	    });
-	});
+	}); _(2);
 
-    WriteNewLine(2);
+	// Frame
+
 
 	// Constants
-    #>internal class Constants<#
-	Block(() =>
+    #>internal class Constants<# Block(() =>
     {
         PrintOnNewRowForEachWithIndex(protocol.Constants.Values, (constant, index, count) =>
         {
             GenerateDocumentation(constant.Documentation);
-            #>private const int <#= constant.Name.ToPascalCase('-') #> = <#= constant.Value #>;<#
-            if (index + 1 != count) WriteNewLine();
+            #>internal const int <#= constant.Name.ToPascalCase('-') #> = <#= constant.Value #>;<#
+            if (index + 1 != count) _();
         });
-    });
-    
-    WriteNewLine(2);
+    }); _(2);
 
     // Domain types
     PrintOnNewRowForEach(protocol.Domains.Values, domain =>
@@ -160,87 +146,66 @@ Block(() =>
         var type = typeConverter.Convert(domain.Type).GetPrettyFullName();
 
         GenerateDocumentation(domain.Documentation);
-        #>public struct <#= className #> <# 
-		Block(() =>
+        #>public struct <#= className #> <# Block(() =>
         {
-            #>public <#= type #> Value { get; }<#
-            WriteNewLine(2);
-            #>internal <#= className #>(<#= type #> value)<#
-			Block(() =>
+            #>public <#= type #> Value { get; }<# _(2);
+
+            #>internal <#= className #>(<#= type #> value)<# Block(() =>
             {
                 PrintOnNewRowForEach(domain.Asserts, assert => { GenerateAssertion(assert, "value"); });
                 #>Value = value;<#
             });
-        });
-        WriteNewLine();
+        }); _();
     });
     
     // Methods
     PrintOnNewRowForEach(protocol.Classes.Values, @class =>
     {
-        var className = @class.Name.ToPascalCase('-');
-
-		WriteNewLine();
+        var className = @class.Name.ToPascalCase('-'); _();
 		GenerateDocumentation(@class.Documentation);
-		#>public class <#= className #><#
-		Block(() => 
+		#>public class <#= className #><# Block(() => 
 		{
 			PrintOnNewRowForEachWithIndex(@class.Methods.Values, (method, index, length) =>
 			{
 				var methodName = method.Name.ToPascalCase('-');
 
 				GenerateDocumentation(method.Documentation);
-				#>public class <#= methodName #> : IMethod<#
-				Block(() =>
+				#>public class <#= methodName #> : IMethod<# Block(() =>
 				{
-					#>public int ClassId { get; } = <#= @class.Index #>;<#
-					WriteNewLine();
-					#>public int MethodId { get; } = <#= @method.Index #>;<#
-					WriteNewLine();
+					#>public int ClassId { get; } = <#= @class.Index #>;<# _();
+					#>public int MethodId { get; } = <#= @method.Index #>;<# _(2);
 
 					PrintOnNewRowForEach(method.Fields.Values, field =>
 					{
 						GenerateDocumentation(field.Documentation);
 
-						#>private <#= field.Domain.Name.ToPascalCase('-') #> _<#= field.Name.ToCamelCase('-') #>;<#
-						WriteNewLine();
-						#>public <#= field.Domain.Name.ToPascalCase('-') #> <#= field.Name.ToPascalCase('-') #>_<# 
-						Block(() =>
+						#>private <#= field.Domain.Name.ToPascalCase('-') #> _<#= field.Name.ToCamelCase('-') #>;<# _();
+						#>public <#= field.Domain.Name.ToPascalCase('-') #> <#= field.Name.ToPascalCase('-') #>_<# Block(() =>
 						{
-							#>get<#
-							Block(() =>
-							{
-								#>return _<#= field.Name.ToCamelCase('-') #>;<#
-							});
-							WriteNewLine();
-							#>set<#
-							Block(() =>
+							#>get => _<#= field.Name.ToCamelCase('-') #>;<# _();
+							#>set<# Block(() =>
 							{
 								if (field.Asserts.Any())
 								{
 									PrintOnNewRowForEach(field.Asserts, fieldAssert =>
 									{
 										GenerateAssertion(fieldAssert, "value.Value");
-									});
-									WriteNewLine();
+									}); _();
 								}
 								#>_<#= field.Name.ToCamelCase('-') #> = value;<#
 							});
-						});
-						WriteNewLine();
+						}); _();
 					});
+					if (method.Fields.Values.Any()) {_();}
 
-					WriteNewLine();
-					#>public void ReadFrom(AmqpReader reader)<#
-					Block(() =>
+					#>public void ReadFrom(AmqpReader reader)<# Block(() =>
 					{
 						PrintOnNewRowForEach(method.Fields.Values, field =>
 						{
 							#>_<#= field.Name.ToCamelCase('-') #> = new <#= field.Domain.Name.ToPascalCase('-') #>(reader.<#= typeConverter.GetReaderMethod(field.Domain.Type) #>());<#
 						});
-					});
+					}); _(2);
 
-					WriteNewLine(2);
 					#>public void WriteTo(AmqpWriter writer)<#
 					Block(() =>
 					{
@@ -251,10 +216,7 @@ Block(() =>
 					});
 				});
 
-			    if (index + 1 != length)
-			    {
-			        WriteNewLine();			        
-			    }
+			    if (index + 1 != length) _();
 			});
 		});
     });

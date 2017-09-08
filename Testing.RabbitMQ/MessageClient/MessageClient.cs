@@ -7,7 +7,9 @@ using RabbitMQ.Client.Framing;
 using RabbitMQ.Client.Framing.Impl;
 using RabbitMQ.Client.Impl;
 using RabbitMQ.Util;
+using Test.It.With.Amqp.Protocol;
 using Test.It.With.RabbitMQ.NetworkClient;
+using Frame = RabbitMQ.Client.Impl.Frame;
 
 namespace Test.It.With.RabbitMQ.MessageClient
 {
