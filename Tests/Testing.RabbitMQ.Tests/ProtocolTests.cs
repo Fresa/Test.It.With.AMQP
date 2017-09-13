@@ -17,7 +17,7 @@ namespace Test.It.With.RabbitMQ.Tests
 
         protected override void Given()
         {
-            var path = Path.Combine(Environment.CurrentDirectory, @"Resources\amqp0-9-1\amqp0-9-1.xml");
+            var path = Path.Combine(Environment.CurrentDirectory, @"amqp0-9-1\amqp0-9-1.xml");
             _definition = new XmlDocument();
             _definition.Load(path);
         }
@@ -101,6 +101,17 @@ namespace Test.It.With.RabbitMQ.Tests
                         field.Value.Rules.Any(rule => 
                             rule.Documentation.Trim().StartsWith("If the client specifies a channel max that is higher than the value provided") &&
                             rule.Name == "upper-limit"))));
+
+            _protocol.Classes.Should().Contain.One(pair =>
+                pair.Key == "basic" &&
+                pair.Value.Fields.Count == 14 &&
+                pair.Value.Fields.Any(field =>
+                    field.Key == "content-type" &&
+                    field.Value.Name == "content-type" &&
+                    field.Value.Label == "MIME content type" &&
+                    field.Value.Domain.Type == "shortstr" &&
+                    field.Value.Domain.Name == "shortstr" &&
+                    field.Value.Domain.Label == "short string"));
         }
         
         [Fact]

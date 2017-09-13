@@ -33,6 +33,20 @@ namespace Test.It.With.Amqp
 			return method;
 		}
 
+		public IContentHeader GetContentHeader(AmqpReader reader)
+		{
+			var classId = reader.ReadShortUnsignedInteger();
+
+			if (_contentHeaderFactory.TryGetValue(classId, out Func<IContentHeader> factory) == false)
+			{
+				throw new InvalidOperationException($"There is no content header defined for class with id {classId}.");
+			}
+
+			var contentHeader = factory();
+			contentHeader.ReadFrom(reader);
+			return contentHeader;
+		}
+
 		private readonly Dictionary<int, Dictionary<int, Func<IMethod>>> _methodFactory = new Dictionary<int, Dictionary<int, Func<IMethod>>>
 		{
 			{ 10, new Dictionary<int, Func<IMethod>> { 
@@ -94,6 +108,11 @@ namespace Test.It.With.Amqp
 				{ 21, () => new Tx.CommitOk() },
 				{ 30, () => new Tx.Rollback() },
 				{ 31, () => new Tx.RollbackOk() }}}
+		};
+
+		private readonly Dictionary<int, Func<IContentHeader>> _contentHeaderFactory = new Dictionary<int, Func<IContentHeader>>
+		{
+			{ 60, () => new Basic.ContentHeader() }
 		};
 
 		private class ProtocolVersion : IVersion
@@ -278,7 +297,8 @@ namespace Test.It.With.Amqp
 		internal ExchangeName(System.String value)
 		{
 			Requires.Range(value.Length <= 127, nameof(value));
-			Requires.That(Regex.IsMatch(value, "^[a-zA-Z0-9-_.:]*$"), nameof(value), "Value must meet the following regex criteria: ^[a-zA-Z0-9-_.:]*$");Value = value;
+			Requires.That(Regex.IsMatch(value, "^[a-zA-Z0-9-_.:]*$"), nameof(value), "Value must meet the following regex criteria: ^[a-zA-Z0-9-_.:]*$");
+			Value = value;
 		}
 	}
 
@@ -349,7 +369,8 @@ namespace Test.It.With.Amqp
 		internal Path(System.String value)
 		{
 			Requires.NotNullAllowStructs(value, nameof(value));
-			Requires.Range(value.Length <= 127, nameof(value));Value = value;
+			Requires.Range(value.Length <= 127, nameof(value));
+			Value = value;
 		}
 	}
 
@@ -381,7 +402,8 @@ namespace Test.It.With.Amqp
 		internal QueueName(System.String value)
 		{
 			Requires.Range(value.Length <= 127, nameof(value));
-			Requires.That(Regex.IsMatch(value, "^[a-zA-Z0-9-_.:]*$"), nameof(value), "Value must meet the following regex criteria: ^[a-zA-Z0-9-_.:]*$");Value = value;
+			Requires.That(Regex.IsMatch(value, "^[a-zA-Z0-9-_.:]*$"), nameof(value), "Value must meet the following regex criteria: ^[a-zA-Z0-9-_.:]*$");
+			Value = value;
 		}
 	}
 
@@ -425,7 +447,8 @@ namespace Test.It.With.Amqp
 
 		internal ReplyCode(System.Int16 value)
 		{
-			Requires.NotNullAllowStructs(value, nameof(value));Value = value;
+			Requires.NotNullAllowStructs(value, nameof(value));
+			Value = value;
 		}
 	}
 
@@ -439,7 +462,8 @@ namespace Test.It.With.Amqp
 
 		internal ReplyText(System.String value)
 		{
-			Requires.NotNullAllowStructs(value, nameof(value));Value = value;
+			Requires.NotNullAllowStructs(value, nameof(value));
+			Value = value;
 		}
 	}
 
@@ -537,6 +561,19 @@ namespace Test.It.With.Amqp
 	/// The connection class provides methods for a client to establish a network connection to
 	/// a server, and for both peers to operate the connection thereafter.
 	/// </summary>
+	/// <example>
+	/// 
+	///       connection          = open-connection *use-connection close-connection
+	///       open-connection     = C:protocol-header
+	///                             S:START C:START-OK
+	///                             *challenge
+	///                             S:TUNE C:TUNE-OK
+	///                             C:OPEN S:OPEN-OK
+	///       challenge           = S:SECURE C:SECURE-OK
+	///       use-connection      = *channel
+	///       close-connection    = C:CLOSE S:CLOSE-OK
+	///                           / S:CLOSE C:CLOSE-OK
+	/// </example>
 	public class Connection
 	{
 		/// <summary>
@@ -546,15 +583,15 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Start : IMethod
 		{
-			public int ClassId { get; } = 10;
-			public int MethodId { get; } = 10;
+			public int ProtocolClassId => 10;
+			public int ProtocolMethodId => 10;
 
 			/// <summary>
 			/// The major version number can take any value from 0 to 99 as defined in the
 			/// AMQP specification.
 			/// </summary>
 			private Octet _versionmajor;
-			public Octet VersionMajor_
+			public Octet VersionMajor
 			{
 				get => _versionmajor;
 				set
@@ -568,7 +605,7 @@ namespace Test.It.With.Amqp
 			/// AMQP specification.
 			/// </summary>
 			private Octet _versionminor;
-			public Octet VersionMinor_
+			public Octet VersionMinor
 			{
 				get => _versionminor;
 				set
@@ -578,7 +615,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private PeerProperties _serverproperties;
-			public PeerProperties ServerProperties_
+			public PeerProperties ServerProperties
 			{
 				get => _serverproperties;
 				set
@@ -591,7 +628,7 @@ namespace Test.It.With.Amqp
 			/// A list of the security mechanisms that the server supports, delimited by spaces.
 			/// </summary>
 			private Longstr _mechanisms;
-			public Longstr Mechanisms_
+			public Longstr Mechanisms
 			{
 				get => _mechanisms;
 				set
@@ -606,7 +643,7 @@ namespace Test.It.With.Amqp
 			/// locale defines the language in which the server will send reply texts.
 			/// </summary>
 			private Longstr _locales;
-			public Longstr Locales_
+			public Longstr Locales
 			{
 				get => _locales;
 				set
@@ -640,11 +677,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class StartOk : IMethod
 		{
-			public int ClassId { get; } = 10;
-			public int MethodId { get; } = 11;
+			public int ProtocolClassId => 10;
+			public int ProtocolMethodId => 11;
 
 			private PeerProperties _clientproperties;
-			public PeerProperties ClientProperties_
+			public PeerProperties ClientProperties
 			{
 				get => _clientproperties;
 				set
@@ -658,7 +695,7 @@ namespace Test.It.With.Amqp
 			/// specified by the server.
 			/// </summary>
 			private Shortstr _mechanism;
-			public Shortstr Mechanism_
+			public Shortstr Mechanism
 			{
 				get => _mechanism;
 				set
@@ -673,7 +710,7 @@ namespace Test.It.With.Amqp
 			/// data are defined by the SASL security mechanism.
 			/// </summary>
 			private Longstr _response;
-			public Longstr Response_
+			public Longstr Response
 			{
 				get => _response;
 				set
@@ -688,7 +725,7 @@ namespace Test.It.With.Amqp
 			/// specified by the server.
 			/// </summary>
 			private Shortstr _locale;
-			public Shortstr Locale_
+			public Shortstr Locale
 			{
 				get => _locale;
 				set
@@ -722,15 +759,15 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Secure : IMethod
 		{
-			public int ClassId { get; } = 10;
-			public int MethodId { get; } = 20;
+			public int ProtocolClassId => 10;
+			public int ProtocolMethodId => 20;
 
 			/// <summary>
 			/// Challenge information, a block of opaque binary data passed to the security
 			/// mechanism.
 			/// </summary>
 			private Longstr _challenge;
-			public Longstr Challenge_
+			public Longstr Challenge
 			{
 				get => _challenge;
 				set
@@ -756,15 +793,15 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class SecureOk : IMethod
 		{
-			public int ClassId { get; } = 10;
-			public int MethodId { get; } = 21;
+			public int ProtocolClassId => 10;
+			public int ProtocolMethodId => 21;
 
 			/// <summary>
 			/// A block of opaque data passed to the security mechanism. The contents of this
 			/// data are defined by the SASL security mechanism.
 			/// </summary>
 			private Longstr _response;
-			public Longstr Response_
+			public Longstr Response
 			{
 				get => _response;
 				set
@@ -791,15 +828,15 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Tune : IMethod
 		{
-			public int ClassId { get; } = 10;
-			public int MethodId { get; } = 30;
+			public int ProtocolClassId => 10;
+			public int ProtocolMethodId => 30;
 
 			/// <summary>
 			/// Specifies highest channel number that the server permits.  Usable channel numbers
 			/// are in the range 1..channel-max.  Zero indicates no specified limit.
 			/// </summary>
 			private Short _channelmax;
-			public Short ChannelMax_
+			public Short ChannelMax
 			{
 				get => _channelmax;
 				set
@@ -815,7 +852,7 @@ namespace Test.It.With.Amqp
 			/// frames if it cannot allocate resources for them.
 			/// </summary>
 			private Long _framemax;
-			public Long FrameMax_
+			public Long FrameMax
 			{
 				get => _framemax;
 				set
@@ -829,7 +866,7 @@ namespace Test.It.With.Amqp
 			/// Zero means the server does not want a heartbeat.
 			/// </summary>
 			private Short _heartbeat;
-			public Short Heartbeat_
+			public Short Heartbeat
 			{
 				get => _heartbeat;
 				set
@@ -859,14 +896,14 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class TuneOk : IMethod
 		{
-			public int ClassId { get; } = 10;
-			public int MethodId { get; } = 31;
+			public int ProtocolClassId => 10;
+			public int ProtocolMethodId => 31;
 
 			/// <summary>
 			/// The maximum total number of channels that the client will use per connection.
 			/// </summary>
 			private Short _channelmax;
-			public Short ChannelMax_
+			public Short ChannelMax
 			{
 				get => _channelmax;
 				set
@@ -885,7 +922,7 @@ namespace Test.It.With.Amqp
 			/// be broken into frames of arbitrary size.
 			/// </summary>
 			private Long _framemax;
-			public Long FrameMax_
+			public Long FrameMax
 			{
 				get => _framemax;
 				set
@@ -899,7 +936,7 @@ namespace Test.It.With.Amqp
 			/// means the client does not want a heartbeat.
 			/// </summary>
 			private Short _heartbeat;
-			public Short Heartbeat_
+			public Short Heartbeat
 			{
 				get => _heartbeat;
 				set
@@ -931,14 +968,14 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Open : IMethod
 		{
-			public int ClassId { get; } = 10;
-			public int MethodId { get; } = 40;
+			public int ProtocolClassId => 10;
+			public int ProtocolMethodId => 40;
 
 			/// <summary>
 			/// The name of the virtual host to work with.
 			/// </summary>
 			private Path _virtualhost;
-			public Path VirtualHost_
+			public Path VirtualHost
 			{
 				get => _virtualhost;
 				set
@@ -948,7 +985,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private Shortstr _reserved1;
-			public Shortstr Reserved1_
+			public Shortstr Reserved1
 			{
 				get => _reserved1;
 				set
@@ -958,7 +995,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private Bit _reserved2;
-			public Bit Reserved2_
+			public Bit Reserved2
 			{
 				get => _reserved2;
 				set
@@ -987,11 +1024,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class OpenOk : IMethod
 		{
-			public int ClassId { get; } = 10;
-			public int MethodId { get; } = 41;
+			public int ProtocolClassId => 10;
+			public int ProtocolMethodId => 41;
 
 			private Shortstr _reserved1;
-			public Shortstr Reserved1_
+			public Shortstr Reserved1
 			{
 				get => _reserved1;
 				set
@@ -1019,11 +1056,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Close : IMethod
 		{
-			public int ClassId { get; } = 10;
-			public int MethodId { get; } = 50;
+			public int ProtocolClassId => 10;
+			public int ProtocolMethodId => 50;
 
 			private ReplyCode _replycode;
-			public ReplyCode ReplyCode_
+			public ReplyCode ReplyCode
 			{
 				get => _replycode;
 				set
@@ -1033,7 +1070,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private ReplyText _replytext;
-			public ReplyText ReplyText_
+			public ReplyText ReplyText
 			{
 				get => _replytext;
 				set
@@ -1047,7 +1084,7 @@ namespace Test.It.With.Amqp
 			/// method.
 			/// </summary>
 			private ClassId _classid;
-			public ClassId ClassId_
+			public ClassId ClassId
 			{
 				get => _classid;
 				set
@@ -1060,7 +1097,7 @@ namespace Test.It.With.Amqp
 			/// When the close is provoked by a method exception, this is the ID of the method.
 			/// </summary>
 			private MethodId _methodid;
-			public MethodId MethodId_
+			public MethodId MethodId
 			{
 				get => _methodid;
 				set
@@ -1092,8 +1129,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class CloseOk : IMethod
 		{
-			public int ClassId { get; } = 10;
-			public int MethodId { get; } = 51;
+			public int ProtocolClassId => 10;
+			public int ProtocolMethodId => 51;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1111,6 +1148,16 @@ namespace Test.It.With.Amqp
 	/// The channel class provides methods for a client to establish a channel to a
 	/// server and for both peers to operate the channel thereafter.
 	/// </summary>
+	/// <example>
+	/// 
+	///       channel             = open-channel *use-channel close-channel
+	///       open-channel        = C:OPEN S:OPEN-OK
+	///       use-channel         = C:FLOW S:FLOW-OK
+	///                           / S:FLOW C:FLOW-OK
+	///                           / functional-class
+	///       close-channel       = C:CLOSE S:CLOSE-OK
+	///                           / S:CLOSE C:CLOSE-OK
+	/// </example>
 	public class Channel
 	{
 		/// <summary>
@@ -1118,11 +1165,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Open : IMethod
 		{
-			public int ClassId { get; } = 20;
-			public int MethodId { get; } = 10;
+			public int ProtocolClassId => 20;
+			public int ProtocolMethodId => 10;
 
 			private Shortstr _reserved1;
-			public Shortstr Reserved1_
+			public Shortstr Reserved1
 			{
 				get => _reserved1;
 				set
@@ -1147,11 +1194,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class OpenOk : IMethod
 		{
-			public int ClassId { get; } = 20;
-			public int MethodId { get; } = 11;
+			public int ProtocolClassId => 20;
+			public int ProtocolMethodId => 11;
 
 			private Longstr _reserved1;
-			public Longstr Reserved1_
+			public Longstr Reserved1
 			{
 				get => _reserved1;
 				set
@@ -1180,15 +1227,15 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Flow : IMethod
 		{
-			public int ClassId { get; } = 20;
-			public int MethodId { get; } = 20;
+			public int ProtocolClassId => 20;
+			public int ProtocolMethodId => 20;
 
 			/// <summary>
 			/// If 1, the peer starts sending content frames. If 0, the peer stops sending
 			/// content frames.
 			/// </summary>
 			private Bit _active;
-			public Bit Active_
+			public Bit Active
 			{
 				get => _active;
 				set
@@ -1213,15 +1260,15 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class FlowOk : IMethod
 		{
-			public int ClassId { get; } = 20;
-			public int MethodId { get; } = 21;
+			public int ProtocolClassId => 20;
+			public int ProtocolMethodId => 21;
 
 			/// <summary>
 			/// Confirms the setting of the processed flow method: 1 means the peer will start
 			/// sending or continue to send content frames; 0 means it will not.
 			/// </summary>
 			private Bit _active;
-			public Bit Active_
+			public Bit Active
 			{
 				get => _active;
 				set
@@ -1249,11 +1296,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Close : IMethod
 		{
-			public int ClassId { get; } = 20;
-			public int MethodId { get; } = 40;
+			public int ProtocolClassId => 20;
+			public int ProtocolMethodId => 40;
 
 			private ReplyCode _replycode;
-			public ReplyCode ReplyCode_
+			public ReplyCode ReplyCode
 			{
 				get => _replycode;
 				set
@@ -1263,7 +1310,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private ReplyText _replytext;
-			public ReplyText ReplyText_
+			public ReplyText ReplyText
 			{
 				get => _replytext;
 				set
@@ -1277,7 +1324,7 @@ namespace Test.It.With.Amqp
 			/// method.
 			/// </summary>
 			private ClassId _classid;
-			public ClassId ClassId_
+			public ClassId ClassId
 			{
 				get => _classid;
 				set
@@ -1290,7 +1337,7 @@ namespace Test.It.With.Amqp
 			/// When the close is provoked by a method exception, this is the ID of the method.
 			/// </summary>
 			private MethodId _methodid;
-			public MethodId MethodId_
+			public MethodId MethodId
 			{
 				get => _methodid;
 				set
@@ -1322,8 +1369,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class CloseOk : IMethod
 		{
-			public int ClassId { get; } = 20;
-			public int MethodId { get; } = 41;
+			public int ProtocolClassId => 20;
+			public int ProtocolMethodId => 41;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1341,6 +1388,11 @@ namespace Test.It.With.Amqp
 	/// Exchanges match and distribute messages across queues. Exchanges can be configured in
 	/// the server or declared at runtime.
 	/// </summary>
+	/// <example>
+	/// 
+	///       exchange            = C:DECLARE  S:DECLARE-OK
+	///                           / C:DELETE   S:DELETE-OK
+	/// </example>
 	public class Exchange
 	{
 		/// <summary>
@@ -1349,11 +1401,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Declare : IMethod
 		{
-			public int ClassId { get; } = 40;
-			public int MethodId { get; } = 10;
+			public int ProtocolClassId => 40;
+			public int ProtocolMethodId => 10;
 
 			private Short _reserved1;
-			public Short Reserved1_
+			public Short Reserved1
 			{
 				get => _reserved1;
 				set
@@ -1363,7 +1415,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private ExchangeName _exchange;
-			public ExchangeName Exchange_
+			public ExchangeName Exchange
 			{
 				get => _exchange;
 				set
@@ -1380,7 +1432,7 @@ namespace Test.It.With.Amqp
 			/// change the type of an existing exchange.
 			/// </summary>
 			private Shortstr _type;
-			public Shortstr Type_
+			public Shortstr Type
 			{
 				get => _type;
 				set
@@ -1398,7 +1450,7 @@ namespace Test.It.With.Amqp
 			/// Arguments are compared for semantic equivalence.
 			/// </summary>
 			private Bit _passive;
-			public Bit Passive_
+			public Bit Passive
 			{
 				get => _passive;
 				set
@@ -1413,7 +1465,7 @@ namespace Test.It.With.Amqp
 			/// (transient exchanges) are purged if/when a server restarts.
 			/// </summary>
 			private Bit _durable;
-			public Bit Durable_
+			public Bit Durable
 			{
 				get => _durable;
 				set
@@ -1423,7 +1475,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private Bit _reserved2;
-			public Bit Reserved2_
+			public Bit Reserved2
 			{
 				get => _reserved2;
 				set
@@ -1433,7 +1485,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private Bit _reserved3;
-			public Bit Reserved3_
+			public Bit Reserved3
 			{
 				get => _reserved3;
 				set
@@ -1443,7 +1495,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private NoWait _nowait;
-			public NoWait NoWait_
+			public NoWait NoWait
 			{
 				get => _nowait;
 				set
@@ -1457,7 +1509,7 @@ namespace Test.It.With.Amqp
 			/// arguments depends on the server implementation.
 			/// </summary>
 			private Table _arguments;
-			public Table Arguments_
+			public Table Arguments
 			{
 				get => _arguments;
 				set
@@ -1499,8 +1551,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class DeclareOk : IMethod
 		{
-			public int ClassId { get; } = 40;
-			public int MethodId { get; } = 11;
+			public int ProtocolClassId => 40;
+			public int ProtocolMethodId => 11;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1519,11 +1571,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Delete : IMethod
 		{
-			public int ClassId { get; } = 40;
-			public int MethodId { get; } = 20;
+			public int ProtocolClassId => 40;
+			public int ProtocolMethodId => 20;
 
 			private Short _reserved1;
-			public Short Reserved1_
+			public Short Reserved1
 			{
 				get => _reserved1;
 				set
@@ -1533,7 +1585,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private ExchangeName _exchange;
-			public ExchangeName Exchange_
+			public ExchangeName Exchange
 			{
 				get => _exchange;
 				set
@@ -1549,7 +1601,7 @@ namespace Test.It.With.Amqp
 			/// channel exception instead.
 			/// </summary>
 			private Bit _ifunused;
-			public Bit IfUnused_
+			public Bit IfUnused
 			{
 				get => _ifunused;
 				set
@@ -1559,7 +1611,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private NoWait _nowait;
-			public NoWait NoWait_
+			public NoWait NoWait
 			{
 				get => _nowait;
 				set
@@ -1590,8 +1642,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class DeleteOk : IMethod
 		{
-			public int ClassId { get; } = 40;
-			public int MethodId { get; } = 21;
+			public int ProtocolClassId => 40;
+			public int ProtocolMethodId => 21;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1610,6 +1662,14 @@ namespace Test.It.With.Amqp
 	/// runtime. Queues must be attached to at least one exchange in order to receive messages
 	/// from publishers.
 	/// </summary>
+	/// <example>
+	/// 
+	///       queue               = C:DECLARE  S:DECLARE-OK
+	///                           / C:BIND     S:BIND-OK
+	///                           / C:UNBIND   S:UNBIND-OK
+	///                           / C:PURGE    S:PURGE-OK
+	///                           / C:DELETE   S:DELETE-OK
+	/// </example>
 	public class Queue
 	{
 		/// <summary>
@@ -1619,11 +1679,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Declare : IMethod
 		{
-			public int ClassId { get; } = 50;
-			public int MethodId { get; } = 10;
+			public int ProtocolClassId => 50;
+			public int ProtocolMethodId => 10;
 
 			private Short _reserved1;
-			public Short Reserved1_
+			public Short Reserved1
 			{
 				get => _reserved1;
 				set
@@ -1633,7 +1693,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private QueueName _queue;
-			public QueueName Queue_
+			public QueueName Queue
 			{
 				get => _queue;
 				set
@@ -1651,7 +1711,7 @@ namespace Test.It.With.Amqp
 			/// Arguments are compared for semantic equivalence.
 			/// </summary>
 			private Bit _passive;
-			public Bit Passive_
+			public Bit Passive
 			{
 				get => _passive;
 				set
@@ -1668,7 +1728,7 @@ namespace Test.It.With.Amqp
 			/// persistent messages to a transient queue.
 			/// </summary>
 			private Bit _durable;
-			public Bit Durable_
+			public Bit Durable
 			{
 				get => _durable;
 				set
@@ -1683,7 +1743,7 @@ namespace Test.It.With.Amqp
 			/// queue by other connections are not allowed.
 			/// </summary>
 			private Bit _exclusive;
-			public Bit Exclusive_
+			public Bit Exclusive
 			{
 				get => _exclusive;
 				set
@@ -1699,7 +1759,7 @@ namespace Test.It.With.Amqp
 			/// explicitly delete auto-delete queues using the Delete method as normal.
 			/// </summary>
 			private Bit _autodelete;
-			public Bit AutoDelete_
+			public Bit AutoDelete
 			{
 				get => _autodelete;
 				set
@@ -1709,7 +1769,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private NoWait _nowait;
-			public NoWait NoWait_
+			public NoWait NoWait
 			{
 				get => _nowait;
 				set
@@ -1723,7 +1783,7 @@ namespace Test.It.With.Amqp
 			/// arguments depends on the server implementation.
 			/// </summary>
 			private Table _arguments;
-			public Table Arguments_
+			public Table Arguments
 			{
 				get => _arguments;
 				set
@@ -1763,15 +1823,15 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class DeclareOk : IMethod
 		{
-			public int ClassId { get; } = 50;
-			public int MethodId { get; } = 11;
+			public int ProtocolClassId => 50;
+			public int ProtocolMethodId => 11;
 
 			/// <summary>
 			/// Reports the name of the queue. If the server generated a queue name, this field
 			/// contains that name.
 			/// </summary>
 			private QueueName _queue;
-			public QueueName Queue_
+			public QueueName Queue
 			{
 				get => _queue;
 				set
@@ -1782,7 +1842,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private MessageCount _messagecount;
-			public MessageCount MessageCount_
+			public MessageCount MessageCount
 			{
 				get => _messagecount;
 				set
@@ -1796,7 +1856,7 @@ namespace Test.It.With.Amqp
 			/// suspend activity (Channel.Flow) in which case they do not appear in this count.
 			/// </summary>
 			private Long _consumercount;
-			public Long ConsumerCount_
+			public Long ConsumerCount
 			{
 				get => _consumercount;
 				set
@@ -1828,11 +1888,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Bind : IMethod
 		{
-			public int ClassId { get; } = 50;
-			public int MethodId { get; } = 20;
+			public int ProtocolClassId => 50;
+			public int ProtocolMethodId => 20;
 
 			private Short _reserved1;
-			public Short Reserved1_
+			public Short Reserved1
 			{
 				get => _reserved1;
 				set
@@ -1845,7 +1905,7 @@ namespace Test.It.With.Amqp
 			/// Specifies the name of the queue to bind.
 			/// </summary>
 			private QueueName _queue;
-			public QueueName Queue_
+			public QueueName Queue
 			{
 				get => _queue;
 				set
@@ -1855,7 +1915,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private ExchangeName _exchange;
-			public ExchangeName Exchange_
+			public ExchangeName Exchange
 			{
 				get => _exchange;
 				set
@@ -1875,7 +1935,7 @@ namespace Test.It.With.Amqp
 			/// routing keys depends on the exchange implementation.
 			/// </summary>
 			private Shortstr _routingkey;
-			public Shortstr RoutingKey_
+			public Shortstr RoutingKey
 			{
 				get => _routingkey;
 				set
@@ -1885,7 +1945,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private NoWait _nowait;
-			public NoWait NoWait_
+			public NoWait NoWait
 			{
 				get => _nowait;
 				set
@@ -1899,7 +1959,7 @@ namespace Test.It.With.Amqp
 			/// depends on the exchange class.
 			/// </summary>
 			private Table _arguments;
-			public Table Arguments_
+			public Table Arguments
 			{
 				get => _arguments;
 				set
@@ -1934,8 +1994,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class BindOk : IMethod
 		{
-			public int ClassId { get; } = 50;
-			public int MethodId { get; } = 21;
+			public int ProtocolClassId => 50;
+			public int ProtocolMethodId => 21;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1953,11 +2013,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Unbind : IMethod
 		{
-			public int ClassId { get; } = 50;
-			public int MethodId { get; } = 50;
+			public int ProtocolClassId => 50;
+			public int ProtocolMethodId => 50;
 
 			private Short _reserved1;
-			public Short Reserved1_
+			public Short Reserved1
 			{
 				get => _reserved1;
 				set
@@ -1970,7 +2030,7 @@ namespace Test.It.With.Amqp
 			/// Specifies the name of the queue to unbind.
 			/// </summary>
 			private QueueName _queue;
-			public QueueName Queue_
+			public QueueName Queue
 			{
 				get => _queue;
 				set
@@ -1983,7 +2043,7 @@ namespace Test.It.With.Amqp
 			/// The name of the exchange to unbind from.
 			/// </summary>
 			private ExchangeName _exchange;
-			public ExchangeName Exchange_
+			public ExchangeName Exchange
 			{
 				get => _exchange;
 				set
@@ -1996,7 +2056,7 @@ namespace Test.It.With.Amqp
 			/// Specifies the routing key of the binding to unbind.
 			/// </summary>
 			private Shortstr _routingkey;
-			public Shortstr RoutingKey_
+			public Shortstr RoutingKey
 			{
 				get => _routingkey;
 				set
@@ -2009,7 +2069,7 @@ namespace Test.It.With.Amqp
 			/// Specifies the arguments of the binding to unbind.
 			/// </summary>
 			private Table _arguments;
-			public Table Arguments_
+			public Table Arguments
 			{
 				get => _arguments;
 				set
@@ -2042,8 +2102,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class UnbindOk : IMethod
 		{
-			public int ClassId { get; } = 50;
-			public int MethodId { get; } = 51;
+			public int ProtocolClassId => 50;
+			public int ProtocolMethodId => 51;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -2062,11 +2122,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Purge : IMethod
 		{
-			public int ClassId { get; } = 50;
-			public int MethodId { get; } = 30;
+			public int ProtocolClassId => 50;
+			public int ProtocolMethodId => 30;
 
 			private Short _reserved1;
-			public Short Reserved1_
+			public Short Reserved1
 			{
 				get => _reserved1;
 				set
@@ -2079,7 +2139,7 @@ namespace Test.It.With.Amqp
 			/// Specifies the name of the queue to purge.
 			/// </summary>
 			private QueueName _queue;
-			public QueueName Queue_
+			public QueueName Queue
 			{
 				get => _queue;
 				set
@@ -2089,7 +2149,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private NoWait _nowait;
-			public NoWait NoWait_
+			public NoWait NoWait
 			{
 				get => _nowait;
 				set
@@ -2118,14 +2178,14 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class PurgeOk : IMethod
 		{
-			public int ClassId { get; } = 50;
-			public int MethodId { get; } = 31;
+			public int ProtocolClassId => 50;
+			public int ProtocolMethodId => 31;
 
 			/// <summary>
 			/// Reports the number of messages purged.
 			/// </summary>
 			private MessageCount _messagecount;
-			public MessageCount MessageCount_
+			public MessageCount MessageCount
 			{
 				get => _messagecount;
 				set
@@ -2152,11 +2212,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Delete : IMethod
 		{
-			public int ClassId { get; } = 50;
-			public int MethodId { get; } = 40;
+			public int ProtocolClassId => 50;
+			public int ProtocolMethodId => 40;
 
 			private Short _reserved1;
-			public Short Reserved1_
+			public Short Reserved1
 			{
 				get => _reserved1;
 				set
@@ -2169,7 +2229,7 @@ namespace Test.It.With.Amqp
 			/// Specifies the name of the queue to delete.
 			/// </summary>
 			private QueueName _queue;
-			public QueueName Queue_
+			public QueueName Queue
 			{
 				get => _queue;
 				set
@@ -2184,7 +2244,7 @@ namespace Test.It.With.Amqp
 			/// exception instead.
 			/// </summary>
 			private Bit _ifunused;
-			public Bit IfUnused_
+			public Bit IfUnused
 			{
 				get => _ifunused;
 				set
@@ -2197,7 +2257,7 @@ namespace Test.It.With.Amqp
 			/// If set, the server will only delete the queue if it has no messages.
 			/// </summary>
 			private Bit _ifempty;
-			public Bit IfEmpty_
+			public Bit IfEmpty
 			{
 				get => _ifempty;
 				set
@@ -2207,7 +2267,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private NoWait _nowait;
-			public NoWait NoWait_
+			public NoWait NoWait
 			{
 				get => _nowait;
 				set
@@ -2240,14 +2300,14 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class DeleteOk : IMethod
 		{
-			public int ClassId { get; } = 50;
-			public int MethodId { get; } = 41;
+			public int ProtocolClassId => 50;
+			public int ProtocolMethodId => 41;
 
 			/// <summary>
 			/// Reports the number of messages deleted.
 			/// </summary>
 			private MessageCount _messagecount;
-			public MessageCount MessageCount_
+			public MessageCount MessageCount
 			{
 				get => _messagecount;
 				set
@@ -2271,8 +2331,203 @@ namespace Test.It.With.Amqp
 	/// <summary>
 	/// The Basic class provides methods that support an industry-standard messaging model.
 	/// </summary>
+	/// <example>
+	/// 
+	///       basic               = C:QOS S:QOS-OK
+	///                           / C:CONSUME S:CONSUME-OK
+	///                           / C:CANCEL S:CANCEL-OK
+	///                           / C:PUBLISH content
+	///                           / S:RETURN content
+	///                           / S:DELIVER content
+	///                           / C:GET ( S:GET-OK content / S:GET-EMPTY )
+	///                           / C:ACK
+	///                           / C:REJECT
+	///                           / C:RECOVER-ASYNC
+	///                           / C:RECOVER S:RECOVER-OK
+	/// </example>
 	public class Basic
 	{
+		public class ContentHeader : IContentHeader
+		{
+			public int ClassId { get; } = 60;
+
+			private Shortstr _contenttype;
+			public Shortstr ContentType
+			{
+				get => _contenttype;
+				set
+				{
+					_contenttype = value;
+				}
+			}
+
+			private Shortstr _contentencoding;
+			public Shortstr ContentEncoding
+			{
+				get => _contentencoding;
+				set
+				{
+					_contentencoding = value;
+				}
+			}
+
+			private Table _headers;
+			public Table Headers
+			{
+				get => _headers;
+				set
+				{
+					_headers = value;
+				}
+			}
+
+			private Octet _deliverymode;
+			public Octet DeliveryMode
+			{
+				get => _deliverymode;
+				set
+				{
+					_deliverymode = value;
+				}
+			}
+
+			private Octet _priority;
+			public Octet Priority
+			{
+				get => _priority;
+				set
+				{
+					_priority = value;
+				}
+			}
+
+			private Shortstr _correlationid;
+			public Shortstr CorrelationId
+			{
+				get => _correlationid;
+				set
+				{
+					_correlationid = value;
+				}
+			}
+
+			private Shortstr _replyto;
+			public Shortstr ReplyTo
+			{
+				get => _replyto;
+				set
+				{
+					_replyto = value;
+				}
+			}
+
+			private Shortstr _expiration;
+			public Shortstr Expiration
+			{
+				get => _expiration;
+				set
+				{
+					_expiration = value;
+				}
+			}
+
+			private Shortstr _messageid;
+			public Shortstr MessageId
+			{
+				get => _messageid;
+				set
+				{
+					_messageid = value;
+				}
+			}
+
+			private Timestamp _timestamp;
+			public Timestamp Timestamp
+			{
+				get => _timestamp;
+				set
+				{
+					_timestamp = value;
+				}
+			}
+
+			private Shortstr _type;
+			public Shortstr Type
+			{
+				get => _type;
+				set
+				{
+					_type = value;
+				}
+			}
+
+			private Shortstr _userid;
+			public Shortstr UserId
+			{
+				get => _userid;
+				set
+				{
+					_userid = value;
+				}
+			}
+
+			private Shortstr _appid;
+			public Shortstr AppId
+			{
+				get => _appid;
+				set
+				{
+					_appid = value;
+				}
+			}
+
+			private Shortstr _reserved;
+			public Shortstr Reserved
+			{
+				get => _reserved;
+				set
+				{
+					_reserved = value;
+				}
+			}
+
+			public void ReadFrom(AmqpReader reader)
+			{
+				_contenttype = new Shortstr(reader.ReadShortString());
+				_contentencoding = new Shortstr(reader.ReadShortString());
+				_headers = new Table(reader.ReadTable());
+				_deliverymode = new Octet(reader.ReadByte());
+				_priority = new Octet(reader.ReadByte());
+				_correlationid = new Shortstr(reader.ReadShortString());
+				_replyto = new Shortstr(reader.ReadShortString());
+				_expiration = new Shortstr(reader.ReadShortString());
+				_messageid = new Shortstr(reader.ReadShortString());
+				_timestamp = new Timestamp(reader.ReadTimestamp());
+				_type = new Shortstr(reader.ReadShortString());
+				_userid = new Shortstr(reader.ReadShortString());
+				_appid = new Shortstr(reader.ReadShortString());
+				_reserved = new Shortstr(reader.ReadShortString());
+			}
+
+			public void WriteTo(AmqpWriter writer)
+			{
+				writer.WriteShortString(_contenttype.Value);
+				writer.WriteShortString(_contentencoding.Value);
+				writer.WriteTable(_headers.Value);
+				writer.WriteByte(_deliverymode.Value);
+				writer.WriteByte(_priority.Value);
+				writer.WriteShortString(_correlationid.Value);
+				writer.WriteShortString(_replyto.Value);
+				writer.WriteShortString(_expiration.Value);
+				writer.WriteShortString(_messageid.Value);
+				writer.WriteTimestamp(_timestamp.Value);
+				writer.WriteShortString(_type.Value);
+				writer.WriteShortString(_userid.Value);
+				writer.WriteShortString(_appid.Value);
+				writer.WriteShortString(_reserved.Value);
+			}
+		}
+
 		/// <summary>
 		/// This method requests a specific quality of service. The QoS can be specified for the
 		/// current channel or for all channels on the connection. The particular properties and
@@ -2282,8 +2537,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Qos : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 10;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 10;
 
 			/// <summary>
 			/// The client can request that messages be sent in advance so that when the client
@@ -2296,7 +2551,7 @@ namespace Test.It.With.Amqp
 			/// apply. The prefetch-size is ignored if the no-ack option is set.
 			/// </summary>
 			private Long _prefetchsize;
-			public Long PrefetchSize_
+			public Long PrefetchSize
 			{
 				get => _prefetchsize;
 				set
@@ -2312,7 +2567,7 @@ namespace Test.It.With.Amqp
 			/// allow it. The prefetch-count is ignored if the no-ack option is set.
 			/// </summary>
 			private Short _prefetchcount;
-			public Short PrefetchCount_
+			public Short PrefetchCount
 			{
 				get => _prefetchcount;
 				set
@@ -2326,7 +2581,7 @@ namespace Test.It.With.Amqp
 			/// set, they are applied to the entire connection.
 			/// </summary>
 			private Bit _global;
-			public Bit Global_
+			public Bit Global
 			{
 				get => _global;
 				set
@@ -2357,8 +2612,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class QosOk : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 11;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 11;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -2378,11 +2633,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Consume : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 20;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 20;
 
 			private Short _reserved1;
-			public Short Reserved1_
+			public Short Reserved1
 			{
 				get => _reserved1;
 				set
@@ -2395,7 +2650,7 @@ namespace Test.It.With.Amqp
 			/// Specifies the name of the queue to consume from.
 			/// </summary>
 			private QueueName _queue;
-			public QueueName Queue_
+			public QueueName Queue
 			{
 				get => _queue;
 				set
@@ -2410,7 +2665,7 @@ namespace Test.It.With.Amqp
 			/// empty the server will generate a unique tag.
 			/// </summary>
 			private ConsumerTag _consumertag;
-			public ConsumerTag ConsumerTag_
+			public ConsumerTag ConsumerTag
 			{
 				get => _consumertag;
 				set
@@ -2420,7 +2675,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private NoLocal _nolocal;
-			public NoLocal NoLocal_
+			public NoLocal NoLocal
 			{
 				get => _nolocal;
 				set
@@ -2430,7 +2685,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private NoAck _noack;
-			public NoAck NoAck_
+			public NoAck NoAck
 			{
 				get => _noack;
 				set
@@ -2444,7 +2699,7 @@ namespace Test.It.With.Amqp
 			/// queue.
 			/// </summary>
 			private Bit _exclusive;
-			public Bit Exclusive_
+			public Bit Exclusive
 			{
 				get => _exclusive;
 				set
@@ -2454,7 +2709,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private NoWait _nowait;
-			public NoWait NoWait_
+			public NoWait NoWait
 			{
 				get => _nowait;
 				set
@@ -2468,7 +2723,7 @@ namespace Test.It.With.Amqp
 			/// arguments depends on the server implementation.
 			/// </summary>
 			private Table _arguments;
-			public Table Arguments_
+			public Table Arguments
 			{
 				get => _arguments;
 				set
@@ -2508,14 +2763,14 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class ConsumeOk : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 21;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 21;
 
 			/// <summary>
 			/// Holds the consumer tag specified by the client or provided by the server.
 			/// </summary>
 			private ConsumerTag _consumertag;
-			public ConsumerTag ConsumerTag_
+			public ConsumerTag ConsumerTag
 			{
 				get => _consumertag;
 				set
@@ -2543,11 +2798,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Cancel : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 30;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 30;
 
 			private ConsumerTag _consumertag;
-			public ConsumerTag ConsumerTag_
+			public ConsumerTag ConsumerTag
 			{
 				get => _consumertag;
 				set
@@ -2557,7 +2812,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private NoWait _nowait;
-			public NoWait NoWait_
+			public NoWait NoWait
 			{
 				get => _nowait;
 				set
@@ -2584,11 +2839,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class CancelOk : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 31;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 31;
 
 			private ConsumerTag _consumertag;
-			public ConsumerTag ConsumerTag_
+			public ConsumerTag ConsumerTag
 			{
 				get => _consumertag;
 				set
@@ -2615,11 +2870,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Publish : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 40;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 40;
 
 			private Short _reserved1;
-			public Short Reserved1_
+			public Short Reserved1
 			{
 				get => _reserved1;
 				set
@@ -2634,7 +2889,7 @@ namespace Test.It.With.Amqp
 			/// exchange does not exist, the server will raise a channel exception.
 			/// </summary>
 			private ExchangeName _exchange;
-			public ExchangeName Exchange_
+			public ExchangeName Exchange
 			{
 				get => _exchange;
 				set
@@ -2648,7 +2903,7 @@ namespace Test.It.With.Amqp
 			/// messages depending on the exchange configuration.
 			/// </summary>
 			private Shortstr _routingkey;
-			public Shortstr RoutingKey_
+			public Shortstr RoutingKey
 			{
 				get => _routingkey;
 				set
@@ -2663,7 +2918,7 @@ namespace Test.It.With.Amqp
 			/// Return method. If this flag is zero, the server silently drops the message.
 			/// </summary>
 			private Bit _mandatory;
-			public Bit Mandatory_
+			public Bit Mandatory
 			{
 				get => _mandatory;
 				set
@@ -2679,7 +2934,7 @@ namespace Test.It.With.Amqp
 			/// will queue the message, but with no guarantee that it will ever be consumed.
 			/// </summary>
 			private Bit _immediate;
-			public Bit Immediate_
+			public Bit Immediate
 			{
 				get => _immediate;
 				set
@@ -2715,11 +2970,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Return : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 50;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 50;
 
 			private ReplyCode _replycode;
-			public ReplyCode ReplyCode_
+			public ReplyCode ReplyCode
 			{
 				get => _replycode;
 				set
@@ -2729,7 +2984,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private ReplyText _replytext;
-			public ReplyText ReplyText_
+			public ReplyText ReplyText
 			{
 				get => _replytext;
 				set
@@ -2743,7 +2998,7 @@ namespace Test.It.With.Amqp
 			/// to.  May be empty, meaning the default exchange.
 			/// </summary>
 			private ExchangeName _exchange;
-			public ExchangeName Exchange_
+			public ExchangeName Exchange
 			{
 				get => _exchange;
 				set
@@ -2756,7 +3011,7 @@ namespace Test.It.With.Amqp
 			/// Specifies the routing key name specified when the message was published.
 			/// </summary>
 			private Shortstr _routingkey;
-			public Shortstr RoutingKey_
+			public Shortstr RoutingKey
 			{
 				get => _routingkey;
 				set
@@ -2790,11 +3045,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Deliver : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 60;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 60;
 
 			private ConsumerTag _consumertag;
-			public ConsumerTag ConsumerTag_
+			public ConsumerTag ConsumerTag
 			{
 				get => _consumertag;
 				set
@@ -2804,7 +3059,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private DeliveryTag _deliverytag;
-			public DeliveryTag DeliveryTag_
+			public DeliveryTag DeliveryTag
 			{
 				get => _deliverytag;
 				set
@@ -2814,7 +3069,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private Redelivered _redelivered;
-			public Redelivered Redelivered_
+			public Redelivered Redelivered
 			{
 				get => _redelivered;
 				set
@@ -2828,7 +3083,7 @@ namespace Test.It.With.Amqp
 			/// May be empty, indicating the default exchange.
 			/// </summary>
 			private ExchangeName _exchange;
-			public ExchangeName Exchange_
+			public ExchangeName Exchange
 			{
 				get => _exchange;
 				set
@@ -2841,7 +3096,7 @@ namespace Test.It.With.Amqp
 			/// Specifies the routing key name specified when the message was published.
 			/// </summary>
 			private Shortstr _routingkey;
-			public Shortstr RoutingKey_
+			public Shortstr RoutingKey
 			{
 				get => _routingkey;
 				set
@@ -2876,11 +3131,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Get : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 70;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 70;
 
 			private Short _reserved1;
-			public Short Reserved1_
+			public Short Reserved1
 			{
 				get => _reserved1;
 				set
@@ -2893,7 +3148,7 @@ namespace Test.It.With.Amqp
 			/// Specifies the name of the queue to get a message from.
 			/// </summary>
 			private QueueName _queue;
-			public QueueName Queue_
+			public QueueName Queue
 			{
 				get => _queue;
 				set
@@ -2903,7 +3158,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private NoAck _noack;
-			public NoAck NoAck_
+			public NoAck NoAck
 			{
 				get => _noack;
 				set
@@ -2934,11 +3189,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class GetOk : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 71;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 71;
 
 			private DeliveryTag _deliverytag;
-			public DeliveryTag DeliveryTag_
+			public DeliveryTag DeliveryTag
 			{
 				get => _deliverytag;
 				set
@@ -2948,7 +3203,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private Redelivered _redelivered;
-			public Redelivered Redelivered_
+			public Redelivered Redelivered
 			{
 				get => _redelivered;
 				set
@@ -2962,7 +3217,7 @@ namespace Test.It.With.Amqp
 			/// If empty, the message was published to the default exchange.
 			/// </summary>
 			private ExchangeName _exchange;
-			public ExchangeName Exchange_
+			public ExchangeName Exchange
 			{
 				get => _exchange;
 				set
@@ -2975,7 +3230,7 @@ namespace Test.It.With.Amqp
 			/// Specifies the routing key name specified when the message was published.
 			/// </summary>
 			private Shortstr _routingkey;
-			public Shortstr RoutingKey_
+			public Shortstr RoutingKey
 			{
 				get => _routingkey;
 				set
@@ -2985,7 +3240,7 @@ namespace Test.It.With.Amqp
 			}
 
 			private MessageCount _messagecount;
-			public MessageCount MessageCount_
+			public MessageCount MessageCount
 			{
 				get => _messagecount;
 				set
@@ -3019,11 +3274,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class GetEmpty : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 72;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 72;
 
 			private Shortstr _reserved1;
-			public Shortstr Reserved1_
+			public Shortstr Reserved1
 			{
 				get => _reserved1;
 				set
@@ -3050,11 +3305,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Ack : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 80;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 80;
 
 			private DeliveryTag _deliverytag;
-			public DeliveryTag DeliveryTag_
+			public DeliveryTag DeliveryTag
 			{
 				get => _deliverytag;
 				set
@@ -3070,7 +3325,7 @@ namespace Test.It.With.Amqp
 			/// delivery tag is zero, tells the server to acknowledge all outstanding messages.
 			/// </summary>
 			private Bit _multiple;
-			public Bit Multiple_
+			public Bit Multiple
 			{
 				get => _multiple;
 				set
@@ -3099,11 +3354,11 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Reject : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 90;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 90;
 
 			private DeliveryTag _deliverytag;
-			public DeliveryTag DeliveryTag_
+			public DeliveryTag DeliveryTag
 			{
 				get => _deliverytag;
 				set
@@ -3117,7 +3372,7 @@ namespace Test.It.With.Amqp
 			/// is false or the requeue  attempt fails the messages are discarded or dead-lettered.
 			/// </summary>
 			private Bit _requeue;
-			public Bit Requeue_
+			public Bit Requeue
 			{
 				get => _requeue;
 				set
@@ -3146,8 +3401,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class RecoverAsync : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 100;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 100;
 
 			/// <summary>
 			/// If this field is zero, the message will be redelivered to the original
@@ -3155,7 +3410,7 @@ namespace Test.It.With.Amqp
 			/// potentially then delivering it to an alternative subscriber.
 			/// </summary>
 			private Bit _requeue;
-			public Bit Requeue_
+			public Bit Requeue
 			{
 				get => _requeue;
 				set
@@ -3182,8 +3437,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Recover : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 110;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 110;
 
 			/// <summary>
 			/// If this field is zero, the message will be redelivered to the original
@@ -3191,7 +3446,7 @@ namespace Test.It.With.Amqp
 			/// potentially then delivering it to an alternative subscriber.
 			/// </summary>
 			private Bit _requeue;
-			public Bit Requeue_
+			public Bit Requeue
 			{
 				get => _requeue;
 				set
@@ -3216,8 +3471,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class RecoverOk : IMethod
 		{
-			public int ClassId { get; } = 60;
-			public int MethodId { get; } = 111;
+			public int ProtocolClassId => 60;
+			public int ProtocolMethodId => 111;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3242,6 +3497,12 @@ namespace Test.It.With.Amqp
 	/// Further, the behaviour of transactions with respect to the immediate and
 	/// mandatory flags on Basic.Publish methods is not defined.
 	/// </summary>
+	/// <example>
+	/// 
+	///       tx                  = C:SELECT S:SELECT-OK
+	///                           / C:COMMIT S:COMMIT-OK
+	///                           / C:ROLLBACK S:ROLLBACK-OK
+	/// </example>
 	public class Tx
 	{
 		/// <summary>
@@ -3250,8 +3511,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Select : IMethod
 		{
-			public int ClassId { get; } = 90;
-			public int MethodId { get; } = 10;
+			public int ProtocolClassId => 90;
+			public int ProtocolMethodId => 10;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3270,8 +3531,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class SelectOk : IMethod
 		{
-			public int ClassId { get; } = 90;
-			public int MethodId { get; } = 11;
+			public int ProtocolClassId => 90;
+			public int ProtocolMethodId => 11;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3290,8 +3551,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Commit : IMethod
 		{
-			public int ClassId { get; } = 90;
-			public int MethodId { get; } = 20;
+			public int ProtocolClassId => 90;
+			public int ProtocolMethodId => 20;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3310,8 +3571,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class CommitOk : IMethod
 		{
-			public int ClassId { get; } = 90;
-			public int MethodId { get; } = 21;
+			public int ProtocolClassId => 90;
+			public int ProtocolMethodId => 21;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3332,8 +3593,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class Rollback : IMethod
 		{
-			public int ClassId { get; } = 90;
-			public int MethodId { get; } = 30;
+			public int ProtocolClassId => 90;
+			public int ProtocolMethodId => 30;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3352,8 +3613,8 @@ namespace Test.It.With.Amqp
 		/// </summary>
 		public class RollbackOk : IMethod
 		{
-			public int ClassId { get; } = 90;
-			public int MethodId { get; } = 31;
+			public int ProtocolClassId => 90;
+			public int ProtocolMethodId => 31;
 
 			public void ReadFrom(AmqpReader reader)
 			{

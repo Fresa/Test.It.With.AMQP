@@ -1,9 +1,8 @@
 ﻿namespace Test.It.With.Amqp.Protocol
 {
-    public interface IMethod
+    public interface IContentHeader
     {
-        int ProtocolClassId { get; }
-        int ProtocolMethodId { get; }
+        int ClassId { get; }
 
         void ReadFrom(AmqpReader reader);
         void WriteTo(AmqpWriter writer);

@@ -44,7 +44,7 @@
         throw new NotSupportedException($"Unknown assertion: '{assert.Check}'.");
     }
 
-	void GenerateDocumentation(string documentation)
+	void GenerateDocumentation(string documentation, string grammarDocumentation = null)
     {
         if (string.IsNullOrEmpty(documentation))
         {
@@ -57,6 +57,15 @@
             #>/// <#= documentationRow.Trim() #><# _();
         }
 		#>/// </summary><# _();
+        if (grammarDocumentation != null)
+        {
+            #>/// <example><# _();
+			foreach (var documentationRow in grammarDocumentation.TrimEnd().Split('\n'))
+			{
+				#>/// <#= documentationRow.TrimEnd() #><# _();
+			}
+			#>/// </example><# _();
+        }
     }
 #>
 // WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
@@ -95,6 +104,21 @@ namespace Test.It.With.Amqp<# Block(() =>
 			#>return method;<#
 	    }); _(2);
 
+		#>public IContentHeader GetContentHeader(AmqpReader reader)<# Block(() =>
+	    {
+			#>var classId = reader.ReadShortUnsignedInteger();<# _(2);
+			
+			#>if (_contentHeaderFactory.TryGetValue(classId, out Func<IContentHeader> factory) == false)<# Block(() =>
+			{
+			    #>throw new InvalidOperationException($"There is no content header defined for class with id {classId}.");<#
+			}); _(2);
+			
+			#>var contentHeader = factory();<# _();			
+			#>contentHeader.ReadFrom(reader);<# _();
+			#>return contentHeader;<#
+	    }); _(2);
+
+
 	    #>private readonly Dictionary<int, Dictionary<int, Func<IMethod>>> _methodFactory = new Dictionary<int, Dictionary<int, Func<IMethod>>><# Block(() =>
 	    {
 			PrintOnNewRowForEachWithIndex(protocol.Classes.Values, (@class, index, length) =>
@@ -117,6 +141,18 @@ namespace Test.It.With.Amqp<# Block(() =>
 	    });
 		#>;<# _(2);
 
+		#>private readonly Dictionary<int, Func<IContentHeader>> _contentHeaderFactory = new Dictionary<int, Func<IContentHeader>><# Block(() =>
+	    {
+	        var classesWithContentHeader = protocol.Classes.Values.Where(@class => @class.Fields.Any());
+			PrintOnNewRowForEachWithIndex(classesWithContentHeader, (@class, index, length) =>
+			{
+				#>{ <#= @class.Index #>, () => new <#= @class.Name.ToPascalCase('-') #>.ContentHeader() }<#
+			    
+			    if (index + 1 != length) {#>,<#}
+			});
+	    });
+		#>;<# _(2);
+
 		#>private class ProtocolVersion : IVersion<# Block(() =>
 	    {
 	        #>public int Major { get; } = <#= protocol.Major #>;<# _();
@@ -124,18 +160,14 @@ namespace Test.It.With.Amqp<# Block(() =>
 	        #>public int Revision { get; } = <#= protocol.Revision #>;<#
 	    });
 	}); _(2);
-
-	// Frame
-
-
+	
 	// Constants
     #>internal class Constants<# Block(() =>
     {
         PrintOnNewRowForEachWithIndex(protocol.Constants.Values, (constant, index, count) =>
         {
             GenerateDocumentation(constant.Documentation);
-            #>internal const int <#= constant.Name.ToPascalCase('-') #> = <#= constant.Value #>;<#
-            if (index + 1 != count) _();
+            #>internal const int <#= constant.Name.ToPascalCase('-') #> = <#= constant.Value #>;<# if (index + 1 != count) _();
         });
     }); _(2);
 
@@ -152,19 +184,70 @@ namespace Test.It.With.Amqp<# Block(() =>
 
             #>internal <#= className #>(<#= type #> value)<# Block(() =>
             {
-                PrintOnNewRowForEach(domain.Asserts, assert => { GenerateAssertion(assert, "value"); });
+                PrintOnNewRowForEach(domain.Asserts, assert => { GenerateAssertion(assert, "value"); }); if (domain.Asserts.Any()) _();
                 #>Value = value;<#
             });
         }); _();
     });
     
-    // Methods
+    // Classes
     PrintOnNewRowForEach(protocol.Classes.Values, @class =>
     {
         var className = @class.Name.ToPascalCase('-'); _();
-		GenerateDocumentation(@class.Documentation);
+		GenerateDocumentation(@class.Documentation, @class.GrammarDocumentation);
 		#>public class <#= className #><# Block(() => 
 		{
+			// Content Header
+		    if (@class.Fields.Any())
+		    {
+		        var contentHeaderName = "ContentHeader";
+		        #>public class <#= contentHeaderName #> : IContentHeader<# Block(() =>
+				{
+					#>public int ClassId { get; } = <#= @class.Index #>;<# _(2);
+
+					PrintOnNewRowForEach(@class.Fields.Values, field =>
+					{
+						GenerateDocumentation(field.Documentation);
+
+						#>private <#= field.Domain.Name.ToPascalCase('-') #> _<#= field.Name.ToCamelCase('-') #>;<# _();
+						#>public <#= field.Domain.Name.ToPascalCase('-') #> <#= field.Name.ToPascalCase('-') #><# Block(() =>
+						{
+							#>get => _<#= field.Name.ToCamelCase('-') #>;<# _();
+							#>set<# Block(() =>
+							{
+								if (field.Asserts.Any())
+								{
+									PrintOnNewRowForEach(field.Asserts, fieldAssert =>
+									{
+										GenerateAssertion(fieldAssert, "value.Value");
+									}); _();
+								}
+								#>_<#= field.Name.ToCamelCase('-') #> = value;<#
+							});
+						}); _();
+					});
+					if (@class.Fields.Values.Any()) {_();}
+
+					#>public void ReadFrom(AmqpReader reader)<# Block(() =>
+					{
+						PrintOnNewRowForEach(@class.Fields.Values, field =>
+						{
+							#>_<#= field.Name.ToCamelCase('-') #> = new <#= field.Domain.Name.ToPascalCase('-') #>(reader.<#= typeConverter.GetReaderMethod(field.Domain.Type) #>());<#
+						});
+					}); _(2);
+
+					#>public void WriteTo(AmqpWriter writer)<#
+					Block(() =>
+					{
+						PrintOnNewRowForEach(@class.Fields.Values, field =>
+						{
+							#>writer.<#= typeConverter.GetWriterMethod(field.Domain.Type) #>(_<#= field.Name.ToCamelCase('-') #>.Value);<#
+						});
+					}); 
+				}); _(2);
+			}
+
+			// Methods
 			PrintOnNewRowForEachWithIndex(@class.Methods.Values, (method, index, length) =>
 			{
 				var methodName = method.Name.ToPascalCase('-');
@@ -172,15 +255,15 @@ namespace Test.It.With.Amqp<# Block(() =>
 				GenerateDocumentation(method.Documentation);
 				#>public class <#= methodName #> : IMethod<# Block(() =>
 				{
-					#>public int ClassId { get; } = <#= @class.Index #>;<# _();
-					#>public int MethodId { get; } = <#= @method.Index #>;<# _(2);
+					#>public int ProtocolClassId => <#= @class.Index #>;<# _();
+					#>public int ProtocolMethodId => <#= @method.Index #>;<# _(2);
 
 					PrintOnNewRowForEach(method.Fields.Values, field =>
 					{
 						GenerateDocumentation(field.Documentation);
 
 						#>private <#= field.Domain.Name.ToPascalCase('-') #> _<#= field.Name.ToCamelCase('-') #>;<# _();
-						#>public <#= field.Domain.Name.ToPascalCase('-') #> <#= field.Name.ToPascalCase('-') #>_<# Block(() =>
+						#>public <#= field.Domain.Name.ToPascalCase('-') #> <#= field.Name.ToPascalCase('-') #><# Block(() =>
 						{
 							#>get => _<#= field.Name.ToCamelCase('-') #>;<# _();
 							#>set<# Block(() =>
@@ -213,7 +296,7 @@ namespace Test.It.With.Amqp<# Block(() =>
 						{
 							#>writer.<#= typeConverter.GetWriterMethod(field.Domain.Type) #>(_<#= field.Name.ToCamelCase('-') #>.Value);<#
 						});
-					});
+					}); 
 				});
 
 			    if (index + 1 != length) _();

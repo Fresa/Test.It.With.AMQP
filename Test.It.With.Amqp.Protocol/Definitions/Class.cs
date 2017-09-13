@@ -7,6 +7,7 @@ namespace Test.It.With.Amqp.Protocol.Definitions
         public string Name { get; }
         public string Handler { get; }
         public int Index { get; }
+        public IReadOnlyDictionary<string, Field> Fields { get; set; } = new Dictionary<string, Field>();
         public IReadOnlyDictionary<string, Method> Methods { get; }
         public string Label { get; set; }
         public string Documentation { get; set; }

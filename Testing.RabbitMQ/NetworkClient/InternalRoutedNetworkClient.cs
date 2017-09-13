@@ -16,6 +16,7 @@ namespace Test.It.With.RabbitMQ.NetworkClient
             SendReceived?.Invoke(this, new ReceivedEventArgs(buffer, offset, count));
         }
 
+        // todo: Should have explicit close method, disconnect through dispose is ambiguous
         public void Dispose()
         {
             Disconnected?.Invoke(this, null);

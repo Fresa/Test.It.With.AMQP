@@ -185,7 +185,8 @@ namespace Test.It.With.Amqp.Protocol.Definitions
                     Label = classNode.GetOptionalAttribute<string>("label"),
                     Documentation = GetFirstDocumentation(classNode),
                     GrammarDocumentation = GetFirstDocumentationType(classNode, GrammarDocumentation),
-                    Chassis = ParseChassis(classNode)
+                    Chassis = ParseChassis(classNode),
+                    Fields = ParseFields(classNode, protocol)
                 };
 
                 classes.Add(name, @class);
@@ -300,27 +301,27 @@ namespace Test.It.With.Amqp.Protocol.Definitions
 
         private static IEnumerable<Chassis> ParseChassis(XmlNode node)
         {
-            return Enumerable.Select<XmlElement, Chassis>(node
-                    .SelectNodes("chassis")
-                    .CastOrEmptyList<XmlElement>(), element => new Chassis(
+            return node
+                .SelectNodes("chassis")
+                .CastOrEmptyList<XmlElement>().Select(element => new Chassis(
                     (ChassisName)Enum.Parse(typeof(ChassisName), element.GetMandatoryAttribute<string>("name"), true),
                     string.Equals(element.GetMandatoryAttribute<string>("implement"), "must", StringComparison.CurrentCultureIgnoreCase)));
         }
 
         private static string GetFirstDocumentation(XmlNode node)
         {
-            return Enumerable.Where<XmlElement>(node
-                    .SelectNodes("doc")
-                    .CastOrEmptyList<XmlElement>(), xmlNode => xmlNode.HasAttribute("type") == false)
+            return node
+                .SelectNodes("doc")
+                .CastOrEmptyList<XmlElement>().Where(xmlNode => xmlNode.HasAttribute("type") == false)
                 .Select(element => element.InnerText)
                 .FirstOrDefault();
         }
 
         private static string GetFirstDocumentationType(XmlNode node, string type)
         {
-            return Enumerable.Where<XmlElement>(node
-                    .SelectNodes("doc")
-                    .CastOrEmptyList<XmlElement>(), xmlNode => xmlNode.HasAttribute("type") && string.Equals(xmlNode.GetAttribute("type"), type, StringComparison.CurrentCultureIgnoreCase))
+            return node
+                .SelectNodes("doc")
+                .CastOrEmptyList<XmlElement>().Where(xmlNode => xmlNode.HasAttribute("type") && string.Equals(xmlNode.GetAttribute("type"), type, StringComparison.CurrentCultureIgnoreCase))
                 .Select(element => element.InnerText)
                 .FirstOrDefault();
         }

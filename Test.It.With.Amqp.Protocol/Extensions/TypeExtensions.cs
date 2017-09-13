@@ -18,16 +18,15 @@ namespace Test.It.With.Amqp.Protocol.Extensions
                 return prettyName;
             }
 
-            if (prettyName.IndexOf('`') > 0)
+            if (prettyName?.IndexOf('`') > 0)
             {
                 prettyName = prettyName.Remove(prettyName.IndexOf('`'));
             }
 
             var genericArguments = type.GetGenericArguments()
-                .Select(genericArgument => GetPrettyFullName(genericArgument));
+                .Select(GetPrettyFullName);
 
             return $"{prettyName}<{string.Join(", ", genericArguments)}>";
         }
-
     }
 }
