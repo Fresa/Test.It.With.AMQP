@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Test.It.With.RabbitMQ.Tests
+namespace Test.It.With.Amqp.ProtocolGenerator
 {
     internal static class EnumerableExtensions
     {
