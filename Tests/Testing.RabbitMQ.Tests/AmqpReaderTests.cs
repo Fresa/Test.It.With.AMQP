@@ -873,4 +873,50 @@ namespace Test.It.With.RabbitMQ.Tests
                 .Should().Equal(new byte[] { 0, 6, 1, 2, 3 });
         }
     }
+
+    public class When_reading_one_property_flag_set : XUnit2Specification
+    {
+        private AmqpReader _reader;
+        private bool[] _readData;
+
+        protected override void Given()
+        {
+            _reader = new AmqpReader(new byte[] { 0, 2 });
+        }
+
+        protected override void When()
+        {
+            _readData = _reader.ReadPropertyFlags();
+        }
+
+        [Fact]
+        public void It_should_parse_correctly()
+        {
+            _readData
+                .Should().Equal(new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, true });
+        }
+    }
+
+    public class When_reading_multiple_property_flag_sets : XUnit2Specification
+    {
+        private AmqpReader _reader;
+        private bool[] _readData;
+
+        protected override void Given()
+        {
+            _reader = new AmqpReader(new byte[] { 0, 3, 128, 0 });
+        }
+
+        protected override void When()
+        {
+            _readData = _reader.ReadPropertyFlags();
+        }
+
+        [Fact]
+        public void It_should_parse_correctly()
+        {
+            _readData
+                .Should().Equal(new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false });
+        }
+    }
 }

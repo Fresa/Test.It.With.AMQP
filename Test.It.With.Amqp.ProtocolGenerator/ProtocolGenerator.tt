@@ -71,10 +71,12 @@
 // WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
 
 using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Validation;
 using Test.It.With.Amqp.Protocol;
+using Test.It.With.Amqp.Protocol.Extensions;
 
 namespace Test.It.With.Amqp<# Block(() =>
 {
@@ -208,6 +210,7 @@ namespace Test.It.With.Amqp<# Block(() =>
 					PrintOnNewRowForEach(@class.Fields.Values, field =>
 					{
 						GenerateDocumentation(field.Documentation);
+						#>public bool Has<#= field.Name.ToPascalCase('-') #> { get; private set; }<# _();
 
 						#>private <#= field.Domain.Name.ToPascalCase('-') #> _<#= field.Name.ToCamelCase('-') #>;<# _();
 						#>public <#= field.Domain.Name.ToPascalCase('-') #> <#= field.Name.ToPascalCase('-') #><# Block(() =>
@@ -230,18 +233,43 @@ namespace Test.It.With.Amqp<# Block(() =>
 
 					#>public void ReadFrom(AmqpReader reader)<# Block(() =>
 					{
-						PrintOnNewRowForEach(@class.Fields.Values, field =>
+						#>var propertyFlags = reader.ReadPropertyFlags(); <# _();
+						#>if (propertyFlags.Length < <#= @class.Fields.Values.Count() #>)<# Block(() =>
+					    {
+					        #>throw new ProtocolViolationException("There are more fields than property flags.");<# 
+					    }); _(2);
+
+					    PrintOnNewRowForEachWithIndex(@class.Fields.Values, (field, index, length) =>
 						{
-							#>_<#= field.Name.ToCamelCase('-') #> = new <#= field.Domain.Name.ToPascalCase('-') #>(reader.<#= typeConverter.GetReaderMethod(field.Domain.Type) #>());<#
+							#>Has<#= field.Name.ToPascalCase('-') #> = propertyFlags[<#= index #>];<# _();
+							#>if (Has<#= field.Name.ToPascalCase('-') #>)<# Block(() =>
+						    {
+								#>_<#= field.Name.ToCamelCase('-') #> = new <#= field.Domain.Name.ToPascalCase('-') #>(reader.<#= typeConverter.GetReaderMethod(field.Domain.Type) #>());<#						        
+						    });
+						    if (index + 1 != length) _();
 						});
 					}); _(2);
 
 					#>public void WriteTo(AmqpWriter writer)<#
 					Block(() =>
 					{
-						PrintOnNewRowForEach(@class.Fields.Values, field =>
+						#>var propertyFlags = new [] <# Block(() =>
+					    {
+							PrintOnNewRowForEachWithIndex(@class.Fields.Values, (field, index, length) =>
+							{
+								#>Has<#= field.Name.ToPascalCase('-') #><# if (index + 1 != length) { #>,<# }
+							});
+					    });
+						#>;<# _(2);
+
+						#>writer.WritePropertyFlags(propertyFlags);<# _(2);
+
+					    PrintOnNewRowForEachWithIndex(@class.Fields.Values, (field, index, length) =>
 						{
-							#>writer.<#= typeConverter.GetWriterMethod(field.Domain.Type) #>(_<#= field.Name.ToCamelCase('-') #>.Value);<#
+							#>if (Has<#= field.Name.ToPascalCase('-') #>)<# Block(() =>
+						    {
+								#>writer.<#= typeConverter.GetWriterMethod(field.Domain.Type) #>(_<#= field.Name.ToCamelCase('-') #>.Value);<#						        
+						    }); if (index + 1 != length) _();
 						});
 					}); 
 				}); _(2);

@@ -1,10 +1,12 @@
 ﻿// WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
 
 using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Validation;
 using Test.It.With.Amqp.Protocol;
+using Test.It.With.Amqp.Protocol.Extensions;
 
 namespace Test.It.With.Amqp
 {
@@ -2351,6 +2353,7 @@ namespace Test.It.With.Amqp
 		{
 			public int ClassId { get; } = 60;
 
+			public bool HasContentType { get; private set; }
 			private Shortstr _contenttype;
 			public Shortstr ContentType
 			{
@@ -2361,6 +2364,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasContentEncoding { get; private set; }
 			private Shortstr _contentencoding;
 			public Shortstr ContentEncoding
 			{
@@ -2371,6 +2375,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasHeaders { get; private set; }
 			private Table _headers;
 			public Table Headers
 			{
@@ -2381,6 +2386,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasDeliveryMode { get; private set; }
 			private Octet _deliverymode;
 			public Octet DeliveryMode
 			{
@@ -2391,6 +2397,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasPriority { get; private set; }
 			private Octet _priority;
 			public Octet Priority
 			{
@@ -2401,6 +2408,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasCorrelationId { get; private set; }
 			private Shortstr _correlationid;
 			public Shortstr CorrelationId
 			{
@@ -2411,6 +2419,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasReplyTo { get; private set; }
 			private Shortstr _replyto;
 			public Shortstr ReplyTo
 			{
@@ -2421,6 +2430,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasExpiration { get; private set; }
 			private Shortstr _expiration;
 			public Shortstr Expiration
 			{
@@ -2431,6 +2441,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasMessageId { get; private set; }
 			private Shortstr _messageid;
 			public Shortstr MessageId
 			{
@@ -2441,6 +2452,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasTimestamp { get; private set; }
 			private Timestamp _timestamp;
 			public Timestamp Timestamp
 			{
@@ -2451,6 +2463,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasType { get; private set; }
 			private Shortstr _type;
 			public Shortstr Type
 			{
@@ -2461,6 +2474,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasUserId { get; private set; }
 			private Shortstr _userid;
 			public Shortstr UserId
 			{
@@ -2471,6 +2485,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasAppId { get; private set; }
 			private Shortstr _appid;
 			public Shortstr AppId
 			{
@@ -2481,6 +2496,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			public bool HasReserved { get; private set; }
 			private Shortstr _reserved;
 			public Shortstr Reserved
 			{
@@ -2493,38 +2509,188 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_contenttype = new Shortstr(reader.ReadShortString());
-				_contentencoding = new Shortstr(reader.ReadShortString());
-				_headers = new Table(reader.ReadTable());
-				_deliverymode = new Octet(reader.ReadByte());
-				_priority = new Octet(reader.ReadByte());
-				_correlationid = new Shortstr(reader.ReadShortString());
-				_replyto = new Shortstr(reader.ReadShortString());
-				_expiration = new Shortstr(reader.ReadShortString());
-				_messageid = new Shortstr(reader.ReadShortString());
-				_timestamp = new Timestamp(reader.ReadTimestamp());
-				_type = new Shortstr(reader.ReadShortString());
-				_userid = new Shortstr(reader.ReadShortString());
-				_appid = new Shortstr(reader.ReadShortString());
-				_reserved = new Shortstr(reader.ReadShortString());
+				var propertyFlags = reader.ReadPropertyFlags(); 
+				if (propertyFlags.Length < 14)
+				{
+					throw new ProtocolViolationException("There are more fields than property flags.");
+				}
+
+				HasContentType = propertyFlags[0];
+				if (HasContentType)
+				{
+					_contenttype = new Shortstr(reader.ReadShortString());
+				}
+
+				HasContentEncoding = propertyFlags[1];
+				if (HasContentEncoding)
+				{
+					_contentencoding = new Shortstr(reader.ReadShortString());
+				}
+
+				HasHeaders = propertyFlags[2];
+				if (HasHeaders)
+				{
+					_headers = new Table(reader.ReadTable());
+				}
+
+				HasDeliveryMode = propertyFlags[3];
+				if (HasDeliveryMode)
+				{
+					_deliverymode = new Octet(reader.ReadByte());
+				}
+
+				HasPriority = propertyFlags[4];
+				if (HasPriority)
+				{
+					_priority = new Octet(reader.ReadByte());
+				}
+
+				HasCorrelationId = propertyFlags[5];
+				if (HasCorrelationId)
+				{
+					_correlationid = new Shortstr(reader.ReadShortString());
+				}
+
+				HasReplyTo = propertyFlags[6];
+				if (HasReplyTo)
+				{
+					_replyto = new Shortstr(reader.ReadShortString());
+				}
+
+				HasExpiration = propertyFlags[7];
+				if (HasExpiration)
+				{
+					_expiration = new Shortstr(reader.ReadShortString());
+				}
+
+				HasMessageId = propertyFlags[8];
+				if (HasMessageId)
+				{
+					_messageid = new Shortstr(reader.ReadShortString());
+				}
+
+				HasTimestamp = propertyFlags[9];
+				if (HasTimestamp)
+				{
+					_timestamp = new Timestamp(reader.ReadTimestamp());
+				}
+
+				HasType = propertyFlags[10];
+				if (HasType)
+				{
+					_type = new Shortstr(reader.ReadShortString());
+				}
+
+				HasUserId = propertyFlags[11];
+				if (HasUserId)
+				{
+					_userid = new Shortstr(reader.ReadShortString());
+				}
+
+				HasAppId = propertyFlags[12];
+				if (HasAppId)
+				{
+					_appid = new Shortstr(reader.ReadShortString());
+				}
+
+				HasReserved = propertyFlags[13];
+				if (HasReserved)
+				{
+					_reserved = new Shortstr(reader.ReadShortString());
+				}
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteShortString(_contenttype.Value);
-				writer.WriteShortString(_contentencoding.Value);
-				writer.WriteTable(_headers.Value);
-				writer.WriteByte(_deliverymode.Value);
-				writer.WriteByte(_priority.Value);
-				writer.WriteShortString(_correlationid.Value);
-				writer.WriteShortString(_replyto.Value);
-				writer.WriteShortString(_expiration.Value);
-				writer.WriteShortString(_messageid.Value);
-				writer.WriteTimestamp(_timestamp.Value);
-				writer.WriteShortString(_type.Value);
-				writer.WriteShortString(_userid.Value);
-				writer.WriteShortString(_appid.Value);
-				writer.WriteShortString(_reserved.Value);
+				var propertyFlags = new [] 
+				{
+					HasContentType,
+					HasContentEncoding,
+					HasHeaders,
+					HasDeliveryMode,
+					HasPriority,
+					HasCorrelationId,
+					HasReplyTo,
+					HasExpiration,
+					HasMessageId,
+					HasTimestamp,
+					HasType,
+					HasUserId,
+					HasAppId,
+					HasReserved
+				};
+
+				writer.WritePropertyFlags(propertyFlags);
+
+				if (HasContentType)
+				{
+					writer.WriteShortString(_contenttype.Value);
+				}
+
+				if (HasContentEncoding)
+				{
+					writer.WriteShortString(_contentencoding.Value);
+				}
+
+				if (HasHeaders)
+				{
+					writer.WriteTable(_headers.Value);
+				}
+
+				if (HasDeliveryMode)
+				{
+					writer.WriteByte(_deliverymode.Value);
+				}
+
+				if (HasPriority)
+				{
+					writer.WriteByte(_priority.Value);
+				}
+
+				if (HasCorrelationId)
+				{
+					writer.WriteShortString(_correlationid.Value);
+				}
+
+				if (HasReplyTo)
+				{
+					writer.WriteShortString(_replyto.Value);
+				}
+
+				if (HasExpiration)
+				{
+					writer.WriteShortString(_expiration.Value);
+				}
+
+				if (HasMessageId)
+				{
+					writer.WriteShortString(_messageid.Value);
+				}
+
+				if (HasTimestamp)
+				{
+					writer.WriteTimestamp(_timestamp.Value);
+				}
+
+				if (HasType)
+				{
+					writer.WriteShortString(_type.Value);
+				}
+
+				if (HasUserId)
+				{
+					writer.WriteShortString(_userid.Value);
+				}
+
+				if (HasAppId)
+				{
+					writer.WriteShortString(_appid.Value);
+				}
+
+				if (HasReserved)
+				{
+					writer.WriteShortString(_reserved.Value);
+				}
 			}
 		}
 

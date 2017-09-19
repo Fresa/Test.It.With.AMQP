@@ -9,3 +9,5 @@ F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Protocol\bin\Debug\JetBrains.Anno
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Protocol\obj\Debug\Test.It.With.Amqp.Protocol.dll
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Protocol\obj\Debug\Test.It.With.Amqp.Protocol.pdb
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Protocol\obj\Debug\Test.It.With.Amqp.Protocol.csprojResolveAssemblyReference.cache
+F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Protocol\bin\Debug\Validation.dll
+F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Protocol\bin\Debug\Validation.xml

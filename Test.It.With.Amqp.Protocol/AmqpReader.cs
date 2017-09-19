@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -119,7 +120,6 @@ namespace Test.It.With.Amqp.Protocol
             return BitConverter.ToInt64(ReadAsBigEndian(8), 0);
         }
 
-
         public decimal ReadDecimal()
         {
             var scale = ReadByte();
@@ -200,6 +200,23 @@ namespace Test.It.With.Amqp.Protocol
             var @byte = ReadByte();
             _position--;
             return @byte;
+        }
+
+        public bool[] ReadPropertyFlags()
+        {
+            var propertyFlagSetAvailable = true;
+            var flags = new List<bool>();
+            while (propertyFlagSetAvailable)
+            {
+                var value = ReadShortUnsignedInteger();
+                for (var bit = 15; bit > 0; bit--)
+                {
+                    flags.Add((value & (1 << bit)) != 0);
+                }
+                propertyFlagSetAvailable = (value & (1 << 0)) != 0;
+            }
+
+            return flags.ToArray();
         }
 
         private object[] ReadArray()

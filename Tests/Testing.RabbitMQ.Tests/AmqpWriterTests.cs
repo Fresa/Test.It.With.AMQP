@@ -930,4 +930,79 @@ namespace Test.It.With.RabbitMQ.Tests
             _buffer.Should().Equal(new byte[] { (byte)'x', 0, 0, 0, 5, 0, 6, 1, 2, 3 });
         }
     }
+
+    public class When_writing_one_full_property_flag_set : XUnit2Specification
+    {
+        private bool[] _array;
+        private MemoryStream _stream;
+        private AmqpWriter _writer;
+
+        protected override void Given()
+        {
+            _stream = new MemoryStream();
+            _writer = new AmqpWriter(_stream);
+            _array = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, true };
+        }
+
+        protected override void When()
+        {
+            _writer.WritePropertyFlags(_array);
+        }
+
+        [Fact]
+        public void It_should_have_converted_it_correctly()
+        {
+            _stream.ToArray().Should().Equal(new byte[] { 0, 2 });
+        }
+    }
+
+    public class When_writing_one_property_flag_set_that_is_not_complete : XUnit2Specification
+    {
+        private bool[] _array;
+        private MemoryStream _stream;
+        private AmqpWriter _writer;
+
+        protected override void Given()
+        {
+            _stream = new MemoryStream();
+            _writer = new AmqpWriter(_stream);
+            _array = new[] { true, false };
+        }
+
+        protected override void When()
+        {
+            _writer.WritePropertyFlags(_array);
+        }
+
+        [Fact]
+        public void It_should_have_converted_it_correctly()
+        {
+            _stream.ToArray().Should().Equal(new byte[] { 128, 0 });
+        }
+    }
+
+    public class When_writing_multiple_property_flag_sets : XUnit2Specification
+    {
+        private bool[] _array;
+        private MemoryStream _stream;
+        private AmqpWriter _writer;
+
+        protected override void Given()
+        {
+            _stream = new MemoryStream();
+            _writer = new AmqpWriter(_stream);
+            _array = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false };
+        }
+
+        protected override void When()
+        {
+            _writer.WritePropertyFlags(_array);
+        }
+
+        [Fact]
+        public void It_should_have_converted_it_correctly()
+        {
+            _stream.ToArray().Should().Equal(new byte[] { 0, 3, 128, 0 });
+        }
+    }
 }

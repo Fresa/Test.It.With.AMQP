@@ -44,7 +44,7 @@ namespace Test.It.With.Amqp.Protocol
                     "Short string cannot be longer than 255 characters.");
             }
 
-            WriteByte((byte) bytes.Length);
+            WriteByte((byte)bytes.Length);
             WriteBytes(bytes);
         }
 
@@ -55,7 +55,7 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WriteLongString(byte[] value)
         {
-            WriteLongUnsignedInteger((uint) value.Length);
+            WriteLongUnsignedInteger((uint)value.Length);
             WriteBytes(value);
         }
 
@@ -81,13 +81,13 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WriteByte(byte value)
         {
-            WriteAsLittleEndian(new[] {value});
+            WriteAsLittleEndian(new[] { value });
         }
 
         public void WriteTimestamp(DateTime value)
         {
             var seconds = value.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
-            WriteLongLongUnsignedInteger((ulong) seconds);
+            WriteLongLongUnsignedInteger((ulong)seconds);
         }
 
         public void WriteTable(IDictionary<string, object> value)
@@ -134,7 +134,7 @@ namespace Test.It.With.Amqp.Protocol
 
             var currentPosition = _buffer.Position;
             _buffer.Seek(startPosition, SeekOrigin.Begin);
-            WriteLongUnsignedInteger((uint) (currentPosition - startCountingLengthPosition));
+            WriteLongUnsignedInteger((uint)(currentPosition - startCountingLengthPosition));
             _buffer.Seek(currentPosition, SeekOrigin.Begin);
         }
 
@@ -145,7 +145,7 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WriteShortShortInteger(sbyte value)
         {
-            WriteByte((byte) value);
+            WriteByte((byte)value);
         }
 
         public void WriteLongLongInteger(long value)
@@ -179,67 +179,67 @@ namespace Test.It.With.Amqp.Protocol
             switch (value)
             {
                 case bool convertedValue:
-                    WriteByte((byte) 't');
+                    WriteByte((byte)'t');
                     WriteBoolean(convertedValue);
                     return;
                 case sbyte convertedValue:
-                    WriteByte((byte) 'b');
+                    WriteByte((byte)'b');
                     WriteShortShortInteger(convertedValue);
                     return;
                 case byte convertedValue:
-                    WriteByte((byte) 'B');
+                    WriteByte((byte)'B');
                     WriteByte(convertedValue);
                     return;
                 case short convertedValue:
-                    WriteByte((byte) 'U');
+                    WriteByte((byte)'U');
                     WriteShortInteger(convertedValue);
                     return;
                 case ushort convertedValue:
-                    WriteByte((byte) 'u');
+                    WriteByte((byte)'u');
                     WriteShortUnsignedInteger(convertedValue);
                     return;
                 case int convertedValue:
-                    WriteByte((byte) 'I');
+                    WriteByte((byte)'I');
                     WriteLongInteger(convertedValue);
                     return;
                 case uint convertedValue:
-                    WriteByte((byte) 'i');
+                    WriteByte((byte)'i');
                     WriteLongUnsignedInteger(convertedValue);
                     return;
                 case long convertedValue:
-                    WriteByte((byte) 'L');
+                    WriteByte((byte)'L');
                     WriteLongLongInteger(convertedValue);
                     return;
                 case ulong convertedValue:
-                    WriteByte((byte) 'l');
+                    WriteByte((byte)'l');
                     WriteLongLongUnsignedInteger(convertedValue);
                     return;
                 case float convertedValue:
-                    WriteByte((byte) 'f');
+                    WriteByte((byte)'f');
                     WriteFloatingPointNumber(convertedValue);
                     return;
                 case double convertedValue:
-                    WriteByte((byte) 'd');
+                    WriteByte((byte)'d');
                     WriteLongFloatingPointNumber(convertedValue);
                     return;
                 case decimal convertedValue:
-                    WriteByte((byte) 'D');
+                    WriteByte((byte)'D');
                     WriteDecimal(convertedValue);
                     return;
                 case string convertedValue:
-                    WriteByte((byte) 's');
+                    WriteByte((byte)'s');
                     WriteShortString(convertedValue);
                     return;
                 case byte[] convertedValue:
-                    WriteByte((byte) 'S');
+                    WriteByte((byte)'S');
                     WriteLongString(convertedValue);
                     return;
                 case IList convertedValue:
-                    WriteByte((byte) 'A');
+                    WriteByte((byte)'A');
                     WriteArray(convertedValue);
                     return;
                 case DateTime convertedValue:
-                    WriteByte((byte) 'T');
+                    WriteByte((byte)'T');
                     WriteTimestamp(convertedValue);
                     return;
                 case IDictionary<string, object> convertedValue:
@@ -251,7 +251,7 @@ namespace Test.It.With.Amqp.Protocol
                     WriteTable(convertedValue);
                     return;
                 case null:
-                    WriteByte((byte) 'V');
+                    WriteByte((byte)'V');
                     return;
 
                 // NOTE! RabbitMQ / Qpid special, https://www.rabbitmq.com/amqp-0-9-1-errata.html#section_3
@@ -264,6 +264,29 @@ namespace Test.It.With.Amqp.Protocol
             }
         }
 
+        public void WritePropertyFlags(bool[] flags)
+        {
+            ushort value = 0;
+            for (var i = 0; i < flags.Length; i++)
+            {
+                if (i > 0 && i % 15 == 0)
+                {
+                    value = (ushort)(value | 1);
+                    WriteShortUnsignedInteger(value);
+                    value = 0;
+                }
+
+                var bit = 15 - i % 15;
+
+                if (flags[i])
+                {
+                    value = (ushort) (value | (1 << bit));
+                }
+            }
+
+            WriteShortUnsignedInteger(value);
+        }
+        
         private void WriteArray(ICollection value)
         {
             var startPosition = _buffer.Position;
