@@ -288,9 +288,8 @@ namespace Test.It.With.Amqp<# Block(() =>
 
 					PrintOnNewRowForEach(method.Fields.Values, field =>
 					{
-						GenerateDocumentation(field.Documentation);
-
 						#>private <#= field.Domain.Name.ToPascalCase('-') #> _<#= field.Name.ToCamelCase('-') #>;<# _();
+						GenerateDocumentation(field.Documentation);
 						#>public <#= field.Domain.Name.ToPascalCase('-') #> <#= field.Name.ToPascalCase('-') #><# Block(() =>
 						{
 							#>get => _<#= field.Name.ToCamelCase('-') #>;<# _();

@@ -75,7 +75,12 @@
     <Compile Include="NetworkClient\NetworkClientStream.cs" />
     <Compile Include="NetworkClient\ReceivedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\Exceptions\FatalProtocolException.cs" />
+    <Compile Include="Protocol\Exceptions\InvalidFrameEndException.cs" />
+    <Compile Include="Protocol\Exceptions\InvalidFrameTypeException.cs" />
     <Compile Include="Protocol\Frame.cs" />
+    <Compile Include="Protocol\ProtocolHeader.cs" />
+    <Compile Include="Protocol\ProtocolProcessor.cs" />
     <Compile Include="RabbitMqTestFramework2.cs" />
     <Compile Include="TestConnectionFactoryDecorator.cs" />
     <Compile Include="TestFrameHandler.cs" />

@@ -15,6 +15,7 @@ namespace Test.It.With.Amqp.Protocol.Definitions
         public string Documentation { get; set; }
         public IEnumerable<Rule> Rules { get; set; } = Enumerable.Empty<Rule>();
         public IEnumerable<Chassis> Chassis { get; set; } = Enumerable.Empty<Chassis>();
+        public bool HasContent { get; set; }
 
         public Method(string name, int index)
         {

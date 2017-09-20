@@ -588,11 +588,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 10;
 
+			private Octet _versionmajor;
 			/// <summary>
 			/// The major version number can take any value from 0 to 99 as defined in the
 			/// AMQP specification.
 			/// </summary>
-			private Octet _versionmajor;
 			public Octet VersionMajor
 			{
 				get => _versionmajor;
@@ -602,11 +602,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Octet _versionminor;
 			/// <summary>
 			/// The minor version number can take any value from 0 to 99 as defined in the
 			/// AMQP specification.
 			/// </summary>
-			private Octet _versionminor;
 			public Octet VersionMinor
 			{
 				get => _versionminor;
@@ -626,10 +626,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Longstr _mechanisms;
 			/// <summary>
 			/// A list of the security mechanisms that the server supports, delimited by spaces.
 			/// </summary>
-			private Longstr _mechanisms;
 			public Longstr Mechanisms
 			{
 				get => _mechanisms;
@@ -640,11 +640,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Longstr _locales;
 			/// <summary>
 			/// A list of the message locales that the server supports, delimited by spaces. The
 			/// locale defines the language in which the server will send reply texts.
 			/// </summary>
-			private Longstr _locales;
 			public Longstr Locales
 			{
 				get => _locales;
@@ -692,11 +692,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Shortstr _mechanism;
 			/// <summary>
 			/// A single security mechanisms selected by the client, which must be one of those
 			/// specified by the server.
 			/// </summary>
-			private Shortstr _mechanism;
 			public Shortstr Mechanism
 			{
 				get => _mechanism;
@@ -707,11 +707,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Longstr _response;
 			/// <summary>
 			/// A block of opaque data passed to the security mechanism. The contents of this
 			/// data are defined by the SASL security mechanism.
 			/// </summary>
-			private Longstr _response;
 			public Longstr Response
 			{
 				get => _response;
@@ -722,11 +722,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Shortstr _locale;
 			/// <summary>
 			/// A single message locale selected by the client, which must be one of those
 			/// specified by the server.
 			/// </summary>
-			private Shortstr _locale;
 			public Shortstr Locale
 			{
 				get => _locale;
@@ -764,11 +764,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 20;
 
+			private Longstr _challenge;
 			/// <summary>
 			/// Challenge information, a block of opaque binary data passed to the security
 			/// mechanism.
 			/// </summary>
-			private Longstr _challenge;
 			public Longstr Challenge
 			{
 				get => _challenge;
@@ -798,11 +798,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 21;
 
+			private Longstr _response;
 			/// <summary>
 			/// A block of opaque data passed to the security mechanism. The contents of this
 			/// data are defined by the SASL security mechanism.
 			/// </summary>
-			private Longstr _response;
 			public Longstr Response
 			{
 				get => _response;
@@ -833,11 +833,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 30;
 
+			private Short _channelmax;
 			/// <summary>
 			/// Specifies highest channel number that the server permits.  Usable channel numbers
 			/// are in the range 1..channel-max.  Zero indicates no specified limit.
 			/// </summary>
-			private Short _channelmax;
 			public Short ChannelMax
 			{
 				get => _channelmax;
@@ -847,13 +847,13 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Long _framemax;
 			/// <summary>
 			/// The largest frame size that the server proposes for the connection, including
 			/// frame header and end-byte.  The client can negotiate a lower value. Zero means
 			/// that the server does not impose any specific limit but may reject very large
 			/// frames if it cannot allocate resources for them.
 			/// </summary>
-			private Long _framemax;
 			public Long FrameMax
 			{
 				get => _framemax;
@@ -863,11 +863,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Short _heartbeat;
 			/// <summary>
 			/// The delay, in seconds, of the connection heartbeat that the server wants.
 			/// Zero means the server does not want a heartbeat.
 			/// </summary>
-			private Short _heartbeat;
 			public Short Heartbeat
 			{
 				get => _heartbeat;
@@ -901,10 +901,10 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 31;
 
+			private Short _channelmax;
 			/// <summary>
 			/// The maximum total number of channels that the client will use per connection.
 			/// </summary>
-			private Short _channelmax;
 			public Short ChannelMax
 			{
 				get => _channelmax;
@@ -916,6 +916,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Long _framemax;
 			/// <summary>
 			/// The largest frame size that the client and server will use for the connection.
 			/// Zero means that the client does not impose any specific limit but may reject
@@ -923,7 +924,6 @@ namespace Test.It.With.Amqp
 			/// frame-max limit applies principally to content frames, where large contents can
 			/// be broken into frames of arbitrary size.
 			/// </summary>
-			private Long _framemax;
 			public Long FrameMax
 			{
 				get => _framemax;
@@ -933,11 +933,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Short _heartbeat;
 			/// <summary>
 			/// The delay, in seconds, of the connection heartbeat that the client wants. Zero
 			/// means the client does not want a heartbeat.
 			/// </summary>
-			private Short _heartbeat;
 			public Short Heartbeat
 			{
 				get => _heartbeat;
@@ -973,10 +973,10 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 40;
 
+			private Path _virtualhost;
 			/// <summary>
 			/// The name of the virtual host to work with.
 			/// </summary>
-			private Path _virtualhost;
 			public Path VirtualHost
 			{
 				get => _virtualhost;
@@ -1081,11 +1081,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private ClassId _classid;
 			/// <summary>
 			/// When the close is provoked by a method exception, this is the class of the
 			/// method.
 			/// </summary>
-			private ClassId _classid;
 			public ClassId ClassId
 			{
 				get => _classid;
@@ -1095,10 +1095,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private MethodId _methodid;
 			/// <summary>
 			/// When the close is provoked by a method exception, this is the ID of the method.
 			/// </summary>
-			private MethodId _methodid;
 			public MethodId MethodId
 			{
 				get => _methodid;
@@ -1232,11 +1232,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 20;
 
+			private Bit _active;
 			/// <summary>
 			/// If 1, the peer starts sending content frames. If 0, the peer stops sending
 			/// content frames.
 			/// </summary>
-			private Bit _active;
 			public Bit Active
 			{
 				get => _active;
@@ -1265,11 +1265,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 21;
 
+			private Bit _active;
 			/// <summary>
 			/// Confirms the setting of the processed flow method: 1 means the peer will start
 			/// sending or continue to send content frames; 0 means it will not.
 			/// </summary>
-			private Bit _active;
 			public Bit Active
 			{
 				get => _active;
@@ -1321,11 +1321,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private ClassId _classid;
 			/// <summary>
 			/// When the close is provoked by a method exception, this is the class of the
 			/// method.
 			/// </summary>
-			private ClassId _classid;
 			public ClassId ClassId
 			{
 				get => _classid;
@@ -1335,10 +1335,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private MethodId _methodid;
 			/// <summary>
 			/// When the close is provoked by a method exception, this is the ID of the method.
 			/// </summary>
-			private MethodId _methodid;
 			public MethodId MethodId
 			{
 				get => _methodid;
@@ -1427,13 +1427,13 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Shortstr _type;
 			/// <summary>
 			/// Each exchange belongs to one of a set of exchange types implemented by the
 			/// server. The exchange types define the functionality of the exchange - i.e. how
 			/// messages are routed through it. It is not valid or meaningful to attempt to
 			/// change the type of an existing exchange.
 			/// </summary>
-			private Shortstr _type;
 			public Shortstr Type
 			{
 				get => _type;
@@ -1443,6 +1443,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _passive;
 			/// <summary>
 			/// If set, the server will reply with Declare-Ok if the exchange already
 			/// exists with the same name, and raise an error if not.  The client can
@@ -1451,7 +1452,6 @@ namespace Test.It.With.Amqp
 			/// are ignored.  A declare with both passive and no-wait has no effect.
 			/// Arguments are compared for semantic equivalence.
 			/// </summary>
-			private Bit _passive;
 			public Bit Passive
 			{
 				get => _passive;
@@ -1461,12 +1461,12 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _durable;
 			/// <summary>
 			/// If set when creating a new exchange, the exchange will be marked as durable.
 			/// Durable exchanges remain active when a server restarts. Non-durable exchanges
 			/// (transient exchanges) are purged if/when a server restarts.
 			/// </summary>
-			private Bit _durable;
 			public Bit Durable
 			{
 				get => _durable;
@@ -1506,11 +1506,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Table _arguments;
 			/// <summary>
 			/// A set of arguments for the declaration. The syntax and semantics of these
 			/// arguments depends on the server implementation.
 			/// </summary>
-			private Table _arguments;
 			public Table Arguments
 			{
 				get => _arguments;
@@ -1597,12 +1597,12 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _ifunused;
 			/// <summary>
 			/// If set, the server will only delete the exchange if it has no queue bindings. If
 			/// the exchange has queue bindings the server does not delete it but raises a
 			/// channel exception instead.
 			/// </summary>
-			private Bit _ifunused;
 			public Bit IfUnused
 			{
 				get => _ifunused;
@@ -1704,6 +1704,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _passive;
 			/// <summary>
 			/// If set, the server will reply with Declare-Ok if the queue already
 			/// exists with the same name, and raise an error if not.  The client can
@@ -1712,7 +1713,6 @@ namespace Test.It.With.Amqp
 			/// are ignored.  A declare with both passive and no-wait has no effect.
 			/// Arguments are compared for semantic equivalence.
 			/// </summary>
-			private Bit _passive;
 			public Bit Passive
 			{
 				get => _passive;
@@ -1722,6 +1722,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _durable;
 			/// <summary>
 			/// If set when creating a new queue, the queue will be marked as durable. Durable
 			/// queues remain active when a server restarts. Non-durable queues (transient
@@ -1729,7 +1730,6 @@ namespace Test.It.With.Amqp
 			/// necessarily hold persistent messages, although it does not make sense to send
 			/// persistent messages to a transient queue.
 			/// </summary>
-			private Bit _durable;
 			public Bit Durable
 			{
 				get => _durable;
@@ -1739,12 +1739,12 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _exclusive;
 			/// <summary>
 			/// Exclusive queues may only be accessed by the current connection, and are
 			/// deleted when that connection closes.  Passive declaration of an exclusive
 			/// queue by other connections are not allowed.
 			/// </summary>
-			private Bit _exclusive;
 			public Bit Exclusive
 			{
 				get => _exclusive;
@@ -1754,13 +1754,13 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _autodelete;
 			/// <summary>
 			/// If set, the queue is deleted when all consumers have finished using it.  The last
 			/// consumer can be cancelled either explicitly or because its channel is closed. If
 			/// there was no consumer ever on the queue, it won't be deleted.  Applications can
 			/// explicitly delete auto-delete queues using the Delete method as normal.
 			/// </summary>
-			private Bit _autodelete;
 			public Bit AutoDelete
 			{
 				get => _autodelete;
@@ -1780,11 +1780,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Table _arguments;
 			/// <summary>
 			/// A set of arguments for the declaration. The syntax and semantics of these
 			/// arguments depends on the server implementation.
 			/// </summary>
-			private Table _arguments;
 			public Table Arguments
 			{
 				get => _arguments;
@@ -1828,11 +1828,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 11;
 
+			private QueueName _queue;
 			/// <summary>
 			/// Reports the name of the queue. If the server generated a queue name, this field
 			/// contains that name.
 			/// </summary>
-			private QueueName _queue;
 			public QueueName Queue
 			{
 				get => _queue;
@@ -1853,11 +1853,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Long _consumercount;
 			/// <summary>
 			/// Reports the number of active consumers for the queue. Note that consumers can
 			/// suspend activity (Channel.Flow) in which case they do not appear in this count.
 			/// </summary>
-			private Long _consumercount;
 			public Long ConsumerCount
 			{
 				get => _consumercount;
@@ -1903,10 +1903,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private QueueName _queue;
 			/// <summary>
 			/// Specifies the name of the queue to bind.
 			/// </summary>
-			private QueueName _queue;
 			public QueueName Queue
 			{
 				get => _queue;
@@ -1926,6 +1926,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Shortstr _routingkey;
 			/// <summary>
 			/// Specifies the routing key for the binding. The routing key is used for routing
 			/// messages depending on the exchange configuration. Not all exchanges use a
@@ -1936,7 +1937,6 @@ namespace Test.It.With.Amqp
 			/// server does the binding with that empty routing key.  The meaning of empty
 			/// routing keys depends on the exchange implementation.
 			/// </summary>
-			private Shortstr _routingkey;
 			public Shortstr RoutingKey
 			{
 				get => _routingkey;
@@ -1956,11 +1956,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Table _arguments;
 			/// <summary>
 			/// A set of arguments for the binding. The syntax and semantics of these arguments
 			/// depends on the exchange class.
 			/// </summary>
-			private Table _arguments;
 			public Table Arguments
 			{
 				get => _arguments;
@@ -2028,10 +2028,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private QueueName _queue;
 			/// <summary>
 			/// Specifies the name of the queue to unbind.
 			/// </summary>
-			private QueueName _queue;
 			public QueueName Queue
 			{
 				get => _queue;
@@ -2041,10 +2041,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private ExchangeName _exchange;
 			/// <summary>
 			/// The name of the exchange to unbind from.
 			/// </summary>
-			private ExchangeName _exchange;
 			public ExchangeName Exchange
 			{
 				get => _exchange;
@@ -2054,10 +2054,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Shortstr _routingkey;
 			/// <summary>
 			/// Specifies the routing key of the binding to unbind.
 			/// </summary>
-			private Shortstr _routingkey;
 			public Shortstr RoutingKey
 			{
 				get => _routingkey;
@@ -2067,10 +2067,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Table _arguments;
 			/// <summary>
 			/// Specifies the arguments of the binding to unbind.
 			/// </summary>
-			private Table _arguments;
 			public Table Arguments
 			{
 				get => _arguments;
@@ -2137,10 +2137,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private QueueName _queue;
 			/// <summary>
 			/// Specifies the name of the queue to purge.
 			/// </summary>
-			private QueueName _queue;
 			public QueueName Queue
 			{
 				get => _queue;
@@ -2183,10 +2183,10 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 31;
 
+			private MessageCount _messagecount;
 			/// <summary>
 			/// Reports the number of messages purged.
 			/// </summary>
-			private MessageCount _messagecount;
 			public MessageCount MessageCount
 			{
 				get => _messagecount;
@@ -2227,10 +2227,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private QueueName _queue;
 			/// <summary>
 			/// Specifies the name of the queue to delete.
 			/// </summary>
-			private QueueName _queue;
 			public QueueName Queue
 			{
 				get => _queue;
@@ -2240,12 +2240,12 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _ifunused;
 			/// <summary>
 			/// If set, the server will only delete the queue if it has no consumers. If the
 			/// queue has consumers the server does does not delete it but raises a channel
 			/// exception instead.
 			/// </summary>
-			private Bit _ifunused;
 			public Bit IfUnused
 			{
 				get => _ifunused;
@@ -2255,10 +2255,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _ifempty;
 			/// <summary>
 			/// If set, the server will only delete the queue if it has no messages.
 			/// </summary>
-			private Bit _ifempty;
 			public Bit IfEmpty
 			{
 				get => _ifempty;
@@ -2305,10 +2305,10 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 41;
 
+			private MessageCount _messagecount;
 			/// <summary>
 			/// Reports the number of messages deleted.
 			/// </summary>
-			private MessageCount _messagecount;
 			public MessageCount MessageCount
 			{
 				get => _messagecount;
@@ -2706,6 +2706,7 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 10;
 
+			private Long _prefetchsize;
 			/// <summary>
 			/// The client can request that messages be sent in advance so that when the client
 			/// finishes processing a message, the following message is already held locally,
@@ -2716,7 +2717,6 @@ namespace Test.It.With.Amqp
 			/// to zero, meaning "no specific limit", although other prefetch limits may still
 			/// apply. The prefetch-size is ignored if the no-ack option is set.
 			/// </summary>
-			private Long _prefetchsize;
 			public Long PrefetchSize
 			{
 				get => _prefetchsize;
@@ -2726,13 +2726,13 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Short _prefetchcount;
 			/// <summary>
 			/// Specifies a prefetch window in terms of whole messages. This field may be used
 			/// in combination with the prefetch-size field; a message will only be sent in
 			/// advance if both prefetch windows (and those at the channel and connection level)
 			/// allow it. The prefetch-count is ignored if the no-ack option is set.
 			/// </summary>
-			private Short _prefetchcount;
 			public Short PrefetchCount
 			{
 				get => _prefetchcount;
@@ -2742,11 +2742,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _global;
 			/// <summary>
 			/// By default the QoS settings apply to the current channel only. If this field is
 			/// set, they are applied to the entire connection.
 			/// </summary>
-			private Bit _global;
 			public Bit Global
 			{
 				get => _global;
@@ -2812,10 +2812,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private QueueName _queue;
 			/// <summary>
 			/// Specifies the name of the queue to consume from.
 			/// </summary>
-			private QueueName _queue;
 			public QueueName Queue
 			{
 				get => _queue;
@@ -2825,12 +2825,12 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private ConsumerTag _consumertag;
 			/// <summary>
 			/// Specifies the identifier for the consumer. The consumer tag is local to a
 			/// channel, so two clients can use the same consumer tags. If this field is
 			/// empty the server will generate a unique tag.
 			/// </summary>
-			private ConsumerTag _consumertag;
 			public ConsumerTag ConsumerTag
 			{
 				get => _consumertag;
@@ -2860,11 +2860,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _exclusive;
 			/// <summary>
 			/// Request exclusive consumer access, meaning only this consumer can access the
 			/// queue.
 			/// </summary>
-			private Bit _exclusive;
 			public Bit Exclusive
 			{
 				get => _exclusive;
@@ -2884,11 +2884,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Table _arguments;
 			/// <summary>
 			/// A set of arguments for the consume. The syntax and semantics of these
 			/// arguments depends on the server implementation.
 			/// </summary>
-			private Table _arguments;
 			public Table Arguments
 			{
 				get => _arguments;
@@ -2932,10 +2932,10 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 21;
 
+			private ConsumerTag _consumertag;
 			/// <summary>
 			/// Holds the consumer tag specified by the client or provided by the server.
 			/// </summary>
-			private ConsumerTag _consumertag;
 			public ConsumerTag ConsumerTag
 			{
 				get => _consumertag;
@@ -3049,12 +3049,12 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private ExchangeName _exchange;
 			/// <summary>
 			/// Specifies the name of the exchange to publish to. The exchange name can be
 			/// empty, meaning the default exchange. If the exchange name is specified, and that
 			/// exchange does not exist, the server will raise a channel exception.
 			/// </summary>
-			private ExchangeName _exchange;
 			public ExchangeName Exchange
 			{
 				get => _exchange;
@@ -3064,11 +3064,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Shortstr _routingkey;
 			/// <summary>
 			/// Specifies the routing key for the message. The routing key is used for routing
 			/// messages depending on the exchange configuration.
 			/// </summary>
-			private Shortstr _routingkey;
 			public Shortstr RoutingKey
 			{
 				get => _routingkey;
@@ -3078,12 +3078,12 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _mandatory;
 			/// <summary>
 			/// This flag tells the server how to react if the message cannot be routed to a
 			/// queue. If this flag is set, the server will return an unroutable message with a
 			/// Return method. If this flag is zero, the server silently drops the message.
 			/// </summary>
-			private Bit _mandatory;
 			public Bit Mandatory
 			{
 				get => _mandatory;
@@ -3093,13 +3093,13 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _immediate;
 			/// <summary>
 			/// This flag tells the server how to react if the message cannot be routed to a
 			/// queue consumer immediately. If this flag is set, the server will return an
 			/// undeliverable message with a Return method. If this flag is zero, the server
 			/// will queue the message, but with no guarantee that it will ever be consumed.
 			/// </summary>
-			private Bit _immediate;
 			public Bit Immediate
 			{
 				get => _immediate;
@@ -3159,11 +3159,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private ExchangeName _exchange;
 			/// <summary>
 			/// Specifies the name of the exchange that the message was originally published
 			/// to.  May be empty, meaning the default exchange.
 			/// </summary>
-			private ExchangeName _exchange;
 			public ExchangeName Exchange
 			{
 				get => _exchange;
@@ -3173,10 +3173,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Shortstr _routingkey;
 			/// <summary>
 			/// Specifies the routing key name specified when the message was published.
 			/// </summary>
-			private Shortstr _routingkey;
 			public Shortstr RoutingKey
 			{
 				get => _routingkey;
@@ -3244,11 +3244,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private ExchangeName _exchange;
 			/// <summary>
 			/// Specifies the name of the exchange that the message was originally published to.
 			/// May be empty, indicating the default exchange.
 			/// </summary>
-			private ExchangeName _exchange;
 			public ExchangeName Exchange
 			{
 				get => _exchange;
@@ -3258,10 +3258,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Shortstr _routingkey;
 			/// <summary>
 			/// Specifies the routing key name specified when the message was published.
 			/// </summary>
-			private Shortstr _routingkey;
 			public Shortstr RoutingKey
 			{
 				get => _routingkey;
@@ -3310,10 +3310,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private QueueName _queue;
 			/// <summary>
 			/// Specifies the name of the queue to get a message from.
 			/// </summary>
-			private QueueName _queue;
 			public QueueName Queue
 			{
 				get => _queue;
@@ -3378,11 +3378,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private ExchangeName _exchange;
 			/// <summary>
 			/// Specifies the name of the exchange that the message was originally published to.
 			/// If empty, the message was published to the default exchange.
 			/// </summary>
-			private ExchangeName _exchange;
 			public ExchangeName Exchange
 			{
 				get => _exchange;
@@ -3392,10 +3392,10 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Shortstr _routingkey;
 			/// <summary>
 			/// Specifies the routing key name specified when the message was published.
 			/// </summary>
-			private Shortstr _routingkey;
 			public Shortstr RoutingKey
 			{
 				get => _routingkey;
@@ -3484,13 +3484,13 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _multiple;
 			/// <summary>
 			/// If set to 1, the delivery tag is treated as "up to and including", so that the
 			/// client can acknowledge multiple messages with a single method. If set to zero,
 			/// the delivery tag refers to a single message. If the multiple field is 1, and the
 			/// delivery tag is zero, tells the server to acknowledge all outstanding messages.
 			/// </summary>
-			private Bit _multiple;
 			public Bit Multiple
 			{
 				get => _multiple;
@@ -3533,11 +3533,11 @@ namespace Test.It.With.Amqp
 				}
 			}
 
+			private Bit _requeue;
 			/// <summary>
 			/// If requeue is true, the server will attempt to requeue the message.  If requeue
 			/// is false or the requeue  attempt fails the messages are discarded or dead-lettered.
 			/// </summary>
-			private Bit _requeue;
 			public Bit Requeue
 			{
 				get => _requeue;
@@ -3570,12 +3570,12 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 100;
 
+			private Bit _requeue;
 			/// <summary>
 			/// If this field is zero, the message will be redelivered to the original
 			/// recipient. If this bit is 1, the server will attempt to requeue the message,
 			/// potentially then delivering it to an alternative subscriber.
 			/// </summary>
-			private Bit _requeue;
 			public Bit Requeue
 			{
 				get => _requeue;
@@ -3606,12 +3606,12 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 110;
 
+			private Bit _requeue;
 			/// <summary>
 			/// If this field is zero, the message will be redelivered to the original
 			/// recipient. If this bit is 1, the server will attempt to requeue the message,
 			/// potentially then delivering it to an alternative subscriber.
 			/// </summary>
-			private Bit _requeue;
 			public Bit Requeue
 			{
 				get => _requeue;

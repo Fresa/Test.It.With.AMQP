@@ -77,6 +77,7 @@ namespace Test.It.With.Amqp.ProtocolGenerator
                     method.Value.Index == 31 &&
                     method.Value.Documentation.Trim().StartsWith("This method sends the client's connection tuning parameters to t") &&
                     method.Value.Synchronous &&
+                    method.Value.HasContent == false &&
                     method.Value.Fields.Count == 3 &&
                     method.Value.Chassis.Count() == 1 &&
                     method.Value.Chassis.Any(chassis => 

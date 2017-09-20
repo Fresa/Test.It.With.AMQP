@@ -208,6 +208,7 @@ namespace Test.It.With.Amqp.Protocol.Definitions
                 var name = methodNode.GetMandatoryAttribute<string>("name");
                 var index = methodNode.GetMandatoryAttribute<int>("index");
                 var label = methodNode.GetOptionalAttribute<string>("label");
+                var hasContent = methodNode.GetOptionalAttribute<int>("content") == 1;
 
                 var method = new Method(name, index)
                 {
@@ -217,7 +218,8 @@ namespace Test.It.With.Amqp.Protocol.Definitions
                     Rules = ParseRules(methodNode),
                     Responses = ParseResponse(methodNode, protocol),
                     Fields = ParseFields(methodNode, protocol),
-                    Chassis = ParseChassis(methodNode)
+                    Chassis = ParseChassis(methodNode),
+                    HasContent = hasContent
                 };
                 methods.Add(name, method);
             }
