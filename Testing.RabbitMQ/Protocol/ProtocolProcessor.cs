@@ -15,7 +15,6 @@ namespace Test.It.With.RabbitMQ.Protocol
         private readonly IProtocol _protocol;
         private bool _startupPhase = true;
 
-
         public ProtocolProcessor(INetworkClient networkClient, IProtocol protocol)
         {
             _networkClient = networkClient;
@@ -50,21 +49,36 @@ namespace Test.It.With.RabbitMQ.Protocol
                         Locales = new Longstr(Encoding.UTF8.GetBytes("en_US")),
                         Mechanisms = new Longstr(Encoding.UTF8.GetBytes("PLAIN"))
                     };
-                    // todo: create frame
+
+                     // todo: need to define a statemachine keeping track on expected responses
+
+                    using (var stream = new MemoryStream())
+                    {
+                        using (var writer = new AmqpWriter(stream))
+                        {
+                            var frame = new Frame(Constants.FrameMethod, 0, start);
+                            frame.WriteTo(writer);
+                        }
+
+                        var bytes = stream.ToArray();
+                        _networkClient.Send(bytes, 0, bytes.Length);
+                    }
                 }
                 else
                 {
                     using (var stream = new MemoryStream())
                     {
-                        var writer = new AmqpWriter(stream);
-                        var protocolHeader = new ProtocolHeader(_protocol.Version);
-                        protocolHeader.WriteTo(writer);
+                        using (var writer = new AmqpWriter(stream))
+                        {
+                            var protocolHeader = new ProtocolHeader(_protocol.Version);
+                            protocolHeader.WriteTo(writer);
+                        }
+
                         var bytes = stream.ToArray();
                         _networkClient.Send(bytes, 0, bytes.Length);
                     }
 
                     Close();
-                    return;
                 }
 
             }

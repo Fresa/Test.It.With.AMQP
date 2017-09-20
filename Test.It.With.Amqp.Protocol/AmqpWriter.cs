@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Test.It.With.Amqp.Protocol
 {
-    public class AmqpWriter
+    public class AmqpWriter : IDisposable
     {
         private readonly Stream _buffer;
 
@@ -331,6 +331,11 @@ namespace Test.It.With.Amqp.Protocol
         private void Write(byte[] value)
         {
             _buffer.Write(value, 0, value.Length);
+        }
+
+        public void Dispose()
+        {
+            _buffer.Flush();
         }
     }
 }
