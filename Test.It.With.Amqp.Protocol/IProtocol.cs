@@ -5,5 +5,7 @@ namespace Test.It.With.Amqp.Protocol
         IVersion Version { get; }
 
         IMethod GetMethod(AmqpReader reader);
+
+        IContentHeader GetContentHeader(AmqpReader reader);
     }
 }

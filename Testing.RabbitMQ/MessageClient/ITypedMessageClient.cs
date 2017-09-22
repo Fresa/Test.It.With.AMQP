@@ -13,6 +13,6 @@ namespace Test.It.With.RabbitMQ.MessageClient
     {
         event EventHandler<TReceive> Received;
         event EventHandler Disconnected;
-        void Send(TSend message);
+        void Send(TSend frame);
     }
 }

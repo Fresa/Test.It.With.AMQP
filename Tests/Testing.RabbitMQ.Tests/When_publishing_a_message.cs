@@ -37,11 +37,11 @@ namespace Test.It.With.RabbitMQ.Tests
             };
             
             var rabbitMqTestServer = new RabbitMqTestFramework2(new NewtonsoftSerializer(Encoding.UTF8), new Lazy<IConnectionFactory>(() => new ConnectionFactory()));
-            rabbitMqTestServer.Consume<TestMessage>(envelope =>
-            {
-                _testMessagePublished = envelope;
-                Client.Disconnect();
-            });
+            //rabbitMqTestServer.On<TestMessage>(envelope =>
+            //{
+            //    _testMessagePublished = envelope;
+            //    Client.Disconnect();
+            //});
 
             container.Register(() => rabbitMqTestServer.ConnectionFactory);
         }

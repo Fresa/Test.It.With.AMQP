@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using Test.It.With.Amqp;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Extensions;
-using Test.It.With.RabbitMQ.MessageClient;
 using Test.It.With.RabbitMQ.Protocol.Exceptions;
-using Validation;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
@@ -17,6 +13,17 @@ namespace Test.It.With.RabbitMQ.Protocol
         public static Frame ReadFrom(AmqpReader reader)
         {
             return new Frame(reader);
+        }
+
+        public static void Write(Frame frame)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new AmqpWriter(stream))
+                {
+                    frame.WriteTo(writer);
+                }
+            }
         }
 
         public Frame(int type, short channel, IMethod method)

@@ -68,6 +68,7 @@
         }
     }
 #>
+
 // WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
 
 using System;
@@ -109,7 +110,12 @@ namespace Test.It.With.Amqp<# Block(() =>
 		#>public IContentHeader GetContentHeader(AmqpReader reader)<# Block(() =>
 	    {
 			#>var classId = reader.ReadShortUnsignedInteger();<# _(2);
-			
+			#>var weight = reader.ReadShortInteger();<# _();
+			#>if (weight != 0)<# Block(() =>
+	        {
+	            #>throw new Exception("todo: throw SyntaxError exception");<#
+	        });
+
 			#>if (_contentHeaderFactory.TryGetValue(classId, out Func<IContentHeader> factory) == false)<# Block(() =>
 			{
 			    #>throw new InvalidOperationException($"There is no content header defined for class with id {classId}.");<#
@@ -206,6 +212,8 @@ namespace Test.It.With.Amqp<# Block(() =>
 		        #>public class <#= contentHeaderName #> : IContentHeader<# Block(() =>
 				{
 					#>public int ClassId { get; } = <#= @class.Index #>;<# _(2);
+					
+					#>public long BodySize { get; private set; }<# _(2);
 
 					PrintOnNewRowForEach(@class.Fields.Values, field =>
 					{
@@ -233,6 +241,8 @@ namespace Test.It.With.Amqp<# Block(() =>
 
 					#>public void ReadFrom(AmqpReader reader)<# Block(() =>
 					{
+						#>BodySize = reader.ReadLongLongInteger();<# _();
+
 						#>var propertyFlags = reader.ReadPropertyFlags(); <# _();
 						#>if (propertyFlags.Length < <#= @class.Fields.Values.Count() #>)<# Block(() =>
 					    {
@@ -253,6 +263,8 @@ namespace Test.It.With.Amqp<# Block(() =>
 					#>public void WriteTo(AmqpWriter writer)<#
 					Block(() =>
 					{
+						#>writer.WriteLongLongInteger(BodySize);<# _(2);
+					    
 						#>var propertyFlags = new [] <# Block(() =>
 					    {
 							PrintOnNewRowForEachWithIndex(@class.Fields.Values, (field, index, length) =>

@@ -1,4 +1,5 @@
-﻿// WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
+﻿
+// WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
 
 using System;
 using System.Net;
@@ -39,7 +40,11 @@ namespace Test.It.With.Amqp
 		{
 			var classId = reader.ReadShortUnsignedInteger();
 
-			if (_contentHeaderFactory.TryGetValue(classId, out Func<IContentHeader> factory) == false)
+			var weight = reader.ReadShortInteger();
+			if (weight != 0)
+			{
+				throw new Exception("todo: throw SyntaxError exception");
+			}if (_contentHeaderFactory.TryGetValue(classId, out Func<IContentHeader> factory) == false)
 			{
 				throw new InvalidOperationException($"There is no content header defined for class with id {classId}.");
 			}
@@ -2353,6 +2358,8 @@ namespace Test.It.With.Amqp
 		{
 			public int ClassId { get; } = 60;
 
+			public long BodySize { get; private set; }
+
 			public bool HasContentType { get; private set; }
 			private Shortstr _contenttype;
 			public Shortstr ContentType
@@ -2509,6 +2516,7 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
+				BodySize = reader.ReadLongLongInteger();
 				var propertyFlags = reader.ReadPropertyFlags(); 
 				if (propertyFlags.Length < 14)
 				{
@@ -2602,6 +2610,8 @@ namespace Test.It.With.Amqp
 
 			public void WriteTo(AmqpWriter writer)
 			{
+				writer.WriteLongLongInteger(BodySize);
+
 				var propertyFlags = new [] 
 				{
 					HasContentType,

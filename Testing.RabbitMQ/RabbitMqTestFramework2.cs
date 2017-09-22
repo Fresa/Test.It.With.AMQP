@@ -2,14 +2,35 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Framing;
 using Test.It.With.RabbitMQ.MessageClient;
 using Test.It.With.RabbitMQ.NetworkClient;
+using Test.It.With.RabbitMQ.Protocol;
 
 namespace Test.It.With.RabbitMQ
 {
+    public class MethodFrame<TMethod> : TestFrame where TMethod : Amqp.Protocol.IMethod
+    {
+        public MethodFrame(short channel, TMethod method)
+        {
+            Channel = channel;
+            Method = method;
+        }
+
+        public override short Channel { get; }
+        public Amqp.Protocol.IMethod Method { get; }
+    }
+
+    public abstract class TestFrame
+    {
+        public abstract short Channel { get; }
+    }
+
+
     public class RabbitMqTestFramework2 : IDisposable
     {
         private readonly ISerializer _serializer;
@@ -32,16 +53,21 @@ namespace Test.It.With.RabbitMQ
 
         public IConnectionFactory ConnectionFactory => _connectionFactory;
 
-        public void Publish<TMessage>(ServerEnvelope<TMessage> envelope)
+
+
+        public void Send<TMessage>(MethodFrame<TMessage> frame) where TMessage : Amqp.Protocol.IMethod
         {
-            var server = _typedNetworkClientFactory.Create<ServerEnvelope<TMessage>>(new MessageClient.MessageClient(_serverNetworkClient, _serializer));
-            server.Send(envelope);
+            var client = new FrameClient(_serverNetworkClient);
+            client.Send(new Frame(Constants.FrameMethod, frame.Channel, frame.Method));
         }
 
-        public void Consume<TMessage>(Action<ClientEnvelope<TMessage>> messageProvider)
+        public void On<TMessage>(Action<TMessage> messageHandler) where TMessage : Amqp.Protocol.IMethod
         {
-            var server = _typedNetworkClientFactory.Create<ClientEnvelope<TMessage>>(new MessageClient.MessageClient(_serverNetworkClient, _serializer));
-            server.Received += (sender, envelope) => messageProvider(envelope);
+            var server = _typedNetworkClientFactory.Create<TMessage>(new MessageClient.MessageClient(_serverNetworkClient, _serializer));
+
+            var client = new FrameClient(_serverNetworkClient);
+
+            //client.Received += (sender, envelope) => message(envelope);
         }
 
         public class ClientEnvelope<TMessage>
@@ -446,7 +472,7 @@ namespace Test.It.With.RabbitMQ
         public event EventHandler<BasicCancelEventArgs> OnBasicCancel;
         public void BasicCancel(string consumerTag)
         {
-            OnBasicCancel?.Invoke(this, new BasicCancelEventArgs (consumerTag));
+            OnBasicCancel?.Invoke(this, new BasicCancelEventArgs(consumerTag));
         }
 
         public string BasicConsume(string queue, bool noAck, string consumerTag, bool noLocal, bool exclusive, IDictionary<string, object> arguments,
