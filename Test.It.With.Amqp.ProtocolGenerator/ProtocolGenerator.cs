@@ -593,6 +593,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 10;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(StartOk)
+			};
+
 			private Octet _versionmajor;
 			/// <summary>
 			/// The major version number can take any value from 0 to 99 as defined in the
@@ -687,6 +692,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 11;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			private PeerProperties _clientproperties;
 			public PeerProperties ClientProperties
 			{
@@ -769,6 +779,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 20;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(SecureOk)
+			};
+
 			private Longstr _challenge;
 			/// <summary>
 			/// Challenge information, a block of opaque binary data passed to the security
@@ -802,6 +817,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 21;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			private Longstr _response;
 			/// <summary>
@@ -837,6 +857,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 30;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(TuneOk)
+			};
 
 			private Short _channelmax;
 			/// <summary>
@@ -905,6 +930,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 31;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			private Short _channelmax;
 			/// <summary>
@@ -978,6 +1008,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 40;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(OpenOk)
+			};
+
 			private Path _virtualhost;
 			/// <summary>
 			/// The name of the virtual host to work with.
@@ -1034,6 +1069,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 41;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			private Shortstr _reserved1;
 			public Shortstr Reserved1
 			{
@@ -1065,6 +1105,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 50;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(CloseOk)
+			};
 
 			private ReplyCode _replycode;
 			public ReplyCode ReplyCode
@@ -1139,6 +1184,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 51;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -1175,6 +1225,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 10;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(OpenOk)
+			};
+
 			private Shortstr _reserved1;
 			public Shortstr Reserved1
 			{
@@ -1203,6 +1258,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 11;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			private Longstr _reserved1;
 			public Longstr Reserved1
@@ -1237,6 +1297,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 20;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(FlowOk)
+			};
+
 			private Bit _active;
 			/// <summary>
 			/// If 1, the peer starts sending content frames. If 0, the peer stops sending
@@ -1269,6 +1334,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 21;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			private Bit _active;
 			/// <summary>
@@ -1305,6 +1375,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 40;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(CloseOk)
+			};
 
 			private ReplyCode _replycode;
 			public ReplyCode ReplyCode
@@ -1379,6 +1454,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 41;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -1410,6 +1490,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 10;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(DeclareOk)
+			};
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -1561,6 +1646,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 11;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -1580,6 +1670,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 20;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(DeleteOk)
+			};
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -1652,6 +1747,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 21;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -1688,6 +1788,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 10;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(DeclareOk)
+			};
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -1833,6 +1938,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 11;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			private QueueName _queue;
 			/// <summary>
 			/// Reports the name of the queue. If the server generated a queue name, this field
@@ -1897,6 +2007,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 20;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(BindOk)
+			};
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -2004,6 +2119,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 21;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -2022,6 +2142,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 50;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(UnbindOk)
+			};
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -2112,6 +2237,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 51;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -2131,6 +2261,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 30;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(PurgeOk)
+			};
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -2188,6 +2323,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 31;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			private MessageCount _messagecount;
 			/// <summary>
 			/// Reports the number of messages purged.
@@ -2221,6 +2361,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 40;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(DeleteOk)
+			};
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -2309,6 +2454,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 41;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			private MessageCount _messagecount;
 			/// <summary>
@@ -2716,6 +2866,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 10;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(QosOk)
+			};
+
 			private Long _prefetchsize;
 			/// <summary>
 			/// The client can request that messages be sent in advance so that when the client
@@ -2791,6 +2946,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 11;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -2811,6 +2971,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 20;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(ConsumeOk)
+			};
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -2942,6 +3107,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 21;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			private ConsumerTag _consumertag;
 			/// <summary>
 			/// Holds the consumer tag specified by the client or provided by the server.
@@ -2976,6 +3146,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 30;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(CancelOk)
+			};
 
 			private ConsumerTag _consumertag;
 			public ConsumerTag ConsumerTag
@@ -3018,6 +3193,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 31;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			private ConsumerTag _consumertag;
 			public ConsumerTag ConsumerTag
 			{
@@ -3048,6 +3228,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 40;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -3149,6 +3334,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 50;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			private ReplyCode _replycode;
 			public ReplyCode ReplyCode
 			{
@@ -3223,6 +3413,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 60;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			private ConsumerTag _consumertag;
 			public ConsumerTag ConsumerTag
@@ -3310,6 +3505,12 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 70;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(GetOk),
+				typeof(GetEmpty)
+			};
+
 			private Short _reserved1;
 			public Short Reserved1
 			{
@@ -3367,6 +3568,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 71;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			private DeliveryTag _deliverytag;
 			public DeliveryTag DeliveryTag
@@ -3453,6 +3659,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 72;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			private Shortstr _reserved1;
 			public Shortstr Reserved1
 			{
@@ -3483,6 +3694,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 80;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			private DeliveryTag _deliverytag;
 			public DeliveryTag DeliveryTag
@@ -3533,6 +3749,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 90;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			private DeliveryTag _deliverytag;
 			public DeliveryTag DeliveryTag
 			{
@@ -3580,6 +3801,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 100;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			private Bit _requeue;
 			/// <summary>
 			/// If this field is zero, the message will be redelivered to the original
@@ -3616,6 +3842,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 110;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
+
 			private Bit _requeue;
 			/// <summary>
 			/// If this field is zero, the message will be redelivered to the original
@@ -3649,6 +3880,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 111;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3690,6 +3926,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 10;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(SelectOk)
+			};
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -3709,6 +3950,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 11;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3730,6 +3976,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 20;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(CommitOk)
+			};
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -3749,6 +4000,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 21;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3772,6 +4028,11 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 30;
 
+			public IEnumerable<Type> Responses => new Type[]
+			{
+				typeof(RollbackOk)
+			};
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -3791,6 +4052,11 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 31;
+
+			public IEnumerable<Type> Responses => new Type[]
+			{
+
+			};
 
 			public void ReadFrom(AmqpReader reader)
 			{

@@ -298,6 +298,17 @@ namespace Test.It.With.Amqp<# Block(() =>
 					#>public int ProtocolClassId => <#= @class.Index #>;<# _();
 					#>public int ProtocolMethodId => <#= @method.Index #>;<# _(2);
 
+
+					#>public IEnumerable<Type> Responses => new Type[]<# Block(() =>
+				    {
+				        PrintOnNewRowForEachWithIndex(@method.Responses.Values, (response, responseIndex, responseLength) =>
+				        {
+				            #>typeof(<#= response.Method.Name.ToPascalCase('-') #>)<# if (responseIndex + 1 != responseLength) { #>,<# }
+				        });
+				    });#>;<#_(2);
+
+					// todo: build response methods? like Respond(StartOk method){}
+
 					PrintOnNewRowForEach(method.Fields.Values, field =>
 					{
 						#>private <#= field.Domain.Name.ToPascalCase('-') #> _<#= field.Name.ToCamelCase('-') #>;<# _();

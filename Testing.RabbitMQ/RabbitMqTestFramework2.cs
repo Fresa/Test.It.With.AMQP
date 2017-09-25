@@ -74,7 +74,7 @@ namespace Test.It.With.RabbitMQ
                 messageHandler(frame);
             };
         }
-
+        
         public void Dispose()
         {
             _serverNetworkClient.Dispose();
