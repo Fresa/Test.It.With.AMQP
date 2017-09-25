@@ -110,6 +110,7 @@
     <Compile Include="TestApplication\NewtonsoftSerializer.cs" />
     <Compile Include="TestApplication\TestApplicationSpecification.cs" />
     <Compile Include="TestApplication\TestMessage.cs" />
+    <Compile Include="TestOutputHelperTextWriter.cs" />
     <Compile Include="When_publishing_a_message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestApplicationBuilder.cs" />
@@ -120,6 +121,10 @@
     <ProjectReference Include="..\..\..\External\rabbitmq-dotnet-client\projects\client\RabbitMQ.Client\RabbitMQ.Client.csproj">
       <Project>{1B37E63B-3EC1-426C-A83E-A68D058D1892}</Project>
       <Name>RabbitMQ.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Test.It.With.Amqp.ProtocolGenerator\Test.It.With.Amqp.ProtocolGenerator.csproj">
+      <Project>{F630B0CE-0E14-416C-B6C6-0239AABD6859}</Project>
+      <Name>Test.It.With.Amqp.ProtocolGenerator</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj">
       <Project>{672EC94A-A850-4018-A656-93A1EABC1DA0}</Project>

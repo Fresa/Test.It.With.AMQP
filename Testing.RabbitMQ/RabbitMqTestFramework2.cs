@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using RabbitMQ.Client.Framing;
+using Test.It.With.Amqp;
 using Test.It.With.RabbitMQ.MessageClient;
 using Test.It.With.RabbitMQ.NetworkClient;
 using Test.It.With.RabbitMQ.Protocol;
+using Constants = RabbitMQ.Client.Framing.Constants;
 
 namespace Test.It.With.RabbitMQ
 {
@@ -30,107 +31,48 @@ namespace Test.It.With.RabbitMQ
         public abstract short Channel { get; }
     }
 
+    public class MethodFrame : TestFrame
+    {
+        public MethodFrame(short channel, Amqp.Protocol.IMethod method)
+        {
+            Channel = channel;
+            Method = method;
+        }
+
+        public override short Channel { get; }
+        public Amqp.Protocol.IMethod Method { get; }
+    }
 
     public class RabbitMqTestFramework2 : IDisposable
     {
-        private readonly ISerializer _serializer;
         private readonly INetworkClient _serverNetworkClient;
-        private readonly CachedTestConnectionFactoryDecorator _connectionFactory;
-        private TypedMessageClientFactory _typedNetworkClientFactory;
+        private FrameClient _frameClient;
+        private MethodFrameClient _methodFrameClient;
 
-        public RabbitMqTestFramework2(ISerializer serializer, Lazy<IConnectionFactory> lazyConnectionFactory)
+        public RabbitMqTestFramework2()
         {
-            _serializer = serializer;
-
             var networkClientFactory = new InternalRoutedNetworkClientFactory();
             _serverNetworkClient = networkClientFactory.ServerNetworkClient;
-            _connectionFactory = new CachedTestConnectionFactoryDecorator(
-                new TestConnectionFactoryDecorator(
-                    lazyConnectionFactory, networkClientFactory));
+            ConnectionFactory = new TestConnectionFactory();
 
-            _typedNetworkClientFactory = new TypedMessageClientFactory(serializer);
+            _frameClient = new FrameClient(_serverNetworkClient);
+            _methodFrameClient = new MethodFrameClient(_frameClient, new AmqProtocol());
         }
 
-        public IConnectionFactory ConnectionFactory => _connectionFactory;
-
-
+        public IConnectionFactory ConnectionFactory { get; }
 
         public void Send<TMessage>(MethodFrame<TMessage> frame) where TMessage : Amqp.Protocol.IMethod
         {
-            var client = new FrameClient(_serverNetworkClient);
-            client.Send(new Frame(Constants.FrameMethod, frame.Channel, frame.Method));
+            _frameClient.Send(new Frame(Constants.FrameMethod, frame.Channel, frame.Method));
         }
 
-        public void On<TMessage>(Action<TMessage> messageHandler) where TMessage : Amqp.Protocol.IMethod
+        public void On<TMessage>(Action<MethodFrame<TMessage>> messageHandler) where TMessage : Amqp.Protocol.IMethod
         {
-            var server = _typedNetworkClientFactory.Create<TMessage>(new MessageClient.MessageClient(_serverNetworkClient, _serializer));
-
-            var client = new FrameClient(_serverNetworkClient);
-
-            //client.Received += (sender, envelope) => message(envelope);
-        }
-
-        public class ClientEnvelope<TMessage>
-        {
-            public ClientEnvelope(string exchange, string routingKey)
+            var client = new MethodFrameClient<TMessage>(_methodFrameClient);
+            client.Received += (sender, frame) =>
             {
-                Exchange = exchange;
-                RoutingKey = routingKey;
-            }
-
-            public string Exchange { get; }
-            public string RoutingKey { get; }
-            public TMessage Message { get; set; }
-            public bool Mandatory { get; set; }
-            public IBasicProperties Properties { get; set; }
-        }
-
-        public class ServerEnvelope<TMessage>
-        {
-            public ServerEnvelope(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string queue, string routingKey, IBasicProperties properties, TMessage message)
-            {
-                ConsumerTag = consumerTag;
-                DeliveryTag = deliveryTag;
-                Redelivered = redelivered;
-                Exchange = exchange;
-                RoutingKey = routingKey;
-                Properties = properties;
-                Message = message;
-                Queue = queue;
-            }
-
-            public string ConsumerTag { get; }
-            public ulong DeliveryTag { get; }
-            public bool Redelivered { get; }
-            public string Exchange { get; }
-            public string RoutingKey { get; }
-            public string Queue { get; }
-            public IBasicProperties Properties { get; }
-            public TMessage Message { get; }
-        }
-
-        public class ServerEnvelope
-        {
-            public ServerEnvelope(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string queue, string routingKey, IBasicProperties properties, byte[] message)
-            {
-                ConsumerTag = consumerTag;
-                DeliveryTag = deliveryTag;
-                Redelivered = redelivered;
-                Exchange = exchange;
-                RoutingKey = routingKey;
-                Properties = properties;
-                Message = message;
-                Queue = queue;
-            }
-
-            public string ConsumerTag { get; }
-            public ulong DeliveryTag { get; }
-            public bool Redelivered { get; }
-            public string Exchange { get; }
-            public string RoutingKey { get; }
-            public string Queue { get; }
-            public IBasicProperties Properties { get; }
-            public byte[] Message { get; }
+                messageHandler(frame);
+            };
         }
 
         public void Dispose()
@@ -138,97 +80,7 @@ namespace Test.It.With.RabbitMQ
             _serverNetworkClient.Dispose();
         }
     }
-
-    public class RabbitMqTestFramework : IDisposable
-    {
-        private readonly ISerializer _serializer;
-
-        public RabbitMqTestFramework(ISerializer serializer)
-        {
-            _serializer = serializer;
-
-            ConnectionFactory = new TestConnectionFactory();
-
-        }
-
-        public IConnectionFactory ConnectionFactory { get; }
-
-        public void Publish<TMessage>(ServerEnvelope<TMessage> envelope)
-        {
-        }
-
-        public void Consume<TMessage>(Action<ClientEnvelope<TMessage>> messageProvider)
-        {
-        }
-
-        public class ClientEnvelope<TMessage>
-        {
-            public ClientEnvelope(string exchange, string routingKey)
-            {
-                Exchange = exchange;
-                RoutingKey = routingKey;
-            }
-
-            public string Exchange { get; }
-            public string RoutingKey { get; }
-            public TMessage Message { get; set; }
-            public bool Mandatory { get; set; }
-            public IBasicProperties Properties { get; set; }
-        }
-
-        public class ServerEnvelope<TMessage>
-        {
-            public ServerEnvelope(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string queue, string routingKey, IBasicProperties properties, TMessage message)
-            {
-                ConsumerTag = consumerTag;
-                DeliveryTag = deliveryTag;
-                Redelivered = redelivered;
-                Exchange = exchange;
-                RoutingKey = routingKey;
-                Properties = properties;
-                Message = message;
-                Queue = queue;
-            }
-
-            public string ConsumerTag { get; }
-            public ulong DeliveryTag { get; }
-            public bool Redelivered { get; }
-            public string Exchange { get; }
-            public string RoutingKey { get; }
-            public string Queue { get; }
-            public IBasicProperties Properties { get; }
-            public TMessage Message { get; }
-        }
-
-        public class ServerEnvelope
-        {
-            public ServerEnvelope(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string queue, string routingKey, IBasicProperties properties, byte[] message)
-            {
-                ConsumerTag = consumerTag;
-                DeliveryTag = deliveryTag;
-                Redelivered = redelivered;
-                Exchange = exchange;
-                RoutingKey = routingKey;
-                Properties = properties;
-                Message = message;
-                Queue = queue;
-            }
-
-            public string ConsumerTag { get; }
-            public ulong DeliveryTag { get; }
-            public bool Redelivered { get; }
-            public string Exchange { get; }
-            public string RoutingKey { get; }
-            public string Queue { get; }
-            public IBasicProperties Properties { get; }
-            public byte[] Message { get; }
-        }
-
-        public void Dispose()
-        {
-        }
-    }
-
+    
     internal class TestAuthMechanism : AuthMechanism
     {
         private readonly Func<byte[], IConnectionFactory, byte[]> _callengeHandler;
