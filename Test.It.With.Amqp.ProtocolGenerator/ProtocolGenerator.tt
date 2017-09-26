@@ -293,21 +293,19 @@ namespace Test.It.With.Amqp<# Block(() =>
 				var methodName = method.Name.ToPascalCase('-');
 
 				GenerateDocumentation(method.Documentation);
-				#>public class <#= methodName #> : IMethod<# Block(() =>
+				#>public class <#= methodName #> : IMethod<# foreach (var responseMethod in method.Responses.Values) { #>, IRespondMethod<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } Block(() =>
 				{
 					#>public int ProtocolClassId => <#= @class.Index #>;<# _();
 					#>public int ProtocolMethodId => <#= @method.Index #>;<# _(2);
 
-
-					#>public IEnumerable<Type> Responses => new Type[]<# Block(() =>
-				    {
-				        PrintOnNewRowForEachWithIndex(@method.Responses.Values, (response, responseIndex, responseLength) =>
-				        {
-				            #>typeof(<#= response.Method.Name.ToPascalCase('-') #>)<# if (responseIndex + 1 != responseLength) { #>,<# }
-				        });
-				    });#>;<#_(2);
-
-					// todo: build response methods? like Respond(StartOk method){}
+					PrintOnNewRowForEachWithIndex(@method.Responses.Values, (response, responseIndex, responseLength) =>
+					{
+						var methodType = response.Method.Name.ToPascalCase('-');
+				        #>public <#= methodType #> Respond(<#= methodType #> method) <# Block(() =>
+					    {
+					     #>return method;<#
+					    }); _(2);
+					});
 
 					PrintOnNewRowForEach(method.Fields.Values, field =>
 					{
