@@ -5,12 +5,6 @@ namespace Test.It.With.Amqp.Protocol.Extensions
 {
     public static class StringExtensions
     {
-        public static string SeperateOnCase(this string s, char separator, bool separateOnLowerCase = false)
-        {
-            return string.Concat(s.Select((x, i) =>
-                i > 0 && (separateOnLowerCase ? char.IsLower(x) : char.IsUpper(x)) ? separator + x.ToString() : x.ToString()));
-        }
-
         public static string ToPascalCase(this string str, char delimiter)
         {
             if (string.IsNullOrEmpty(str))
@@ -33,12 +27,8 @@ namespace Test.It.With.Amqp.Protocol.Extensions
                 return str;
             }
 
-            var sections = str
-                .ToLower()
-                .Split(new[] { delimiter }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(section => section.First().ToString().ToLower() + string.Join(string.Empty, section.Skip(1)));
-
-            return string.Concat(sections);
+            var result = str.ToPascalCase(delimiter);
+            return result.First().ToString().ToLower() + string.Join(string.Empty, result.Skip(1));
         }
     }
 }

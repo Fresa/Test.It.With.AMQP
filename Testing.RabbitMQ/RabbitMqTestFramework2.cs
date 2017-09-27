@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Test.It.With.Amqp;
+using Test.It.With.Amqp.Protocol;
 using Test.It.With.RabbitMQ.MessageClient;
 using Test.It.With.RabbitMQ.NetworkClient;
 using Test.It.With.RabbitMQ.Protocol;
 using Constants = RabbitMQ.Client.Framing.Constants;
+using IProtocol = RabbitMQ.Client.IProtocol;
 
 namespace Test.It.With.RabbitMQ
 {
@@ -23,7 +24,7 @@ namespace Test.It.With.RabbitMQ
         }
 
         public override short Channel { get; }
-        public Amqp.Protocol.IMethod Method { get; }
+        public TMethod Method { get; }
     }
 
     public abstract class TestFrame
@@ -66,7 +67,8 @@ namespace Test.It.With.RabbitMQ
             _frameClient.Send(new Frame(Constants.FrameMethod, frame.Channel, frame.Method));
         }
 
-        public void On<TMessage>(Action<MethodFrame<TMessage>> messageHandler) where TMessage : Amqp.Protocol.IMethod
+        public void On<TMessage>(Action<MethodFrame<TMessage>> messageHandler) 
+            where TMessage : Amqp.Protocol.IMethod
         {
             var client = new MethodFrameClient<TMessage>(_methodFrameClient);
             client.Received += (sender, frame) =>
@@ -74,7 +76,20 @@ namespace Test.It.With.RabbitMQ
                 messageHandler(frame);
             };
         }
-        
+
+        public void On<TMessage, TRespondMethod>(Func<MethodFrame<TMessage>, TRespondMethod> messageHandler) 
+            where TMessage : Amqp.Protocol.IMethod, IRespond<TRespondMethod>
+            where TRespondMethod : Amqp.Protocol.IMethod
+        {
+            var client = new MethodFrameClient<TMessage>(_methodFrameClient);
+            client.Received += (sender, frame) =>
+            {
+                var response = messageHandler(frame);
+                client.Send(new Frame(Constants.FrameMethod, frame.Channel, response));
+            };
+        }
+
+
         public void Dispose()
         {
             _serverNetworkClient.Dispose();

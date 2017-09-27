@@ -10,6 +10,7 @@ namespace Test.It.With.RabbitMQ.Tests
     public class When_publishing_a_message : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<TestApplicationBuilder>>
     {
         private MethodFrame<Connection.StartOk> _testMessagePublished;
+        private MethodFrame<Connection.Open> _openMessage;
 
         public When_publishing_a_message(ITestOutputHelper output) : base(output)
         {
@@ -24,6 +25,13 @@ namespace Test.It.With.RabbitMQ.Tests
                 _testMessagePublished = envelope;
                 Client.Disconnect();
             });
+
+            rabbitMqTestServer.On<Connection.Open, Connection.OpenOk>(envelope =>
+            {
+                _openMessage = envelope;
+                return envelope.Method.Respond(new Connection.OpenOk());
+            });
+
 
             container.Register(() => rabbitMqTestServer.ConnectionFactory);
         }

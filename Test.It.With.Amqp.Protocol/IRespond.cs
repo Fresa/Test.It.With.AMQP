@@ -1,6 +1,6 @@
 ﻿namespace Test.It.With.Amqp.Protocol
 {
-    public interface IRespondMethod<TMethod> : IMethod 
+    public interface IRespond<TMethod>
         where TMethod : IMethod
     {
         TMethod Respond(TMethod method);

@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.Amqp.ProtocolG
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.Amqp.Protocol", "Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj", "{672EC94A-A850-4018-A656-93A1EABC1DA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.Amqp.ProtocolGenerator", "Tests\Test.It.With.Amqp.ProtocolGenerator\Test.It.With.Amqp.ProtocolGenerator.csproj", "{353BEEAC-9923-49DB-8217-FCB44BFB44BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.Amqp.Protocol.Tests", "Tests\Test.It.With.Amqp.Protocol.Tests\Test.It.With.Amqp.Protocol.Tests.csproj", "{353BEEAC-9923-49DB-8217-FCB44BFB44BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -7,8 +7,8 @@
     <ProjectGuid>{353BEEAC-9923-49DB-8217-FCB44BFB44BB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test.It.With.Amqp.ProtocolGenerator</RootNamespace>
-    <AssemblyName>Test.It.With.Amqp.ProtocolGenerator</AssemblyName>
+    <RootNamespace>Test.It.With.Amqp.Protocol.Tests</RootNamespace>
+    <AssemblyName>Test.It.With.Amqp.Protocol.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -67,6 +67,7 @@
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolTests.cs" />
+    <Compile Include="StringExtensionsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

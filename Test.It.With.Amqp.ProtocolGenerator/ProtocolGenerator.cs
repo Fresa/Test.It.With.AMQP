@@ -588,51 +588,54 @@ namespace Test.It.With.Amqp
 		/// protocol version that the server proposes, along with a list of security mechanisms
 		/// which the client can use for authentication.
 		/// </summary>
-		public class Start : IMethod, IRespondMethod<StartOk>
+		public class Start : IMethod, IRespond<StartOk>
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 10;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			public StartOk Respond(StartOk method) 
 			{
 				return method;
 			}
 
-			private Octet _versionmajor;
+			private Octet _versionMajor;
 			/// <summary>
 			/// The major version number can take any value from 0 to 99 as defined in the
 			/// AMQP specification.
 			/// </summary>
 			public Octet VersionMajor
 			{
-				get => _versionmajor;
+				get => _versionMajor;
 				set
 				{
-					_versionmajor = value;
+					_versionMajor = value;
 				}
 			}
 
-			private Octet _versionminor;
+			private Octet _versionMinor;
 			/// <summary>
 			/// The minor version number can take any value from 0 to 99 as defined in the
 			/// AMQP specification.
 			/// </summary>
 			public Octet VersionMinor
 			{
-				get => _versionminor;
+				get => _versionMinor;
 				set
 				{
-					_versionminor = value;
+					_versionMinor = value;
 				}
 			}
 
-			private PeerProperties _serverproperties;
+			private PeerProperties _serverProperties;
 			public PeerProperties ServerProperties
 			{
-				get => _serverproperties;
+				get => _serverProperties;
 				set
 				{
-					_serverproperties = value;
+					_serverProperties = value;
 				}
 			}
 
@@ -667,18 +670,18 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_versionmajor = new Octet(reader.ReadByte());
-				_versionminor = new Octet(reader.ReadByte());
-				_serverproperties = new PeerProperties(reader.ReadTable());
+				_versionMajor = new Octet(reader.ReadByte());
+				_versionMinor = new Octet(reader.ReadByte());
+				_serverProperties = new PeerProperties(reader.ReadTable());
 				_mechanisms = new Longstr(reader.ReadLongString());
 				_locales = new Longstr(reader.ReadLongString());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteByte(_versionmajor.Value);
-				writer.WriteByte(_versionminor.Value);
-				writer.WriteTable(_serverproperties.Value);
+				writer.WriteByte(_versionMajor.Value);
+				writer.WriteByte(_versionMinor.Value);
+				writer.WriteTable(_serverProperties.Value);
 				writer.WriteLongString(_mechanisms.Value);
 				writer.WriteLongString(_locales.Value);
 			}
@@ -692,13 +695,16 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 11;
 
-			private PeerProperties _clientproperties;
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
+
+			private PeerProperties _clientProperties;
 			public PeerProperties ClientProperties
 			{
-				get => _clientproperties;
+				get => _clientProperties;
 				set
 				{
-					_clientproperties = value;
+					_clientProperties = value;
 				}
 			}
 
@@ -749,7 +755,7 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_clientproperties = new PeerProperties(reader.ReadTable());
+				_clientProperties = new PeerProperties(reader.ReadTable());
 				_mechanism = new Shortstr(reader.ReadShortString());
 				_response = new Longstr(reader.ReadLongString());
 				_locale = new Shortstr(reader.ReadShortString());
@@ -757,7 +763,7 @@ namespace Test.It.With.Amqp
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteTable(_clientproperties.Value);
+				writer.WriteTable(_clientProperties.Value);
 				writer.WriteShortString(_mechanism.Value);
 				writer.WriteLongString(_response.Value);
 				writer.WriteShortString(_locale.Value);
@@ -769,10 +775,13 @@ namespace Test.It.With.Amqp
 		/// received sufficient information to authenticate each other. This method challenges
 		/// the client to provide more information.
 		/// </summary>
-		public class Secure : IMethod, IRespondMethod<SecureOk>
+		public class Secure : IMethod, IRespond<SecureOk>
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 20;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			public SecureOk Respond(SecureOk method) 
 			{
@@ -813,6 +822,9 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 21;
 
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
+
 			private Longstr _response;
 			/// <summary>
 			/// A block of opaque data passed to the security mechanism. The contents of this
@@ -843,31 +855,34 @@ namespace Test.It.With.Amqp
 		/// This method proposes a set of connection configuration values to the client. The
 		/// client can accept and/or adjust these.
 		/// </summary>
-		public class Tune : IMethod, IRespondMethod<TuneOk>
+		public class Tune : IMethod, IRespond<TuneOk>
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 30;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			public TuneOk Respond(TuneOk method) 
 			{
 				return method;
 			}
 
-			private Short _channelmax;
+			private Short _channelMax;
 			/// <summary>
 			/// Specifies highest channel number that the server permits.  Usable channel numbers
 			/// are in the range 1..channel-max.  Zero indicates no specified limit.
 			/// </summary>
 			public Short ChannelMax
 			{
-				get => _channelmax;
+				get => _channelMax;
 				set
 				{
-					_channelmax = value;
+					_channelMax = value;
 				}
 			}
 
-			private Long _framemax;
+			private Long _frameMax;
 			/// <summary>
 			/// The largest frame size that the server proposes for the connection, including
 			/// frame header and end-byte.  The client can negotiate a lower value. Zero means
@@ -876,10 +891,10 @@ namespace Test.It.With.Amqp
 			/// </summary>
 			public Long FrameMax
 			{
-				get => _framemax;
+				get => _frameMax;
 				set
 				{
-					_framemax = value;
+					_frameMax = value;
 				}
 			}
 
@@ -899,15 +914,15 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_channelmax = new Short(reader.ReadShortInteger());
-				_framemax = new Long(reader.ReadLongInteger());
+				_channelMax = new Short(reader.ReadShortInteger());
+				_frameMax = new Long(reader.ReadLongInteger());
 				_heartbeat = new Short(reader.ReadShortInteger());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteShortInteger(_channelmax.Value);
-				writer.WriteLongInteger(_framemax.Value);
+				writer.WriteShortInteger(_channelMax.Value);
+				writer.WriteLongInteger(_frameMax.Value);
 				writer.WriteShortInteger(_heartbeat.Value);
 			}
 		}
@@ -921,22 +936,25 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 31;
 
-			private Short _channelmax;
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
+
+			private Short _channelMax;
 			/// <summary>
 			/// The maximum total number of channels that the client will use per connection.
 			/// </summary>
 			public Short ChannelMax
 			{
-				get => _channelmax;
+				get => _channelMax;
 				set
 				{
 					Requires.NotNullAllowStructs(value.Value, nameof(value.Value));
 
-					_channelmax = value;
+					_channelMax = value;
 				}
 			}
 
-			private Long _framemax;
+			private Long _frameMax;
 			/// <summary>
 			/// The largest frame size that the client and server will use for the connection.
 			/// Zero means that the client does not impose any specific limit but may reject
@@ -946,10 +964,10 @@ namespace Test.It.With.Amqp
 			/// </summary>
 			public Long FrameMax
 			{
-				get => _framemax;
+				get => _frameMax;
 				set
 				{
-					_framemax = value;
+					_frameMax = value;
 				}
 			}
 
@@ -969,15 +987,15 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_channelmax = new Short(reader.ReadShortInteger());
-				_framemax = new Long(reader.ReadLongInteger());
+				_channelMax = new Short(reader.ReadShortInteger());
+				_frameMax = new Long(reader.ReadLongInteger());
 				_heartbeat = new Short(reader.ReadShortInteger());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteShortInteger(_channelmax.Value);
-				writer.WriteLongInteger(_framemax.Value);
+				writer.WriteShortInteger(_channelMax.Value);
+				writer.WriteLongInteger(_frameMax.Value);
 				writer.WriteShortInteger(_heartbeat.Value);
 			}
 		}
@@ -988,26 +1006,29 @@ namespace Test.It.With.Amqp
 		/// The server may apply arbitrary limits per virtual host, such as the number
 		/// of each type of entity that may be used, per connection and/or in total.
 		/// </summary>
-		public class Open : IMethod, IRespondMethod<OpenOk>
+		public class Open : IMethod, IRespond<OpenOk>
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 40;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public OpenOk Respond(OpenOk method) 
 			{
 				return method;
 			}
 
-			private Path _virtualhost;
+			private Path _virtualHost;
 			/// <summary>
 			/// The name of the virtual host to work with.
 			/// </summary>
 			public Path VirtualHost
 			{
-				get => _virtualhost;
+				get => _virtualHost;
 				set
 				{
-					_virtualhost = value;
+					_virtualHost = value;
 				}
 			}
 
@@ -1033,14 +1054,14 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_virtualhost = new Path(reader.ReadShortString());
+				_virtualHost = new Path(reader.ReadShortString());
 				_reserved1 = new Shortstr(reader.ReadShortString());
 				_reserved2 = new Bit(reader.ReadBoolean());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteShortString(_virtualhost.Value);
+				writer.WriteShortString(_virtualHost.Value);
 				writer.WriteShortString(_reserved1.Value);
 				writer.WriteBoolean(_reserved2.Value);
 			}
@@ -1053,6 +1074,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 41;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			private Shortstr _reserved1;
 			public Shortstr Reserved1
@@ -1081,77 +1105,80 @@ namespace Test.It.With.Amqp
 		/// a specific method, i.e. an exception. When a close is due to an exception, the
 		/// sender provides the class and method id of the method which caused the exception.
 		/// </summary>
-		public class Close : IMethod, IRespondMethod<CloseOk>
+		public class Close : IMethod, IRespond<CloseOk>
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 50;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => true;
 
 			public CloseOk Respond(CloseOk method) 
 			{
 				return method;
 			}
 
-			private ReplyCode _replycode;
+			private ReplyCode _replyCode;
 			public ReplyCode ReplyCode
 			{
-				get => _replycode;
+				get => _replyCode;
 				set
 				{
-					_replycode = value;
+					_replyCode = value;
 				}
 			}
 
-			private ReplyText _replytext;
+			private ReplyText _replyText;
 			public ReplyText ReplyText
 			{
-				get => _replytext;
+				get => _replyText;
 				set
 				{
-					_replytext = value;
+					_replyText = value;
 				}
 			}
 
-			private ClassId _classid;
+			private ClassId _classId;
 			/// <summary>
 			/// When the close is provoked by a method exception, this is the class of the
 			/// method.
 			/// </summary>
 			public ClassId ClassId
 			{
-				get => _classid;
+				get => _classId;
 				set
 				{
-					_classid = value;
+					_classId = value;
 				}
 			}
 
-			private MethodId _methodid;
+			private MethodId _methodId;
 			/// <summary>
 			/// When the close is provoked by a method exception, this is the ID of the method.
 			/// </summary>
 			public MethodId MethodId
 			{
-				get => _methodid;
+				get => _methodId;
 				set
 				{
-					_methodid = value;
+					_methodId = value;
 				}
 			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_replycode = new ReplyCode(reader.ReadShortInteger());
-				_replytext = new ReplyText(reader.ReadShortString());
-				_classid = new ClassId(reader.ReadShortInteger());
-				_methodid = new MethodId(reader.ReadShortInteger());
+				_replyCode = new ReplyCode(reader.ReadShortInteger());
+				_replyText = new ReplyText(reader.ReadShortString());
+				_classId = new ClassId(reader.ReadShortInteger());
+				_methodId = new MethodId(reader.ReadShortInteger());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteShortInteger(_replycode.Value);
-				writer.WriteShortString(_replytext.Value);
-				writer.WriteShortInteger(_classid.Value);
-				writer.WriteShortInteger(_methodid.Value);
+				writer.WriteShortInteger(_replyCode.Value);
+				writer.WriteShortString(_replyText.Value);
+				writer.WriteShortInteger(_classId.Value);
+				writer.WriteShortInteger(_methodId.Value);
 			}
 		}
 
@@ -1163,6 +1190,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 51;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => true;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1195,10 +1225,13 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method opens a channel to the server.
 		/// </summary>
-		public class Open : IMethod, IRespondMethod<OpenOk>
+		public class Open : IMethod, IRespond<OpenOk>
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 10;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public OpenOk Respond(OpenOk method) 
 			{
@@ -1234,6 +1267,9 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 11;
 
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
+
 			private Longstr _reserved1;
 			public Longstr Reserved1
 			{
@@ -1262,10 +1298,13 @@ namespace Test.It.With.Amqp
 		/// it can process. Note that this method is not intended for window control. It does
 		/// not affect contents returned by Basic.Get-Ok methods.
 		/// </summary>
-		public class Flow : IMethod, IRespondMethod<FlowOk>
+		public class Flow : IMethod, IRespond<FlowOk>
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 20;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => true;
 
 			public FlowOk Respond(FlowOk method) 
 			{
@@ -1305,6 +1344,9 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 21;
 
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => true;
+
 			private Bit _active;
 			/// <summary>
 			/// Confirms the setting of the processed flow method: 1 means the peer will start
@@ -1336,77 +1378,80 @@ namespace Test.It.With.Amqp
 		/// method, i.e. an exception. When a close is due to an exception, the sender provides
 		/// the class and method id of the method which caused the exception.
 		/// </summary>
-		public class Close : IMethod, IRespondMethod<CloseOk>
+		public class Close : IMethod, IRespond<CloseOk>
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 40;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => true;
 
 			public CloseOk Respond(CloseOk method) 
 			{
 				return method;
 			}
 
-			private ReplyCode _replycode;
+			private ReplyCode _replyCode;
 			public ReplyCode ReplyCode
 			{
-				get => _replycode;
+				get => _replyCode;
 				set
 				{
-					_replycode = value;
+					_replyCode = value;
 				}
 			}
 
-			private ReplyText _replytext;
+			private ReplyText _replyText;
 			public ReplyText ReplyText
 			{
-				get => _replytext;
+				get => _replyText;
 				set
 				{
-					_replytext = value;
+					_replyText = value;
 				}
 			}
 
-			private ClassId _classid;
+			private ClassId _classId;
 			/// <summary>
 			/// When the close is provoked by a method exception, this is the class of the
 			/// method.
 			/// </summary>
 			public ClassId ClassId
 			{
-				get => _classid;
+				get => _classId;
 				set
 				{
-					_classid = value;
+					_classId = value;
 				}
 			}
 
-			private MethodId _methodid;
+			private MethodId _methodId;
 			/// <summary>
 			/// When the close is provoked by a method exception, this is the ID of the method.
 			/// </summary>
 			public MethodId MethodId
 			{
-				get => _methodid;
+				get => _methodId;
 				set
 				{
-					_methodid = value;
+					_methodId = value;
 				}
 			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_replycode = new ReplyCode(reader.ReadShortInteger());
-				_replytext = new ReplyText(reader.ReadShortString());
-				_classid = new ClassId(reader.ReadShortInteger());
-				_methodid = new MethodId(reader.ReadShortInteger());
+				_replyCode = new ReplyCode(reader.ReadShortInteger());
+				_replyText = new ReplyText(reader.ReadShortString());
+				_classId = new ClassId(reader.ReadShortInteger());
+				_methodId = new MethodId(reader.ReadShortInteger());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteShortInteger(_replycode.Value);
-				writer.WriteShortString(_replytext.Value);
-				writer.WriteShortInteger(_classid.Value);
-				writer.WriteShortInteger(_methodid.Value);
+				writer.WriteShortInteger(_replyCode.Value);
+				writer.WriteShortString(_replyText.Value);
+				writer.WriteShortInteger(_classId.Value);
+				writer.WriteShortInteger(_methodId.Value);
 			}
 		}
 
@@ -1418,6 +1463,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 41;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => true;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1446,10 +1494,13 @@ namespace Test.It.With.Amqp
 		/// This method creates an exchange if it does not already exist, and if the exchange
 		/// exists, verifies that it is of the correct and expected class.
 		/// </summary>
-		public class Declare : IMethod, IRespondMethod<DeclareOk>
+		public class Declare : IMethod, IRespond<DeclareOk>
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 10;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public DeclareOk Respond(DeclareOk method) 
 			{
@@ -1546,13 +1597,13 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private NoWait _nowait;
+			private NoWait _noWait;
 			public NoWait NoWait
 			{
-				get => _nowait;
+				get => _noWait;
 				set
 				{
-					_nowait = value;
+					_noWait = value;
 				}
 			}
 
@@ -1579,7 +1630,7 @@ namespace Test.It.With.Amqp
 				_durable = new Bit(reader.ReadBoolean());
 				_reserved2 = new Bit(reader.ReadBoolean());
 				_reserved3 = new Bit(reader.ReadBoolean());
-				_nowait = new NoWait(reader.ReadBoolean());
+				_noWait = new NoWait(reader.ReadBoolean());
 				_arguments = new Table(reader.ReadTable());
 			}
 
@@ -1592,7 +1643,7 @@ namespace Test.It.With.Amqp
 				writer.WriteBoolean(_durable.Value);
 				writer.WriteBoolean(_reserved2.Value);
 				writer.WriteBoolean(_reserved3.Value);
-				writer.WriteBoolean(_nowait.Value);
+				writer.WriteBoolean(_noWait.Value);
 				writer.WriteTable(_arguments.Value);
 			}
 		}
@@ -1605,6 +1656,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 11;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1621,10 +1675,13 @@ namespace Test.It.With.Amqp
 		/// This method deletes an exchange. When an exchange is deleted all queue bindings on
 		/// the exchange are cancelled.
 		/// </summary>
-		public class Delete : IMethod, IRespondMethod<DeleteOk>
+		public class Delete : IMethod, IRespond<DeleteOk>
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 20;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public DeleteOk Respond(DeleteOk method) 
 			{
@@ -1652,7 +1709,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private Bit _ifunused;
+			private Bit _ifUnused;
 			/// <summary>
 			/// If set, the server will only delete the exchange if it has no queue bindings. If
 			/// the exchange has queue bindings the server does not delete it but raises a
@@ -1660,20 +1717,20 @@ namespace Test.It.With.Amqp
 			/// </summary>
 			public Bit IfUnused
 			{
-				get => _ifunused;
+				get => _ifUnused;
 				set
 				{
-					_ifunused = value;
+					_ifUnused = value;
 				}
 			}
 
-			private NoWait _nowait;
+			private NoWait _noWait;
 			public NoWait NoWait
 			{
-				get => _nowait;
+				get => _noWait;
 				set
 				{
-					_nowait = value;
+					_noWait = value;
 				}
 			}
 
@@ -1681,16 +1738,16 @@ namespace Test.It.With.Amqp
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_exchange = new ExchangeName(reader.ReadShortString());
-				_ifunused = new Bit(reader.ReadBoolean());
-				_nowait = new NoWait(reader.ReadBoolean());
+				_ifUnused = new Bit(reader.ReadBoolean());
+				_noWait = new NoWait(reader.ReadBoolean());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_exchange.Value);
-				writer.WriteBoolean(_ifunused.Value);
-				writer.WriteBoolean(_nowait.Value);
+				writer.WriteBoolean(_ifUnused.Value);
+				writer.WriteBoolean(_noWait.Value);
 			}
 		}
 
@@ -1701,6 +1758,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 21;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1734,10 +1794,13 @@ namespace Test.It.With.Amqp
 		/// specify various properties that control the durability of the queue and its
 		/// contents, and the level of sharing for the queue.
 		/// </summary>
-		public class Declare : IMethod, IRespondMethod<DeclareOk>
+		public class Declare : IMethod, IRespond<DeclareOk>
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 10;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public DeclareOk Respond(DeclareOk method) 
 			{
@@ -1814,7 +1877,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private Bit _autodelete;
+			private Bit _autoDelete;
 			/// <summary>
 			/// If set, the queue is deleted when all consumers have finished using it.  The last
 			/// consumer can be cancelled either explicitly or because its channel is closed. If
@@ -1823,20 +1886,20 @@ namespace Test.It.With.Amqp
 			/// </summary>
 			public Bit AutoDelete
 			{
-				get => _autodelete;
+				get => _autoDelete;
 				set
 				{
-					_autodelete = value;
+					_autoDelete = value;
 				}
 			}
 
-			private NoWait _nowait;
+			private NoWait _noWait;
 			public NoWait NoWait
 			{
-				get => _nowait;
+				get => _noWait;
 				set
 				{
-					_nowait = value;
+					_noWait = value;
 				}
 			}
 
@@ -1861,8 +1924,8 @@ namespace Test.It.With.Amqp
 				_passive = new Bit(reader.ReadBoolean());
 				_durable = new Bit(reader.ReadBoolean());
 				_exclusive = new Bit(reader.ReadBoolean());
-				_autodelete = new Bit(reader.ReadBoolean());
-				_nowait = new NoWait(reader.ReadBoolean());
+				_autoDelete = new Bit(reader.ReadBoolean());
+				_noWait = new NoWait(reader.ReadBoolean());
 				_arguments = new Table(reader.ReadTable());
 			}
 
@@ -1873,8 +1936,8 @@ namespace Test.It.With.Amqp
 				writer.WriteBoolean(_passive.Value);
 				writer.WriteBoolean(_durable.Value);
 				writer.WriteBoolean(_exclusive.Value);
-				writer.WriteBoolean(_autodelete.Value);
-				writer.WriteBoolean(_nowait.Value);
+				writer.WriteBoolean(_autoDelete.Value);
+				writer.WriteBoolean(_noWait.Value);
 				writer.WriteTable(_arguments.Value);
 			}
 		}
@@ -1887,6 +1950,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 11;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			private QueueName _queue;
 			/// <summary>
@@ -1903,42 +1969,42 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private MessageCount _messagecount;
+			private MessageCount _messageCount;
 			public MessageCount MessageCount
 			{
-				get => _messagecount;
+				get => _messageCount;
 				set
 				{
-					_messagecount = value;
+					_messageCount = value;
 				}
 			}
 
-			private Long _consumercount;
+			private Long _consumerCount;
 			/// <summary>
 			/// Reports the number of active consumers for the queue. Note that consumers can
 			/// suspend activity (Channel.Flow) in which case they do not appear in this count.
 			/// </summary>
 			public Long ConsumerCount
 			{
-				get => _consumercount;
+				get => _consumerCount;
 				set
 				{
-					_consumercount = value;
+					_consumerCount = value;
 				}
 			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
 				_queue = new QueueName(reader.ReadShortString());
-				_messagecount = new MessageCount(reader.ReadLongInteger());
-				_consumercount = new Long(reader.ReadLongInteger());
+				_messageCount = new MessageCount(reader.ReadLongInteger());
+				_consumerCount = new Long(reader.ReadLongInteger());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteShortString(_queue.Value);
-				writer.WriteLongInteger(_messagecount.Value);
-				writer.WriteLongInteger(_consumercount.Value);
+				writer.WriteLongInteger(_messageCount.Value);
+				writer.WriteLongInteger(_consumerCount.Value);
 			}
 		}
 
@@ -1948,10 +2014,13 @@ namespace Test.It.With.Amqp
 		/// are bound to a direct exchange and subscription queues are bound to a topic
 		/// exchange.
 		/// </summary>
-		public class Bind : IMethod, IRespondMethod<BindOk>
+		public class Bind : IMethod, IRespond<BindOk>
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 20;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public BindOk Respond(BindOk method) 
 			{
@@ -1991,7 +2060,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private Shortstr _routingkey;
+			private Shortstr _routingKey;
 			/// <summary>
 			/// Specifies the routing key for the binding. The routing key is used for routing
 			/// messages depending on the exchange configuration. Not all exchanges use a
@@ -2004,20 +2073,20 @@ namespace Test.It.With.Amqp
 			/// </summary>
 			public Shortstr RoutingKey
 			{
-				get => _routingkey;
+				get => _routingKey;
 				set
 				{
-					_routingkey = value;
+					_routingKey = value;
 				}
 			}
 
-			private NoWait _nowait;
+			private NoWait _noWait;
 			public NoWait NoWait
 			{
-				get => _nowait;
+				get => _noWait;
 				set
 				{
-					_nowait = value;
+					_noWait = value;
 				}
 			}
 
@@ -2040,8 +2109,8 @@ namespace Test.It.With.Amqp
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
 				_exchange = new ExchangeName(reader.ReadShortString());
-				_routingkey = new Shortstr(reader.ReadShortString());
-				_nowait = new NoWait(reader.ReadBoolean());
+				_routingKey = new Shortstr(reader.ReadShortString());
+				_noWait = new NoWait(reader.ReadBoolean());
 				_arguments = new Table(reader.ReadTable());
 			}
 
@@ -2050,8 +2119,8 @@ namespace Test.It.With.Amqp
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
 				writer.WriteShortString(_exchange.Value);
-				writer.WriteShortString(_routingkey.Value);
-				writer.WriteBoolean(_nowait.Value);
+				writer.WriteShortString(_routingKey.Value);
+				writer.WriteBoolean(_noWait.Value);
 				writer.WriteTable(_arguments.Value);
 			}
 		}
@@ -2063,6 +2132,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 21;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -2078,10 +2150,13 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method unbinds a queue from an exchange.
 		/// </summary>
-		public class Unbind : IMethod, IRespondMethod<UnbindOk>
+		public class Unbind : IMethod, IRespond<UnbindOk>
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 50;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public UnbindOk Respond(UnbindOk method) 
 			{
@@ -2124,16 +2199,16 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private Shortstr _routingkey;
+			private Shortstr _routingKey;
 			/// <summary>
 			/// Specifies the routing key of the binding to unbind.
 			/// </summary>
 			public Shortstr RoutingKey
 			{
-				get => _routingkey;
+				get => _routingKey;
 				set
 				{
-					_routingkey = value;
+					_routingKey = value;
 				}
 			}
 
@@ -2155,7 +2230,7 @@ namespace Test.It.With.Amqp
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
 				_exchange = new ExchangeName(reader.ReadShortString());
-				_routingkey = new Shortstr(reader.ReadShortString());
+				_routingKey = new Shortstr(reader.ReadShortString());
 				_arguments = new Table(reader.ReadTable());
 			}
 
@@ -2164,7 +2239,7 @@ namespace Test.It.With.Amqp
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
 				writer.WriteShortString(_exchange.Value);
-				writer.WriteShortString(_routingkey.Value);
+				writer.WriteShortString(_routingKey.Value);
 				writer.WriteTable(_arguments.Value);
 			}
 		}
@@ -2176,6 +2251,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 51;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -2192,10 +2270,13 @@ namespace Test.It.With.Amqp
 		/// This method removes all messages from a queue which are not awaiting
 		/// acknowledgment.
 		/// </summary>
-		public class Purge : IMethod, IRespondMethod<PurgeOk>
+		public class Purge : IMethod, IRespond<PurgeOk>
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 30;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public PurgeOk Respond(PurgeOk method) 
 			{
@@ -2225,13 +2306,13 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private NoWait _nowait;
+			private NoWait _noWait;
 			public NoWait NoWait
 			{
-				get => _nowait;
+				get => _noWait;
 				set
 				{
-					_nowait = value;
+					_noWait = value;
 				}
 			}
 
@@ -2239,14 +2320,14 @@ namespace Test.It.With.Amqp
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
-				_nowait = new NoWait(reader.ReadBoolean());
+				_noWait = new NoWait(reader.ReadBoolean());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
-				writer.WriteBoolean(_nowait.Value);
+				writer.WriteBoolean(_noWait.Value);
 			}
 		}
 
@@ -2258,27 +2339,30 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 31;
 
-			private MessageCount _messagecount;
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
+
+			private MessageCount _messageCount;
 			/// <summary>
 			/// Reports the number of messages purged.
 			/// </summary>
 			public MessageCount MessageCount
 			{
-				get => _messagecount;
+				get => _messageCount;
 				set
 				{
-					_messagecount = value;
+					_messageCount = value;
 				}
 			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_messagecount = new MessageCount(reader.ReadLongInteger());
+				_messageCount = new MessageCount(reader.ReadLongInteger());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteLongInteger(_messagecount.Value);
+				writer.WriteLongInteger(_messageCount.Value);
 			}
 		}
 
@@ -2287,10 +2371,13 @@ namespace Test.It.With.Amqp
 		/// to a dead-letter queue if this is defined in the server configuration, and all
 		/// consumers on the queue are cancelled.
 		/// </summary>
-		public class Delete : IMethod, IRespondMethod<DeleteOk>
+		public class Delete : IMethod, IRespond<DeleteOk>
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 40;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public DeleteOk Respond(DeleteOk method) 
 			{
@@ -2320,7 +2407,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private Bit _ifunused;
+			private Bit _ifUnused;
 			/// <summary>
 			/// If set, the server will only delete the queue if it has no consumers. If the
 			/// queue has consumers the server does does not delete it but raises a channel
@@ -2328,33 +2415,33 @@ namespace Test.It.With.Amqp
 			/// </summary>
 			public Bit IfUnused
 			{
-				get => _ifunused;
+				get => _ifUnused;
 				set
 				{
-					_ifunused = value;
+					_ifUnused = value;
 				}
 			}
 
-			private Bit _ifempty;
+			private Bit _ifEmpty;
 			/// <summary>
 			/// If set, the server will only delete the queue if it has no messages.
 			/// </summary>
 			public Bit IfEmpty
 			{
-				get => _ifempty;
+				get => _ifEmpty;
 				set
 				{
-					_ifempty = value;
+					_ifEmpty = value;
 				}
 			}
 
-			private NoWait _nowait;
+			private NoWait _noWait;
 			public NoWait NoWait
 			{
-				get => _nowait;
+				get => _noWait;
 				set
 				{
-					_nowait = value;
+					_noWait = value;
 				}
 			}
 
@@ -2362,18 +2449,18 @@ namespace Test.It.With.Amqp
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
-				_ifunused = new Bit(reader.ReadBoolean());
-				_ifempty = new Bit(reader.ReadBoolean());
-				_nowait = new NoWait(reader.ReadBoolean());
+				_ifUnused = new Bit(reader.ReadBoolean());
+				_ifEmpty = new Bit(reader.ReadBoolean());
+				_noWait = new NoWait(reader.ReadBoolean());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
-				writer.WriteBoolean(_ifunused.Value);
-				writer.WriteBoolean(_ifempty.Value);
-				writer.WriteBoolean(_nowait.Value);
+				writer.WriteBoolean(_ifUnused.Value);
+				writer.WriteBoolean(_ifEmpty.Value);
+				writer.WriteBoolean(_noWait.Value);
 			}
 		}
 
@@ -2385,27 +2472,30 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 41;
 
-			private MessageCount _messagecount;
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
+
+			private MessageCount _messageCount;
 			/// <summary>
 			/// Reports the number of messages deleted.
 			/// </summary>
 			public MessageCount MessageCount
 			{
-				get => _messagecount;
+				get => _messageCount;
 				set
 				{
-					_messagecount = value;
+					_messageCount = value;
 				}
 			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_messagecount = new MessageCount(reader.ReadLongInteger());
+				_messageCount = new MessageCount(reader.ReadLongInteger());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteLongInteger(_messagecount.Value);
+				writer.WriteLongInteger(_messageCount.Value);
 			}
 		}
 	}
@@ -2436,24 +2526,24 @@ namespace Test.It.With.Amqp
 			public long BodySize { get; private set; }
 
 			public bool HasContentType { get; private set; }
-			private Shortstr _contenttype;
+			private Shortstr _contentType;
 			public Shortstr ContentType
 			{
-				get => _contenttype;
+				get => _contentType;
 				set
 				{
-					_contenttype = value;
+					_contentType = value;
 				}
 			}
 
 			public bool HasContentEncoding { get; private set; }
-			private Shortstr _contentencoding;
+			private Shortstr _contentEncoding;
 			public Shortstr ContentEncoding
 			{
-				get => _contentencoding;
+				get => _contentEncoding;
 				set
 				{
-					_contentencoding = value;
+					_contentEncoding = value;
 				}
 			}
 
@@ -2469,13 +2559,13 @@ namespace Test.It.With.Amqp
 			}
 
 			public bool HasDeliveryMode { get; private set; }
-			private Octet _deliverymode;
+			private Octet _deliveryMode;
 			public Octet DeliveryMode
 			{
-				get => _deliverymode;
+				get => _deliveryMode;
 				set
 				{
-					_deliverymode = value;
+					_deliveryMode = value;
 				}
 			}
 
@@ -2491,24 +2581,24 @@ namespace Test.It.With.Amqp
 			}
 
 			public bool HasCorrelationId { get; private set; }
-			private Shortstr _correlationid;
+			private Shortstr _correlationId;
 			public Shortstr CorrelationId
 			{
-				get => _correlationid;
+				get => _correlationId;
 				set
 				{
-					_correlationid = value;
+					_correlationId = value;
 				}
 			}
 
 			public bool HasReplyTo { get; private set; }
-			private Shortstr _replyto;
+			private Shortstr _replyTo;
 			public Shortstr ReplyTo
 			{
-				get => _replyto;
+				get => _replyTo;
 				set
 				{
-					_replyto = value;
+					_replyTo = value;
 				}
 			}
 
@@ -2524,13 +2614,13 @@ namespace Test.It.With.Amqp
 			}
 
 			public bool HasMessageId { get; private set; }
-			private Shortstr _messageid;
+			private Shortstr _messageId;
 			public Shortstr MessageId
 			{
-				get => _messageid;
+				get => _messageId;
 				set
 				{
-					_messageid = value;
+					_messageId = value;
 				}
 			}
 
@@ -2557,24 +2647,24 @@ namespace Test.It.With.Amqp
 			}
 
 			public bool HasUserId { get; private set; }
-			private Shortstr _userid;
+			private Shortstr _userId;
 			public Shortstr UserId
 			{
-				get => _userid;
+				get => _userId;
 				set
 				{
-					_userid = value;
+					_userId = value;
 				}
 			}
 
 			public bool HasAppId { get; private set; }
-			private Shortstr _appid;
+			private Shortstr _appId;
 			public Shortstr AppId
 			{
-				get => _appid;
+				get => _appId;
 				set
 				{
-					_appid = value;
+					_appId = value;
 				}
 			}
 
@@ -2601,13 +2691,13 @@ namespace Test.It.With.Amqp
 				HasContentType = propertyFlags[0];
 				if (HasContentType)
 				{
-					_contenttype = new Shortstr(reader.ReadShortString());
+					_contentType = new Shortstr(reader.ReadShortString());
 				}
 
 				HasContentEncoding = propertyFlags[1];
 				if (HasContentEncoding)
 				{
-					_contentencoding = new Shortstr(reader.ReadShortString());
+					_contentEncoding = new Shortstr(reader.ReadShortString());
 				}
 
 				HasHeaders = propertyFlags[2];
@@ -2619,7 +2709,7 @@ namespace Test.It.With.Amqp
 				HasDeliveryMode = propertyFlags[3];
 				if (HasDeliveryMode)
 				{
-					_deliverymode = new Octet(reader.ReadByte());
+					_deliveryMode = new Octet(reader.ReadByte());
 				}
 
 				HasPriority = propertyFlags[4];
@@ -2631,13 +2721,13 @@ namespace Test.It.With.Amqp
 				HasCorrelationId = propertyFlags[5];
 				if (HasCorrelationId)
 				{
-					_correlationid = new Shortstr(reader.ReadShortString());
+					_correlationId = new Shortstr(reader.ReadShortString());
 				}
 
 				HasReplyTo = propertyFlags[6];
 				if (HasReplyTo)
 				{
-					_replyto = new Shortstr(reader.ReadShortString());
+					_replyTo = new Shortstr(reader.ReadShortString());
 				}
 
 				HasExpiration = propertyFlags[7];
@@ -2649,7 +2739,7 @@ namespace Test.It.With.Amqp
 				HasMessageId = propertyFlags[8];
 				if (HasMessageId)
 				{
-					_messageid = new Shortstr(reader.ReadShortString());
+					_messageId = new Shortstr(reader.ReadShortString());
 				}
 
 				HasTimestamp = propertyFlags[9];
@@ -2667,13 +2757,13 @@ namespace Test.It.With.Amqp
 				HasUserId = propertyFlags[11];
 				if (HasUserId)
 				{
-					_userid = new Shortstr(reader.ReadShortString());
+					_userId = new Shortstr(reader.ReadShortString());
 				}
 
 				HasAppId = propertyFlags[12];
 				if (HasAppId)
 				{
-					_appid = new Shortstr(reader.ReadShortString());
+					_appId = new Shortstr(reader.ReadShortString());
 				}
 
 				HasReserved = propertyFlags[13];
@@ -2709,12 +2799,12 @@ namespace Test.It.With.Amqp
 
 				if (HasContentType)
 				{
-					writer.WriteShortString(_contenttype.Value);
+					writer.WriteShortString(_contentType.Value);
 				}
 
 				if (HasContentEncoding)
 				{
-					writer.WriteShortString(_contentencoding.Value);
+					writer.WriteShortString(_contentEncoding.Value);
 				}
 
 				if (HasHeaders)
@@ -2724,7 +2814,7 @@ namespace Test.It.With.Amqp
 
 				if (HasDeliveryMode)
 				{
-					writer.WriteByte(_deliverymode.Value);
+					writer.WriteByte(_deliveryMode.Value);
 				}
 
 				if (HasPriority)
@@ -2734,12 +2824,12 @@ namespace Test.It.With.Amqp
 
 				if (HasCorrelationId)
 				{
-					writer.WriteShortString(_correlationid.Value);
+					writer.WriteShortString(_correlationId.Value);
 				}
 
 				if (HasReplyTo)
 				{
-					writer.WriteShortString(_replyto.Value);
+					writer.WriteShortString(_replyTo.Value);
 				}
 
 				if (HasExpiration)
@@ -2749,7 +2839,7 @@ namespace Test.It.With.Amqp
 
 				if (HasMessageId)
 				{
-					writer.WriteShortString(_messageid.Value);
+					writer.WriteShortString(_messageId.Value);
 				}
 
 				if (HasTimestamp)
@@ -2764,12 +2854,12 @@ namespace Test.It.With.Amqp
 
 				if (HasUserId)
 				{
-					writer.WriteShortString(_userid.Value);
+					writer.WriteShortString(_userId.Value);
 				}
 
 				if (HasAppId)
 				{
-					writer.WriteShortString(_appid.Value);
+					writer.WriteShortString(_appId.Value);
 				}
 
 				if (HasReserved)
@@ -2786,17 +2876,20 @@ namespace Test.It.With.Amqp
 		/// qos method could in principle apply to both peers, it is currently meaningful only
 		/// for the server.
 		/// </summary>
-		public class Qos : IMethod, IRespondMethod<QosOk>
+		public class Qos : IMethod, IRespond<QosOk>
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 10;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public QosOk Respond(QosOk method) 
 			{
 				return method;
 			}
 
-			private Long _prefetchsize;
+			private Long _prefetchSize;
 			/// <summary>
 			/// The client can request that messages be sent in advance so that when the client
 			/// finishes processing a message, the following message is already held locally,
@@ -2809,14 +2902,14 @@ namespace Test.It.With.Amqp
 			/// </summary>
 			public Long PrefetchSize
 			{
-				get => _prefetchsize;
+				get => _prefetchSize;
 				set
 				{
-					_prefetchsize = value;
+					_prefetchSize = value;
 				}
 			}
 
-			private Short _prefetchcount;
+			private Short _prefetchCount;
 			/// <summary>
 			/// Specifies a prefetch window in terms of whole messages. This field may be used
 			/// in combination with the prefetch-size field; a message will only be sent in
@@ -2825,10 +2918,10 @@ namespace Test.It.With.Amqp
 			/// </summary>
 			public Short PrefetchCount
 			{
-				get => _prefetchcount;
+				get => _prefetchCount;
 				set
 				{
-					_prefetchcount = value;
+					_prefetchCount = value;
 				}
 			}
 
@@ -2848,15 +2941,15 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_prefetchsize = new Long(reader.ReadLongInteger());
-				_prefetchcount = new Short(reader.ReadShortInteger());
+				_prefetchSize = new Long(reader.ReadLongInteger());
+				_prefetchCount = new Short(reader.ReadShortInteger());
 				_global = new Bit(reader.ReadBoolean());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteLongInteger(_prefetchsize.Value);
-				writer.WriteShortInteger(_prefetchcount.Value);
+				writer.WriteLongInteger(_prefetchSize.Value);
+				writer.WriteShortInteger(_prefetchCount.Value);
 				writer.WriteBoolean(_global.Value);
 			}
 		}
@@ -2870,6 +2963,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 11;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -2887,10 +2983,13 @@ namespace Test.It.With.Amqp
 		/// messages from a specific queue. Consumers last as long as the channel they were
 		/// declared on, or until the client cancels them.
 		/// </summary>
-		public class Consume : IMethod, IRespondMethod<ConsumeOk>
+		public class Consume : IMethod, IRespond<ConsumeOk>
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 20;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public ConsumeOk Respond(ConsumeOk method) 
 			{
@@ -2920,7 +3019,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private ConsumerTag _consumertag;
+			private ConsumerTag _consumerTag;
 			/// <summary>
 			/// Specifies the identifier for the consumer. The consumer tag is local to a
 			/// channel, so two clients can use the same consumer tags. If this field is
@@ -2928,30 +3027,30 @@ namespace Test.It.With.Amqp
 			/// </summary>
 			public ConsumerTag ConsumerTag
 			{
-				get => _consumertag;
+				get => _consumerTag;
 				set
 				{
-					_consumertag = value;
+					_consumerTag = value;
 				}
 			}
 
-			private NoLocal _nolocal;
+			private NoLocal _noLocal;
 			public NoLocal NoLocal
 			{
-				get => _nolocal;
+				get => _noLocal;
 				set
 				{
-					_nolocal = value;
+					_noLocal = value;
 				}
 			}
 
-			private NoAck _noack;
+			private NoAck _noAck;
 			public NoAck NoAck
 			{
-				get => _noack;
+				get => _noAck;
 				set
 				{
-					_noack = value;
+					_noAck = value;
 				}
 			}
 
@@ -2969,13 +3068,13 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private NoWait _nowait;
+			private NoWait _noWait;
 			public NoWait NoWait
 			{
-				get => _nowait;
+				get => _noWait;
 				set
 				{
-					_nowait = value;
+					_noWait = value;
 				}
 			}
 
@@ -2997,11 +3096,11 @@ namespace Test.It.With.Amqp
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
-				_consumertag = new ConsumerTag(reader.ReadShortString());
-				_nolocal = new NoLocal(reader.ReadBoolean());
-				_noack = new NoAck(reader.ReadBoolean());
+				_consumerTag = new ConsumerTag(reader.ReadShortString());
+				_noLocal = new NoLocal(reader.ReadBoolean());
+				_noAck = new NoAck(reader.ReadBoolean());
 				_exclusive = new Bit(reader.ReadBoolean());
-				_nowait = new NoWait(reader.ReadBoolean());
+				_noWait = new NoWait(reader.ReadBoolean());
 				_arguments = new Table(reader.ReadTable());
 			}
 
@@ -3009,11 +3108,11 @@ namespace Test.It.With.Amqp
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
-				writer.WriteShortString(_consumertag.Value);
-				writer.WriteBoolean(_nolocal.Value);
-				writer.WriteBoolean(_noack.Value);
+				writer.WriteShortString(_consumerTag.Value);
+				writer.WriteBoolean(_noLocal.Value);
+				writer.WriteBoolean(_noAck.Value);
 				writer.WriteBoolean(_exclusive.Value);
-				writer.WriteBoolean(_nowait.Value);
+				writer.WriteBoolean(_noWait.Value);
 				writer.WriteTable(_arguments.Value);
 			}
 		}
@@ -3027,27 +3126,30 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 21;
 
-			private ConsumerTag _consumertag;
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
+
+			private ConsumerTag _consumerTag;
 			/// <summary>
 			/// Holds the consumer tag specified by the client or provided by the server.
 			/// </summary>
 			public ConsumerTag ConsumerTag
 			{
-				get => _consumertag;
+				get => _consumerTag;
 				set
 				{
-					_consumertag = value;
+					_consumerTag = value;
 				}
 			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_consumertag = new ConsumerTag(reader.ReadShortString());
+				_consumerTag = new ConsumerTag(reader.ReadShortString());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteShortString(_consumertag.Value);
+				writer.WriteShortString(_consumerTag.Value);
 			}
 		}
 
@@ -3057,46 +3159,49 @@ namespace Test.It.With.Amqp
 		/// that consumer. The client may receive an arbitrary number of messages in
 		/// between sending the cancel method and receiving the cancel-ok reply.
 		/// </summary>
-		public class Cancel : IMethod, IRespondMethod<CancelOk>
+		public class Cancel : IMethod, IRespond<CancelOk>
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 30;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public CancelOk Respond(CancelOk method) 
 			{
 				return method;
 			}
 
-			private ConsumerTag _consumertag;
+			private ConsumerTag _consumerTag;
 			public ConsumerTag ConsumerTag
 			{
-				get => _consumertag;
+				get => _consumerTag;
 				set
 				{
-					_consumertag = value;
+					_consumerTag = value;
 				}
 			}
 
-			private NoWait _nowait;
+			private NoWait _noWait;
 			public NoWait NoWait
 			{
-				get => _nowait;
+				get => _noWait;
 				set
 				{
-					_nowait = value;
+					_noWait = value;
 				}
 			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_consumertag = new ConsumerTag(reader.ReadShortString());
-				_nowait = new NoWait(reader.ReadBoolean());
+				_consumerTag = new ConsumerTag(reader.ReadShortString());
+				_noWait = new NoWait(reader.ReadBoolean());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteShortString(_consumertag.Value);
-				writer.WriteBoolean(_nowait.Value);
+				writer.WriteShortString(_consumerTag.Value);
+				writer.WriteBoolean(_noWait.Value);
 			}
 		}
 
@@ -3108,24 +3213,27 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 31;
 
-			private ConsumerTag _consumertag;
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
+
+			private ConsumerTag _consumerTag;
 			public ConsumerTag ConsumerTag
 			{
-				get => _consumertag;
+				get => _consumerTag;
 				set
 				{
-					_consumertag = value;
+					_consumerTag = value;
 				}
 			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_consumertag = new ConsumerTag(reader.ReadShortString());
+				_consumerTag = new ConsumerTag(reader.ReadShortString());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteShortString(_consumertag.Value);
+				writer.WriteShortString(_consumerTag.Value);
 			}
 		}
 
@@ -3138,6 +3246,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 40;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -3164,17 +3275,17 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private Shortstr _routingkey;
+			private Shortstr _routingKey;
 			/// <summary>
 			/// Specifies the routing key for the message. The routing key is used for routing
 			/// messages depending on the exchange configuration.
 			/// </summary>
 			public Shortstr RoutingKey
 			{
-				get => _routingkey;
+				get => _routingKey;
 				set
 				{
-					_routingkey = value;
+					_routingKey = value;
 				}
 			}
 
@@ -3213,7 +3324,7 @@ namespace Test.It.With.Amqp
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_exchange = new ExchangeName(reader.ReadShortString());
-				_routingkey = new Shortstr(reader.ReadShortString());
+				_routingKey = new Shortstr(reader.ReadShortString());
 				_mandatory = new Bit(reader.ReadBoolean());
 				_immediate = new Bit(reader.ReadBoolean());
 			}
@@ -3222,7 +3333,7 @@ namespace Test.It.With.Amqp
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_exchange.Value);
-				writer.WriteShortString(_routingkey.Value);
+				writer.WriteShortString(_routingKey.Value);
 				writer.WriteBoolean(_mandatory.Value);
 				writer.WriteBoolean(_immediate.Value);
 			}
@@ -3239,23 +3350,26 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 50;
 
-			private ReplyCode _replycode;
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
+
+			private ReplyCode _replyCode;
 			public ReplyCode ReplyCode
 			{
-				get => _replycode;
+				get => _replyCode;
 				set
 				{
-					_replycode = value;
+					_replyCode = value;
 				}
 			}
 
-			private ReplyText _replytext;
+			private ReplyText _replyText;
 			public ReplyText ReplyText
 			{
-				get => _replytext;
+				get => _replyText;
 				set
 				{
-					_replytext = value;
+					_replyText = value;
 				}
 			}
 
@@ -3273,33 +3387,33 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private Shortstr _routingkey;
+			private Shortstr _routingKey;
 			/// <summary>
 			/// Specifies the routing key name specified when the message was published.
 			/// </summary>
 			public Shortstr RoutingKey
 			{
-				get => _routingkey;
+				get => _routingKey;
 				set
 				{
-					_routingkey = value;
+					_routingKey = value;
 				}
 			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_replycode = new ReplyCode(reader.ReadShortInteger());
-				_replytext = new ReplyText(reader.ReadShortString());
+				_replyCode = new ReplyCode(reader.ReadShortInteger());
+				_replyText = new ReplyText(reader.ReadShortString());
 				_exchange = new ExchangeName(reader.ReadShortString());
-				_routingkey = new Shortstr(reader.ReadShortString());
+				_routingKey = new Shortstr(reader.ReadShortString());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteShortInteger(_replycode.Value);
-				writer.WriteShortString(_replytext.Value);
+				writer.WriteShortInteger(_replyCode.Value);
+				writer.WriteShortString(_replyText.Value);
 				writer.WriteShortString(_exchange.Value);
-				writer.WriteShortString(_routingkey.Value);
+				writer.WriteShortString(_routingKey.Value);
 			}
 		}
 
@@ -3314,23 +3428,26 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 60;
 
-			private ConsumerTag _consumertag;
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
+
+			private ConsumerTag _consumerTag;
 			public ConsumerTag ConsumerTag
 			{
-				get => _consumertag;
+				get => _consumerTag;
 				set
 				{
-					_consumertag = value;
+					_consumerTag = value;
 				}
 			}
 
-			private DeliveryTag _deliverytag;
+			private DeliveryTag _deliveryTag;
 			public DeliveryTag DeliveryTag
 			{
-				get => _deliverytag;
+				get => _deliveryTag;
 				set
 				{
-					_deliverytag = value;
+					_deliveryTag = value;
 				}
 			}
 
@@ -3358,35 +3475,35 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private Shortstr _routingkey;
+			private Shortstr _routingKey;
 			/// <summary>
 			/// Specifies the routing key name specified when the message was published.
 			/// </summary>
 			public Shortstr RoutingKey
 			{
-				get => _routingkey;
+				get => _routingKey;
 				set
 				{
-					_routingkey = value;
+					_routingKey = value;
 				}
 			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_consumertag = new ConsumerTag(reader.ReadShortString());
-				_deliverytag = new DeliveryTag(reader.ReadLongLongInteger());
+				_consumerTag = new ConsumerTag(reader.ReadShortString());
+				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
 				_redelivered = new Redelivered(reader.ReadBoolean());
 				_exchange = new ExchangeName(reader.ReadShortString());
-				_routingkey = new Shortstr(reader.ReadShortString());
+				_routingKey = new Shortstr(reader.ReadShortString());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteShortString(_consumertag.Value);
-				writer.WriteLongLongInteger(_deliverytag.Value);
+				writer.WriteShortString(_consumerTag.Value);
+				writer.WriteLongLongInteger(_deliveryTag.Value);
 				writer.WriteBoolean(_redelivered.Value);
 				writer.WriteShortString(_exchange.Value);
-				writer.WriteShortString(_routingkey.Value);
+				writer.WriteShortString(_routingKey.Value);
 			}
 		}
 
@@ -3395,10 +3512,13 @@ namespace Test.It.With.Amqp
 		/// dialogue that is designed for specific types of application where synchronous
 		/// functionality is more important than performance.
 		/// </summary>
-		public class Get : IMethod, IRespondMethod<GetOk>, IRespondMethod<GetEmpty>
+		public class Get : IMethod, IRespond<GetOk>, IRespond<GetEmpty>
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 70;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public GetOk Respond(GetOk method) 
 			{
@@ -3434,13 +3554,13 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private NoAck _noack;
+			private NoAck _noAck;
 			public NoAck NoAck
 			{
-				get => _noack;
+				get => _noAck;
 				set
 				{
-					_noack = value;
+					_noAck = value;
 				}
 			}
 
@@ -3448,14 +3568,14 @@ namespace Test.It.With.Amqp
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
-				_noack = new NoAck(reader.ReadBoolean());
+				_noAck = new NoAck(reader.ReadBoolean());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
-				writer.WriteBoolean(_noack.Value);
+				writer.WriteBoolean(_noAck.Value);
 			}
 		}
 
@@ -3469,13 +3589,16 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 71;
 
-			private DeliveryTag _deliverytag;
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
+
+			private DeliveryTag _deliveryTag;
 			public DeliveryTag DeliveryTag
 			{
-				get => _deliverytag;
+				get => _deliveryTag;
 				set
 				{
-					_deliverytag = value;
+					_deliveryTag = value;
 				}
 			}
 
@@ -3503,45 +3626,45 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			private Shortstr _routingkey;
+			private Shortstr _routingKey;
 			/// <summary>
 			/// Specifies the routing key name specified when the message was published.
 			/// </summary>
 			public Shortstr RoutingKey
 			{
-				get => _routingkey;
+				get => _routingKey;
 				set
 				{
-					_routingkey = value;
+					_routingKey = value;
 				}
 			}
 
-			private MessageCount _messagecount;
+			private MessageCount _messageCount;
 			public MessageCount MessageCount
 			{
-				get => _messagecount;
+				get => _messageCount;
 				set
 				{
-					_messagecount = value;
+					_messageCount = value;
 				}
 			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_deliverytag = new DeliveryTag(reader.ReadLongLongInteger());
+				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
 				_redelivered = new Redelivered(reader.ReadBoolean());
 				_exchange = new ExchangeName(reader.ReadShortString());
-				_routingkey = new Shortstr(reader.ReadShortString());
-				_messagecount = new MessageCount(reader.ReadLongInteger());
+				_routingKey = new Shortstr(reader.ReadShortString());
+				_messageCount = new MessageCount(reader.ReadLongInteger());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteLongLongInteger(_deliverytag.Value);
+				writer.WriteLongLongInteger(_deliveryTag.Value);
 				writer.WriteBoolean(_redelivered.Value);
 				writer.WriteShortString(_exchange.Value);
-				writer.WriteShortString(_routingkey.Value);
-				writer.WriteLongInteger(_messagecount.Value);
+				writer.WriteShortString(_routingKey.Value);
+				writer.WriteLongInteger(_messageCount.Value);
 			}
 		}
 
@@ -3553,6 +3676,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 72;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			private Shortstr _reserved1;
 			public Shortstr Reserved1
@@ -3585,13 +3711,16 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 80;
 
-			private DeliveryTag _deliverytag;
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
+
+			private DeliveryTag _deliveryTag;
 			public DeliveryTag DeliveryTag
 			{
-				get => _deliverytag;
+				get => _deliveryTag;
 				set
 				{
-					_deliverytag = value;
+					_deliveryTag = value;
 				}
 			}
 
@@ -3613,13 +3742,13 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_deliverytag = new DeliveryTag(reader.ReadLongLongInteger());
+				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
 				_multiple = new Bit(reader.ReadBoolean());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteLongLongInteger(_deliverytag.Value);
+				writer.WriteLongLongInteger(_deliveryTag.Value);
 				writer.WriteBoolean(_multiple.Value);
 			}
 		}
@@ -3634,13 +3763,16 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 90;
 
-			private DeliveryTag _deliverytag;
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
+
+			private DeliveryTag _deliveryTag;
 			public DeliveryTag DeliveryTag
 			{
-				get => _deliverytag;
+				get => _deliveryTag;
 				set
 				{
-					_deliverytag = value;
+					_deliveryTag = value;
 				}
 			}
 
@@ -3660,13 +3792,13 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_deliverytag = new DeliveryTag(reader.ReadLongLongInteger());
+				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
 				_requeue = new Bit(reader.ReadBoolean());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteLongLongInteger(_deliverytag.Value);
+				writer.WriteLongLongInteger(_deliveryTag.Value);
 				writer.WriteBoolean(_requeue.Value);
 			}
 		}
@@ -3680,6 +3812,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 100;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			private Bit _requeue;
 			/// <summary>
@@ -3717,6 +3852,9 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 110;
 
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
+
 			private Bit _requeue;
 			/// <summary>
 			/// If this field is zero, the message will be redelivered to the original
@@ -3750,6 +3888,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 111;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3786,10 +3927,13 @@ namespace Test.It.With.Amqp
 		/// This method sets the channel to use standard transactions. The client must use this
 		/// method at least once on a channel before using the Commit or Rollback methods.
 		/// </summary>
-		public class Select : IMethod, IRespondMethod<SelectOk>
+		public class Select : IMethod, IRespond<SelectOk>
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 10;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public SelectOk Respond(SelectOk method) 
 			{
@@ -3816,6 +3960,9 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 11;
 
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -3831,10 +3978,13 @@ namespace Test.It.With.Amqp
 		/// This method commits all message publications and acknowledgments performed in
 		/// the current transaction.  A new transaction starts immediately after a commit.
 		/// </summary>
-		public class Commit : IMethod, IRespondMethod<CommitOk>
+		public class Commit : IMethod, IRespond<CommitOk>
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 20;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public CommitOk Respond(CommitOk method) 
 			{
@@ -3861,6 +4011,9 @@ namespace Test.It.With.Amqp
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 21;
 
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
+
 			public void ReadFrom(AmqpReader reader)
 			{
 
@@ -3878,10 +4031,13 @@ namespace Test.It.With.Amqp
 		/// Note that unacked messages will not be automatically redelivered by rollback;
 		/// if that is required an explicit recover call should be issued.
 		/// </summary>
-		public class Rollback : IMethod, IRespondMethod<RollbackOk>
+		public class Rollback : IMethod, IRespond<RollbackOk>
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 30;
+
+			public bool IsSentByClient => false;
+			public bool IsSentByServer => true;
 
 			public RollbackOk Respond(RollbackOk method) 
 			{
@@ -3907,6 +4063,9 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 31;
+
+			public bool IsSentByClient => true;
+			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{

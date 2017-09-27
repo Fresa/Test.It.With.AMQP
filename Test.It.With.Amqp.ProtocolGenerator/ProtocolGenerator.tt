@@ -293,10 +293,13 @@ namespace Test.It.With.Amqp<# Block(() =>
 				var methodName = method.Name.ToPascalCase('-');
 
 				GenerateDocumentation(method.Documentation);
-				#>public class <#= methodName #> : IMethod<# foreach (var responseMethod in method.Responses.Values) { #>, IRespondMethod<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } Block(() =>
+				#>public class <#= methodName #> : IMethod<# foreach (var responseMethod in method.Responses.Values) { #>, IRespond<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } Block(() =>
 				{
 					#>public int ProtocolClassId => <#= @class.Index #>;<# _();
 					#>public int ProtocolMethodId => <#= @method.Index #>;<# _(2);
+
+				    #>public bool IsSentByClient => <#= @method.Chassis.Any(chassis => chassis.Name == ChassisName.Client).ToString().ToLower() #>;<# _(1);
+					#>public bool IsSentByServer => <#= @method.Chassis.Any(chassis => chassis.Name == ChassisName.Server).ToString().ToLower() #>;<# _(2);
 
 					PrintOnNewRowForEachWithIndex(@method.Responses.Values, (response, responseIndex, responseLength) =>
 					{

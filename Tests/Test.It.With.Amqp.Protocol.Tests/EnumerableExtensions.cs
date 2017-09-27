@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Test.It.With.Amqp.ProtocolGenerator
+namespace Test.It.With.Amqp.Protocol
 {
     internal static class EnumerableExtensions
     {
