@@ -8,4 +8,14 @@
         void ReadFrom(AmqpReader reader);
         void WriteTo(AmqpWriter writer);
     }
+
+    public interface IServerMethod : IMethod
+    {
+        
+    }
+
+    public interface IClientMethod : IMethod
+    {
+
+    }
 }

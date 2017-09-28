@@ -1,10 +1,11 @@
 using System.Text;
 using Log.It;
+using Test.It.With.Amqp;
 using Test.It.With.Amqp.Protocol;
 
 namespace Test.It.With.RabbitMQ.Protocol
 {
-    public class ProtocolHeader
+    public class ProtocolHeader : IRespond<Connection.Start>
     {
         private readonly ILogger _logger = LogFactory.Create<ProtocolHeader>();
 
@@ -61,6 +62,11 @@ namespace Test.It.With.RabbitMQ.Protocol
             public int Major { get; }
             public int Minor { get; }
             public int Revision { get; }
+        }
+
+        public Connection.Start Respond(Connection.Start method)
+        {
+            return method;
         }
     }
 }

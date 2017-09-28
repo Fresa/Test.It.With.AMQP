@@ -588,13 +588,10 @@ namespace Test.It.With.Amqp
 		/// protocol version that the server proposes, along with a list of security mechanisms
 		/// which the client can use for authentication.
 		/// </summary>
-		public class Start : IMethod, IRespond<StartOk>
+		public class Start : IMethod, IRespond<StartOk>, IServerMethod
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 10;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public StartOk Respond(StartOk method) 
 			{
@@ -690,13 +687,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method selects a SASL security mechanism.
 		/// </summary>
-		public class StartOk : IMethod
+		public class StartOk : IMethod, IClientMethod
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 11;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			private PeerProperties _clientProperties;
 			public PeerProperties ClientProperties
@@ -775,13 +769,10 @@ namespace Test.It.With.Amqp
 		/// received sufficient information to authenticate each other. This method challenges
 		/// the client to provide more information.
 		/// </summary>
-		public class Secure : IMethod, IRespond<SecureOk>
+		public class Secure : IMethod, IRespond<SecureOk>, IServerMethod
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 20;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public SecureOk Respond(SecureOk method) 
 			{
@@ -817,13 +808,10 @@ namespace Test.It.With.Amqp
 		/// This method attempts to authenticate, passing a block of SASL data for the security
 		/// mechanism at the server side.
 		/// </summary>
-		public class SecureOk : IMethod
+		public class SecureOk : IMethod, IClientMethod
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 21;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			private Longstr _response;
 			/// <summary>
@@ -855,13 +843,10 @@ namespace Test.It.With.Amqp
 		/// This method proposes a set of connection configuration values to the client. The
 		/// client can accept and/or adjust these.
 		/// </summary>
-		public class Tune : IMethod, IRespond<TuneOk>
+		public class Tune : IMethod, IRespond<TuneOk>, IServerMethod
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 30;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public TuneOk Respond(TuneOk method) 
 			{
@@ -931,13 +916,10 @@ namespace Test.It.With.Amqp
 		/// This method sends the client's connection tuning parameters to the server.
 		/// Certain fields are negotiated, others provide capability information.
 		/// </summary>
-		public class TuneOk : IMethod
+		public class TuneOk : IMethod, IClientMethod
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 31;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			private Short _channelMax;
 			/// <summary>
@@ -1006,13 +988,10 @@ namespace Test.It.With.Amqp
 		/// The server may apply arbitrary limits per virtual host, such as the number
 		/// of each type of entity that may be used, per connection and/or in total.
 		/// </summary>
-		public class Open : IMethod, IRespond<OpenOk>
+		public class Open : IMethod, IRespond<OpenOk>, IClientMethod
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 40;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public OpenOk Respond(OpenOk method) 
 			{
@@ -1070,13 +1049,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method signals to the client that the connection is ready for use.
 		/// </summary>
-		public class OpenOk : IMethod
+		public class OpenOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 41;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			private Shortstr _reserved1;
 			public Shortstr Reserved1
@@ -1105,13 +1081,10 @@ namespace Test.It.With.Amqp
 		/// a specific method, i.e. an exception. When a close is due to an exception, the
 		/// sender provides the class and method id of the method which caused the exception.
 		/// </summary>
-		public class Close : IMethod, IRespond<CloseOk>
+		public class Close : IMethod, IRespond<CloseOk>, IServerMethod, IClientMethod
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 50;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => true;
 
 			public CloseOk Respond(CloseOk method) 
 			{
@@ -1186,13 +1159,10 @@ namespace Test.It.With.Amqp
 		/// This method confirms a Connection.Close method and tells the recipient that it is
 		/// safe to release resources for the connection and close the socket.
 		/// </summary>
-		public class CloseOk : IMethod
+		public class CloseOk : IMethod, IServerMethod, IClientMethod
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 51;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => true;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1225,13 +1195,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method opens a channel to the server.
 		/// </summary>
-		public class Open : IMethod, IRespond<OpenOk>
+		public class Open : IMethod, IRespond<OpenOk>, IClientMethod
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 10;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public OpenOk Respond(OpenOk method) 
 			{
@@ -1262,13 +1229,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method signals to the client that the channel is ready for use.
 		/// </summary>
-		public class OpenOk : IMethod
+		public class OpenOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 11;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			private Longstr _reserved1;
 			public Longstr Reserved1
@@ -1298,13 +1262,10 @@ namespace Test.It.With.Amqp
 		/// it can process. Note that this method is not intended for window control. It does
 		/// not affect contents returned by Basic.Get-Ok methods.
 		/// </summary>
-		public class Flow : IMethod, IRespond<FlowOk>
+		public class Flow : IMethod, IRespond<FlowOk>, IServerMethod, IClientMethod
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 20;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => true;
 
 			public FlowOk Respond(FlowOk method) 
 			{
@@ -1339,13 +1300,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// Confirms to the peer that a flow command was received and processed.
 		/// </summary>
-		public class FlowOk : IMethod
+		public class FlowOk : IMethod, IServerMethod, IClientMethod
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 21;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => true;
 
 			private Bit _active;
 			/// <summary>
@@ -1361,7 +1319,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+		    public void ReadFrom(AmqpReader reader)
 			{
 				_active = new Bit(reader.ReadBoolean());
 			}
@@ -1378,13 +1336,10 @@ namespace Test.It.With.Amqp
 		/// method, i.e. an exception. When a close is due to an exception, the sender provides
 		/// the class and method id of the method which caused the exception.
 		/// </summary>
-		public class Close : IMethod, IRespond<CloseOk>
+		public class Close : IMethod, IRespond<CloseOk>, IServerMethod, IClientMethod
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 40;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => true;
 
 			public CloseOk Respond(CloseOk method) 
 			{
@@ -1459,13 +1414,10 @@ namespace Test.It.With.Amqp
 		/// This method confirms a Channel.Close method and tells the recipient that it is safe
 		/// to release resources for the channel.
 		/// </summary>
-		public class CloseOk : IMethod
+		public class CloseOk : IMethod, IServerMethod, IClientMethod
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 41;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => true;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1494,13 +1446,10 @@ namespace Test.It.With.Amqp
 		/// This method creates an exchange if it does not already exist, and if the exchange
 		/// exists, verifies that it is of the correct and expected class.
 		/// </summary>
-		public class Declare : IMethod, IRespond<DeclareOk>
+		public class Declare : IMethod, IRespond<DeclareOk>, IClientMethod
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 10;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public DeclareOk Respond(DeclareOk method) 
 			{
@@ -1652,13 +1601,10 @@ namespace Test.It.With.Amqp
 		/// This method confirms a Declare method and confirms the name of the exchange,
 		/// essential for automatically-named exchanges.
 		/// </summary>
-		public class DeclareOk : IMethod
+		public class DeclareOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 11;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1675,13 +1621,10 @@ namespace Test.It.With.Amqp
 		/// This method deletes an exchange. When an exchange is deleted all queue bindings on
 		/// the exchange are cancelled.
 		/// </summary>
-		public class Delete : IMethod, IRespond<DeleteOk>
+		public class Delete : IMethod, IRespond<DeleteOk>, IClientMethod
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 20;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public DeleteOk Respond(DeleteOk method) 
 			{
@@ -1754,13 +1697,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method confirms the deletion of an exchange.
 		/// </summary>
-		public class DeleteOk : IMethod
+		public class DeleteOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 21;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1794,13 +1734,10 @@ namespace Test.It.With.Amqp
 		/// specify various properties that control the durability of the queue and its
 		/// contents, and the level of sharing for the queue.
 		/// </summary>
-		public class Declare : IMethod, IRespond<DeclareOk>
+		public class Declare : IMethod, IRespond<DeclareOk>, IClientMethod
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 10;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public DeclareOk Respond(DeclareOk method) 
 			{
@@ -1946,13 +1883,10 @@ namespace Test.It.With.Amqp
 		/// This method confirms a Declare method and confirms the name of the queue, essential
 		/// for automatically-named queues.
 		/// </summary>
-		public class DeclareOk : IMethod
+		public class DeclareOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 11;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			private QueueName _queue;
 			/// <summary>
@@ -2014,13 +1948,10 @@ namespace Test.It.With.Amqp
 		/// are bound to a direct exchange and subscription queues are bound to a topic
 		/// exchange.
 		/// </summary>
-		public class Bind : IMethod, IRespond<BindOk>
+		public class Bind : IMethod, IRespond<BindOk>, IClientMethod
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 20;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public BindOk Respond(BindOk method) 
 			{
@@ -2128,13 +2059,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method confirms that the bind was successful.
 		/// </summary>
-		public class BindOk : IMethod
+		public class BindOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 21;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -2150,13 +2078,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method unbinds a queue from an exchange.
 		/// </summary>
-		public class Unbind : IMethod, IRespond<UnbindOk>
+		public class Unbind : IMethod, IRespond<UnbindOk>, IClientMethod
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 50;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public UnbindOk Respond(UnbindOk method) 
 			{
@@ -2247,13 +2172,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method confirms that the unbind was successful.
 		/// </summary>
-		public class UnbindOk : IMethod
+		public class UnbindOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 51;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -2270,13 +2192,10 @@ namespace Test.It.With.Amqp
 		/// This method removes all messages from a queue which are not awaiting
 		/// acknowledgment.
 		/// </summary>
-		public class Purge : IMethod, IRespond<PurgeOk>
+		public class Purge : IMethod, IRespond<PurgeOk>, IClientMethod
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 30;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public PurgeOk Respond(PurgeOk method) 
 			{
@@ -2334,13 +2253,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method confirms the purge of a queue.
 		/// </summary>
-		public class PurgeOk : IMethod
+		public class PurgeOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 31;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			private MessageCount _messageCount;
 			/// <summary>
@@ -2371,13 +2287,10 @@ namespace Test.It.With.Amqp
 		/// to a dead-letter queue if this is defined in the server configuration, and all
 		/// consumers on the queue are cancelled.
 		/// </summary>
-		public class Delete : IMethod, IRespond<DeleteOk>
+		public class Delete : IMethod, IRespond<DeleteOk>, IClientMethod
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 40;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public DeleteOk Respond(DeleteOk method) 
 			{
@@ -2467,13 +2380,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method confirms the deletion of a queue.
 		/// </summary>
-		public class DeleteOk : IMethod
+		public class DeleteOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 41;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			private MessageCount _messageCount;
 			/// <summary>
@@ -2876,13 +2786,10 @@ namespace Test.It.With.Amqp
 		/// qos method could in principle apply to both peers, it is currently meaningful only
 		/// for the server.
 		/// </summary>
-		public class Qos : IMethod, IRespond<QosOk>
+		public class Qos : IMethod, IRespond<QosOk>, IClientMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 10;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public QosOk Respond(QosOk method) 
 			{
@@ -2959,13 +2866,10 @@ namespace Test.It.With.Amqp
 		/// server. The requested QoS applies to all active consumers until a new QoS is
 		/// defined.
 		/// </summary>
-		public class QosOk : IMethod
+		public class QosOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 11;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -2983,13 +2887,10 @@ namespace Test.It.With.Amqp
 		/// messages from a specific queue. Consumers last as long as the channel they were
 		/// declared on, or until the client cancels them.
 		/// </summary>
-		public class Consume : IMethod, IRespond<ConsumeOk>
+		public class Consume : IMethod, IRespond<ConsumeOk>, IClientMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 20;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public ConsumeOk Respond(ConsumeOk method) 
 			{
@@ -3121,13 +3022,10 @@ namespace Test.It.With.Amqp
 		/// The server provides the client with a consumer tag, which is used by the client
 		/// for methods called on the consumer at a later stage.
 		/// </summary>
-		public class ConsumeOk : IMethod
+		public class ConsumeOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 21;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			private ConsumerTag _consumerTag;
 			/// <summary>
@@ -3159,13 +3057,10 @@ namespace Test.It.With.Amqp
 		/// that consumer. The client may receive an arbitrary number of messages in
 		/// between sending the cancel method and receiving the cancel-ok reply.
 		/// </summary>
-		public class Cancel : IMethod, IRespond<CancelOk>
+		public class Cancel : IMethod, IRespond<CancelOk>, IClientMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 30;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public CancelOk Respond(CancelOk method) 
 			{
@@ -3208,13 +3103,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method confirms that the cancellation was completed.
 		/// </summary>
-		public class CancelOk : IMethod
+		public class CancelOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 31;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			private ConsumerTag _consumerTag;
 			public ConsumerTag ConsumerTag
@@ -3242,13 +3134,10 @@ namespace Test.It.With.Amqp
 		/// to queues as defined by the exchange configuration and distributed to any active
 		/// consumers when the transaction, if any, is committed.
 		/// </summary>
-		public class Publish : IMethod
+		public class Publish : IMethod, IClientMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 40;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -3345,13 +3234,10 @@ namespace Test.It.With.Amqp
 		/// reply code and text provide information about the reason that the message was
 		/// undeliverable.
 		/// </summary>
-		public class Return : IMethod
+		public class Return : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 50;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			private ReplyCode _replyCode;
 			public ReplyCode ReplyCode
@@ -3423,13 +3309,10 @@ namespace Test.It.With.Amqp
 		/// the server responds with Deliver methods as and when messages arrive for that
 		/// consumer.
 		/// </summary>
-		public class Deliver : IMethod
+		public class Deliver : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 60;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			private ConsumerTag _consumerTag;
 			public ConsumerTag ConsumerTag
@@ -3512,13 +3395,10 @@ namespace Test.It.With.Amqp
 		/// dialogue that is designed for specific types of application where synchronous
 		/// functionality is more important than performance.
 		/// </summary>
-		public class Get : IMethod, IRespond<GetOk>, IRespond<GetEmpty>
+		public class Get : IMethod, IRespond<GetOk>, IRespond<GetEmpty>, IClientMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 70;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public GetOk Respond(GetOk method) 
 			{
@@ -3584,13 +3464,10 @@ namespace Test.It.With.Amqp
 		/// delivered by 'get-ok' must be acknowledged unless the no-ack option was set in the
 		/// get method.
 		/// </summary>
-		public class GetOk : IMethod
+		public class GetOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 71;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			private DeliveryTag _deliveryTag;
 			public DeliveryTag DeliveryTag
@@ -3672,13 +3549,10 @@ namespace Test.It.With.Amqp
 		/// This method tells the client that the queue has no messages available for the
 		/// client.
 		/// </summary>
-		public class GetEmpty : IMethod
+		public class GetEmpty : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 72;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			private Shortstr _reserved1;
 			public Shortstr Reserved1
@@ -3706,13 +3580,10 @@ namespace Test.It.With.Amqp
 		/// methods. The client can ask to confirm a single message or a set of messages up to
 		/// and including a specific message.
 		/// </summary>
-		public class Ack : IMethod
+		public class Ack : IMethod, IClientMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 80;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			private DeliveryTag _deliveryTag;
 			public DeliveryTag DeliveryTag
@@ -3758,13 +3629,10 @@ namespace Test.It.With.Amqp
 		/// cancel large incoming messages, or return untreatable messages to their original
 		/// queue.
 		/// </summary>
-		public class Reject : IMethod
+		public class Reject : IMethod, IClientMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 90;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			private DeliveryTag _deliveryTag;
 			public DeliveryTag DeliveryTag
@@ -3808,13 +3676,10 @@ namespace Test.It.With.Amqp
 		/// specified channel. Zero or more messages may be redelivered.  This method
 		/// is deprecated in favour of the synchronous Recover/Recover-Ok.
 		/// </summary>
-		public class RecoverAsync : IMethod
+		public class RecoverAsync : IMethod, IClientMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 100;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			private Bit _requeue;
 			/// <summary>
@@ -3847,13 +3712,10 @@ namespace Test.It.With.Amqp
 		/// specified channel. Zero or more messages may be redelivered.  This method
 		/// replaces the asynchronous Recover.
 		/// </summary>
-		public class Recover : IMethod
+		public class Recover : IMethod, IClientMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 110;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			private Bit _requeue;
 			/// <summary>
@@ -3884,13 +3746,10 @@ namespace Test.It.With.Amqp
 		/// <summary>
 		/// This method acknowledges a Basic.Recover method.
 		/// </summary>
-		public class RecoverOk : IMethod
+		public class RecoverOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 111;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3927,13 +3786,10 @@ namespace Test.It.With.Amqp
 		/// This method sets the channel to use standard transactions. The client must use this
 		/// method at least once on a channel before using the Commit or Rollback methods.
 		/// </summary>
-		public class Select : IMethod, IRespond<SelectOk>
+		public class Select : IMethod, IRespond<SelectOk>, IClientMethod
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 10;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public SelectOk Respond(SelectOk method) 
 			{
@@ -3955,13 +3811,10 @@ namespace Test.It.With.Amqp
 		/// This method confirms to the client that the channel was successfully set to use
 		/// standard transactions.
 		/// </summary>
-		public class SelectOk : IMethod
+		public class SelectOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 11;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3978,13 +3831,10 @@ namespace Test.It.With.Amqp
 		/// This method commits all message publications and acknowledgments performed in
 		/// the current transaction.  A new transaction starts immediately after a commit.
 		/// </summary>
-		public class Commit : IMethod, IRespond<CommitOk>
+		public class Commit : IMethod, IRespond<CommitOk>, IClientMethod
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 20;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public CommitOk Respond(CommitOk method) 
 			{
@@ -4006,13 +3856,10 @@ namespace Test.It.With.Amqp
 		/// This method confirms to the client that the commit succeeded. Note that if a commit
 		/// fails, the server raises a channel exception.
 		/// </summary>
-		public class CommitOk : IMethod
+		public class CommitOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 21;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -4031,13 +3878,10 @@ namespace Test.It.With.Amqp
 		/// Note that unacked messages will not be automatically redelivered by rollback;
 		/// if that is required an explicit recover call should be issued.
 		/// </summary>
-		public class Rollback : IMethod, IRespond<RollbackOk>
+		public class Rollback : IMethod, IRespond<RollbackOk>, IClientMethod
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 30;
-
-			public bool IsSentByClient => false;
-			public bool IsSentByServer => true;
 
 			public RollbackOk Respond(RollbackOk method) 
 			{
@@ -4059,13 +3903,10 @@ namespace Test.It.With.Amqp
 		/// This method confirms to the client that the rollback succeeded. Note that if an
 		/// rollback fails, the server raises a channel exception.
 		/// </summary>
-		public class RollbackOk : IMethod
+		public class RollbackOk : IMethod, IServerMethod
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 31;
-
-			public bool IsSentByClient => true;
-			public bool IsSentByServer => false;
 
 			public void ReadFrom(AmqpReader reader)
 			{

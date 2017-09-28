@@ -47,8 +47,9 @@ namespace Test.It.With.RabbitMQ
     public class RabbitMqTestFramework2 : IDisposable
     {
         private readonly INetworkClient _serverNetworkClient;
-        private FrameClient _frameClient;
-        private MethodFrameClient _methodFrameClient;
+        private readonly FrameClient _frameClient;
+        private readonly ITypedMessageClient<ProtocolHeader, Frame> _protocolHeaderClient;
+        private readonly MethodFrameClient _methodFrameClient;
 
         public RabbitMqTestFramework2()
         {
@@ -56,32 +57,33 @@ namespace Test.It.With.RabbitMQ
             _serverNetworkClient = networkClientFactory.ServerNetworkClient;
             ConnectionFactory = new TestConnectionFactory();
 
-            _frameClient = new FrameClient(_serverNetworkClient);
+            _protocolHeaderClient = _frameClient = new FrameClient(_serverNetworkClient);
+
             _methodFrameClient = new MethodFrameClient(_frameClient, new AmqProtocol());
         }
 
         public IConnectionFactory ConnectionFactory { get; }
 
-        public void Send<TMessage>(MethodFrame<TMessage> frame) where TMessage : Amqp.Protocol.IMethod
+        public void Send<TMessage>(MethodFrame<TMessage> frame) where TMessage : IClientMethod
         {
             _frameClient.Send(new Frame(Constants.FrameMethod, frame.Channel, frame.Method));
         }
 
-        public void On<TMessage>(Action<MethodFrame<TMessage>> messageHandler) 
-            where TMessage : Amqp.Protocol.IMethod
+        public void On<TServerMethod>(Action<MethodFrame<TServerMethod>> messageHandler) 
+            where TServerMethod : IServerMethod
         {
-            var client = new MethodFrameClient<TMessage>(_methodFrameClient);
+            var client = new MethodFrameClient<TServerMethod>(_methodFrameClient);
             client.Received += (sender, frame) =>
             {
                 messageHandler(frame);
             };
         }
 
-        public void On<TMessage, TRespondMethod>(Func<MethodFrame<TMessage>, TRespondMethod> messageHandler) 
-            where TMessage : Amqp.Protocol.IMethod, IRespond<TRespondMethod>
-            where TRespondMethod : Amqp.Protocol.IMethod
+        public void On<TServerMethod, TRespondingClientMethod>(Func<MethodFrame<TServerMethod>, TRespondingClientMethod> messageHandler) 
+            where TServerMethod : IServerMethod, IRespond<TRespondingClientMethod>
+            where TRespondingClientMethod : IClientMethod
         {
-            var client = new MethodFrameClient<TMessage>(_methodFrameClient);
+            var client = new MethodFrameClient<TServerMethod>(_methodFrameClient);
             client.Received += (sender, frame) =>
             {
                 var response = messageHandler(frame);
@@ -89,6 +91,14 @@ namespace Test.It.With.RabbitMQ
             };
         }
 
+        public void OnProtocolHeader(Func<ProtocolHeader, Connection.Start> messageHandler)
+        {
+            _protocolHeaderClient.Received += (sender, header) =>
+            {
+                var response = messageHandler(header);
+                _protocolHeaderClient.Send(new Frame(Constants.FrameMethod, 0, response));
+            };
+        }
 
         public void Dispose()
         {

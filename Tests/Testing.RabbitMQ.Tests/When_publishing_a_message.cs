@@ -9,8 +9,8 @@ namespace Test.It.With.RabbitMQ.Tests
 {
     public class When_publishing_a_message : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<TestApplicationBuilder>>
     {
-        private MethodFrame<Connection.StartOk> _testMessagePublished;
-        private MethodFrame<Connection.Open> _openMessage;
+        private MethodFrame<Connection.Start> _startMethod;
+        private MethodFrame<Channel.Flow> _channelFlowMessage;
 
         public When_publishing_a_message(ITestOutputHelper output) : base(output)
         {
@@ -20,16 +20,16 @@ namespace Test.It.With.RabbitMQ.Tests
         protected override void Given(IServiceContainer container)
         {
             var rabbitMqTestServer = new RabbitMqTestFramework2();
-            rabbitMqTestServer.On<Connection.StartOk>(envelope =>
+            rabbitMqTestServer.On<Connection.Start>(startMethod =>
             {
-                _testMessagePublished = envelope;
+                _startMethod = startMethod;
                 Client.Disconnect();
             });
 
-            rabbitMqTestServer.On<Connection.Open, Connection.OpenOk>(envelope =>
+            rabbitMqTestServer.On<Channel.Flow, Channel.FlowOk>(openMessage =>
             {
-                _openMessage = envelope;
-                return envelope.Method.Respond(new Connection.OpenOk());
+                _channelFlowMessage = openMessage;
+                return openMessage.Method.Respond(new Channel.FlowOk());
             });
 
 
@@ -39,7 +39,7 @@ namespace Test.It.With.RabbitMQ.Tests
         [Fact]
         public void It_should_have_published_the_message()
         {
-            _testMessagePublished.Should().Not.Be.Null();
+            _startMethod.Should().Not.Be.Null();
         }
     }
 }

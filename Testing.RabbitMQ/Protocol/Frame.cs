@@ -15,7 +15,7 @@ namespace Test.It.With.RabbitMQ.Protocol
             return new Frame(reader);
         }
 
-        public static void Write(Frame frame)
+        public static void WriteTo(Frame frame)
         {
             using (var stream = new MemoryStream())
             {

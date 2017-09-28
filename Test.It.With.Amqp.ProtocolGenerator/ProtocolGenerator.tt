@@ -293,15 +293,12 @@ namespace Test.It.With.Amqp<# Block(() =>
 				var methodName = method.Name.ToPascalCase('-');
 
 				GenerateDocumentation(method.Documentation);
-				#>public class <#= methodName #> : IMethod<# foreach (var responseMethod in method.Responses.Values) { #>, IRespond<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } Block(() =>
+				#>public class <#= methodName #> : IMethod<# foreach (var responseMethod in method.Responses.Values) { #>, IRespond<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Client)) { #>, IServerMethod<# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Server)) { #>, IClientMethod<# } Block(() =>
 				{
 					#>public int ProtocolClassId => <#= @class.Index #>;<# _();
-					#>public int ProtocolMethodId => <#= @method.Index #>;<# _(2);
+					#>public int ProtocolMethodId => <#= method.Index #>;<# _(2);
 
-				    #>public bool IsSentByClient => <#= @method.Chassis.Any(chassis => chassis.Name == ChassisName.Client).ToString().ToLower() #>;<# _(1);
-					#>public bool IsSentByServer => <#= @method.Chassis.Any(chassis => chassis.Name == ChassisName.Server).ToString().ToLower() #>;<# _(2);
-
-					PrintOnNewRowForEachWithIndex(@method.Responses.Values, (response, responseIndex, responseLength) =>
+					PrintOnNewRowForEachWithIndex(method.Responses.Values, (response, responseIndex, responseLength) =>
 					{
 						var methodType = response.Method.Name.ToPascalCase('-');
 				        #>public <#= methodType #> Respond(<#= methodType #> method) <# Block(() =>

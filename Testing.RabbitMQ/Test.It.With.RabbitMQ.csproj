@@ -60,13 +60,9 @@
     <Compile Include="CachedTestConnectionFactoryDecorator.cs" />
     <Compile Include="DisposeNotifyingModelDecorator.cs" />
     <Compile Include="ISerializer.cs" />
-    <Compile Include="MessageClient\BaseTypedMessageClient.cs" />
-    <Compile Include="MessageClient\IMessageClient.cs" />
+    <Compile Include="MessageClient\FrameClient.cs" />
     <Compile Include="MessageClient\ITypedMessageClient.cs" />
-    <Compile Include="MessageClient\MessageClient.cs" />
-    <Compile Include="MessageClient\MessageEnvelope.cs" />
-    <Compile Include="MessageClient\TypedMessageClient.cs" />
-    <Compile Include="MessageClient\TypedMessageClientFactory.cs" />
+    <Compile Include="MessageClient\MethodFrameClient.cs" />
     <Compile Include="NetworkClient\BlockingStream.cs" />
     <Compile Include="NetworkClient\INetworkClient.cs" />
     <Compile Include="NetworkClient\INetworkClientFactory.cs" />
