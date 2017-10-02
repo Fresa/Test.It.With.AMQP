@@ -11,7 +11,7 @@ namespace Test.It.With.RabbitMQ.Protocol
 
         public string Protocol { get; }
         public IVersion Version { get; }
-        private const byte ProtocolId = 0xd0;
+        private const byte ProtocolId = 0;
 
         public static ProtocolHeader ReadFrom(AmqpReader reader)
         {

@@ -14,18 +14,7 @@ namespace Test.It.With.RabbitMQ.Protocol
         {
             return new Frame(reader);
         }
-
-        public static void WriteTo(Frame frame)
-        {
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new AmqpWriter(stream))
-                {
-                    frame.WriteTo(writer);
-                }
-            }
-        }
-
+        
         public Frame(int type, short channel, IMethod method)
         {
             Type = type;

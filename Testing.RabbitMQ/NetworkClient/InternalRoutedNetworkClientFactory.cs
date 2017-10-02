@@ -4,12 +4,10 @@ namespace Test.It.With.RabbitMQ.NetworkClient
     {
         private readonly InternalRoutedNetworkClient _serverNetworkClient;
 
-        public InternalRoutedNetworkClientFactory()
+        public InternalRoutedNetworkClientFactory(out INetworkClient serverNetworkClient)
         {
-            _serverNetworkClient = new InternalRoutedNetworkClient();
+            serverNetworkClient = _serverNetworkClient = new InternalRoutedNetworkClient();
         }
-
-        public INetworkClient ServerNetworkClient => _serverNetworkClient;
 
         public INetworkClient Create()
         {

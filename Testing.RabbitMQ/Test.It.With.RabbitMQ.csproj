@@ -39,9 +39,15 @@
     <Reference Include="Log.It.With.NLog, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Log.It.With.NLog.1.0.0\lib\net462\Log.It.With.NLog.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.1.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.TextTemplating.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <HintPath>..\packages\RabbitMQ.Client.5.0.1\lib\net451\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -56,18 +62,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CachedConnectionDecorator.cs" />
-    <Compile Include="CachedTestConnectionFactoryDecorator.cs" />
-    <Compile Include="DisposeNotifyingModelDecorator.cs" />
+    <Compile Include="AmqpTestFramework.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="MessageClient\FrameClient.cs" />
     <Compile Include="MessageClient\ITypedMessageClient.cs" />
     <Compile Include="MessageClient\MethodFrameClient.cs" />
+    <Compile Include="Messages\MethodFrame.cs" />
+    <Compile Include="Messages\TestFrame.cs" />
     <Compile Include="NetworkClient\BlockingStream.cs" />
     <Compile Include="NetworkClient\INetworkClient.cs" />
     <Compile Include="NetworkClient\INetworkClientFactory.cs" />
     <Compile Include="NetworkClient\InternalRoutedNetworkClient.cs" />
     <Compile Include="NetworkClient\InternalRoutedNetworkClientFactory.cs" />
+    <Compile Include="NetworkClient\NetworkClientExtensions.cs" />
     <Compile Include="NetworkClient\NetworkClientStream.cs" />
     <Compile Include="NetworkClient\ReceivedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -77,18 +84,14 @@
     <Compile Include="Protocol\Frame.cs" />
     <Compile Include="Protocol\ProtocolHeader.cs" />
     <Compile Include="Protocol\ProtocolProcessor.cs" />
-    <Compile Include="RabbitMqTestFramework2.cs" />
-    <Compile Include="TestConnectionFactoryDecorator.cs" />
+    <Compile Include="RabbitMqAdapter.cs" />
+    <Compile Include="TestConnectionFactory.cs" />
     <Compile Include="TestFrameHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\External\rabbitmq-dotnet-client\projects\client\RabbitMQ.Client\RabbitMQ.Client.csproj">
-      <Project>{1B37E63B-3EC1-426C-A83E-A68D058D1892}</Project>
-      <Name>RabbitMQ.Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Test.It.With.Amqp.ProtocolGenerator\Test.It.With.Amqp.ProtocolGenerator.csproj">
       <Project>{f630b0ce-0e14-416c-b6c6-0239aabd6859}</Project>
       <Name>Test.It.With.Amqp.ProtocolGenerator</Name>

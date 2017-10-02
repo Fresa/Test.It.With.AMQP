@@ -7,8 +7,11 @@ namespace Test.It.With.RabbitMQ.MessageClient
 {
     internal class FrameClient : ITypedMessageClient<Frame, Frame>, ITypedMessageClient<ProtocolHeader, Frame>
     {
+        private readonly INetworkClient _networkClient;
+
         public FrameClient(INetworkClient networkClient)
         {
+            _networkClient = networkClient;
             networkClient.BufferReceived += (sender, args) =>
             {
                 var reader = new AmqpReader(args.Buffer);
@@ -36,7 +39,7 @@ namespace Test.It.With.RabbitMQ.MessageClient
         public event EventHandler Disconnected;
         public void Send(Frame frame)
         {
-            Frame.WriteTo(frame);
+            _networkClient.Send(frame);
         }
     }
 }
