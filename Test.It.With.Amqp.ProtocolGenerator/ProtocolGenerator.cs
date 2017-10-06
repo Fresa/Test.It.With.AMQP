@@ -54,6 +54,13 @@ namespace Test.It.With.Amqp
 			return contentHeader;
 		}
 
+		public IContentBody GetContentBody(AmqpReader reader)
+		{
+			var contentBody = new ContentBody();
+			contentBody.ReadFrom(reader);
+			return contentBody;
+		}
+
 		private readonly Dictionary<int, Dictionary<int, Func<IMethod>>> _methodFactory = new Dictionary<int, Dictionary<int, Func<IMethod>>>
 		{
 			{ 10, new Dictionary<int, Func<IMethod>> { 
@@ -255,6 +262,132 @@ namespace Test.It.With.Amqp
 		/// normal operations.
 		/// </summary>
 		internal const int InternalError = 541;
+	}
+
+	internal abstract class AmqpException : Exception 
+	{
+		protected AmqpException()
+		{
+
+		}
+
+		protected AmqpException(string message) : base(message)
+		{
+
+		}
+
+		public abstract int Code { get; }
+	}
+
+	internal abstract class SoftErrorException : AmqpException 
+	{
+		protected SoftErrorException()
+		{
+
+		}
+
+		protected SoftErrorException(string message) : base(message)
+		{
+
+		}
+	}
+
+	internal abstract class HardErrorException : AmqpException 
+	{
+		protected HardErrorException()
+		{
+
+		}
+
+		protected HardErrorException(string message) : base(message)
+		{
+
+		}
+	}
+
+	internal class ContentTooLargeException : SoftErrorException
+	{
+		public override int Code { get; } = 311;
+	}
+
+	internal class NoConsumersException : SoftErrorException
+	{
+		public override int Code { get; } = 313;
+	}
+
+	internal class ConnectionForcedException : HardErrorException
+	{
+		public override int Code { get; } = 320;
+	}
+
+	internal class InvalidPathException : HardErrorException
+	{
+		public override int Code { get; } = 402;
+	}
+
+	internal class AccessRefusedException : SoftErrorException
+	{
+		public override int Code { get; } = 403;
+	}
+
+	internal class NotFoundException : SoftErrorException
+	{
+		public override int Code { get; } = 404;
+	}
+
+	internal class ResourceLockedException : SoftErrorException
+	{
+		public override int Code { get; } = 405;
+	}
+
+	internal class PreconditionFailedException : SoftErrorException
+	{
+		public override int Code { get; } = 406;
+	}
+
+	internal class FrameErrorException : HardErrorException
+	{
+		public override int Code { get; } = 501;
+	}
+
+	internal class SyntaxErrorException : HardErrorException
+	{
+		public override int Code { get; } = 502;
+	}
+
+	internal class CommandInvalidException : HardErrorException
+	{
+		public override int Code { get; } = 503;
+	}
+
+	internal class ChannelErrorException : HardErrorException
+	{
+		public override int Code { get; } = 504;
+	}
+
+	internal class UnexpectedFrameException : HardErrorException
+	{
+		public override int Code { get; } = 505;
+	}
+
+	internal class ResourceErrorException : HardErrorException
+	{
+		public override int Code { get; } = 506;
+	}
+
+	internal class NotAllowedException : HardErrorException
+	{
+		public override int Code { get; } = 530;
+	}
+
+	internal class NotImplementedException : HardErrorException
+	{
+		public override int Code { get; } = 540;
+	}
+
+	internal class InternalErrorException : HardErrorException
+	{
+		public override int Code { get; } = 541;
 	}
 
 	public struct ClassId 
@@ -1319,7 +1452,7 @@ namespace Test.It.With.Amqp
 				}
 			}
 
-		    public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(AmqpReader reader)
 			{
 				_active = new Bit(reader.ReadBoolean());
 			}
@@ -3917,6 +4050,26 @@ namespace Test.It.With.Amqp
 			{
 
 			}
+		}
+	}
+
+	public class ContentBody : IContentBody
+	{
+		public byte[] Payload { get; private set; }
+
+		public void ReadFrom(AmqpReader reader)
+		{
+			Payload = reader.ReadBytes(reader.Length - 1);
+			if (reader.ReadByte() != Constants.FrameEnd)
+			{
+				throw new FrameErrorException();
+			}
+		}
+
+		public void WriteTo(AmqpWriter writer)
+		{
+			writer.WriteBytes(Payload);
+			writer.WriteByte(Constants.FrameEnd);
 		}
 	}
 }

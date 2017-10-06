@@ -57,6 +57,7 @@
     <Compile Include="Extensions\XmlElementExtensions.cs" />
     <Compile Include="Extensions\XmlNodeListExtensions.cs" />
     <Compile Include="Extensions\XPathNavigatorExtensions.cs" />
+    <Compile Include="IContentBody.cs" />
     <Compile Include="IContentHeader.cs" />
     <Compile Include="IRespond.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

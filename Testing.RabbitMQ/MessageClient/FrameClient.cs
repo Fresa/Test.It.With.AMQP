@@ -25,6 +25,8 @@ namespace Test.It.With.RabbitMQ.MessageClient
                 var frame = Frame.ReadFrom(reader);
                 Received?.Invoke(this, frame);
             };
+
+            networkClient.Disconnected += Disconnected;
         }
 
         public event EventHandler<Frame> Received;

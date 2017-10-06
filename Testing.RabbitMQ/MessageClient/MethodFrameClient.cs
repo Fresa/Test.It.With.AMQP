@@ -6,13 +6,14 @@ using Test.It.With.RabbitMQ.Protocol;
 
 namespace Test.It.With.RabbitMQ.MessageClient
 {
-    internal class MethodFrameClient : ITypedMessageClient<MethodFrame, Frame>
+    internal class MethodFrameClient : ITypedMessageClient<MethodFrame, Frame>, IChainableTypedMessageClient<Frame, Frame>
     {
         private readonly ITypedMessageClient<Frame, Frame> _frameClient;
 
         public MethodFrameClient(ITypedMessageClient<Frame, Frame> frameClient, IProtocol protocol)
         {
             _frameClient = frameClient;
+
             frameClient.Received += (sender, args) =>
             {
                 if (args.Type == Constants.FrameMethod)
@@ -22,15 +23,25 @@ namespace Test.It.With.RabbitMQ.MessageClient
 
                     Received?.Invoke(this, new MethodFrame(args.Channel, method));
                 }
+                else
+                {
+                    Next?.Invoke(sender, args);
+                }
             };
-        }
 
+            frameClient.Disconnected += Disconnected;
+        }
+        
         public event EventHandler<MethodFrame> Received;
+
         public event EventHandler Disconnected;
+
         public void Send(Frame frame)
         {
             _frameClient.Send(frame);
         }
+
+        public event EventHandler<Frame> Next;
     }
 
     internal class MethodFrameClient<TMethod> : ITypedMessageClient<MethodFrame<TMethod>, Frame> where TMethod : IMethod
@@ -40,6 +51,7 @@ namespace Test.It.With.RabbitMQ.MessageClient
         public MethodFrameClient(ITypedMessageClient<MethodFrame, Frame> methodFrameClient)
         {
             _methodFrameClient = methodFrameClient;
+
             methodFrameClient.Received += (sender, args) =>
             {
                 if (args.Method.GetType() == typeof(TMethod))
@@ -47,10 +59,14 @@ namespace Test.It.With.RabbitMQ.MessageClient
                     Received?.Invoke(this, new MethodFrame<TMethod>(args.Channel, (TMethod)args.Method));
                 }
             };
+
+            methodFrameClient.Disconnected += Disconnected;
         }
 
         public event EventHandler<MethodFrame<TMethod>> Received;
+
         public event EventHandler Disconnected;
+
         public void Send(Frame frame)
         {
             _methodFrameClient.Send(frame);

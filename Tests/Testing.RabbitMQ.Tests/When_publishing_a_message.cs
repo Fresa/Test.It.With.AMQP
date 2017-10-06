@@ -33,6 +33,7 @@ namespace Test.It.With.RabbitMQ.Tests
                 return openMessage.Method.Respond(new Channel.FlowOk());
             });
 
+            testServer.OnProtocolHeader(header => new Connection.Start{});
 
             container.Register(() => testServer.ConnectionFactory.ToRabbitMqConnectionFactory());
         }

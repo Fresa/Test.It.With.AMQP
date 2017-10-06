@@ -126,6 +126,12 @@ namespace Test.It.With.Amqp<# Block(() =>
 			#>return contentHeader;<#
 	    }); _(2);
 
+		#>public IContentBody GetContentBody(AmqpReader reader)<# Block(() =>
+	    {
+			#>var contentBody = new ContentBody();<# _();
+			#>contentBody.ReadFrom(reader);<# _();
+			#>return contentBody;<#
+	    }); _(2);
 
 	    #>private readonly Dictionary<int, Dictionary<int, Func<IMethod>>> _methodFactory = new Dictionary<int, Dictionary<int, Func<IMethod>>><# Block(() =>
 	    {
@@ -142,9 +148,7 @@ namespace Test.It.With.Amqp<# Block(() =>
 						if (methodIndex + 1 != methodCount) {#>,<#}
 			        });
 			    });
-				#>}}<#
-
-			    if (index + 1 != length) {#>,<#}
+				#>}}<# if (index + 1 != length) {#>,<#}
 			});
 	    });
 		#>;<# _(2);
@@ -154,9 +158,7 @@ namespace Test.It.With.Amqp<# Block(() =>
 	        var classesWithContentHeader = protocol.Classes.Values.Where(@class => @class.Fields.Any());
 			PrintOnNewRowForEachWithIndex(classesWithContentHeader, (@class, index, length) =>
 			{
-				#>{ <#= @class.Index #>, () => new <#= @class.Name.ToPascalCase('-') #>.ContentHeader() }<#
-			    
-			    if (index + 1 != length) {#>,<#}
+				#>{ <#= @class.Index #>, () => new <#= @class.Name.ToPascalCase('-') #>.ContentHeader() }<# if (index + 1 != length) {#>,<#}
 			});
 	    });
 		#>;<# _(2);
@@ -177,6 +179,46 @@ namespace Test.It.With.Amqp<# Block(() =>
             GenerateDocumentation(constant.Documentation);
             #>internal const int <#= constant.Name.ToPascalCase('-') #> = <#= constant.Value #>;<# if (index + 1 != count) _();
         });
+    }); _(2);
+
+	#>internal abstract class AmqpException : Exception <# Block(() =>
+    {
+        #>protected AmqpException()<# Block(() =>
+        {
+        }); _(2);
+
+		#>protected AmqpException(string message) : base(message)<# Block(() =>
+        {
+        }); _(2);
+
+		#>public abstract int Code { get; }<# 
+    }); _(2);
+
+	// Base Exceptions
+    PrintOnNewRowForEachWithIndex(protocol.Constants.Values.Where((constant) => string.IsNullOrEmpty(constant.Class) == false).Select(constant => constant.Class.ToPascalCase('-')).Distinct(), (exceptionName, index, count) =>
+    {
+        #>internal abstract class <#= exceptionName #>Exception : AmqpException <# Block(() =>
+        {
+			#>protected <#= exceptionName #>Exception()<# Block(() =>
+			{
+			}); _(2);
+
+            #>protected <#= exceptionName #>Exception(string message) : base(message)<# Block(() =>
+			{
+			}); 
+        }); if (index + 1 != count) _();
+    }); _(2);
+
+	// Exceptions
+    PrintOnNewRowForEachWithIndex(protocol.Constants.Values.Where(pair => string.IsNullOrEmpty(pair.Class) == false), (constant, index, count) =>
+    {
+        #>internal class <#= constant.Name.ToPascalCase('-') #>Exception : <#= constant.Class.ToPascalCase('-')#>Exception<# Block(() =>
+        {
+
+			#>public override int Code { get; } = <#= constant.Value #>;<# 
+        });
+
+		if (index + 1 != count) _();
     }); _(2);
 
     // Domain types
@@ -349,7 +391,28 @@ namespace Test.It.With.Amqp<# Block(() =>
 
 			    if (index + 1 != length) _();
 			});
-		});
+		}); 
+    }); _(2);
+
+    // Content Body
+	#>public class ContentBody : IContentBody<# Block(() =>
+    {
+		#>public byte[] Payload { get; private set; }<# _(2);
+
+        #>public void ReadFrom(AmqpReader reader)<# Block(() =>
+        {
+            #>Payload = reader.ReadBytes(reader.Length - 1);<# _();
+			#>if (reader.ReadByte() != Constants.FrameEnd)<# Block(() =>
+            {
+                #>throw new <#= protocol.Constants.Values.Where(pair => string.IsNullOrEmpty(pair.Class) == false).Single(constant => constant.Value == 501).Name.ToPascalCase('-')#>Exception();<#
+            });
+        }); _(2);
+
+        #>public void WriteTo(AmqpWriter writer)<# Block(() =>
+        {
+            #>writer.WriteBytes(Payload);<# _();
+			#>writer.WriteByte(Constants.FrameEnd);<# 
+        });
     });
 });
 #>

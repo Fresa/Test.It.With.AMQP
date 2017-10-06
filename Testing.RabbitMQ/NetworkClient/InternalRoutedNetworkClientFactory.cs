@@ -1,6 +1,8 @@
+using System;
+
 namespace Test.It.With.RabbitMQ.NetworkClient
 {
-    internal class InternalRoutedNetworkClientFactory : INetworkClientFactory
+    internal class InternalRoutedNetworkClientFactory : INetworkClientFactory, IDisposable
     {
         private readonly InternalRoutedNetworkClient _serverNetworkClient;
 
@@ -13,10 +15,21 @@ namespace Test.It.With.RabbitMQ.NetworkClient
         {
             var clientNetworkClient = new InternalRoutedNetworkClient();
 
-            clientNetworkClient.SendReceived += _serverNetworkClient.TriggerReceive;
             _serverNetworkClient.SendReceived += clientNetworkClient.TriggerReceive;
+            _serverNetworkClient.Disconnected += (sender, args) => clientNetworkClient.Dispose();
+
+            clientNetworkClient.SendReceived += _serverNetworkClient.TriggerReceive;
+            clientNetworkClient.Disconnected += (sender, args) =>
+            {
+                _serverNetworkClient.SendReceived -= clientNetworkClient.TriggerReceive;
+            };
 
             return clientNetworkClient;
+        }
+
+        public void Dispose()
+        {
+            _serverNetworkClient.Dispose();
         }
     }
 }

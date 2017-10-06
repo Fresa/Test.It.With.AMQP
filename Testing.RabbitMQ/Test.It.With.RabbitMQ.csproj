@@ -64,11 +64,16 @@
   <ItemGroup>
     <Compile Include="AmqpTestFramework.cs" />
     <Compile Include="ISerializer.cs" />
+    <Compile Include="MessageClient\ContentBodyFrameClient.cs" />
+    <Compile Include="MessageClient\ContentHeaderFrameClient.cs" />
     <Compile Include="MessageClient\FrameClient.cs" />
+    <Compile Include="MessageClient\IChainableTypedMessageClient.cs" />
     <Compile Include="MessageClient\ITypedMessageClient.cs" />
     <Compile Include="MessageClient\MethodFrameClient.cs" />
+    <Compile Include="Messages\ContentBodyFrame.cs" />
+    <Compile Include="Messages\ContentHeaderFrame.cs" />
     <Compile Include="Messages\MethodFrame.cs" />
-    <Compile Include="Messages\TestFrame.cs" />
+    <Compile Include="Messages\BaseFrame.cs" />
     <Compile Include="NetworkClient\BlockingStream.cs" />
     <Compile Include="NetworkClient\INetworkClient.cs" />
     <Compile Include="NetworkClient\INetworkClientFactory.cs" />

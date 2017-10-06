@@ -1,6 +1,6 @@
 ﻿namespace Test.It.With.RabbitMQ.Messages
 {
-    public class MethodFrame : TestFrame
+    public class MethodFrame : BaseFrame
     {
         public MethodFrame(short channel, Amqp.Protocol.IMethod method)
         {
@@ -12,7 +12,7 @@
         public Amqp.Protocol.IMethod Method { get; }
     }
 
-    public class MethodFrame<TMethod> : TestFrame where TMethod : Amqp.Protocol.IMethod
+    public class MethodFrame<TMethod> : BaseFrame where TMethod : Amqp.Protocol.IMethod
     {
         public MethodFrame(short channel, TMethod method)
         {

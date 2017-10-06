@@ -14,8 +14,11 @@ namespace Test.It.With.Amqp.Protocol
         public AmqpReader(byte[] buffer)
         {
             _buffer = buffer;
+            Length = _buffer.Length;
         }
-        
+
+        public int Length { get; }
+
         public ushort ReadShortUnsignedInteger()
         {
             return BitConverter.ToUInt16(ReadAsBigEndian(2), 0);
