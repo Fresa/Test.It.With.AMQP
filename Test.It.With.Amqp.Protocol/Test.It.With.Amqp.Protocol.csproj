@@ -50,6 +50,7 @@
     <Compile Include="AmqpReader.cs" />
     <Compile Include="AmqpWriter.cs" />
     <Compile Include="ByteArray.cs" />
+    <Compile Include="Extensions\ConstantExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TextTransformationExtensions.cs" />

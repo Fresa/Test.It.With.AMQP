@@ -21,14 +21,14 @@ namespace Test.It.With.Amqp
 
 			if (_methodFactory.TryGetValue(classId, out Dictionary<int, Func<IMethod>> methodRegister) == false)
 			{
-				throw new InvalidOperationException($"There is no class with id {classId} defined.");
+				throw new FrameErrorException($"There is no class with id {classId} defined.");
 			}
 
 			var methodId = reader.ReadShortUnsignedInteger();
 
 			if (methodRegister.TryGetValue(methodId, out Func<IMethod> factory) == false)
 			{
-				throw new InvalidOperationException($"There is no method defined with id {methodId} in class with id {classId}.");
+				throw new FrameErrorException($"There is no method defined with id {methodId} in class with id {classId}.");
 			}
 
 			var method = factory();
@@ -43,10 +43,12 @@ namespace Test.It.With.Amqp
 			var weight = reader.ReadShortInteger();
 			if (weight != 0)
 			{
-				throw new Exception("todo: throw SyntaxError exception");
-			}if (_contentHeaderFactory.TryGetValue(classId, out Func<IContentHeader> factory) == false)
+				throw new FrameErrorException("Expected weight = 0");
+			}
+
+			if (_contentHeaderFactory.TryGetValue(classId, out Func<IContentHeader> factory) == false)
 			{
-				throw new InvalidOperationException($"There is no content header defined for class with id {classId}.");
+				throw new FrameErrorException($"There is no content header defined for class with id {classId}.");
 			}
 
 			var contentHeader = factory();
@@ -264,7 +266,7 @@ namespace Test.It.With.Amqp
 		internal const int InternalError = 541;
 	}
 
-	internal abstract class AmqpException : Exception 
+	public abstract class AmqpException : Exception 
 	{
 		protected AmqpException()
 		{
@@ -279,7 +281,7 @@ namespace Test.It.With.Amqp
 		public abstract int Code { get; }
 	}
 
-	internal abstract class SoftErrorException : AmqpException 
+	public abstract class SoftErrorException : AmqpException 
 	{
 		protected SoftErrorException()
 		{
@@ -292,7 +294,7 @@ namespace Test.It.With.Amqp
 		}
 	}
 
-	internal abstract class HardErrorException : AmqpException 
+	public abstract class HardErrorException : AmqpException 
 	{
 		protected HardErrorException()
 		{
@@ -305,88 +307,258 @@ namespace Test.It.With.Amqp
 		}
 	}
 
-	internal class ContentTooLargeException : SoftErrorException
+	public class ContentTooLargeException : SoftErrorException
 	{
+		public ContentTooLargeException()
+		{
+
+		}
+
+		public ContentTooLargeException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 311;
 	}
 
-	internal class NoConsumersException : SoftErrorException
+	public class NoConsumersException : SoftErrorException
 	{
+		public NoConsumersException()
+		{
+
+		}
+
+		public NoConsumersException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 313;
 	}
 
-	internal class ConnectionForcedException : HardErrorException
+	public class ConnectionForcedException : HardErrorException
 	{
+		public ConnectionForcedException()
+		{
+
+		}
+
+		public ConnectionForcedException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 320;
 	}
 
-	internal class InvalidPathException : HardErrorException
+	public class InvalidPathException : HardErrorException
 	{
+		public InvalidPathException()
+		{
+
+		}
+
+		public InvalidPathException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 402;
 	}
 
-	internal class AccessRefusedException : SoftErrorException
+	public class AccessRefusedException : SoftErrorException
 	{
+		public AccessRefusedException()
+		{
+
+		}
+
+		public AccessRefusedException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 403;
 	}
 
-	internal class NotFoundException : SoftErrorException
+	public class NotFoundException : SoftErrorException
 	{
+		public NotFoundException()
+		{
+
+		}
+
+		public NotFoundException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 404;
 	}
 
-	internal class ResourceLockedException : SoftErrorException
+	public class ResourceLockedException : SoftErrorException
 	{
+		public ResourceLockedException()
+		{
+
+		}
+
+		public ResourceLockedException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 405;
 	}
 
-	internal class PreconditionFailedException : SoftErrorException
+	public class PreconditionFailedException : SoftErrorException
 	{
+		public PreconditionFailedException()
+		{
+
+		}
+
+		public PreconditionFailedException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 406;
 	}
 
-	internal class FrameErrorException : HardErrorException
+	public class FrameErrorException : HardErrorException
 	{
+		public FrameErrorException()
+		{
+
+		}
+
+		public FrameErrorException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 501;
 	}
 
-	internal class SyntaxErrorException : HardErrorException
+	public class SyntaxErrorException : HardErrorException
 	{
+		public SyntaxErrorException()
+		{
+
+		}
+
+		public SyntaxErrorException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 502;
 	}
 
-	internal class CommandInvalidException : HardErrorException
+	public class CommandInvalidException : HardErrorException
 	{
+		public CommandInvalidException()
+		{
+
+		}
+
+		public CommandInvalidException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 503;
 	}
 
-	internal class ChannelErrorException : HardErrorException
+	public class ChannelErrorException : HardErrorException
 	{
+		public ChannelErrorException()
+		{
+
+		}
+
+		public ChannelErrorException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 504;
 	}
 
-	internal class UnexpectedFrameException : HardErrorException
+	public class UnexpectedFrameException : HardErrorException
 	{
+		public UnexpectedFrameException()
+		{
+
+		}
+
+		public UnexpectedFrameException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 505;
 	}
 
-	internal class ResourceErrorException : HardErrorException
+	public class ResourceErrorException : HardErrorException
 	{
+		public ResourceErrorException()
+		{
+
+		}
+
+		public ResourceErrorException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 506;
 	}
 
-	internal class NotAllowedException : HardErrorException
+	public class NotAllowedException : HardErrorException
 	{
+		public NotAllowedException()
+		{
+
+		}
+
+		public NotAllowedException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 530;
 	}
 
-	internal class NotImplementedException : HardErrorException
+	public class NotImplementedException : HardErrorException
 	{
+		public NotImplementedException()
+		{
+
+		}
+
+		public NotImplementedException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 540;
 	}
 
-	internal class InternalErrorException : HardErrorException
+	public class InternalErrorException : HardErrorException
 	{
+		public InternalErrorException()
+		{
+
+		}
+
+		public InternalErrorException(string message) : base(message)
+		{
+
+		}
+
 		public override int Code { get; } = 541;
 	}
 

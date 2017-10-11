@@ -92,14 +92,14 @@ namespace Test.It.With.Amqp<# Block(() =>
 			
 			#>if (_methodFactory.TryGetValue(classId, out Dictionary<int, Func<IMethod>> methodRegister) == false)<# Block(() =>
 			{
-			    #>throw new InvalidOperationException($"There is no class with id {classId} defined.");<#
+			    #>throw new <#= protocol.Constants.GetExceptionName(501) #>Exception($"There is no class with id {classId} defined.");<#
 			}); _(2);
 			
 			#>var methodId = reader.ReadShortUnsignedInteger();<# _(2);
 
 			#>if (methodRegister.TryGetValue(methodId, out Func<IMethod> factory) == false)<# Block(() =>
 			{
-			    #>throw new InvalidOperationException($"There is no method defined with id {methodId} in class with id {classId}.");<#
+			    #>throw new <#= protocol.Constants.GetExceptionName(501) #>Exception($"There is no method defined with id {methodId} in class with id {classId}.");<#
 			}); _(2);
 			
 			#>var method = factory();<# _();			
@@ -113,12 +113,12 @@ namespace Test.It.With.Amqp<# Block(() =>
 			#>var weight = reader.ReadShortInteger();<# _();
 			#>if (weight != 0)<# Block(() =>
 	        {
-	            #>throw new Exception("todo: throw SyntaxError exception");<#
-	        });
+	            #>throw new <#= protocol.Constants.GetExceptionName(501) #>Exception("Expected weight = 0");<#
+	        }); _(2);
 
 			#>if (_contentHeaderFactory.TryGetValue(classId, out Func<IContentHeader> factory) == false)<# Block(() =>
 			{
-			    #>throw new InvalidOperationException($"There is no content header defined for class with id {classId}.");<#
+			    #>throw new <#= protocol.Constants.GetExceptionName(501) #>Exception($"There is no content header defined for class with id {classId}.");<#
 			}); _(2);
 			
 			#>var contentHeader = factory();<# _();			
@@ -181,7 +181,7 @@ namespace Test.It.With.Amqp<# Block(() =>
         });
     }); _(2);
 
-	#>internal abstract class AmqpException : Exception <# Block(() =>
+	#>public abstract class AmqpException : Exception <# Block(() =>
     {
         #>protected AmqpException()<# Block(() =>
         {
@@ -195,9 +195,9 @@ namespace Test.It.With.Amqp<# Block(() =>
     }); _(2);
 
 	// Base Exceptions
-    PrintOnNewRowForEachWithIndex(protocol.Constants.Values.Where((constant) => string.IsNullOrEmpty(constant.Class) == false).Select(constant => constant.Class.ToPascalCase('-')).Distinct(), (exceptionName, index, count) =>
+    PrintOnNewRowForEachWithIndex(protocol.Constants.Values.Where(constant => string.IsNullOrEmpty(constant.Class) == false).Select(constant => constant.Class.ToPascalCase('-')).Distinct(), (exceptionName, index, count) =>
     {
-        #>internal abstract class <#= exceptionName #>Exception : AmqpException <# Block(() =>
+        #>public abstract class <#= exceptionName #>Exception : AmqpException <# Block(() =>
         {
 			#>protected <#= exceptionName #>Exception()<# Block(() =>
 			{
@@ -212,8 +212,16 @@ namespace Test.It.With.Amqp<# Block(() =>
 	// Exceptions
     PrintOnNewRowForEachWithIndex(protocol.Constants.Values.Where(pair => string.IsNullOrEmpty(pair.Class) == false), (constant, index, count) =>
     {
-        #>internal class <#= constant.Name.ToPascalCase('-') #>Exception : <#= constant.Class.ToPascalCase('-')#>Exception<# Block(() =>
+        var exceptionName = constant.Name.ToPascalCase('-');
+        #>public class <#= exceptionName #>Exception : <#= constant.Class.ToPascalCase('-')#>Exception<# Block(() =>
         {
+			#>public <#= exceptionName #>Exception()<# Block(() =>
+			{
+			}); _(2);
+
+            #>public <#= exceptionName #>Exception(string message) : base(message)<# Block(() =>
+			{
+			}); _(2);
 
 			#>public override int Code { get; } = <#= constant.Value #>;<# 
         });
@@ -404,7 +412,7 @@ namespace Test.It.With.Amqp<# Block(() =>
             #>Payload = reader.ReadBytes(reader.Length - 1);<# _();
 			#>if (reader.ReadByte() != Constants.FrameEnd)<# Block(() =>
             {
-                #>throw new <#= protocol.Constants.Values.Where(pair => string.IsNullOrEmpty(pair.Class) == false).Single(constant => constant.Value == 501).Name.ToPascalCase('-')#>Exception();<#
+                #>throw new <#= protocol.Constants.GetExceptionName(501) #>Exception();<#
             });
         }); _(2);
 
