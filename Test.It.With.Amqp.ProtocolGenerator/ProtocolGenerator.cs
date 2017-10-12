@@ -897,10 +897,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 10;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel == 0;
+			}
 
 			public StartOk Respond(StartOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(StartOk) };
 			}
 
 			private Octet _versionMajor;
@@ -996,6 +1007,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 11;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel == 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private PeerProperties _clientProperties;
 			public PeerProperties ClientProperties
@@ -1078,10 +1100,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 20;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel == 0;
+			}
 
 			public SecureOk Respond(SecureOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(SecureOk) };
 			}
 
 			private Longstr _challenge;
@@ -1117,6 +1150,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 21;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel == 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private Longstr _response;
 			/// <summary>
@@ -1152,10 +1196,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 30;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel == 0;
+			}
 
 			public TuneOk Respond(TuneOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(TuneOk) };
 			}
 
 			private Short _channelMax;
@@ -1225,6 +1280,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 31;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel == 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private Short _channelMax;
 			/// <summary>
@@ -1297,10 +1363,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 40;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel == 0;
+			}
 
 			public OpenOk Respond(OpenOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(OpenOk) };
 			}
 
 			private Path _virtualHost;
@@ -1358,6 +1435,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 41;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel == 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private Shortstr _reserved1;
 			public Shortstr Reserved1
@@ -1390,10 +1478,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 50;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel == 0;
+			}
 
 			public CloseOk Respond(CloseOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(CloseOk) };
 			}
 
 			private ReplyCode _replyCode;
@@ -1468,6 +1567,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 51;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel == 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1504,10 +1614,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 10;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public OpenOk Respond(OpenOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(OpenOk) };
 			}
 
 			private Shortstr _reserved1;
@@ -1538,6 +1659,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 11;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private Longstr _reserved1;
 			public Longstr Reserved1
@@ -1571,10 +1703,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 20;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public FlowOk Respond(FlowOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(FlowOk) };
 			}
 
 			private Bit _active;
@@ -1609,6 +1752,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 21;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private Bit _active;
 			/// <summary>
@@ -1645,10 +1799,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 40;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public CloseOk Respond(CloseOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(CloseOk) };
 			}
 
 			private ReplyCode _replyCode;
@@ -1723,6 +1888,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 41;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1755,10 +1931,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 10;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public DeclareOk Respond(DeclareOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(DeclareOk) };
 			}
 
 			private Short _reserved1;
@@ -1910,6 +2097,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 11;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -1930,10 +2128,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 20;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public DeleteOk Respond(DeleteOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(DeleteOk) };
 			}
 
 			private Short _reserved1;
@@ -2006,6 +2215,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 21;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -2043,10 +2263,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 10;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public DeclareOk Respond(DeclareOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(DeclareOk) };
 			}
 
 			private Short _reserved1;
@@ -2192,6 +2423,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 11;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private QueueName _queue;
 			/// <summary>
@@ -2257,10 +2499,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 20;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public BindOk Respond(BindOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(BindOk) };
 			}
 
 			private Short _reserved1;
@@ -2368,6 +2621,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 21;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -2387,10 +2651,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 50;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public UnbindOk Respond(UnbindOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(UnbindOk) };
 			}
 
 			private Short _reserved1;
@@ -2481,6 +2756,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 51;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -2501,10 +2787,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 30;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public PurgeOk Respond(PurgeOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(PurgeOk) };
 			}
 
 			private Short _reserved1;
@@ -2562,6 +2859,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 31;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private MessageCount _messageCount;
 			/// <summary>
@@ -2596,10 +2904,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 40;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public DeleteOk Respond(DeleteOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(DeleteOk) };
 			}
 
 			private Short _reserved1;
@@ -2689,6 +3008,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 41;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private MessageCount _messageCount;
 			/// <summary>
@@ -3095,10 +3425,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 10;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public QosOk Respond(QosOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(QosOk) };
 			}
 
 			private Long _prefetchSize;
@@ -3175,6 +3516,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 11;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -3196,10 +3548,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 20;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public ConsumeOk Respond(ConsumeOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(ConsumeOk) };
 			}
 
 			private Short _reserved1;
@@ -3331,6 +3694,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 21;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private ConsumerTag _consumerTag;
 			/// <summary>
@@ -3366,10 +3740,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 30;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public CancelOk Respond(CancelOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(CancelOk) };
 			}
 
 			private ConsumerTag _consumerTag;
@@ -3412,6 +3797,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 31;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private ConsumerTag _consumerTag;
 			public ConsumerTag ConsumerTag
@@ -3443,6 +3839,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 40;
+			public bool HasContent => true;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private Short _reserved1;
 			public Short Reserved1
@@ -3543,6 +3950,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 50;
+			public bool HasContent => true;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private ReplyCode _replyCode;
 			public ReplyCode ReplyCode
@@ -3618,6 +4036,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 60;
+			public bool HasContent => true;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private ConsumerTag _consumerTag;
 			public ConsumerTag ConsumerTag
@@ -3704,6 +4133,12 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 70;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public GetOk Respond(GetOk method) 
 			{
@@ -3714,6 +4149,11 @@ namespace Test.It.With.Amqp
 			public GetEmpty Respond(GetEmpty method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(GetOk), typeof(GetEmpty) };
 			}
 
 			private Short _reserved1;
@@ -3773,6 +4213,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 71;
+			public bool HasContent => true;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private DeliveryTag _deliveryTag;
 			public DeliveryTag DeliveryTag
@@ -3858,6 +4309,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 72;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private Shortstr _reserved1;
 			public Shortstr Reserved1
@@ -3889,6 +4351,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 80;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private DeliveryTag _deliveryTag;
 			public DeliveryTag DeliveryTag
@@ -3938,6 +4411,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 90;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private DeliveryTag _deliveryTag;
 			public DeliveryTag DeliveryTag
@@ -3985,6 +4469,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 100;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private Bit _requeue;
 			/// <summary>
@@ -4021,6 +4516,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 110;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			private Bit _requeue;
 			/// <summary>
@@ -4055,6 +4561,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 111;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -4095,10 +4612,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 10;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public SelectOk Respond(SelectOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(SelectOk) };
 			}
 
 			public void ReadFrom(AmqpReader reader)
@@ -4120,6 +4648,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 11;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -4140,10 +4679,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 20;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public CommitOk Respond(CommitOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(CommitOk) };
 			}
 
 			public void ReadFrom(AmqpReader reader)
@@ -4165,6 +4715,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 21;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			public void ReadFrom(AmqpReader reader)
 			{
@@ -4187,10 +4748,21 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 30;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
 
 			public RollbackOk Respond(RollbackOk method) 
 			{
 				return method;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] { typeof(RollbackOk) };
 			}
 
 			public void ReadFrom(AmqpReader reader)
@@ -4212,6 +4784,17 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 31;
+			public bool HasContent => false;
+
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
+			public Type[] Responses() 
+			{
+				return new Type[] {  };
+			}
 
 			public void ReadFrom(AmqpReader reader)
 			{

@@ -346,7 +346,14 @@ namespace Test.It.With.Amqp<# Block(() =>
 				#>public class <#= methodName #> : IMethod<# foreach (var responseMethod in method.Responses.Values) { #>, IRespond<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Client)) { #>, IServerMethod<# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Server)) { #>, IClientMethod<# } Block(() =>
 				{
 					#>public int ProtocolClassId => <#= @class.Index #>;<# _();
-					#>public int ProtocolMethodId => <#= method.Index #>;<# _(2);
+					#>public int ProtocolMethodId => <#= method.Index #>;<# _();
+					#>public bool HasContent => <#= method.HasContent.ToString().ToLower() #>;<# _(2);
+					
+					#>public bool SentOnValidChannel(int channel)<# Block(() =>
+				    {
+				        if (@className == "Connection") { #>return channel == 0;<# }
+				        else {#>return channel > 0;<# }
+				    }); _(2);
 
 					PrintOnNewRowForEachWithIndex(method.Responses.Values, (response, responseIndex, responseLength) =>
 					{
@@ -356,6 +363,11 @@ namespace Test.It.With.Amqp<# Block(() =>
 					     #>return method;<#
 					    }); _(2);
 					});
+
+					#>public Type[] Responses() <# Block(() =>
+				    {
+				       #>return new Type[] { <#= string.Join(", ", method.Responses.Values.Select(response => $"typeof({response.Method.Name.ToPascalCase('-')})" )) #> };<#
+				    }); _(2);
 
 					PrintOnNewRowForEach(method.Fields.Values, field =>
 					{

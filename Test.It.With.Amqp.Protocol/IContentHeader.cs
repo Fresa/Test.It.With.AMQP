@@ -3,6 +3,7 @@
     public interface IContentHeader
     {
         int ClassId { get; }
+        long BodySize { get; }
 
         void ReadFrom(AmqpReader reader);
         void WriteTo(AmqpWriter writer);

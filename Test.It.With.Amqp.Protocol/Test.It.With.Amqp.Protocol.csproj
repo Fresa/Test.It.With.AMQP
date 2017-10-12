@@ -58,9 +58,11 @@
     <Compile Include="Extensions\XmlElementExtensions.cs" />
     <Compile Include="Extensions\XmlNodeListExtensions.cs" />
     <Compile Include="Extensions\XPathNavigatorExtensions.cs" />
+    <Compile Include="IClientMethod.cs" />
     <Compile Include="IContentBody.cs" />
     <Compile Include="IContentHeader.cs" />
     <Compile Include="IRespond.cs" />
+    <Compile Include="IServerMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Definitions\Assert.cs" />
     <Compile Include="Definitions\Chassis.cs" />
