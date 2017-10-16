@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Test.It.With.Amqp.Protocol.Extensions
@@ -29,6 +30,35 @@ namespace Test.It.With.Amqp.Protocol.Extensions
 
             var result = str.ToPascalCase(delimiter);
             return result.First().ToString().ToLower() + string.Join(string.Empty, result.Skip(1));
+        }
+
+        public static string[] SplitOnUpperCase(this string str)
+        {
+            var strings = new List<string>();
+
+            if (str == null)
+            {
+                return strings.ToArray();
+            }
+
+            var splitString = "";
+            foreach (var chr in str)
+            {
+                if (splitString != "" && char.IsUpper(chr))
+                {
+                    strings.Add(splitString);
+                    splitString = "";
+                }
+
+                splitString += chr;
+            }
+
+            if (splitString != "")
+            {
+                strings.Add(splitString);
+            }
+
+            return strings.ToArray();
         }
     }
 }

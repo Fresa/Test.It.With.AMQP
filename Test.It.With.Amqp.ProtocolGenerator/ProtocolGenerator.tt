@@ -343,17 +343,34 @@ namespace Test.It.With.Amqp<# Block(() =>
 				var methodName = method.Name.ToPascalCase('-');
 
 				GenerateDocumentation(method.Documentation);
-				#>public class <#= methodName #> : IMethod<# foreach (var responseMethod in method.Responses.Values) { #>, IRespond<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Client)) { #>, IServerMethod<# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Server)) { #>, IClientMethod<# } Block(() =>
+				#>public class <#= methodName #> : IMethod<# if (method.HasContent) { #>, IContentMethod<# } #><# foreach (var responseMethod in method.Responses.Values) { #>, IRespond<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Client)) { #>, IServerMethod<# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Server)) { #>, IClientMethod<# } Block(() =>
 				{
 					#>public int ProtocolClassId => <#= @class.Index #>;<# _();
 					#>public int ProtocolMethodId => <#= method.Index #>;<# _();
-					#>public bool HasContent => <#= method.HasContent.ToString().ToLower() #>;<# _(2);
 					
 					#>public bool SentOnValidChannel(int channel)<# Block(() =>
 				    {
-				        if (@className == "Connection") { #>return channel == 0;<# }
+				        if (className == "Connection") { #>return channel == 0;<# }
 				        else {#>return channel > 0;<# }
 				    }); _(2);
+
+					if (method.HasContent)
+					{
+						#>public IContentHeader ContentHeader { get; private set; }<# _(2);
+
+						#>public void SetContentHeader(IContentHeader contentHeader)<# Block(() =>
+						{
+							#>ContentHeader = contentHeader;<#
+						}); _(2);
+
+						#>public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();<# _();
+						#>private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();<# _(2);
+
+						#>public void AddContentBody(IContentBody contentBody)<# Block(() =>
+						{
+							#>_contentBodyFragments.Add(contentBody);<#
+						}); _(2);
+					}
 
 					PrintOnNewRowForEachWithIndex(method.Responses.Values, (response, responseIndex, responseLength) =>
 					{

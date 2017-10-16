@@ -52,6 +52,7 @@
     <Compile Include="ByteArray.cs" />
     <Compile Include="Extensions\ConstantExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\EnumerableStringExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TextTransformationExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="IClientMethod.cs" />
     <Compile Include="IContentBody.cs" />
     <Compile Include="IContentHeader.cs" />
+    <Compile Include="IContentMethod.cs" />
     <Compile Include="IRespond.cs" />
     <Compile Include="IServerMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -6,7 +6,6 @@ namespace Test.It.With.Amqp.Protocol
     {
         int ProtocolClassId { get; }
         int ProtocolMethodId { get; }
-        bool HasContent { get; }
         bool SentOnValidChannel(int channel);
         Type[] Responses();
 

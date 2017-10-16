@@ -897,8 +897,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 10;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1007,8 +1005,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 11;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1100,8 +1096,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 20;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1150,8 +1144,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 21;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1196,8 +1188,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 30;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1280,8 +1270,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 31;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1363,8 +1351,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 40;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1435,8 +1421,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 41;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1478,8 +1462,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 50;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1567,8 +1549,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 51;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1614,8 +1594,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 10;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -1659,8 +1637,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 11;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -1703,8 +1679,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 20;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -1752,8 +1726,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 21;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -1799,8 +1771,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 40;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -1888,8 +1858,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 41;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -1931,8 +1899,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 10;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2097,8 +2063,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 11;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2128,8 +2092,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 20;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2215,8 +2177,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 21;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2263,8 +2223,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 10;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2423,8 +2381,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 11;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2499,8 +2455,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 20;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2621,8 +2575,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 21;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2651,8 +2603,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 50;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2756,8 +2706,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 51;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2787,8 +2735,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 30;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2859,8 +2805,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 31;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2904,8 +2848,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 40;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3008,8 +2950,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 41;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3425,8 +3365,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 10;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3516,8 +3454,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 11;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3548,8 +3484,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 20;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3694,8 +3628,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 21;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3740,8 +3672,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 30;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3797,8 +3727,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 31;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3835,15 +3763,28 @@ namespace Test.It.With.Amqp
 		/// to queues as defined by the exchange configuration and distributed to any active
 		/// consumers when the transaction, if any, is committed.
 		/// </summary>
-		public class Publish : IMethod, IClientMethod
+		public class Publish : IMethod, IContentMethod, IClientMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 40;
-			public bool HasContent => true;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
+			}
+
+			public IContentHeader ContentHeader { get; private set; }
+
+			public void SetContentHeader(IContentHeader contentHeader)
+			{
+				ContentHeader = contentHeader;
+			}
+
+			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
+			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
+
+			public void AddContentBody(IContentBody contentBody)
+			{
+				_contentBodyFragments.Add(contentBody);
 			}
 
 			public Type[] Responses() 
@@ -3946,15 +3887,28 @@ namespace Test.It.With.Amqp
 		/// reply code and text provide information about the reason that the message was
 		/// undeliverable.
 		/// </summary>
-		public class Return : IMethod, IServerMethod
+		public class Return : IMethod, IContentMethod, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 50;
-			public bool HasContent => true;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
+			}
+
+			public IContentHeader ContentHeader { get; private set; }
+
+			public void SetContentHeader(IContentHeader contentHeader)
+			{
+				ContentHeader = contentHeader;
+			}
+
+			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
+			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
+
+			public void AddContentBody(IContentBody contentBody)
+			{
+				_contentBodyFragments.Add(contentBody);
 			}
 
 			public Type[] Responses() 
@@ -4032,15 +3986,28 @@ namespace Test.It.With.Amqp
 		/// the server responds with Deliver methods as and when messages arrive for that
 		/// consumer.
 		/// </summary>
-		public class Deliver : IMethod, IServerMethod
+		public class Deliver : IMethod, IContentMethod, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 60;
-			public bool HasContent => true;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
+			}
+
+			public IContentHeader ContentHeader { get; private set; }
+
+			public void SetContentHeader(IContentHeader contentHeader)
+			{
+				ContentHeader = contentHeader;
+			}
+
+			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
+			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
+
+			public void AddContentBody(IContentBody contentBody)
+			{
+				_contentBodyFragments.Add(contentBody);
 			}
 
 			public Type[] Responses() 
@@ -4133,8 +4100,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 70;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4209,15 +4174,28 @@ namespace Test.It.With.Amqp
 		/// delivered by 'get-ok' must be acknowledged unless the no-ack option was set in the
 		/// get method.
 		/// </summary>
-		public class GetOk : IMethod, IServerMethod
+		public class GetOk : IMethod, IContentMethod, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 71;
-			public bool HasContent => true;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
+			}
+
+			public IContentHeader ContentHeader { get; private set; }
+
+			public void SetContentHeader(IContentHeader contentHeader)
+			{
+				ContentHeader = contentHeader;
+			}
+
+			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
+			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
+
+			public void AddContentBody(IContentBody contentBody)
+			{
+				_contentBodyFragments.Add(contentBody);
 			}
 
 			public Type[] Responses() 
@@ -4309,8 +4287,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 72;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4351,8 +4327,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 80;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4411,8 +4385,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 90;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4469,8 +4441,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 100;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4516,8 +4486,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 110;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4561,8 +4529,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 111;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4612,8 +4578,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 10;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4648,8 +4612,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 11;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4679,8 +4641,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 20;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4715,8 +4675,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 21;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4748,8 +4706,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 30;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4784,8 +4740,6 @@ namespace Test.It.With.Amqp
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 31;
-			public bool HasContent => false;
-
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
