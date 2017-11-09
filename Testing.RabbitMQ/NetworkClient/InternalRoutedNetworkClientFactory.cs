@@ -8,6 +8,7 @@ namespace Test.It.With.RabbitMQ.NetworkClient
 
         public InternalRoutedNetworkClientFactory(out INetworkClient serverNetworkClient)
         {
+            // todo: should generate a new server client on each network creation
             serverNetworkClient = _serverNetworkClient = new InternalRoutedNetworkClient();
         }
 
@@ -15,14 +16,23 @@ namespace Test.It.With.RabbitMQ.NetworkClient
         {
             var clientNetworkClient = new InternalRoutedNetworkClient();
 
-            _serverNetworkClient.SendReceived += clientNetworkClient.TriggerReceive;
-            _serverNetworkClient.Disconnected += (sender, args) => clientNetworkClient.Dispose();
+            void OnServerDisconnect(object sender, EventArgs args)
+            {
+                clientNetworkClient.SendReceived -= _serverNetworkClient.TriggerReceive;
+                clientNetworkClient.Dispose();
+            }
 
-            clientNetworkClient.SendReceived += _serverNetworkClient.TriggerReceive;
-            clientNetworkClient.Disconnected += (sender, args) =>
+            _serverNetworkClient.SendReceived += clientNetworkClient.TriggerReceive;
+            _serverNetworkClient.Disconnected += OnServerDisconnect;
+
+            void OnClientDisconnected(object sender, EventArgs args)
             {
                 _serverNetworkClient.SendReceived -= clientNetworkClient.TriggerReceive;
-            };
+                _serverNetworkClient.Disconnected -= OnServerDisconnect;
+            }
+
+            clientNetworkClient.SendReceived += _serverNetworkClient.TriggerReceive;
+            clientNetworkClient.Disconnected += OnClientDisconnected;
 
             return clientNetworkClient;
         }

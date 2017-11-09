@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.RabbitMQ", "Testing.RabbitMQ\Test.It.With.RabbitMQ.csproj", "{4012460B-68EE-414C-868F-938443DE9680}"
 EndProject
@@ -40,8 +40,8 @@ Global
 		{1B37E63B-3EC1-426C-A83E-A68D058D1892}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B37E63B-3EC1-426C-A83E-A68D058D1892}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B37E63B-3EC1-426C-A83E-A68D058D1892}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1B37E63B-3EC1-426C-A83E-A68D058D1892}.SignedRelease|Any CPU.ActiveCfg = SignedRelease|Any CPU
-		{1B37E63B-3EC1-426C-A83E-A68D058D1892}.SignedRelease|Any CPU.Build.0 = SignedRelease|Any CPU
+		{1B37E63B-3EC1-426C-A83E-A68D058D1892}.SignedRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{1B37E63B-3EC1-426C-A83E-A68D058D1892}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
 		{F630B0CE-0E14-416C-B6C6-0239AABD6859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F630B0CE-0E14-416C-B6C6-0239AABD6859}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F630B0CE-0E14-416C-B6C6-0239AABD6859}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,5 +67,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{7AA8B5EB-D671-4D79-A013-0A055626A901} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
 		{353BEEAC-9923-49DB-8217-FCB44BFB44BB} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F86A6A97-6E21-4052-9893-60EAE07F3E79}
 	EndGlobalSection
 EndGlobal

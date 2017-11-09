@@ -58,3 +58,4 @@ F:\Projects\Testing.RabbitMQ\Tests\Test.It.With.Amqp.Protocol.Tests\bin\Debug\xu
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.With.Amqp.Protocol.Tests\obj\Debug\Test.It.With.Amqp.Protocol.Tests.csprojResolveAssemblyReference.cache
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.With.Amqp.Protocol.Tests\obj\Debug\Test.It.With.Amqp.Protocol.Tests.dll
 F:\Projects\Testing.RabbitMQ\Tests\Test.It.With.Amqp.Protocol.Tests\obj\Debug\Test.It.With.Amqp.Protocol.Tests.pdb
+F:\Projects\Testing.RabbitMQ\Tests\Test.It.With.Amqp.Protocol.Tests\obj\Debug\Test.It.With.Amqp.Protocol.Tests.csproj.CoreCompileInputs.cache

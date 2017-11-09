@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Test.It.With.Amqp;
@@ -17,13 +18,13 @@ namespace Test.It.With.RabbitMQ
 {
     public class AmqpTestFramework : IDisposable
     {
+        private readonly InternalRoutedNetworkClientFactory _networkClientFactory;
         private readonly FrameClient _frameClient;
         private readonly ITypedMessageClient<ProtocolHeader, Frame> _protocolHeaderClient;
         private readonly ITypedMessageClient<MethodFrame, Frame> _methodFrameClient;
         private readonly ITypedMessageClient<ContentHeaderFrame, Frame> _contentHeaderFrameClient;
-        private readonly InternalRoutedNetworkClientFactory _networkClientFactory;
         private readonly ITypedMessageClient<ContentBodyFrame, Frame> _contentBodyFrameClient;
-
+        
         private readonly List<Type> _methodsSubscribedOn = new List<Type>();
 
         private readonly StateMachine _stateMachine = new StateMachine();
@@ -64,8 +65,8 @@ namespace Test.It.With.RabbitMQ
         {
             _subscribeOn<TClientMethod>();
 
-            var server = new MethodFrameClient<TClientMethod>(_methodFrameClient);
-            server.Received += (sender, frame) =>
+            var methodFrameClient = new MethodFrameClient<TClientMethod>(_methodFrameClient);
+            methodFrameClient.Received += (sender, frame) =>
             {
                 if (_stateMachine.ShouldPass(frame.Channel, frame.Method))
                 {
@@ -116,30 +117,17 @@ namespace Test.It.With.RabbitMQ
 
         public void OnProtocolHeader(Func<ProtocolHeader, Connection.Start> messageHandler)
         {
-            _subscribeOn<ProtocolHeader>();
-
-            _protocolHeaderClient.Received += (sender, header) =>
+            OnProtocolHeader(header =>
             {
-                if (_stateMachine.ShouldPass(header))
-                {
-                    var response = messageHandler(header);
-                    _protocolHeaderClient.Send(new Frame(Constants.FrameMethod, 0, response));
-                }
-            };
+                var response = messageHandler(header);
+                _protocolHeaderClient.Send(new Frame(Constants.FrameMethod, 0, response));
+            });
         }
 
         public void Dispose()
         {
             _networkClientFactory.Dispose();
         }
-    }
-
-    internal enum ExpectationType
-    {
-        Method,
-        ContentHeader,
-        ContentBody,
-        ProtocolHeader
     }
 
     internal class MethodExpectation : Expectation
@@ -154,19 +142,15 @@ namespace Test.It.With.RabbitMQ
             MethodResponses = methods;
         }
 
-        public override ExpectationType Type { get; } = ExpectationType.Method;
-
         public Type[] MethodResponses { get; }
     }
 
     internal class ContentHeaderExpectation : Expectation
     {
-        public override ExpectationType Type { get; } = ExpectationType.ContentHeader;
     }
 
     internal class ProtocolHeaderExpectation : Expectation
     {
-        public override ExpectationType Type { get; } = ExpectationType.ProtocolHeader;
     }
 
     internal class ContentBodyExpectation : Expectation
@@ -176,14 +160,12 @@ namespace Test.It.With.RabbitMQ
             Size = size;
         }
 
-        public override ExpectationType Type { get; } = ExpectationType.ContentBody;
-
         public long Size { get; }
     }
 
     internal abstract class Expectation
     {
-        public abstract ExpectationType Type { get; }
+        public string Name => GetType().Name.SplitOnUpperCase().Join(" ").ToLower();
     }
 
     internal class ContentFrame
@@ -198,17 +180,16 @@ namespace Test.It.With.RabbitMQ
         private short _channelMax = short.MaxValue;
         private long _frameMax = Constants.FrameMinSize;
 
-        private readonly Dictionary<int, Expectation> _expectations = new Dictionary<int, Expectation>();
+        private readonly ConcurrentDictionary<int, Expectation> _expectations = new ConcurrentDictionary<int, Expectation>();
         private Expectation _globalExpectation = new ProtocolHeaderExpectation();
-
         private readonly Dictionary<int, IContentMethod> _contentMethodStates = new Dictionary<int, IContentMethod>();
 
         public bool ShouldPass(ProtocolHeader protocolHeader)
         {
-            if (_globalExpectation.Type != ExpectationType.ProtocolHeader)
+            if (_globalExpectation is ProtocolHeaderExpectation == false)
             {
                 throw new UnexpectedFrameException(
-                    $"Expected {_globalExpectation.Type.AsString()}, got protocol header");
+                    $"Expected {_globalExpectation.Name}, got protocol header");
             }
 
             _globalExpectation = new MethodExpectation(new[] { typeof(Connection.StartOk) });
@@ -228,7 +209,7 @@ namespace Test.It.With.RabbitMQ
                 throw new ChannelErrorException($"Channel {channel} not allowed. Maximum channel allowed is {_channelMax}.");
             }
 
-            if (_expectations.TryGetValue(channel, out Expectation expectation) == false)
+            if (_expectations.TryGetValue(channel, out var expectation) == false)
             {
                 if (method.GetType() != typeof(Channel.Open))
                 {
@@ -236,14 +217,12 @@ namespace Test.It.With.RabbitMQ
                 }
 
                 expectation = new MethodExpectation(new[] { method.GetType() });
-                _expectations.Add(channel, expectation);
+                _expectations.TryAdd(channel, expectation);
             }
 
-            switch (expectation.Type)
+            switch (expectation)
             {
-                case ExpectationType.Method:
-                    var methodExpectation = (MethodExpectation)expectation;
-
+                case MethodExpectation methodExpectation:
                     if (methodExpectation.MethodResponses.Any())
                     {
                         if (methodExpectation.MethodResponses.Contains(method.GetType()) == false)
@@ -252,8 +231,7 @@ namespace Test.It.With.RabbitMQ
                         }
                     }
 
-                    var tuneOk = method as Connection.TuneOk;
-                    if (tuneOk != null)
+                    if (method is Connection.TuneOk tuneOk)
                     {
                         // todo: need to check against server proposal
                         _channelMax = tuneOk.ChannelMax.Value == 0 ? short.MaxValue : tuneOk.ChannelMax.Value;
@@ -261,8 +239,7 @@ namespace Test.It.With.RabbitMQ
                         _frameMax = tuneOk.FrameMax.Value == 0 ? long.MaxValue : tuneOk.FrameMax.Value;
                     }
 
-                    var contentMethod = method as IContentMethod;
-                    if (contentMethod != null)
+                    if (method is IContentMethod contentMethod)
                     {
                         _expectations[channel] = new ContentHeaderExpectation();
                         _contentMethodStates[channel] = contentMethod;
@@ -274,7 +251,7 @@ namespace Test.It.With.RabbitMQ
 
                 default:
                     throw new UnexpectedFrameException(
-                        $"Expected method frame, got {expectation.Type.AsString()} frame.");
+                        $"Expected method frame, got {expectation.GetType().Name} frame.");
             }
 
             _expectations[channel] = expectation;
@@ -289,21 +266,21 @@ namespace Test.It.With.RabbitMQ
                 throw new ChannelErrorException("A content header cannot be sent on channel 0.");
             }
 
-            if (_expectations.TryGetValue(channel, out Expectation expectation) == false)
+            if (_expectations.TryGetValue(channel, out var expectation) == false)
             {
                 throw new UnexpectedFrameException("Channel has not been established. Expected Channel.Open.");
             }
 
-            if (expectation.Type != ExpectationType.ContentHeader)
+            if (expectation is ContentHeaderExpectation == false)
             {
-                throw new UnexpectedFrameException($"Expected content header frame, got {expectation.Type.AsString()} frame.");
+                throw new UnexpectedFrameException($"Expected content header frame, got {expectation.Name} frame.");
             }
 
             if (contentHeader.BodySize > 0)
             {
                 _expectations[channel] = new ContentBodyExpectation(contentHeader.BodySize);
                 _contentMethodStates[channel].SetContentHeader(contentHeader);
-                method = default(TMethod);
+                method = default;
                 return false;
             }
 
@@ -320,14 +297,14 @@ namespace Test.It.With.RabbitMQ
                 throw new ChannelErrorException("A content body cannot be sent on channel 0.");
             }
 
-            if (_expectations.TryGetValue(channel, out Expectation expectation) == false)
+            if (_expectations.TryGetValue(channel, out var expectation) == false)
             {
                 throw new UnexpectedFrameException("Channel has not been established. Expected Channel.Open.");
             }
 
-            if (expectation.Type != ExpectationType.ContentBody)
+            if (expectation is ContentBodyExpectation == false)
             {
-                throw new UnexpectedFrameException($"Expected content body frame, got {expectation.Type.AsString()} frame.");
+                throw new UnexpectedFrameException($"Expected content body frame, got {expectation.Name} frame.");
             }
 
             var contentBodyExpectation = (ContentBodyExpectation)expectation;
@@ -354,21 +331,9 @@ namespace Test.It.With.RabbitMQ
             }
 
             _expectations[channel] = new ContentBodyExpectation(contentBodyExpectation.Size - size);
-            method = default(TMethod);
+            method = default;
             return false;
         }
     }
-
-    internal static class ExpectationTypeExtensions
-    {
-        public static string GetName(this ExpectationType type)
-        {
-            return Enum.GetName(typeof(ExpectationType), type);
-        }
-
-        public static string AsString(this ExpectationType type)
-        {
-            return type.GetName().SplitOnUpperCase().Join(" ").ToLower();
-        }
-    }
+    
 }
