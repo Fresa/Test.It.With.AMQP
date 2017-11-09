@@ -1,5 +1,5 @@
 ﻿using RabbitMQ.Client;
-using Test.It.With.RabbitMQ.NetworkClient;
+using Test.It.With.Amqp.NetworkClient;
 
 namespace Test.It.With.RabbitMQ
 {

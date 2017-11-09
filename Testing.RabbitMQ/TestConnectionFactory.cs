@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing.Impl;
-using Test.It.With.RabbitMQ.NetworkClient;
+using Test.It.With.Amqp.NetworkClient;
 
 namespace Test.It.With.RabbitMQ
 {

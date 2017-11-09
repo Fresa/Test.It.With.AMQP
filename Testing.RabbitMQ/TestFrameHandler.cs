@@ -4,7 +4,7 @@ using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Impl;
 using RabbitMQ.Util;
-using Test.It.With.RabbitMQ.NetworkClient;
+using Test.It.With.Amqp.NetworkClient;
 
 namespace Test.It.With.RabbitMQ
 {

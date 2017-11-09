@@ -2,7 +2,7 @@
 using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.Amqp;
-using Test.It.With.RabbitMQ.Messages;
+using Test.It.With.Amqp.Messages;
 using Xunit;
 using Xunit.Abstractions;
 
