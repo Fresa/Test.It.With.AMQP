@@ -19,11 +19,21 @@ namespace Test.It.With.Amqp.MessageClient
                     var reader = new AmqpReader(args.Payload);
                     var contentBody = protocol.GetContentBody(reader);
 
-                    Received?.Invoke(this, new ContentBodyFrame(args.Channel, contentBody));
+                    if (Received == null)
+                    {
+                        throw new InvalidOperationException($"Missing subscription on {contentBody.GetType().FullName}.");
+                    }
+
+                    Received.Invoke(this, new ContentBodyFrame(args.Channel, contentBody));
                 }
                 else
                 {
-                    Next?.Invoke(sender, args);
+                    if (Next == null)
+                    {
+                        throw new InvalidOperationException($"Missing handler of frame type {args.Type}.");
+                    }
+
+                    Next.Invoke(sender, args);
                 }
             };
 

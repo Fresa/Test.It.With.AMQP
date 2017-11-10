@@ -100,6 +100,7 @@ namespace Test.It.With.Amqp
             On<TClientMethod>(frame =>
             {
                 var response = messageHandler(frame);
+                _logger.Debug($"Sending {response.GetType().Name} on channel {frame.Channel}.");
                 Send(new MethodFrame<TServerMethod>(frame.Channel, response));
             });
         }
@@ -124,6 +125,7 @@ namespace Test.It.With.Amqp
             OnProtocolHeader(header =>
             {
                 var response = messageHandler(header);
+                _logger.Debug($"Sending {response.GetType().Name} on channel 0.");
                 _protocolHeaderClient.Send(new Frame(Constants.FrameMethod, 0, response));
             });
         }

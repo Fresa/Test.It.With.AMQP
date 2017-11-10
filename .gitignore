@@ -30,3 +30,5 @@ Testing.RabbitMQ/Test.It.With.RabbitMQ.v3.ncrunchproject
 Test.It.With.Amqp.Protocol/obj/
 Tests/Test.It.With.Amqp.Protocol.Tests/obj/
 Tests/Testing.RabbitMQ.Tests/Test.It.With.RabbitMQ.Tests.v3.ncrunchproject
+_NCrunch_Testing.RabbitMQ/StoredText/
+Test.It.With.Amqp/obj/

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
 
@@ -11,7 +12,7 @@ namespace Test.It.With.Amqp.MessageClient
         public MethodFrameClient(ITypedMessageClient<Frame, Frame> frameClient, IProtocol protocol)
         {
             _frameClient = frameClient;
-
+            
             frameClient.Received += (sender, args) =>
             {
                 if (args.Type == Constants.FrameMethod)
@@ -19,11 +20,21 @@ namespace Test.It.With.Amqp.MessageClient
                     var reader = new AmqpReader(args.Payload);
                     var method = protocol.GetMethod(reader);
 
-                    Received?.Invoke(this, new MethodFrame(args.Channel, method));
+                    if (Received == null)
+                    {
+                        throw new InvalidOperationException($"Missing subscription on {method.GetType().FullName}.");
+                    }
+
+                    Received.Invoke(this, new MethodFrame(args.Channel, method));
                 }
                 else
                 {
-                    Next?.Invoke(sender, args);
+                    if (Next == null)
+                    {
+                        throw new InvalidOperationException($"Missing handler of frame type {args.Type}.");
+                    }
+
+                    Next.Invoke(sender, args);
                 }
             };
 
@@ -54,7 +65,12 @@ namespace Test.It.With.Amqp.MessageClient
             {
                 if (args.Method.GetType() == typeof(TMethod))
                 {
-                    Received?.Invoke(this, new MethodFrame<TMethod>(args.Channel, (TMethod)args.Method));
+                    if (Received == null)
+                    {
+                        throw new InvalidOperationException($"Missing subscription on {typeof(TMethod).FullName}.");
+                    }
+
+                    Received.Invoke(this, new MethodFrame<TMethod>(args.Channel, (TMethod)args.Method));
                 }
             };
 
