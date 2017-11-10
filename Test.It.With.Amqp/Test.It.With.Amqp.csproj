@@ -47,7 +47,7 @@
     <Compile Include="Expectations\Expectation.cs" />
     <Compile Include="Expectations\MethodExpectation.cs" />
     <Compile Include="Expectations\ProtocolHeaderExpectation.cs" />
-    <Compile Include="Expectations\StateMachine.cs" />
+    <Compile Include="Expectations\ExpectationStateMachine.cs" />
     <Compile Include="MessageClient\ContentBodyFrameClient.cs" />
     <Compile Include="MessageClient\ContentHeaderFrameClient.cs" />
     <Compile Include="MessageClient\FrameClient.cs" />

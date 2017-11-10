@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Log.It;
 using Test.It.With.Amqp.Expectations;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.Messages;
@@ -11,6 +12,7 @@ namespace Test.It.With.Amqp
 {
     public class AmqpTestFramework : IDisposable
     {
+        private readonly ILogger _logger = LogFactory.Create<AmqpTestFramework>();
         private readonly InternalRoutedNetworkClientFactory _networkClientFactory;
         private readonly FrameClient _frameClient;
         private readonly ITypedMessageClient<ProtocolHeader, Frame> _protocolHeaderClient;
@@ -20,7 +22,7 @@ namespace Test.It.With.Amqp
         
         private readonly List<Type> _methodsSubscribedOn = new List<Type>();
 
-        private readonly StateMachine _stateMachine = new StateMachine();
+        private readonly ExpectationStateMachine _expectationStateMachine = new ExpectationStateMachine();
 
         public AmqpTestFramework()
         {
@@ -50,6 +52,7 @@ namespace Test.It.With.Amqp
 
         public void Send<TMessage>(MethodFrame<TMessage> frame) where TMessage : IServerMethod
         {
+            _logger.Debug($"Sending method {typeof(TMessage).Name} on channel {frame.Channel}.");
             _frameClient.Send(new Frame(Constants.FrameMethod, frame.Channel, frame.Method));
         }
 
@@ -61,24 +64,30 @@ namespace Test.It.With.Amqp
             var methodFrameClient = new MethodFrameClient<TClientMethod>(_methodFrameClient);
             methodFrameClient.Received += (sender, frame) =>
             {
-                if (_stateMachine.ShouldPass(frame.Channel, frame.Method))
+                _logger.Debug($"Received method {typeof(TClientMethod).Name} on channel {frame.Channel}.");
+                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Method))
                 {
+                    _logger.Debug($"Method {typeof(TClientMethod).Name} on channel {frame.Channel} was expected.");
                     messageHandler(frame);
                 }
             };
 
             _contentHeaderFrameClient.Received += (sender, frame) =>
             {
-                if (_stateMachine.ShouldPass(frame.Channel, frame.ContentHeader, out TClientMethod method))
+                _logger.Debug($"Received a content header for method {typeof(TClientMethod).Name} on channel {frame.Channel}.");
+                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentHeader, out TClientMethod method))
                 {
+                    _logger.Debug($"Content header for method {typeof(TClientMethod).Name} on channel {frame.Channel} was expected.");
                     messageHandler(new MethodFrame<TClientMethod>(frame.Channel, method));
                 }
             };
 
             _contentBodyFrameClient.Received += (sender, frame) =>
             {
-                if (_stateMachine.ShouldPass(frame.Channel, frame.ContentBody, out TClientMethod method))
+                _logger.Debug($"Received content body for method {typeof(TClientMethod).Name} on channel {frame.Channel}.");
+                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentBody, out TClientMethod method))
                 {
+                    _logger.Debug($"Content body for method {typeof(TClientMethod).Name} on channel {frame.Channel} was expected.");
                     messageHandler(new MethodFrame<TClientMethod>(frame.Channel, method));
                 }
             };
@@ -101,8 +110,10 @@ namespace Test.It.With.Amqp
 
             _protocolHeaderClient.Received += (sender, header) =>
             {
-                if (_stateMachine.ShouldPass(header))
+                _logger.Debug($"Received protocol header.");
+                if (_expectationStateMachine.ShouldPass(header))
                 {
+                    _logger.Debug($"Protocol header was expected.");
                     messageHandler(header);
                 }
             };

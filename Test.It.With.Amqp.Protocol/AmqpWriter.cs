@@ -37,6 +37,7 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WriteShortString(string value)
         {
+            value = value ?? string.Empty;
             var bytes = Encoding.UTF8.GetBytes(value);
             if (bytes.Length > 255)
             {
@@ -55,6 +56,7 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WriteLongString(byte[] value)
         {
+            value = value ?? Array.Empty<byte>();
             WriteLongUnsignedInteger((uint)value.Length);
             WriteBytes(value);
         }
@@ -76,6 +78,7 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WriteBytes(byte[] value)
         {
+            value = value ?? Array.Empty<byte>();
             WriteAsLittleEndian(value);
         }
 
@@ -254,6 +257,7 @@ namespace Test.It.With.Amqp.Protocol
                     WriteByte((byte)'V');
                     return;
 
+                // todo: should be extracted to a rabbitmq / qpit specific amqp writer
                 // NOTE! RabbitMQ / Qpid special, https://www.rabbitmq.com/amqp-0-9-1-errata.html#section_3
                 case ByteArray convertedValue:
                     WriteByte((byte)'x');
@@ -266,6 +270,7 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WritePropertyFlags(bool[] flags)
         {
+            flags = flags ?? Array.Empty<bool>();
             ushort value = 0;
             for (var i = 0; i < flags.Length; i++)
             {

@@ -6,7 +6,7 @@ using Test.It.With.Amqp.Protocol;
 
 namespace Test.It.With.Amqp.Expectations
 {
-    internal class StateMachine
+    internal class ExpectationStateMachine
     {
         // todo: Set agreed content body frame size
 
@@ -34,7 +34,7 @@ namespace Test.It.With.Amqp.Expectations
         {
             if (method.SentOnValidChannel(channel) == false)
             {
-                throw new ChannelErrorException($"{((Object) method).GetType()} method is not valid on channel {channel}.");
+                throw new ChannelErrorException($"{ method.GetType()} method is not valid on channel {channel}.");
             }
 
             if (channel > _channelMax)
@@ -44,12 +44,12 @@ namespace Test.It.With.Amqp.Expectations
 
             if (_expectations.TryGetValue(channel, out var expectation) == false)
             {
-                if (((Object) method).GetType() != typeof(Channel.Open))
+                if (method.GetType() != typeof(Channel.Open))
                 {
                     throw new CommandInvalidException("Expected Channel.Open.");
                 }
 
-                expectation = new MethodExpectation(new[] { ((Object) method).GetType() });
+                expectation = new MethodExpectation(new[] { method.GetType() });
                 _expectations.TryAdd(channel, expectation);
             }
 
@@ -58,9 +58,9 @@ namespace Test.It.With.Amqp.Expectations
                 case MethodExpectation methodExpectation:
                     if (methodExpectation.MethodResponses.Any())
                     {
-                        if (methodExpectation.MethodResponses.Contains(((Object) method).GetType()) == false)
+                        if (methodExpectation.MethodResponses.Contains(method.GetType()) == false)
                         {
-                            throw new UnexpectedFrameException($"Did not expect {((Object) method).GetType().FullName}. Expected: {string.Join(", ", methodExpectation.MethodResponses.Select(type => type.FullName))}.");
+                            throw new UnexpectedFrameException($"Did not expect { method.GetType().FullName}. Expected: {string.Join(", ", methodExpectation.MethodResponses.Select(type => type.FullName))}.");
                         }
                     }
 

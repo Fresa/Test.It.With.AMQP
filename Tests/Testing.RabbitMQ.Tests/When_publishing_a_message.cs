@@ -1,4 +1,6 @@
-﻿using NLog.Config;
+﻿using System;
+using System.Text;
+using NLog.Config;
 using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.Amqp;
@@ -32,8 +34,9 @@ namespace Test.It.With.RabbitMQ.Tests
                 _channelFlowMessage = openMessage;
                 return openMessage.Method.Respond(new Channel.FlowOk());
             });
-
-            testServer.OnProtocolHeader(header => new Connection.Start{});
+            testServer.OnProtocolHeader(header => new Connection.Start
+            {
+            });
 
             container.Register(() => testServer.ConnectionFactory.ToRabbitMqConnectionFactory());
         }
