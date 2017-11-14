@@ -23,4 +23,22 @@
         public override short Channel { get; }
         public TMethod Method { get; }
     }
+
+    public class MethodFrame<TMethod, TContentHeader> : BaseFrame 
+        where TMethod : Amqp.Protocol.IMethod, Protocol.IContentMethod
+        where TContentHeader : Amqp.Protocol.IContentHeader
+    {
+        public MethodFrame(short channel, TMethod method, TContentHeader contentHeader, byte[] body)
+        {
+            Channel = channel;
+            Method = method;
+            ContentHeader = contentHeader;
+            Body = body;
+        }
+
+        public override short Channel { get; }
+        public TMethod Method { get; }
+        public TContentHeader ContentHeader { get; }
+        public byte[] Body { get; }
+    }
 }

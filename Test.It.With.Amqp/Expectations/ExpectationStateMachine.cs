@@ -109,17 +109,19 @@ namespace Test.It.With.Amqp.Expectations
                 throw new UnexpectedFrameException($"Expected content header frame, got {expectation.Name} frame.");
             }
 
+            _contentMethodStates[channel].SetContentHeader(contentHeader);
+
             if (contentHeader.BodySize > 0)
             {
                 _expectations[channel] = new ContentBodyExpectation(contentHeader.BodySize);
-                _contentMethodStates[channel].SetContentHeader(contentHeader);
                 method = default;
                 return false;
             }
 
-            _expectations[channel] = new MethodExpectation();
             method = (TMethod)_contentMethodStates[channel];
             _contentMethodStates.Remove(channel);
+
+            _expectations[channel] = new MethodExpectation();
             return true;
         }
 

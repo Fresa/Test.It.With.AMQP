@@ -54,6 +54,15 @@
     <Compile Include="MessageClient\IChainableTypedMessageClient.cs" />
     <Compile Include="MessageClient\ITypedMessageClient.cs" />
     <Compile Include="MessageClient\MethodFrameClient.cs" />
+    <Compile Include="MessageHandlers\ContentBodyFrameHandler.cs" />
+    <Compile Include="MessageHandlers\ContentHeaderFrameHandler.cs" />
+    <Compile Include="MessageHandlers\IHandle.cs" />
+    <Compile Include="MessageHandlers\MethodFrameHandler.cs" />
+    <Compile Include="MessageHandlers\ProtocolHeaderHandler.cs" />
+    <Compile Include="MessageRouters\ContentBodyFrameRouter.cs" />
+    <Compile Include="MessageRouters\ContentHeaderFrameRouter.cs" />
+    <Compile Include="MessageRouters\FrameRouter.cs" />
+    <Compile Include="MessageRouters\MethodFrameRouter.cs" />
     <Compile Include="Messages\BaseFrame.cs" />
     <Compile Include="Messages\ContentBodyFrame.cs" />
     <Compile Include="Messages\ContentHeaderFrame.cs" />
@@ -73,6 +82,12 @@
     <Compile Include="Protocol\Frame.cs" />
     <Compile Include="Protocol\ProtocolHeader.cs" />
     <Compile Include="Protocol\ProtocolProcessor.cs" />
+    <Compile Include="Subscriptions\IPublish.cs" />
+    <Compile Include="Subscriptions\IPublishContentHeader.cs" />
+    <Compile Include="Subscriptions\IPublishMethod.cs" />
+    <Compile Include="Subscriptions\Subscriber.cs" />
+    <Compile Include="Subscriptions\TypeSubscriber.cs" />
+    <Compile Include="Subscriptions\Unsubscriber.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Test.It.With.Amqp.ProtocolGenerator\Test.It.With.Amqp.ProtocolGenerator.csproj">
@@ -87,5 +102,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

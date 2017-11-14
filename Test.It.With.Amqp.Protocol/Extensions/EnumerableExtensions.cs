@@ -31,5 +31,10 @@ namespace Test.It.With.Amqp.Protocol.Extensions
 
             return string.Join(delimiter, list.Take(list.Count - 1).Select(converter)) + lastDelimiter + converter(list.Last());
         }
+
+        public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable.Any() == false;
+        }
     }
 }
