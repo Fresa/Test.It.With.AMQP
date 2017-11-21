@@ -30,7 +30,8 @@ namespace Test.It.With.Amqp.Expectations
             return true;
         }
 
-        public bool ShouldPass<TMethod>(int channel, TMethod method) where TMethod : IClientMethod
+        public bool ShouldPass<TMethod>(int channel, TMethod method) 
+            where TMethod : IClientMethod
         {
             if (method.SentOnValidChannel(channel) == false)
             {
@@ -92,7 +93,8 @@ namespace Test.It.With.Amqp.Expectations
             return true;
         }
 
-        public bool ShouldPass<TMethod>(int channel, IContentHeader contentHeader, out TMethod method) where TMethod : IClientMethod
+        public bool ShouldPass<TMethod>(int channel, IContentHeader contentHeader, out TMethod method) 
+            where TMethod : IClientMethod, IContentMethod
         {
             if (channel == 0)
             {
@@ -106,7 +108,13 @@ namespace Test.It.With.Amqp.Expectations
 
             if (expectation is ContentHeaderExpectation == false)
             {
-                throw new UnexpectedFrameException($"Expected content header frame, got {expectation.Name} frame.");
+                throw new UnexpectedFrameException($"Expected {expectation.Name} frame, got content header frame.");
+            }
+
+            if (_contentMethodStates[channel].GetType() != typeof(TMethod))
+            {
+                method = default;
+                return false;
             }
 
             _contentMethodStates[channel].SetContentHeader(contentHeader);
@@ -125,7 +133,8 @@ namespace Test.It.With.Amqp.Expectations
             return true;
         }
 
-        public bool ShouldPass<TMethod>(int channel, IContentBody contentBody, out TMethod method) where TMethod : IClientMethod
+        public bool ShouldPass<TMethod>(int channel, IContentBody contentBody, out TMethod method) 
+            where TMethod : IClientMethod, IContentMethod
         {
             if (channel == 0)
             {
@@ -140,6 +149,12 @@ namespace Test.It.With.Amqp.Expectations
             if (expectation is ContentBodyExpectation == false)
             {
                 throw new UnexpectedFrameException($"Expected content body frame, got {expectation.Name} frame.");
+            }
+
+            if (_contentMethodStates[channel].GetType() != typeof(TMethod))
+            {
+                method = default;
+                return false;
             }
 
             var contentBodyExpectation = (ContentBodyExpectation)expectation;

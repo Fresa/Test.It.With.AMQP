@@ -240,7 +240,7 @@ namespace Test.It.With.Amqp<# Block(() =>
         {
             #>public <#= type #> Value { get; }<# _(2);
 
-            #>internal <#= className #>(<#= type #> value)<# Block(() =>
+            #>public <#= className #>(<#= type #> value)<# Block(() =>
             {
                 PrintOnNewRowForEach(domain.Asserts, assert => { GenerateAssertion(assert, "value"); }); if (domain.Asserts.Any()) _();
                 #>Value = value;<#

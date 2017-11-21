@@ -10,7 +10,7 @@ namespace Test.It.With.RabbitMQ.Tests
         where THostStarter : class, IWindowsServiceHostStarter, new()
     {
         protected ITestOutputHelper Output { get; }
-        
+
         protected XUnitWindowsServiceSpecification(ITestOutputHelper output)
         {
             Output = output;

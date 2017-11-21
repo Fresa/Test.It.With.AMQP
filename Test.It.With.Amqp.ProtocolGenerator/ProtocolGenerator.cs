@@ -566,7 +566,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Int16 Value { get; }
 
-		internal ClassId(System.Int16 value)
+		public ClassId(System.Int16 value)
 		{
 			Value = value;
 		}
@@ -579,7 +579,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.String Value { get; }
 
-		internal ConsumerTag(System.String value)
+		public ConsumerTag(System.String value)
 		{
 			Value = value;
 		}
@@ -592,7 +592,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Int64 Value { get; }
 
-		internal DeliveryTag(System.Int64 value)
+		public DeliveryTag(System.Int64 value)
 		{
 			Value = value;
 		}
@@ -606,7 +606,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.String Value { get; }
 
-		internal ExchangeName(System.String value)
+		public ExchangeName(System.String value)
 		{
 			Requires.Range(value.Length <= 127, nameof(value));
 			Requires.That(Regex.IsMatch(value, "^[a-zA-Z0-9-_.:]*$"), nameof(value), "Value must meet the following regex criteria: ^[a-zA-Z0-9-_.:]*$");
@@ -618,7 +618,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Int16 Value { get; }
 
-		internal MethodId(System.Int16 value)
+		public MethodId(System.Int16 value)
 		{
 			Value = value;
 		}
@@ -636,7 +636,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Boolean Value { get; }
 
-		internal NoAck(System.Boolean value)
+		public NoAck(System.Boolean value)
 		{
 			Value = value;
 		}
@@ -650,7 +650,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Boolean Value { get; }
 
-		internal NoLocal(System.Boolean value)
+		public NoLocal(System.Boolean value)
 		{
 			Value = value;
 		}
@@ -665,7 +665,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Boolean Value { get; }
 
-		internal NoWait(System.Boolean value)
+		public NoWait(System.Boolean value)
 		{
 			Value = value;
 		}
@@ -678,7 +678,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.String Value { get; }
 
-		internal Path(System.String value)
+		public Path(System.String value)
 		{
 			Requires.NotNullAllowStructs(value, nameof(value));
 			Requires.Range(value.Length <= 127, nameof(value));
@@ -694,7 +694,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Collections.Generic.IDictionary<System.String, System.Object> Value { get; }
 
-		internal PeerProperties(System.Collections.Generic.IDictionary<System.String, System.Object> value)
+		public PeerProperties(System.Collections.Generic.IDictionary<System.String, System.Object> value)
 		{
 			Value = value;
 		}
@@ -711,7 +711,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.String Value { get; }
 
-		internal QueueName(System.String value)
+		public QueueName(System.String value)
 		{
 			Requires.Range(value.Length <= 127, nameof(value));
 			Requires.That(Regex.IsMatch(value, "^[a-zA-Z0-9-_.:]*$"), nameof(value), "Value must meet the following regex criteria: ^[a-zA-Z0-9-_.:]*$");
@@ -727,7 +727,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Boolean Value { get; }
 
-		internal Redelivered(System.Boolean value)
+		public Redelivered(System.Boolean value)
 		{
 			Value = value;
 		}
@@ -743,7 +743,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Int32 Value { get; }
 
-		internal MessageCount(System.Int32 value)
+		public MessageCount(System.Int32 value)
 		{
 			Value = value;
 		}
@@ -757,7 +757,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Int16 Value { get; }
 
-		internal ReplyCode(System.Int16 value)
+		public ReplyCode(System.Int16 value)
 		{
 			Requires.NotNullAllowStructs(value, nameof(value));
 			Value = value;
@@ -772,7 +772,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.String Value { get; }
 
-		internal ReplyText(System.String value)
+		public ReplyText(System.String value)
 		{
 			Requires.NotNullAllowStructs(value, nameof(value));
 			Value = value;
@@ -783,7 +783,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Boolean Value { get; }
 
-		internal Bit(System.Boolean value)
+		public Bit(System.Boolean value)
 		{
 			Value = value;
 		}
@@ -793,7 +793,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Byte Value { get; }
 
-		internal Octet(System.Byte value)
+		public Octet(System.Byte value)
 		{
 			Value = value;
 		}
@@ -803,7 +803,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Int16 Value { get; }
 
-		internal Short(System.Int16 value)
+		public Short(System.Int16 value)
 		{
 			Value = value;
 		}
@@ -813,7 +813,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Int32 Value { get; }
 
-		internal Long(System.Int32 value)
+		public Long(System.Int32 value)
 		{
 			Value = value;
 		}
@@ -823,7 +823,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Int64 Value { get; }
 
-		internal Longlong(System.Int64 value)
+		public Longlong(System.Int64 value)
 		{
 			Value = value;
 		}
@@ -833,7 +833,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.String Value { get; }
 
-		internal Shortstr(System.String value)
+		public Shortstr(System.String value)
 		{
 			Value = value;
 		}
@@ -843,7 +843,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Byte[] Value { get; }
 
-		internal Longstr(System.Byte[] value)
+		public Longstr(System.Byte[] value)
 		{
 			Value = value;
 		}
@@ -853,7 +853,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.DateTime Value { get; }
 
-		internal Timestamp(System.DateTime value)
+		public Timestamp(System.DateTime value)
 		{
 			Value = value;
 		}
@@ -863,7 +863,7 @@ namespace Test.It.With.Amqp
 	{
 		public System.Collections.Generic.IDictionary<System.String, System.Object> Value { get; }
 
-		internal Table(System.Collections.Generic.IDictionary<System.String, System.Object> value)
+		public Table(System.Collections.Generic.IDictionary<System.String, System.Object> value)
 		{
 			Value = value;
 		}

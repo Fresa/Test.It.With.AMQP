@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using NLog.Config;
 using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.Amqp;
@@ -15,9 +14,10 @@ namespace Test.It.With.RabbitMQ.Tests
         private MethodFrame<Connection.StartOk> _startOkMethod;
         private MethodFrame<Channel.Flow> _channelFlowMessage;
 
+        protected override TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(1);
+
         public When_publishing_a_message(ITestOutputHelper output) : base(output)
         {
-
         }
 
         protected override void Given(IServiceContainer container)
@@ -26,7 +26,7 @@ namespace Test.It.With.RabbitMQ.Tests
             testServer.On<Connection.StartOk>(startOkMethod =>
             {
                 _startOkMethod = startOkMethod;
-                Client.Disconnect();
+                ServiceController.Stop();
             });
 
             testServer.On<Channel.Flow, Channel.FlowOk>(openMessage =>
@@ -34,8 +34,14 @@ namespace Test.It.With.RabbitMQ.Tests
                 _channelFlowMessage = openMessage;
                 return openMessage.Method.Respond(new Channel.FlowOk());
             });
+            
             testServer.OnProtocolHeader(header => new Connection.Start
             {
+                VersionMajor = new Octet((byte)header.Version.Major),
+                VersionMinor = new Octet((byte)header.Version.Minor),
+                ServerProperties = new PeerProperties(),
+                Locales = new Longstr(Encoding.UTF8.GetBytes("en_US")),
+                Mechanisms = new Longstr(Encoding.UTF8.GetBytes("PLAIN"))
             });
 
             container.Register(() => testServer.ConnectionFactory.ToRabbitMqConnectionFactory());

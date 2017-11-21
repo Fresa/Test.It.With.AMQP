@@ -31,11 +31,25 @@ namespace Test.It.With.Amqp.NetworkClient
                 _serverNetworkClient.Disconnected -= OnServerDisconnect;
             }
 
-            clientNetworkClient.SendReceived += _serverNetworkClient.TriggerReceive;
+            clientNetworkClient.SendReceived += (sender, args) =>
+            {
+                try
+                {
+                    _serverNetworkClient.TriggerReceive(sender, args);
+                }
+                catch (Exception ex)
+                {
+                    OnException?.Invoke(ex);
+                    // todo: need to close properly (send Close)
+                    OnServerDisconnect(_serverNetworkClient, EventArgs.Empty);
+                }
+            };
             clientNetworkClient.Disconnected += OnClientDisconnected;
 
             return clientNetworkClient;
         }
+
+        public event Action<Exception> OnException;
 
         public void Dispose()
         {

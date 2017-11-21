@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
 using RabbitMQ.Client;
@@ -32,18 +33,25 @@ namespace Test.It.With.RabbitMQ
             }
         }
 
-        public Frame ReadFrame()
+        public InboundFrame ReadFrame()
         {
             lock (_reader)
             {
                 try
                 {
-                    return Frame.ReadFrom(_reader);
+                    return InboundFrame.ReadFrom(_reader);
                 }
                 catch
                 {
                     // Send heartbeat
-                    return new Frame(8, 0);
+                    var stream = new MemoryStream();
+                    var writer = new NetworkBinaryWriter(stream);
+                    
+                    var outbound = new OutboundFrame(FrameType.FrameHeartbeat, 0);
+                    outbound.WriteTo(writer);
+                    stream.Position = 0;
+                    var reader = new NetworkBinaryReader(stream);
+                    return InboundFrame.ReadFrom(reader);
                 }
             }
         }
@@ -71,7 +79,7 @@ namespace Test.It.With.RabbitMQ
             }
         }
 
-        public void WriteFrame(Frame frame)
+        public void WriteFrame(OutboundFrame frame)
         {
             lock (_writer)
             {
@@ -80,7 +88,7 @@ namespace Test.It.With.RabbitMQ
             }
         }
 
-        public void WriteFrameSet(IList<Frame> frames)
+        public void WriteFrameSet(IList<OutboundFrame> frames)
         {
             lock (_writer)
             {

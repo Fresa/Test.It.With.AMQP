@@ -33,9 +33,10 @@ namespace Test.It.With.RabbitMQ.Tests
                 return 0;
             }
 
-            public void Stop()
+            public int Stop()
             {
                 _app.Stop();
+                return 0;
             }
         }
     }
