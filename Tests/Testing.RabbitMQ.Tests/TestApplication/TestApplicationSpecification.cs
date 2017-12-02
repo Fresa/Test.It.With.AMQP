@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using RabbitMQ.Client;
 using SimpleInjector;
@@ -15,7 +14,6 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
         {
             var container = new Container();
             container.RegisterSingleton<IConnectionFactory, ConnectionFactory>();
-            container.RegisterSingleton(() => container.GetInstance<IConnectionFactory>().CreateConnection());
             container.RegisterSingleton<ISerializer>(() => new NewtonsoftSerializer(Encoding.UTF8));
             container.RegisterSingleton<IMessagePublisherFactory, RabbitMqMessagePublisherFactory>();
 

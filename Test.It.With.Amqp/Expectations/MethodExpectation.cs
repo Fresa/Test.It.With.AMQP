@@ -1,17 +1,13 @@
 using System;
+using System.Linq;
 
 namespace Test.It.With.Amqp.Expectations
 {
     internal class MethodExpectation : Expectation
     {
-        public MethodExpectation()
+        public MethodExpectation(params Type[] methods)
         {
-            MethodResponses = Array.Empty<Type>();
-        }
-
-        public MethodExpectation(Type[] methods)
-        {
-            MethodResponses = methods;
+            MethodResponses = methods.Distinct().ToArray();
         }
 
         public Type[] MethodResponses { get; }

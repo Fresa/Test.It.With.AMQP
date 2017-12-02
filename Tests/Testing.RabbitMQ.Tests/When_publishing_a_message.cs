@@ -13,6 +13,7 @@ namespace Test.It.With.RabbitMQ.Tests
     {
         private MethodFrame<Connection.StartOk> _startOkMethod;
         private MethodFrame<Channel.Flow> _channelFlowMessage;
+        private MethodFrame<Connection.Close> _closeMethod;
 
         protected override TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(1);
 
@@ -44,7 +45,13 @@ namespace Test.It.With.RabbitMQ.Tests
                 Mechanisms = new Longstr(Encoding.UTF8.GetBytes("PLAIN"))
             });
 
-            container.Register(() => testServer.ConnectionFactory.ToRabbitMqConnectionFactory());
+            testServer.On<Connection.Close, Connection.CloseOk>(frame =>
+            {
+                _closeMethod = frame;
+                return frame.Method.Respond(new Connection.CloseOk());
+            });
+
+            container.RegisterSingleton(() => testServer.ConnectionFactory.ToRabbitMqConnectionFactory());
         }
 
         [Fact]

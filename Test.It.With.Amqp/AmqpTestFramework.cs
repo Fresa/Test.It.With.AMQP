@@ -26,7 +26,7 @@ namespace Test.It.With.Amqp
 
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
-        private readonly ExpectationStateMachine _expectationStateMachine = new ExpectationStateMachine();
+        private readonly Amqp091ExpectationStateMachine _expectationStateMachine = new Amqp091ExpectationStateMachine();
         private readonly List<Type> _subscribedMethods = new List<Type>();
 
         public AmqpTestFramework()
@@ -162,7 +162,7 @@ namespace Test.It.With.Amqp
             var protocolHeaderSubscription = _protocolHeaderPublisher.Subscribe(header =>
             {
                 _logger.Debug($"Received protocol header.");
-                if (_expectationStateMachine.ShouldPass(header))
+                if (_expectationStateMachine.ShouldPass(0, header))
                 {
                     _logger.Debug($"Protocol header was expected.");
                     messageHandler(header);

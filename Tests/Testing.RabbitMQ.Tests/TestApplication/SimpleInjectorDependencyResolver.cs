@@ -46,7 +46,7 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
 
         public void Verify()
         {
-//            _container.Verify();
+            _container.Verify();
         }
 
         public void Dispose()
