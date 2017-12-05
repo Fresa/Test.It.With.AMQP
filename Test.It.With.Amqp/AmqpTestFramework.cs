@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Log.It;
+using Newtonsoft.Json;
 using Test.It.With.Amqp.Expectations;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.MessageHandlers;
@@ -72,7 +73,7 @@ namespace Test.It.With.Amqp
 
         public void Send<TMessage>(MethodFrame<TMessage> frame) where TMessage : IServerMethod
         {
-            _logger.Debug($"Sending method {typeof(TMessage).Name} on channel {frame.Channel}.");
+            _logger.Debug($"Sending method {typeof(TMessage).Name} on channel {frame.Channel}. {frame.Method.Serialize()}");
             _frameClient.Send(new Frame(Constants.FrameMethod, frame.Channel, frame.Method));
         }
 
@@ -120,7 +121,6 @@ namespace Test.It.With.Amqp
             On<TClientMethod, TContentHeader>(frame =>
             {
                 var response = messageHandler(frame);
-                _logger.Debug($"Sending {response.GetType().Name} on channel {frame.Channel}.");
                 Send(new MethodFrame<TServerMethod>(frame.Channel, response));
             });
         }
@@ -132,7 +132,7 @@ namespace Test.It.With.Amqp
 
             var methodSubscription = _methodFramePublisher.Subscribe<TClientMethod>((frame) =>
             {
-                _logger.Debug($"Received method {typeof(TClientMethod).Name} on channel {frame.Channel}.");
+                _logger.Debug($"Received method {typeof(TClientMethod).Name} on channel {frame.Channel}. {frame.Method.Serialize()}");
                 if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Method))
                 {
                     _logger.Debug($"Method {typeof(TClientMethod).Name} on channel {frame.Channel} was expected.");
@@ -150,7 +150,6 @@ namespace Test.It.With.Amqp
             On<TClientMethod>(frame =>
             {
                 var response = messageHandler(frame);
-                _logger.Debug($"Sending {response.GetType().Name} on channel {frame.Channel}.");
                 Send(new MethodFrame<TServerMethod>(frame.Channel, response));
             });
         }
@@ -177,8 +176,7 @@ namespace Test.It.With.Amqp
             OnProtocolHeader(header =>
             {
                 var response = messageHandler(header);
-                _logger.Debug($"Sending {response.GetType().Name} on channel 0.");
-                _frameClient.Send(new Frame(Constants.FrameMethod, 0, response));
+                Send(new MethodFrame<Connection.Start>(0, response));
             });
         }
 
@@ -190,6 +188,14 @@ namespace Test.It.With.Amqp
             {
                 disposable.Dispose();
             }
+        }
+    }
+
+    internal static class MethodExtensions
+    {
+        public static string Serialize(this IMethod method)
+        {
+            return JsonConvert.SerializeObject(method);
         }
     }
 }

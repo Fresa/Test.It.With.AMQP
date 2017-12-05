@@ -32,7 +32,7 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
 
         public void Stop()
         {
-            _messagePublisher.Dispose();
+            _messagePublisher?.Dispose();
             _configurer.Dispose();
         }
     }

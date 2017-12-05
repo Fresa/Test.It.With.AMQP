@@ -18,26 +18,32 @@ namespace Test.It.With.Amqp.Protocol
             Type = type;
             Channel = channel;
 
-            var memoryStream = new MemoryStream();
-            method.WriteTo(new AmqpWriter(memoryStream));
-            Payload = memoryStream.GetBuffer();
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var writer = new AmqpWriter(memoryStream))
+                {
+                    writer.WriteShortInteger((short)method.ProtocolClassId);
+                    writer.WriteShortInteger((short)method.ProtocolMethodId);
+                    method.WriteTo(writer);
+                }
+
+                Payload = memoryStream.GetBuffer();
+            }
+
             Size = Payload.Length;
         }
 
         private Frame(AmqpReader reader)
         {
-            Type = reader.PeekByte();
-
-            if (Type == 'A')
+            if (reader.PeekByte() == 'A')
             {
                 ProtocolHeader.ReadFrom(reader);
                 throw new ProtocolViolationException("Did not expect a protocol header at this time.");
             }
 
+            Type = reader.ReadByte();
             AssertValidFrameType(Type);
-
-            reader.ReadByte();
-
+            
             Channel = reader.ReadShortInteger();
             Size = reader.ReadLongInteger();
             Payload = reader.ReadBytes(Size);
