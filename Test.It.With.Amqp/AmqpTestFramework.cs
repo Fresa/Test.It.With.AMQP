@@ -162,7 +162,7 @@ namespace Test.It.With.Amqp
             var protocolHeaderSubscription = _protocolHeaderPublisher.Subscribe(header =>
             {
                 _logger.Debug($"Received protocol header.");
-                if (_expectationStateMachine.ShouldPass(0, header))
+                if (_expectationStateMachine.ShouldPass(header))
                 {
                     _logger.Debug($"Protocol header was expected.");
                     messageHandler(header);

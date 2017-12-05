@@ -3010,6 +3010,11 @@ namespace Test.It.With.Amqp
 
 			public long BodySize { get; private set; }
 
+			public bool SentOnValidChannel(int channel)
+			{
+				return channel > 0;
+			}
+
 			public bool HasContentType { get; private set; }
 			private Shortstr _contentType;
 			public Shortstr ContentType
@@ -4765,6 +4770,11 @@ namespace Test.It.With.Amqp
 	public class ContentBody : IContentBody
 	{
 		public byte[] Payload { get; private set; }
+
+		public bool SentOnValidChannel(int channel)
+		{
+			return channel > 0;
+		}
 
 		public void ReadFrom(AmqpReader reader)
 		{

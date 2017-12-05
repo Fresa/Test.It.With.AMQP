@@ -265,6 +265,11 @@ namespace Test.It.With.Amqp<# Block(() =>
 					
 					#>public long BodySize { get; private set; }<# _(2);
 
+					#>public bool SentOnValidChannel(int channel)<# Block(() =>
+				    {
+				        #>return channel > 0;<#
+				    }); _(2);
+
 					PrintOnNewRowForEach(@class.Fields.Values, field =>
 					{
 						GenerateDocumentation(field.Documentation);
@@ -436,7 +441,12 @@ namespace Test.It.With.Amqp<# Block(() =>
     {
 		#>public byte[] Payload { get; private set; }<# _(2);
 
-        #>public void ReadFrom(AmqpReader reader)<# Block(() =>
+        #>public bool SentOnValidChannel(int channel)<# Block(() =>
+		{
+			#>return channel > 0;<#
+		}); _(2);
+					
+		#>public void ReadFrom(AmqpReader reader)<# Block(() =>
         {
             #>Payload = reader.ReadBytes(reader.Length - 1);<# _();
 			#>if (reader.ReadByte() != Constants.FrameEnd)<# Block(() =>

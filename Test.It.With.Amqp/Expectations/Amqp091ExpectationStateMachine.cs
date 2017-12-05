@@ -1,30 +1,15 @@
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Test.It.With.Amqp.Expectations.MethodExpectationBuilders;
 using Test.It.With.Amqp.Protocol;
 
 namespace Test.It.With.Amqp.Expectations
 {
-    internal interface IExpectationStateMachine
-    {
-        bool ShouldPass(ProtocolHeader protocolHeader);
-
-        bool ShouldPass<TMethod>(int channel, TMethod method)
-            where TMethod : IClientMethod;
-
-        bool ShouldPass<TMethod>(int channel, IContentHeader contentHeader, out TMethod method)
-            where TMethod : IClientMethod, IContentMethod;
-
-        bool ShouldPass<TMethod>(int channel, IContentBody contentBody, out TMethod method)
-            where TMethod : IClientMethod, IContentMethod;
-    }
-
     internal class Amqp091ExpectationStateMachine : IExpectationStateMachine
     {
         public Amqp091ExpectationStateMachine()
         {
-            _expectationManager = new ExpectationBuilder()
+            _expectedMethodManager = new MethodExpectationBuilder()
                 .WhenProtocolHeader().Then<Connection.StartOk>().Or<Connection.Close>()
                 .When<Connection.CloseOk>().ThenProtocolHeader()
                 .When<Connection.StartOk>().Then<Connection.SecureOk>().Or<Connection.Close>()
@@ -35,31 +20,23 @@ namespace Test.It.With.Amqp.Expectations
                 .When<Channel.CloseOk>().Then<Channel.Open>()
                 .Manager;
         }
+
         // todo: Set agreed content body frame size
 
         private short _channelMax = short.MaxValue;
         private long _frameMax = Constants.FrameMinSize;
 
-        private readonly ConcurrentDictionary<int, Expectation> _expectations = new ConcurrentDictionary<int, Expectation>(new Dictionary<int, Expectation>
-        {
-            { 0, new ProtocolHeaderExpectation() }
-        });
-
+        private readonly ExpectationManager _expectationManager = new ExpectationManager();
+        
         private readonly Dictionary<int, IContentMethod> _contentMethodStates = new Dictionary<int, IContentMethod>();
 
-        private readonly ExpectingManager _expectationManager;
+        private readonly ExpectedMethodManager _expectedMethodManager;
 
         public bool ShouldPass(ProtocolHeader protocolHeader)
         {
-            var expectation = _expectations[0];
-            
-            if (expectation is ProtocolHeaderExpectation == false)
-            {
-                throw new UnexpectedFrameException(
-                    $"Expected {expectation.Name}, got protocol header");
-            }
+            _expectationManager.Get<ProtocolHeaderExpectation>(0);
 
-            _expectations[0] = new MethodExpectation(_expectationManager.GetExpectingTypes<ProtocolHeader>());
+            _expectationManager.Set(0, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor<ProtocolHeader>()));
             return true;
         }
 
@@ -76,52 +53,34 @@ namespace Test.It.With.Amqp.Expectations
                 throw new ChannelErrorException($"Channel {channel} not allowed. Maximum channel allowed is {_channelMax}.");
             }
 
-            if (_expectations.TryGetValue(channel, out var expectation) == false)
+            var methodExpectation = _expectationManager.Get<MethodExpectation>(channel);
+
+            if (methodExpectation.MethodResponses.Any())
             {
-                if (method.GetType() != typeof(Channel.Open))
+                if (methodExpectation.MethodResponses.Contains(method.GetType()) == false)
                 {
-                    throw new CommandInvalidException("Expected Channel.Open.");
+                    throw new UnexpectedFrameException($"Did not expect { method.GetType().FullName}. Expected: {string.Join(", ", methodExpectation.MethodResponses.Select(type => type.FullName))}.");
                 }
-
-                expectation = new MethodExpectation(_expectationManager.GetExpectingTypes<TMethod>(method.GetType()));
-                _expectations.TryAdd(channel, expectation);
             }
 
-            switch (expectation)
+            if (method is Connection.TuneOk tuneOk)
             {
-                case MethodExpectation methodExpectation:
-                    if (methodExpectation.MethodResponses.Any())
-                    {
-                        if (methodExpectation.MethodResponses.Contains(method.GetType()) == false)
-                        {
-                            throw new UnexpectedFrameException($"Did not expect { method.GetType().FullName}. Expected: {string.Join(", ", methodExpectation.MethodResponses.Select(type => type.FullName))}.");
-                        }
-                    }
-
-                    if (method is Connection.TuneOk tuneOk)
-                    {
-                        // todo: need to check against server proposal
-                        _channelMax = tuneOk.ChannelMax.Value == 0 ? short.MaxValue : tuneOk.ChannelMax.Value;
-                        // todo: need to check against server proposal
-                        _frameMax = tuneOk.FrameMax.Value == 0 ? long.MaxValue : tuneOk.FrameMax.Value;
-                    }
-
-                    if (method is IContentMethod contentMethod)
-                    {
-                        _expectations[channel] = new ContentHeaderExpectation();
-                        _contentMethodStates[channel] = contentMethod;
-                        return false;
-                    }
-
-                    expectation = new MethodExpectation(_expectationManager.GetExpectingTypes<TMethod>(method.Responses()));
-                    break;
-
-                default:
-                    throw new UnexpectedFrameException(
-                        $"Expected method frame, got {expectation.GetType().Name} frame.");
+                // todo: need to check against server proposal
+                _channelMax = tuneOk.ChannelMax.Value == 0 ? short.MaxValue : tuneOk.ChannelMax.Value;
+                // todo: need to check against server proposal
+                _frameMax = tuneOk.FrameMax.Value == 0 ? long.MaxValue : tuneOk.FrameMax.Value;
             }
 
-            _expectations[channel] = expectation;
+            if (method is IContentMethod contentMethod)
+            {
+                _expectationManager.Set(channel, new ContentHeaderExpectation());
+                _contentMethodStates[channel] = contentMethod;
+                return false;
+            }
+
+            methodExpectation = new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor<TMethod>().Add(method.Responses()));
+
+            _expectationManager.Set(channel, methodExpectation);
 
             return true;
         }
@@ -129,21 +88,13 @@ namespace Test.It.With.Amqp.Expectations
         public bool ShouldPass<TMethod>(int channel, IContentHeader contentHeader, out TMethod method)
             where TMethod : IClientMethod, IContentMethod
         {
-            if (channel == 0)
+            if (contentHeader.SentOnValidChannel(channel) == false)
             {
-                throw new ChannelErrorException("A content header cannot be sent on channel 0.");
+                throw new ChannelErrorException($"{ contentHeader.GetType()} cannot be sent on channel {channel}.");
             }
 
-            if (_expectations.TryGetValue(channel, out var expectation) == false)
-            {
-                throw new UnexpectedFrameException("Channel has not been established. Expected Channel.Open.");
-            }
-
-            if (expectation is ContentHeaderExpectation == false)
-            {
-                throw new UnexpectedFrameException($"Expected {expectation.Name} frame, got content header frame.");
-            }
-
+            _expectationManager.Get<ContentHeaderExpectation>(channel);
+            
             if (_contentMethodStates[channel].GetType() != typeof(TMethod))
             {
                 method = default;
@@ -154,7 +105,7 @@ namespace Test.It.With.Amqp.Expectations
 
             if (contentHeader.BodySize > 0)
             {
-                _expectations[channel] = new ContentBodyExpectation(contentHeader.BodySize);
+                _expectationManager.Set(channel, new ContentBodyExpectation(contentHeader.BodySize));
                 method = default;
                 return false;
             }
@@ -162,36 +113,26 @@ namespace Test.It.With.Amqp.Expectations
             method = (TMethod)_contentMethodStates[channel];
             _contentMethodStates.Remove(channel);
 
-            _expectations[channel] = new MethodExpectation(_expectationManager.GetExpectingTypes<TMethod>());
+            _expectationManager.Set(channel, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor<TMethod>()));
             return true;
         }
 
         public bool ShouldPass<TMethod>(int channel, IContentBody contentBody, out TMethod method)
             where TMethod : IClientMethod, IContentMethod
         {
-            if (channel == 0)
+            if (contentBody.SentOnValidChannel(channel) == false)
             {
-                throw new ChannelErrorException("A content body cannot be sent on channel 0.");
+                throw new ChannelErrorException($"{ contentBody.GetType()} cannot be sent on channel {channel}.");
             }
-
-            if (_expectations.TryGetValue(channel, out var expectation) == false)
-            {
-                throw new UnexpectedFrameException("Channel has not been established. Expected Channel.Open.");
-            }
-
-            if (expectation is ContentBodyExpectation == false)
-            {
-                throw new UnexpectedFrameException($"Expected content body frame, got {expectation.Name} frame.");
-            }
-
+            
+            var contentBodyExpectation = _expectationManager.Get<ContentBodyExpectation>(channel);
+            
             if (_contentMethodStates[channel].GetType() != typeof(TMethod))
             {
                 method = default;
                 return false;
             }
-
-            var contentBodyExpectation = (ContentBodyExpectation)expectation;
-
+            
             var size = contentBody.Payload.Length;
             if (size > contentBodyExpectation.Size)
             {
@@ -207,146 +148,25 @@ namespace Test.It.With.Amqp.Expectations
 
             if (size == contentBodyExpectation.Size)
             {
-                _expectations[channel] = new MethodExpectation(_expectationManager.GetExpectingTypes<TMethod>());
+                _expectationManager.Set(channel, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor<TMethod>()));
                 method = (TMethod)_contentMethodStates[channel];
                 _contentMethodStates.Remove(channel);
                 return true;
             }
 
-            _expectations[channel] = new ContentBodyExpectation(contentBodyExpectation.Size - size);
+            _expectationManager.Set(channel, new ContentBodyExpectation(contentBodyExpectation.Size - size));
             method = default;
             return false;
         }
     }
 
-    public static class ClientMethodExtensions
+    internal static class ArrayExtensions
     {
-        public static Type[] AcceptedRespondingMethods(IMethod method)
+        public static T[] Add<T>(this T[] array, params T[] items)
         {
-            switch (method)
-            {
-                case Connection.StartOk _: return new[] { typeof(Connection.Secure) };
-            }
-
-            return Array.Empty<Type>();
-        }
-
-    }
-
-    internal class ExpectingNext : ExpectingBase
-    {
-        private readonly ExpectationBuilder _builder;
-
-        public ExpectingNext(ExpectationBuilder builder)
-        {
-            _builder = builder;
-        }
-
-        private readonly List<Type> _methods = new List<Type>();
-
-        public ExpectingOr Then<TClient>() where TClient : IClientMethod
-        {
-            _methods.Add(typeof(TClient));
-            return new ExpectingOr(_builder, _methods);
-        }
-
-        public ExpectingOr ThenProtocolHeader()
-        {
-            _methods.Add(typeof(ProtocolHeader));
-            return new ExpectingOr(_builder, _methods);
-        }
-
-        public override Type[] Types => _methods.ToArray();
-    }
-
-    internal class ExpectingOr : ExpectingBase
-    {
-        private readonly ExpectationBuilder _builder;
-        private readonly ExpectingNext _next;
-        private List<Type> Methods { get; }
-
-        public ExpectingOr(ExpectationBuilder builder, List<Type> methods)
-        {
-            _builder = builder;
-            Methods = methods;
-        }
-
-        public ExpectingOr Or<TClient>() where TClient : IClientMethod
-        {
-            Methods.Add(typeof(TClient));
-            return this;
-        }
-
-        public ExpectingNext When<TClient>() where TClient : IClientMethod
-        {
-            return _builder.When<TClient>();
-        }
-
-        public ExpectingManager Manager => new ExpectingManager(_builder);
-
-        public override Type[] Types => Methods.ToArray();
-    }
-
-    internal abstract class ExpectingBase
-    {
-        public abstract Type[] Types { get; }
-    }
-
-    internal class ExpectationBuilder
-    {
-        private readonly Dictionary<Type, ExpectingBase> _expectations = new Dictionary<Type, ExpectingBase>();
-
-        public IReadOnlyDictionary<Type, ExpectingBase> Expectations => _expectations;
-
-        public ExpectingNext WhenProtocolHeader()
-        {
-            var expecting = new ExpectingNext(this);
-            _expectations.Add(typeof(ProtocolHeader), expecting);
-            return expecting;
-        }
-
-        public ExpectingNext When<TClient>() where TClient : IClientMethod
-        {
-            var expecting = new ExpectingNext(this);
-            _expectations.Add(typeof(TClient), expecting);
-            return expecting;
-        }
-    }
-
-    public class Test
-    {
-        public Test()
-        {
-            var a = new ExpectationBuilder()
-                .WhenProtocolHeader().Then<Connection.StartOk>().Or<Connection.Close>()
-                .When<Connection.CloseOk>().ThenProtocolHeader()
-                .When<Connection.StartOk>().Then<Connection.SecureOk>().Or<Connection.Close>()
-                .When<Connection.SecureOk>().Then<Connection.TuneOk>().Or<Connection.Close>()
-                .When<Connection.TuneOk>().Then<Connection.Open>().Or<Connection.Close>()
-                .When<Connection.Close>().ThenProtocolHeader();
-
-        }
-    }
-
-    internal class ExpectingManager
-    {
-        private readonly ExpectationBuilder _expectationBuilder;
-
-        public ExpectingManager(ExpectationBuilder expectationBuilder)
-        {
-            _expectationBuilder = expectationBuilder;
-        }
-
-        public Type[] GetExpectingTypes<T>(params Type[] includeTypes)
-        {
-            var expectingTypes = new List<Type>(includeTypes);
-            if (_expectationBuilder.Expectations.ContainsKey(typeof(T)))
-            {
-                expectingTypes.AddRange(_expectationBuilder.Expectations[typeof(T)].Types);
-                return expectingTypes.ToArray();
-            }
-
-            return includeTypes;
+            var list = new List<T>(array);
+            list.AddRange(items);
+            return list.ToArray();
         }
     }
 }

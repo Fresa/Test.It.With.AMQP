@@ -45,7 +45,14 @@
     <Compile Include="Expectations\ContentBodyExpectation.cs" />
     <Compile Include="Expectations\ContentHeaderExpectation.cs" />
     <Compile Include="Expectations\Expectation.cs" />
+    <Compile Include="Expectations\ExpectationManager.cs" />
+    <Compile Include="Expectations\IExpectationStateMachine.cs" />
     <Compile Include="Expectations\MethodExpectation.cs" />
+    <Compile Include="Expectations\MethodExpectationBuilders\ExpectedMethodBuilder.cs" />
+    <Compile Include="Expectations\MethodExpectationBuilders\ExpectedMethodManager.cs" />
+    <Compile Include="Expectations\MethodExpectationBuilders\MethodExpectationBuilder.cs" />
+    <Compile Include="Expectations\MethodExpectationBuilders\NextExpectedMethodBuilder.cs" />
+    <Compile Include="Expectations\MethodExpectationBuilders\OrMethodExpectedBuilder.cs" />
     <Compile Include="Expectations\ProtocolHeaderExpectation.cs" />
     <Compile Include="Expectations\Amqp091ExpectationStateMachine.cs" />
     <Compile Include="MessageClient\ContentBodyFrameClient.cs" />
