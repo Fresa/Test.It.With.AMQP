@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using Test.It.With.Amqp.Expectations;
 using Test.It.With.Amqp.Expectations.MethodExpectationBuilders;
 using Test.It.With.Amqp.Protocol;
 
-namespace Test.It.With.Amqp.Expectations
+namespace Test.It.With.Amqp.Extensions
 {
     internal class Amqp091ExpectationStateMachine : IExpectationStateMachine
     {
@@ -27,7 +28,7 @@ namespace Test.It.With.Amqp.Expectations
         private long _frameMax = Constants.FrameMinSize;
 
         private readonly ExpectationManager _expectationManager = new ExpectationManager();
-        
+
         private readonly Dictionary<int, IContentMethod> _contentMethodStates = new Dictionary<int, IContentMethod>();
 
         private readonly ExpectedMethodManager _expectedMethodManager;
@@ -45,7 +46,7 @@ namespace Test.It.With.Amqp.Expectations
         {
             if (method.SentOnValidChannel(channel) == false)
             {
-                throw new ChannelErrorException($"{ method.GetType()} method is not valid on channel {channel}.");
+                throw new CommandInvalidException($"{ method.GetType()} method is not valid on channel {channel}.");
             }
 
             if (channel > _channelMax)
@@ -90,11 +91,11 @@ namespace Test.It.With.Amqp.Expectations
         {
             if (contentHeader.SentOnValidChannel(channel) == false)
             {
-                throw new ChannelErrorException($"{ contentHeader.GetType()} cannot be sent on channel {channel}.");
+                throw new CommandInvalidException($"{ contentHeader.GetType()} cannot be sent on channel {channel}.");
             }
 
             _expectationManager.Get<ContentHeaderExpectation>(channel);
-            
+
             if (_contentMethodStates[channel].GetType() != typeof(TMethod))
             {
                 method = default;
@@ -122,17 +123,17 @@ namespace Test.It.With.Amqp.Expectations
         {
             if (contentBody.SentOnValidChannel(channel) == false)
             {
-                throw new ChannelErrorException($"{ contentBody.GetType()} cannot be sent on channel {channel}.");
+                throw new CommandInvalidException($"{ contentBody.GetType()} cannot be sent on channel {channel}.");
             }
-            
+
             var contentBodyExpectation = _expectationManager.Get<ContentBodyExpectation>(channel);
-            
+
             if (_contentMethodStates[channel].GetType() != typeof(TMethod))
             {
                 method = default;
                 return false;
             }
-            
+
             var size = contentBody.Payload.Length;
             if (size > contentBodyExpectation.Size)
             {
@@ -157,6 +158,16 @@ namespace Test.It.With.Amqp.Expectations
             _expectationManager.Set(channel, new ContentBodyExpectation(contentBodyExpectation.Size - size));
             method = default;
             return false;
+        }
+
+        public bool ShouldPass(int channel, IHeartbeat heartbeat)
+        {
+            if (heartbeat.SentOnValidChannel(channel) == false)
+            {
+                throw new CommandInvalidException($"{heartbeat.GetType()} cannot be sent on channel {channel}.");
+            }
+
+            return true;
         }
     }
 

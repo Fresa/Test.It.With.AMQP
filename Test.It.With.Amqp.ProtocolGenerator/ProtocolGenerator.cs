@@ -63,6 +63,13 @@ namespace Test.It.With.Amqp
 			return contentBody;
 		}
 
+		public IHeartbeat GetHeartbeat(AmqpReader reader)
+		{
+			var heartbeat = new Heartbeat();
+			heartbeat.ReadFrom(reader);
+			return heartbeat;
+		}
+
 		private readonly Dictionary<int, Dictionary<int, Func<IMethod>>> _methodFactory = new Dictionary<int, Dictionary<int, Func<IMethod>>>
 		{
 			{ 10, new Dictionary<int, Func<IMethod>> { 
@@ -4789,6 +4796,24 @@ namespace Test.It.With.Amqp
 		{
 			writer.WriteBytes(Payload);
 			writer.WriteByte(Constants.FrameEnd);
+		}
+	}
+
+	public class Heartbeat : IHeartbeat
+	{
+		public bool SentOnValidChannel(int channel)
+		{
+			return channel == 0;
+		}
+
+		public void ReadFrom(AmqpReader reader)
+		{
+
+		}
+
+		public void WriteTo(AmqpWriter writer)
+		{
+
 		}
 	}
 }

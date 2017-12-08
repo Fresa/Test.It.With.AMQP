@@ -9,5 +9,7 @@ namespace Test.It.With.Amqp.Protocol
         IContentHeader GetContentHeader(AmqpReader reader);
 
         IContentBody GetContentBody(AmqpReader reader);
+
+        IHeartbeat GetHeartbeat(AmqpReader reader);
     }
 }

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Log.It;
-using Newtonsoft.Json;
 using Test.It.With.Amqp.Expectations;
+using Test.It.With.Amqp.Extensions;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.MessageHandlers;
 using Test.It.With.Amqp.MessageRouters;
@@ -24,12 +24,13 @@ namespace Test.It.With.Amqp
         private readonly IPublishMethod _methodFramePublisher;
         private readonly IPublishContentHeader _contentHeaderFramePublisher;
         private readonly IPublish<ContentBodyFrame> _contentBodyFramePublisher;
+        private IPublishHeartbeat _heartbeatFramePublisher;
 
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
         private readonly Amqp091ExpectationStateMachine _expectationStateMachine = new Amqp091ExpectationStateMachine();
         private readonly List<Type> _subscribedMethods = new List<Type>();
-
+        
         public AmqpTestFramework()
         {
             _networkClientFactory = new InternalRoutedNetworkClientFactory(out var serverNetworkClient);
@@ -46,20 +47,23 @@ namespace Test.It.With.Amqp
             var methodFrameHandler = new MethodFrameHandler();
             var contentHeaderFrameHandler = new ContentHeaderFrameHandler();
             var contentBodyFrameHandler = new ContentBodyFrameHandler();
+            var heartbeatFrameHandler = new HeartbeatFrameHandler();
 
-            var contentBodyFrameRouter = new ContentBodyFrameRouter(null, protocol, contentBodyFrameHandler);
+            var heartbeatFrameRouter = new HeartbeatFrameRouter(null, protocol, heartbeatFrameHandler);
+            var contentBodyFrameRouter = new ContentBodyFrameRouter(heartbeatFrameRouter, protocol, contentBodyFrameHandler);
             var contentHeaderFrameRouter = new ContentHeaderFrameRouter(contentBodyFrameRouter, protocol, contentHeaderFrameHandler);
             var methodFrameRouter = new MethodFrameRouter(contentHeaderFrameRouter, protocol, methodFrameHandler);
-
+            
             _frameClient = new FrameClient2(serverNetworkClient, protocolHeaderHandler, methodFrameRouter);
 
             _protocolHeaderPublisher = protocolHeaderHandler;
             _methodFramePublisher = methodFrameHandler;
             _contentHeaderFramePublisher = contentHeaderFrameHandler;
             _contentBodyFramePublisher = contentBodyFrameHandler;
+            _heartbeatFramePublisher = heartbeatFrameHandler;
         }
 
-        private void AssertNoDuplicateMethodSubscriptions<TMethod>()
+        private void AssertNoDuplicateSubscriptions<TMethod>()
         {
             if (_subscribedMethods.Contains(typeof(TMethod)))
             {
@@ -128,7 +132,7 @@ namespace Test.It.With.Amqp
         public void On<TClientMethod>(Action<MethodFrame<TClientMethod>> messageHandler)
             where TClientMethod : IClientMethod
         {
-            AssertNoDuplicateMethodSubscriptions<TClientMethod>();
+            AssertNoDuplicateSubscriptions<TClientMethod>();
 
             var methodSubscription = _methodFramePublisher.Subscribe<TClientMethod>((frame) =>
             {
@@ -156,7 +160,7 @@ namespace Test.It.With.Amqp
 
         public void OnProtocolHeader(Action<ProtocolHeader> messageHandler)
         {
-            AssertNoDuplicateMethodSubscriptions<ProtocolHeader>();
+            AssertNoDuplicateSubscriptions<ProtocolHeader>();
 
             var protocolHeaderSubscription = _protocolHeaderPublisher.Subscribe(header =>
             {
@@ -180,6 +184,24 @@ namespace Test.It.With.Amqp
             });
         }
 
+        public void On<THeartbeat>(Action<HeartbeatFrame<THeartbeat>> messageHandler)
+            where THeartbeat : IHeartbeat
+        {
+            AssertNoDuplicateSubscriptions<THeartbeat>();
+
+            var heartbeatSubscription = _heartbeatFramePublisher.Subscribe<THeartbeat>((frame) =>
+            {
+                _logger.Debug($"Received heartbeat {typeof(THeartbeat).Name} on channel {frame.Channel}. {frame.Heartbeat.Serialize()}");
+                if (_expectationStateMachine.ShouldPass(frame.Channel, (IHeartbeat)frame.Heartbeat))
+                {
+                    _logger.Debug($"{typeof(THeartbeat).Name} on channel {frame.Channel} was expected.");
+                    messageHandler(frame);
+                }
+            });
+
+            _disposables.Add(heartbeatSubscription);
+        }
+
         public void Dispose()
         {
             _networkClientFactory.Dispose();
@@ -188,14 +210,6 @@ namespace Test.It.With.Amqp
             {
                 disposable.Dispose();
             }
-        }
-    }
-
-    internal static class MethodExtensions
-    {
-        public static string Serialize(this IMethod method)
-        {
-            return JsonConvert.SerializeObject(method);
         }
     }
 }

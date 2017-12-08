@@ -14,5 +14,7 @@ namespace Test.It.With.Amqp.Expectations
 
         bool ShouldPass<TMethod>(int channel, IContentBody contentBody, out TMethod method)
             where TMethod : IClientMethod, IContentMethod;
+
+        bool ShouldPass(int channel, IHeartbeat method);
     }
 }

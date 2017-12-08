@@ -59,6 +59,7 @@
     <Compile Include="IContentBody.cs" />
     <Compile Include="IContentHeader.cs" />
     <Compile Include="IContentMethod.cs" />
+    <Compile Include="IHeartbeat.cs" />
     <Compile Include="IRespond.cs" />
     <Compile Include="IServerMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -133,6 +133,13 @@ namespace Test.It.With.Amqp<# Block(() =>
 			#>return contentBody;<#
 	    }); _(2);
 
+		#>public IHeartbeat GetHeartbeat(AmqpReader reader)<# Block(() =>
+	    {
+			#>var heartbeat = new Heartbeat();<# _();
+			#>heartbeat.ReadFrom(reader);<# _();
+			#>return heartbeat;<#
+	    }); _(2);
+
 	    #>private readonly Dictionary<int, Dictionary<int, Func<IMethod>>> _methodFactory = new Dictionary<int, Dictionary<int, Func<IMethod>>><# Block(() =>
 	    {
 			PrintOnNewRowForEachWithIndex(protocol.Classes.Values, (@class, index, length) =>
@@ -459,6 +466,23 @@ namespace Test.It.With.Amqp<# Block(() =>
         {
             #>writer.WriteBytes(Payload);<# _();
 			#>writer.WriteByte(Constants.FrameEnd);<# 
+        });
+    }); _(2);
+
+	// Heartbeat
+	#>public class Heartbeat : IHeartbeat<# Block(() =>
+    {
+        #>public bool SentOnValidChannel(int channel)<# Block(() =>
+		{
+			#>return channel == 0;<#
+		}); _(2);
+					
+		#>public void ReadFrom(AmqpReader reader)<# Block(() =>
+        {
+        }); _(2);
+
+        #>public void WriteTo(AmqpWriter writer)<# Block(() =>
+        {
         });
     });
 });
