@@ -6,37 +6,44 @@ using System.Text;
 
 namespace Test.It.With.Amqp.Protocol
 {
-    public class AmqpWriter : IDisposable
+    public class AmqpWriter : IDisposable, IByteWriter
     {
         private readonly Stream _buffer;
+        private readonly BitWriter _bitWriter;
 
         public AmqpWriter(Stream buffer)
         {
             _buffer = buffer;
+            _bitWriter = new BitWriter(this);
         }
 
         public void WriteShortUnsignedInteger(ushort value)
         {
+            _bitWriter.Flush();
             WriteAsBigEndian(BitConverter.GetBytes(value));
         }
 
         public void WriteLongUnsignedInteger(uint value)
         {
+            _bitWriter.Flush();
             WriteAsBigEndian(BitConverter.GetBytes(value));
         }
 
         public void WriteLongLongUnsignedInteger(ulong value)
         {
+            _bitWriter.Flush();
             WriteAsBigEndian(BitConverter.GetBytes(value));
         }
 
         public void WriteShortInteger(short value)
         {
+            _bitWriter.Flush();
             WriteAsBigEndian(BitConverter.GetBytes(value));
         }
 
         public void WriteShortString(string value)
         {
+            _bitWriter.Flush();
             value = value ?? string.Empty;
             var bytes = Encoding.UTF8.GetBytes(value);
             if (bytes.Length > 255)
@@ -51,11 +58,13 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WriteCharacter(char value)
         {
+            _bitWriter.Flush();
             WriteAsLittleEndian(BitConverter.GetBytes(value));
         }
 
         public void WriteLongString(byte[] value)
         {
+            _bitWriter.Flush();
             value = value ?? Array.Empty<byte>();
             WriteLongUnsignedInteger((uint)value.Length);
             WriteBytes(value);
@@ -63,38 +72,45 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WriteLongInteger(int value)
         {
+            _bitWriter.Flush();
             WriteAsBigEndian(BitConverter.GetBytes(value));
         }
 
         public void WriteFloatingPointNumber(float value)
         {
+            _bitWriter.Flush();
             WriteAsBigEndian(BitConverter.GetBytes(value));
         }
 
         public void WriteLongFloatingPointNumber(double value)
         {
+            _bitWriter.Flush();
             WriteAsBigEndian(BitConverter.GetBytes(value));
         }
 
         public void WriteBytes(byte[] value)
         {
+            _bitWriter.Flush();
             value = value ?? Array.Empty<byte>();
             WriteAsLittleEndian(value);
         }
 
         public void WriteByte(byte value)
         {
+            _bitWriter.Flush();
             WriteAsLittleEndian(new[] { value });
         }
 
         public void WriteTimestamp(DateTime value)
         {
+            _bitWriter.Flush();
             var seconds = value.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
             WriteLongLongUnsignedInteger((ulong)seconds);
         }
 
         public void WriteTable(IDictionary<string, object> value)
         {
+            _bitWriter.Flush();
             if (value == null || value.Count == 0)
             {
                 WriteLongUnsignedInteger(0);
@@ -143,21 +159,25 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WriteBoolean(bool value)
         {
+            _bitWriter.Flush();
             WriteAsLittleEndian(BitConverter.GetBytes(value));
         }
 
         public void WriteShortShortInteger(sbyte value)
         {
+            _bitWriter.Flush();
             WriteByte((byte)value);
         }
 
         public void WriteLongLongInteger(long value)
         {
+            _bitWriter.Flush();
             WriteAsBigEndian(BitConverter.GetBytes(value));
         }
 
         public void WriteDecimal(decimal value)
         {
+            _bitWriter.Flush();
             var scale = BitConverter.GetBytes(decimal.GetBits(value)[3])[2];
 
             for (var i = 0; i < scale; i++)
@@ -179,6 +199,8 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WriteFieldValue(object value)
         {
+            _bitWriter.Flush();
+
             switch (value)
             {
                 case bool convertedValue:
@@ -270,6 +292,7 @@ namespace Test.It.With.Amqp.Protocol
 
         public void WritePropertyFlags(bool[] flags)
         {
+            _bitWriter.Flush();
             flags = flags ?? Array.Empty<bool>();
             ushort value = 0;
             for (var i = 0; i < flags.Length; i++)
@@ -285,13 +308,18 @@ namespace Test.It.With.Amqp.Protocol
 
                 if (flags[i])
                 {
-                    value = (ushort) (value | (1 << bit));
+                    value = (ushort)(value | (1 << bit));
                 }
             }
 
             WriteShortUnsignedInteger(value);
         }
-        
+
+        public void WriteBit(bool value)
+        {
+            _bitWriter.Write(value);
+        }
+
         private void WriteArray(ICollection value)
         {
             var startPosition = _buffer.Position;
@@ -340,6 +368,7 @@ namespace Test.It.With.Amqp.Protocol
 
         public void Dispose()
         {
+            _bitWriter.Dispose();
             _buffer.Flush();
         }
     }

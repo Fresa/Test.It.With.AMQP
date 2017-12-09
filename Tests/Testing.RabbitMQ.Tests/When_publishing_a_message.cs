@@ -22,8 +22,9 @@ namespace Test.It.With.RabbitMQ.Tests
         private MethodFrame<Connection.Open> _open;
         private readonly List<HeartbeatFrame<Heartbeat>> _heartbeats = new List<HeartbeatFrame<Heartbeat>>();
         private MethodFrame<Channel.Open> _channelOpen;
+        private MethodFrame<Connection.CloseOk> _closeOk;
 
-        protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
+        protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(500);
 
         public When_publishing_a_message(ITestOutputHelper output) : base(output)
         {
@@ -32,7 +33,17 @@ namespace Test.It.With.RabbitMQ.Tests
         protected override void Given(IServiceContainer container)
         {
             var testServer = new AmqpTestFramework();
-          
+
+            testServer.OnException += exception =>
+            {
+                testServer.Send(new MethodFrame<Connection.Close>(0, new Connection.Close()));
+            };
+
+            testServer.On<Connection.CloseOk>(frame =>
+            {
+                _closeOk = frame;
+            });
+
             testServer.OnProtocolHeader(header => new Connection.Start
             {
                 VersionMajor = new Octet((byte)header.Version.Major),

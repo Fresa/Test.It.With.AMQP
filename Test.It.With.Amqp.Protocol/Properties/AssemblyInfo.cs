@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-//[assembly: InternalsVisibleTo("Test.It.With.RabbitMQ.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 [assembly: InternalsVisibleTo("Test.It.With.Amqp.Tests")]
 [assembly: InternalsVisibleTo("Test.It.With.Amqp.ProtocolGenerator")]
 

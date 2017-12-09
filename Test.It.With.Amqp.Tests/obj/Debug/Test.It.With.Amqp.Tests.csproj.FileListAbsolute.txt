@@ -1,5 +1,6 @@
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\Test.It.With.Amqp.Tests.dll
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\Test.It.With.Amqp.Tests.pdb
+F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\FakeItEasy.dll
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\Owin.dll
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\Should.Fluent.dll
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\Test.It.dll
@@ -20,6 +21,8 @@ F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\System.Collection
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\Validation.dll
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\Test.It.With.Amqp.Protocol.pdb
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\Test.It.With.Amqp.pdb
+F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\FakeItEasy.pdb
+F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\FakeItEasy.xml
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\Test.It.pdb
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\Test.It.With.XUnit.pdb
 F:\Projects\Testing.RabbitMQ\Test.It.With.Amqp.Tests\bin\Debug\xunit.abstractions.xml

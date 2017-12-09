@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FakeItEasy, Version=3.3.2.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+      <HintPath>..\packages\FakeItEasy.3.3.2\lib\net40\FakeItEasy.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -66,6 +69,8 @@
   <ItemGroup>
     <Compile Include="AmqpReaderTests.cs" />
     <Compile Include="AmqpWriterTests.cs" />
+    <Compile Include="BitReaderTests.cs" />
+    <Compile Include="BitWriterTests.cs" />
     <Compile Include="BlockingMemoryStreamTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

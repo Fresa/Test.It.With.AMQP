@@ -1410,14 +1410,14 @@ namespace Test.It.With.Amqp
 			{
 				_virtualHost = new Path(reader.ReadShortString());
 				_reserved1 = new Shortstr(reader.ReadShortString());
-				_reserved2 = new Bit(reader.ReadBoolean());
+				_reserved2 = new Bit(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteShortString(_virtualHost.Value);
 				writer.WriteShortString(_reserved1.Value);
-				writer.WriteBoolean(_reserved2.Value);
+				writer.WriteBit(_reserved2.Value);
 			}
 		}
 
@@ -1717,12 +1717,12 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_active = new Bit(reader.ReadBoolean());
+				_active = new Bit(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteBoolean(_active.Value);
+				writer.WriteBit(_active.Value);
 			}
 		}
 
@@ -1759,12 +1759,12 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_active = new Bit(reader.ReadBoolean());
+				_active = new Bit(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteBoolean(_active.Value);
+				writer.WriteBit(_active.Value);
 			}
 		}
 
@@ -2040,11 +2040,11 @@ namespace Test.It.With.Amqp
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_exchange = new ExchangeName(reader.ReadShortString());
 				_type = new Shortstr(reader.ReadShortString());
-				_passive = new Bit(reader.ReadBoolean());
-				_durable = new Bit(reader.ReadBoolean());
-				_reserved2 = new Bit(reader.ReadBoolean());
-				_reserved3 = new Bit(reader.ReadBoolean());
-				_noWait = new NoWait(reader.ReadBoolean());
+				_passive = new Bit(reader.ReadBit());
+				_durable = new Bit(reader.ReadBit());
+				_reserved2 = new Bit(reader.ReadBit());
+				_reserved3 = new Bit(reader.ReadBit());
+				_noWait = new NoWait(reader.ReadBit());
 				_arguments = new Table(reader.ReadTable());
 			}
 
@@ -2053,11 +2053,11 @@ namespace Test.It.With.Amqp
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_exchange.Value);
 				writer.WriteShortString(_type.Value);
-				writer.WriteBoolean(_passive.Value);
-				writer.WriteBoolean(_durable.Value);
-				writer.WriteBoolean(_reserved2.Value);
-				writer.WriteBoolean(_reserved3.Value);
-				writer.WriteBoolean(_noWait.Value);
+				writer.WriteBit(_passive.Value);
+				writer.WriteBit(_durable.Value);
+				writer.WriteBit(_reserved2.Value);
+				writer.WriteBit(_reserved3.Value);
+				writer.WriteBit(_noWait.Value);
 				writer.WriteTable(_arguments.Value);
 			}
 		}
@@ -2164,16 +2164,16 @@ namespace Test.It.With.Amqp
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_exchange = new ExchangeName(reader.ReadShortString());
-				_ifUnused = new Bit(reader.ReadBoolean());
-				_noWait = new NoWait(reader.ReadBoolean());
+				_ifUnused = new Bit(reader.ReadBit());
+				_noWait = new NoWait(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_exchange.Value);
-				writer.WriteBoolean(_ifUnused.Value);
-				writer.WriteBoolean(_noWait.Value);
+				writer.WriteBit(_ifUnused.Value);
+				writer.WriteBit(_noWait.Value);
 			}
 		}
 
@@ -2359,11 +2359,11 @@ namespace Test.It.With.Amqp
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
-				_passive = new Bit(reader.ReadBoolean());
-				_durable = new Bit(reader.ReadBoolean());
-				_exclusive = new Bit(reader.ReadBoolean());
-				_autoDelete = new Bit(reader.ReadBoolean());
-				_noWait = new NoWait(reader.ReadBoolean());
+				_passive = new Bit(reader.ReadBit());
+				_durable = new Bit(reader.ReadBit());
+				_exclusive = new Bit(reader.ReadBit());
+				_autoDelete = new Bit(reader.ReadBit());
+				_noWait = new NoWait(reader.ReadBit());
 				_arguments = new Table(reader.ReadTable());
 			}
 
@@ -2371,11 +2371,11 @@ namespace Test.It.With.Amqp
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
-				writer.WriteBoolean(_passive.Value);
-				writer.WriteBoolean(_durable.Value);
-				writer.WriteBoolean(_exclusive.Value);
-				writer.WriteBoolean(_autoDelete.Value);
-				writer.WriteBoolean(_noWait.Value);
+				writer.WriteBit(_passive.Value);
+				writer.WriteBit(_durable.Value);
+				writer.WriteBit(_exclusive.Value);
+				writer.WriteBit(_autoDelete.Value);
+				writer.WriteBit(_noWait.Value);
 				writer.WriteTable(_arguments.Value);
 			}
 		}
@@ -2560,7 +2560,7 @@ namespace Test.It.With.Amqp
 				_queue = new QueueName(reader.ReadShortString());
 				_exchange = new ExchangeName(reader.ReadShortString());
 				_routingKey = new Shortstr(reader.ReadShortString());
-				_noWait = new NoWait(reader.ReadBoolean());
+				_noWait = new NoWait(reader.ReadBit());
 				_arguments = new Table(reader.ReadTable());
 			}
 
@@ -2570,7 +2570,7 @@ namespace Test.It.With.Amqp
 				writer.WriteShortString(_queue.Value);
 				writer.WriteShortString(_exchange.Value);
 				writer.WriteShortString(_routingKey.Value);
-				writer.WriteBoolean(_noWait.Value);
+				writer.WriteBit(_noWait.Value);
 				writer.WriteTable(_arguments.Value);
 			}
 		}
@@ -2794,14 +2794,14 @@ namespace Test.It.With.Amqp
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
-				_noWait = new NoWait(reader.ReadBoolean());
+				_noWait = new NoWait(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
-				writer.WriteBoolean(_noWait.Value);
+				writer.WriteBit(_noWait.Value);
 			}
 		}
 
@@ -2935,18 +2935,18 @@ namespace Test.It.With.Amqp
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
-				_ifUnused = new Bit(reader.ReadBoolean());
-				_ifEmpty = new Bit(reader.ReadBoolean());
-				_noWait = new NoWait(reader.ReadBoolean());
+				_ifUnused = new Bit(reader.ReadBit());
+				_ifEmpty = new Bit(reader.ReadBit());
+				_noWait = new NoWait(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
-				writer.WriteBoolean(_ifUnused.Value);
-				writer.WriteBoolean(_ifEmpty.Value);
-				writer.WriteBoolean(_noWait.Value);
+				writer.WriteBit(_ifUnused.Value);
+				writer.WriteBit(_ifEmpty.Value);
+				writer.WriteBit(_noWait.Value);
 			}
 		}
 
@@ -3446,14 +3446,14 @@ namespace Test.It.With.Amqp
 			{
 				_prefetchSize = new Long(reader.ReadLongInteger());
 				_prefetchCount = new Short(reader.ReadShortInteger());
-				_global = new Bit(reader.ReadBoolean());
+				_global = new Bit(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteLongInteger(_prefetchSize.Value);
 				writer.WriteShortInteger(_prefetchCount.Value);
-				writer.WriteBoolean(_global.Value);
+				writer.WriteBit(_global.Value);
 			}
 		}
 
@@ -3612,10 +3612,10 @@ namespace Test.It.With.Amqp
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
 				_consumerTag = new ConsumerTag(reader.ReadShortString());
-				_noLocal = new NoLocal(reader.ReadBoolean());
-				_noAck = new NoAck(reader.ReadBoolean());
-				_exclusive = new Bit(reader.ReadBoolean());
-				_noWait = new NoWait(reader.ReadBoolean());
+				_noLocal = new NoLocal(reader.ReadBit());
+				_noAck = new NoAck(reader.ReadBit());
+				_exclusive = new Bit(reader.ReadBit());
+				_noWait = new NoWait(reader.ReadBit());
 				_arguments = new Table(reader.ReadTable());
 			}
 
@@ -3624,10 +3624,10 @@ namespace Test.It.With.Amqp
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
 				writer.WriteShortString(_consumerTag.Value);
-				writer.WriteBoolean(_noLocal.Value);
-				writer.WriteBoolean(_noAck.Value);
-				writer.WriteBoolean(_exclusive.Value);
-				writer.WriteBoolean(_noWait.Value);
+				writer.WriteBit(_noLocal.Value);
+				writer.WriteBit(_noAck.Value);
+				writer.WriteBit(_exclusive.Value);
+				writer.WriteBit(_noWait.Value);
 				writer.WriteTable(_arguments.Value);
 			}
 		}
@@ -3722,13 +3722,13 @@ namespace Test.It.With.Amqp
 			public void ReadFrom(AmqpReader reader)
 			{
 				_consumerTag = new ConsumerTag(reader.ReadShortString());
-				_noWait = new NoWait(reader.ReadBoolean());
+				_noWait = new NoWait(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteShortString(_consumerTag.Value);
-				writer.WriteBoolean(_noWait.Value);
+				writer.WriteBit(_noWait.Value);
 			}
 		}
 
@@ -3879,8 +3879,8 @@ namespace Test.It.With.Amqp
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_exchange = new ExchangeName(reader.ReadShortString());
 				_routingKey = new Shortstr(reader.ReadShortString());
-				_mandatory = new Bit(reader.ReadBoolean());
-				_immediate = new Bit(reader.ReadBoolean());
+				_mandatory = new Bit(reader.ReadBit());
+				_immediate = new Bit(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
@@ -3888,8 +3888,8 @@ namespace Test.It.With.Amqp
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_exchange.Value);
 				writer.WriteShortString(_routingKey.Value);
-				writer.WriteBoolean(_mandatory.Value);
-				writer.WriteBoolean(_immediate.Value);
+				writer.WriteBit(_mandatory.Value);
+				writer.WriteBit(_immediate.Value);
 			}
 		}
 
@@ -4088,7 +4088,7 @@ namespace Test.It.With.Amqp
 			{
 				_consumerTag = new ConsumerTag(reader.ReadShortString());
 				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
-				_redelivered = new Redelivered(reader.ReadBoolean());
+				_redelivered = new Redelivered(reader.ReadBit());
 				_exchange = new ExchangeName(reader.ReadShortString());
 				_routingKey = new Shortstr(reader.ReadShortString());
 			}
@@ -4097,7 +4097,7 @@ namespace Test.It.With.Amqp
 			{
 				writer.WriteShortString(_consumerTag.Value);
 				writer.WriteLongLongInteger(_deliveryTag.Value);
-				writer.WriteBoolean(_redelivered.Value);
+				writer.WriteBit(_redelivered.Value);
 				writer.WriteShortString(_exchange.Value);
 				writer.WriteShortString(_routingKey.Value);
 			}
@@ -4170,14 +4170,14 @@ namespace Test.It.With.Amqp
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
-				_noAck = new NoAck(reader.ReadBoolean());
+				_noAck = new NoAck(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
-				writer.WriteBoolean(_noAck.Value);
+				writer.WriteBit(_noAck.Value);
 			}
 		}
 
@@ -4275,7 +4275,7 @@ namespace Test.It.With.Amqp
 			public void ReadFrom(AmqpReader reader)
 			{
 				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
-				_redelivered = new Redelivered(reader.ReadBoolean());
+				_redelivered = new Redelivered(reader.ReadBit());
 				_exchange = new ExchangeName(reader.ReadShortString());
 				_routingKey = new Shortstr(reader.ReadShortString());
 				_messageCount = new MessageCount(reader.ReadLongInteger());
@@ -4284,7 +4284,7 @@ namespace Test.It.With.Amqp
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteLongLongInteger(_deliveryTag.Value);
-				writer.WriteBoolean(_redelivered.Value);
+				writer.WriteBit(_redelivered.Value);
 				writer.WriteShortString(_exchange.Value);
 				writer.WriteShortString(_routingKey.Value);
 				writer.WriteLongInteger(_messageCount.Value);
@@ -4378,13 +4378,13 @@ namespace Test.It.With.Amqp
 			public void ReadFrom(AmqpReader reader)
 			{
 				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
-				_multiple = new Bit(reader.ReadBoolean());
+				_multiple = new Bit(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteLongLongInteger(_deliveryTag.Value);
-				writer.WriteBoolean(_multiple.Value);
+				writer.WriteBit(_multiple.Value);
 			}
 		}
 
@@ -4434,13 +4434,13 @@ namespace Test.It.With.Amqp
 			public void ReadFrom(AmqpReader reader)
 			{
 				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
-				_requeue = new Bit(reader.ReadBoolean());
+				_requeue = new Bit(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
 				writer.WriteLongLongInteger(_deliveryTag.Value);
-				writer.WriteBoolean(_requeue.Value);
+				writer.WriteBit(_requeue.Value);
 			}
 		}
 
@@ -4480,12 +4480,12 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_requeue = new Bit(reader.ReadBoolean());
+				_requeue = new Bit(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteBoolean(_requeue.Value);
+				writer.WriteBit(_requeue.Value);
 			}
 		}
 
@@ -4525,12 +4525,12 @@ namespace Test.It.With.Amqp
 
 			public void ReadFrom(AmqpReader reader)
 			{
-				_requeue = new Bit(reader.ReadBoolean());
+				_requeue = new Bit(reader.ReadBit());
 			}
 
 			public void WriteTo(AmqpWriter writer)
 			{
-				writer.WriteBoolean(_requeue.Value);
+				writer.WriteBit(_requeue.Value);
 			}
 		}
 

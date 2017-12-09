@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="AmqpReader.cs" />
     <Compile Include="AmqpWriter.cs" />
+    <Compile Include="BitReader.cs" />
+    <Compile Include="BitWriter.cs" />
     <Compile Include="ByteArray.cs" />
     <Compile Include="Extensions\ConstantExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
@@ -55,6 +57,8 @@
     <Compile Include="Extensions\XmlElementExtensions.cs" />
     <Compile Include="Extensions\XmlNodeListExtensions.cs" />
     <Compile Include="Extensions\XPathNavigatorExtensions.cs" />
+    <Compile Include="IByteReader.cs" />
+    <Compile Include="IByteWriter.cs" />
     <Compile Include="IClientMethod.cs" />
     <Compile Include="IContentBody.cs" />
     <Compile Include="IContentHeader.cs" />

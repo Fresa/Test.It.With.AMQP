@@ -6,41 +6,49 @@ using System.Text;
 
 namespace Test.It.With.Amqp.Protocol
 {
-    public class AmqpReader
+    public class AmqpReader : IByteReader
     {
         private readonly byte[] _buffer;
         private int _position;
+        private BitReader _bitReader;
 
         public AmqpReader(byte[] buffer)
         {
             _buffer = buffer;
             Length = _buffer.Length;
+
+            _bitReader = new BitReader(this);
         }
 
         public int Length { get; }
 
         public ushort ReadShortUnsignedInteger()
         {
+            _bitReader.Reset();
             return BitConverter.ToUInt16(ReadAsBigEndian(2), 0);
         }
 
         public uint ReadLongUnsignedInteger()
         {
+            _bitReader.Reset();
             return BitConverter.ToUInt32(ReadAsBigEndian(4), 0);
         }
 
         public ulong ReadLongLongUnsignedInteger()
         {
+            _bitReader.Reset();
             return BitConverter.ToUInt64(ReadAsBigEndian(8), 0);
         }
 
         public short ReadShortInteger()
         {
+            _bitReader.Reset();
             return BitConverter.ToInt16(ReadAsBigEndian(2), 0);
         }
 
         public string ReadShortString()
         {
+            _bitReader.Reset();
             int length = ReadByte();
             var bytes = ReadBytes(length);
             return Encoding.UTF8.GetString(bytes, 0, bytes.Length);
@@ -48,11 +56,13 @@ namespace Test.It.With.Amqp.Protocol
 
         public char ReadCharacter()
         {
+            _bitReader.Reset();
             return BitConverter.ToChar(ReadAsLittleEndian(2), 0);
         }
 
         public byte[] ReadLongString()
         {
+            _bitReader.Reset();
             var length = ReadLongUnsignedInteger();
             if (length > int.MaxValue)
             {
@@ -63,37 +73,44 @@ namespace Test.It.With.Amqp.Protocol
 
         public int ReadLongInteger()
         {
+            _bitReader.Reset();
             return BitConverter.ToInt32(ReadAsBigEndian(4), 0);
         }
 
         public float ReadFloatingPointNumber()
         {
+            _bitReader.Reset();
             return BitConverter.ToSingle(ReadAsBigEndian(4), 0);
         }
 
         public double ReadLongFloatingPointNumber()
         {
+            _bitReader.Reset();
             return BitConverter.ToDouble(ReadAsBigEndian(8), 0);
         }
 
         public byte[] ReadBytes(int length)
         {
+            _bitReader.Reset();
             return ReadAsLittleEndian(length);
         }
 
         public byte ReadByte()
         {
+            _bitReader.Reset();
             return ReadAsLittleEndian(1).First();
         }
 
         public DateTime ReadTimestamp()
         {
+            _bitReader.Reset();
             var posixTimestamp = ReadLongLongUnsignedInteger();
             return new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(posixTimestamp);
         }
 
         public IDictionary<string, object> ReadTable()
         {
+            _bitReader.Reset();
             IDictionary<string, object> table = new Dictionary<string, object>();
             var tableLength = ReadLongUnsignedInteger();
 
@@ -110,21 +127,25 @@ namespace Test.It.With.Amqp.Protocol
 
         public bool ReadBoolean()
         {
+            _bitReader.Reset();
             return BitConverter.ToBoolean(ReadAsLittleEndian(1), 0);
         }
 
         public sbyte ReadShortShortInteger()
         {
+            _bitReader.Reset();
             return Convert.ToSByte(ReadByte());
         }
 
         public long ReadLongLongInteger()
         {
+            _bitReader.Reset();
             return BitConverter.ToInt64(ReadAsBigEndian(8), 0);
         }
 
         public decimal ReadDecimal()
         {
+            _bitReader.Reset();
             var scale = ReadByte();
             if (scale > 28)
             {
@@ -138,9 +159,15 @@ namespace Test.It.With.Amqp.Protocol
 
             return new decimal(Math.Abs(value), 0, 0, value < 0, scale);
         }
+        
+        public bool ReadBit()
+        {
+            return _bitReader.Read();
+        }
 
         public object ReadFieldValue()
         {
+            _bitReader.Reset();
             var name = Convert.ToChar(ReadByte());
 
             switch (name)
@@ -182,6 +209,7 @@ namespace Test.It.With.Amqp.Protocol
                 case 'V':
                     return null;
 
+                // todo: should be moved to an explicit RabbitMqReader
                 // NOTE! RabbitMQ / Qpid special, https://www.rabbitmq.com/amqp-0-9-1-errata.html#section_3
                 case 'x':
                     return new ByteArray(ReadLongString());
@@ -207,6 +235,7 @@ namespace Test.It.With.Amqp.Protocol
 
         public bool[] ReadPropertyFlags()
         {
+            _bitReader.Reset();
             var propertyFlagSetAvailable = true;
             var flags = new List<bool>();
             while (propertyFlagSetAvailable)
@@ -260,13 +289,13 @@ namespace Test.It.With.Amqp.Protocol
         {
             if (_buffer.Length < _position + length)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(length), $"Tried to read outside the buffer. Buffer length: {_buffer.Length}, Position: {_position}, Read request length: {length}.");
             }
 
             var bytes = new byte[length];
             Array.Copy(_buffer, _position, bytes, 0, length);
             _position += length;
             return bytes;
-        }        
+        }
     }
 }

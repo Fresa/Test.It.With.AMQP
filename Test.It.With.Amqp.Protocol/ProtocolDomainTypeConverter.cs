@@ -42,7 +42,7 @@ namespace Test.It.With.Amqp.Protocol
             switch (type.ToLower())
             {
                 case "bit":
-                    return "ReadBoolean";
+                    return "ReadBit";
                 case "octet":
                     return "ReadByte";
                 case "short":
@@ -69,7 +69,7 @@ namespace Test.It.With.Amqp.Protocol
             switch (type.ToLower())
             {
                 case "bit":
-                    return "WriteBoolean";
+                    return "WriteBit";
                 case "octet":
                     return "WriteByte";
                 case "short":

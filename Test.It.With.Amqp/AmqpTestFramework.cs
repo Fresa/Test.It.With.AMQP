@@ -40,6 +40,7 @@ namespace Test.It.With.Amqp
                 // todo: need to close properly (send Close). Should expose as method so user can send close.
                 // todo: Update base class (it sends Fatal on Error)
                 _logger.Error(exception, "Test framework error.");
+                OnException?.Invoke(exception);
             };
             ConnectionFactory = _networkClientFactory;
 
@@ -203,6 +204,8 @@ namespace Test.It.With.Amqp
 
             _disposables.Add(heartbeatSubscription);
         }
+
+        public event Action<Exception> OnException;
 
         public void Dispose()
         {
