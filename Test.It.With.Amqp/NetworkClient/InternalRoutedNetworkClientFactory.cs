@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.ExceptionServices;
 
 namespace Test.It.With.Amqp.NetworkClient
 {
@@ -40,8 +41,17 @@ namespace Test.It.With.Amqp.NetworkClient
                 catch (Exception ex)
                 {
                     OnException?.Invoke(ex);
-                    // todo: need to close properly (send Close)
-                    OnServerDisconnect(_serverNetworkClient, EventArgs.Empty);
+
+                    try
+                    {
+                        OnServerDisconnect(_serverNetworkClient, EventArgs.Empty);
+                    }
+                    catch (Exception onDisconnectException)
+                    {
+                        ex = new AggregateException(ex, onDisconnectException);
+                    }
+
+                    ExceptionDispatchInfo.Capture(ex).Throw();
                 }
             };
             clientNetworkClient.Disconnected += OnClientDisconnected;

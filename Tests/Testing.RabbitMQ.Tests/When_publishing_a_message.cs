@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RabbitMQ.Client.Framing.Impl;
 using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.Amqp;
@@ -8,6 +9,7 @@ using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
 using Xunit;
 using Xunit.Abstractions;
+using Connection = Test.It.With.Amqp.Connection;
 
 namespace Test.It.With.RabbitMQ.Tests
 {
@@ -19,8 +21,9 @@ namespace Test.It.With.RabbitMQ.Tests
         private MethodFrame<Connection.TuneOk> _tuneOk;
         private MethodFrame<Connection.Open> _open;
         private readonly List<HeartbeatFrame<Heartbeat>> _heartbeats = new List<HeartbeatFrame<Heartbeat>>();
+        private MethodFrame<Channel.Open> _channelOpen;
 
-        protected override TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(1);
+        protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
 
         public When_publishing_a_message(ITestOutputHelper output) : base(output)
         {
@@ -74,6 +77,12 @@ namespace Test.It.With.RabbitMQ.Tests
             {
                 _open = frame;
                 testServer.Send(new MethodFrame<Connection.OpenOk>(frame.Channel, new Connection.OpenOk()));
+            });
+
+            testServer.On<Channel.Open, Channel.OpenOk>(frame =>
+            {
+                _channelOpen = frame;
+                return new Channel.OpenOk();
             });
 
             testServer.On<Heartbeat>(frame =>

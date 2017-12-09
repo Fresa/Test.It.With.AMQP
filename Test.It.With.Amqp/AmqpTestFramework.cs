@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using Log.It;
 using Test.It.With.Amqp.Expectations;
 using Test.It.With.Amqp.Extensions;
@@ -24,7 +25,7 @@ namespace Test.It.With.Amqp
         private readonly IPublishMethod _methodFramePublisher;
         private readonly IPublishContentHeader _contentHeaderFramePublisher;
         private readonly IPublish<ContentBodyFrame> _contentBodyFramePublisher;
-        private IPublishHeartbeat _heartbeatFramePublisher;
+        private readonly IPublishHeartbeat _heartbeatFramePublisher;
 
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
@@ -36,6 +37,7 @@ namespace Test.It.With.Amqp
             _networkClientFactory = new InternalRoutedNetworkClientFactory(out var serverNetworkClient);
             _networkClientFactory.OnException += exception =>
             {
+                // todo: need to close properly (send Close). Should expose as method so user can send close.
                 // todo: Update base class (it sends Fatal on Error)
                 _logger.Error(exception, "Test framework error.");
             };
