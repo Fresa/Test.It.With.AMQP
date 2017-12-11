@@ -95,8 +95,8 @@ namespace Test.It.With.RabbitMQ
                 foreach (var frame in frames)
                 {
                     frame.WriteTo(_writer);
+                    _writer.Flush();
                 }
-                _writer.Flush();
             }
         }
 
