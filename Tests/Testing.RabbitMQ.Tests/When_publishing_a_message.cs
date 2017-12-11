@@ -23,6 +23,8 @@ namespace Test.It.With.RabbitMQ.Tests
         private readonly List<HeartbeatFrame<Heartbeat>> _heartbeats = new List<HeartbeatFrame<Heartbeat>>();
         private MethodFrame<Channel.Open> _channelOpen;
         private MethodFrame<Connection.CloseOk> _closeOk;
+        private MethodFrame<Exchange.Declare> _exchangeDeclare;
+        private MethodFrame<Basic.Publish, Basic.ContentHeader> _basicPublish;
 
         protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(500);
 
@@ -94,6 +96,17 @@ namespace Test.It.With.RabbitMQ.Tests
             {
                 _channelOpen = frame;
                 return new Channel.OpenOk();
+            });
+
+            testServer.On<Exchange.Declare, Exchange.DeclareOk>(frame =>
+            {
+                _exchangeDeclare = frame;
+                return new Exchange.DeclareOk();
+            });
+
+            testServer.On<Basic.Publish, Basic.ContentHeader>(frame =>
+            {
+                _basicPublish = frame;
             });
 
             testServer.On<Heartbeat>(frame =>

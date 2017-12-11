@@ -15,7 +15,7 @@ namespace Test.It.With.Amqp.Messages
     }
 
     public class HeartbeatFrame<THeartbeat> : BaseFrame
-        where THeartbeat : IHeartbeat
+        where THeartbeat : class, IHeartbeat
     {
         public HeartbeatFrame(short channel, THeartbeat heartbeat)
         {

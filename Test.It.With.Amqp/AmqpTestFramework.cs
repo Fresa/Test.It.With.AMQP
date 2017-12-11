@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.ExceptionServices;
 using Log.It;
-using Test.It.With.Amqp.Expectations;
 using Test.It.With.Amqp.Extensions;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.MessageHandlers;
@@ -37,12 +35,12 @@ namespace Test.It.With.Amqp
             _networkClientFactory = new InternalRoutedNetworkClientFactory(out var serverNetworkClient);
             _networkClientFactory.OnException += exception =>
             {
-                // todo: need to close properly (send Close). Should expose as method so user can send close.
                 // todo: Update base class (it sends Fatal on Error)
                 _logger.Error(exception, "Test framework error.");
                 OnException?.Invoke(exception);
             };
             ConnectionFactory = _networkClientFactory;
+            _disposables.Add(_networkClientFactory);
 
             var protocol = new AmqProtocol();
 
@@ -78,25 +76,37 @@ namespace Test.It.With.Amqp
 
         public INetworkClientFactory ConnectionFactory { get; }
 
-        public void Send<TMessage>(MethodFrame<TMessage> frame) where TMessage : IServerMethod
+        public void Send<TMessage>(MethodFrame<TMessage> frame) where TMessage : class, IServerMethod
         {
             _logger.Debug($"Sending method {typeof(TMessage).Name} on channel {frame.Channel}. {frame.Method.Serialize()}");
             _frameClient.Send(new Frame(Constants.FrameMethod, frame.Channel, frame.Method));
         }
 
         public void On<TClientMethod, TContentHeader>(Action<MethodFrame<TClientMethod, TContentHeader>> messageHandler)
-            where TClientMethod : IClientMethod, IContentMethod
-            where TContentHeader : IContentHeader
+            where TClientMethod : class, IClientMethod, IContentMethod
+            where TContentHeader : class, IContentHeader
         {
-            On<TClientMethod>(frame => messageHandler(new MethodFrame<TClientMethod, TContentHeader>(
-                frame.Channel,
-                frame.Method,
-                (TContentHeader)frame.Method.ContentHeader,
-                frame.Method.ContentBodyFragments.SelectMany(body => body.Payload).ToArray())));
+            AssertNoDuplicateSubscriptions<TClientMethod>();
 
+            var methodSubscription = _methodFramePublisher.Subscribe<TClientMethod>((frame) =>
+            {
+                _logger.Debug($"Received method {typeof(TClientMethod).Name} on channel {frame.Channel}. {frame.Method.Serialize()}");
+                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Method))
+                {
+                    _logger.Debug($"Method {typeof(TClientMethod).Name} on channel {frame.Channel} was expected.");
+                    messageHandler(new MethodFrame<TClientMethod, TContentHeader>(
+                        frame.Channel,
+                        frame.Method,
+                        (TContentHeader) frame.Method.ContentHeader,
+                        frame.Method.ContentBodyFragments.SelectMany(body => body.Payload).ToArray()));
+                }
+            });
+
+            _disposables.Add(methodSubscription);
+            
             var contentHeaderSubscription = _contentHeaderFramePublisher.Subscribe<TContentHeader>(frame =>
             {
-                _logger.Debug($"Received content header {typeof(TContentHeader).Name} on channel {frame.Channel}.");
+                _logger.Debug($"Received content header {typeof(TContentHeader).Name} on channel {frame.Channel}. {frame.ContentHeader.Serialize()}");
                 if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentHeader,
                     out TClientMethod method))
                 {
@@ -107,7 +117,7 @@ namespace Test.It.With.Amqp
 
             _disposables.Add(contentHeaderSubscription);
 
-            var contentBodySubscription = _contentBodyFramePublisher.Subscribe((frame) =>
+            var contentBodySubscription = _contentBodyFramePublisher.Subscribe(frame =>
             {
                 _logger.Debug($"Received content body {frame.ContentBody.GetType().Name} on channel {frame.Channel}.");
                 if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentBody, out TClientMethod method))
@@ -121,9 +131,9 @@ namespace Test.It.With.Amqp
         }
 
         public void On<TClientMethod, TContentHeader, TServerMethod>(Func<MethodFrame<TClientMethod, TContentHeader>, TServerMethod> messageHandler)
-            where TClientMethod : IClientMethod, IContentMethod
-            where TContentHeader : IContentHeader
-            where TServerMethod : IServerMethod
+            where TClientMethod : class, IClientMethod, IContentMethod
+            where TContentHeader : class, IContentHeader
+            where TServerMethod : class, IServerMethod
         {
             On<TClientMethod, TContentHeader>(frame =>
             {
@@ -133,11 +143,11 @@ namespace Test.It.With.Amqp
         }
 
         public void On<TClientMethod>(Action<MethodFrame<TClientMethod>> messageHandler)
-            where TClientMethod : IClientMethod
+            where TClientMethod : class, IClientMethod, INonContentMethod
         {
             AssertNoDuplicateSubscriptions<TClientMethod>();
 
-            var methodSubscription = _methodFramePublisher.Subscribe<TClientMethod>((frame) =>
+            var methodSubscription = _methodFramePublisher.Subscribe<TClientMethod>(frame =>
             {
                 _logger.Debug($"Received method {typeof(TClientMethod).Name} on channel {frame.Channel}. {frame.Method.Serialize()}");
                 if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Method))
@@ -151,8 +161,8 @@ namespace Test.It.With.Amqp
         }
 
         public void On<TClientMethod, TServerMethod>(Func<MethodFrame<TClientMethod>, TServerMethod> messageHandler)
-            where TClientMethod : IClientMethod, IRespond<TServerMethod>
-            where TServerMethod : IServerMethod
+            where TClientMethod : class, IClientMethod, INonContentMethod, IRespond<TServerMethod>
+            where TServerMethod : class, IServerMethod
         {
             On<TClientMethod>(frame =>
             {
@@ -188,7 +198,7 @@ namespace Test.It.With.Amqp
         }
 
         public void On<THeartbeat>(Action<HeartbeatFrame<THeartbeat>> messageHandler)
-            where THeartbeat : IHeartbeat
+            where THeartbeat : class, IHeartbeat
         {
             AssertNoDuplicateSubscriptions<THeartbeat>();
 
@@ -209,8 +219,6 @@ namespace Test.It.With.Amqp
 
         public void Dispose()
         {
-            _networkClientFactory.Dispose();
-
             foreach (var disposable in _disposables)
             {
                 disposable.Dispose();

@@ -7,6 +7,6 @@ namespace Test.It.With.Amqp.Subscriptions
     internal interface IPublishHeartbeat
     {
         IDisposable Subscribe<THeartbeat>(Action<HeartbeatFrame<THeartbeat>> subscription)
-            where THeartbeat : IHeartbeat;
+            where THeartbeat : class, IHeartbeat;
     }
 }

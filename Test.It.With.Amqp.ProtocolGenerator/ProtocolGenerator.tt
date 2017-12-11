@@ -355,7 +355,7 @@ namespace Test.It.With.Amqp<# Block(() =>
 				var methodName = method.Name.ToPascalCase('-');
 
 				GenerateDocumentation(method.Documentation);
-				#>public class <#= methodName #> : IMethod<# if (method.HasContent) { #>, IContentMethod<# } #><# foreach (var responseMethod in method.Responses.Values) { #>, IRespond<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Client)) { #>, IServerMethod<# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Server)) { #>, IClientMethod<# } Block(() =>
+				#>public class <#= methodName #> : IMethod<# if (method.HasContent) { #>, IContentMethod<# } else { #>, INonContentMethod<# } foreach (var responseMethod in method.Responses.Values) { #>, IRespond<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Client)) { #>, IServerMethod<# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Server)) { #>, IClientMethod<# } Block(() =>
 				{
 					#>public int ProtocolClassId => <#= @class.Index #>;<# _();
 					#>public int ProtocolMethodId => <#= method.Index #>;<# _();

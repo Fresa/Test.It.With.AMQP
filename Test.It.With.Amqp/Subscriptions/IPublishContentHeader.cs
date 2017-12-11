@@ -7,6 +7,6 @@ namespace Test.It.With.Amqp.Subscriptions
     internal interface IPublishContentHeader
     {
         IDisposable Subscribe<TContentHeader>(Action<ContentHeaderFrame<TContentHeader>> subscription)
-            where TContentHeader : IContentHeader;
+            where TContentHeader : class, IContentHeader;
     }
 }

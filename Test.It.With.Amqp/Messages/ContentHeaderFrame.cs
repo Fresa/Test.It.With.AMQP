@@ -15,7 +15,7 @@ namespace Test.It.With.Amqp.Messages
     }
 
     public class ContentHeaderFrame<TContentHeader> : BaseFrame 
-        where TContentHeader : IContentHeader
+        where TContentHeader : class, IContentHeader
     {
         public ContentHeaderFrame(short channel, TContentHeader contentHeader)
         {

@@ -12,7 +12,7 @@
         public Amqp.Protocol.IMethod Method { get; }
     }
 
-    public class MethodFrame<TMethod> : BaseFrame where TMethod : Amqp.Protocol.IMethod
+    public class MethodFrame<TMethod> : BaseFrame where TMethod : class, Amqp.Protocol.IMethod
     {
         public MethodFrame(short channel, TMethod method)
         {

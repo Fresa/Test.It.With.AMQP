@@ -7,6 +7,6 @@ namespace Test.It.With.Amqp.Subscriptions
     internal interface IPublishMethod
     {
         IDisposable Subscribe<TMethod>(Action<MethodFrame<TMethod>> subscription)
-            where TMethod : IMethod;
+            where TMethod : class, IMethod;
     }
 }

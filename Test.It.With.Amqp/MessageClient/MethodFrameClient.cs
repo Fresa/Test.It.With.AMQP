@@ -53,7 +53,7 @@ namespace Test.It.With.Amqp.MessageClient
         public event EventHandler<Frame> Next;
     }
 
-    internal class MethodFrameClient<TMethod> : ITypedMessageClient<MethodFrame<TMethod>, Frame> where TMethod : IMethod
+    internal class MethodFrameClient<TMethod> : ITypedMessageClient<MethodFrame<TMethod>, Frame> where TMethod : class, IMethod
     {
         private readonly ITypedMessageClient<MethodFrame, Frame> _methodFrameClient;
 

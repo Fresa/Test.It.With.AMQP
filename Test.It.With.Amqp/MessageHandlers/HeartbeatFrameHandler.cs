@@ -13,8 +13,8 @@ namespace Test.It.With.Amqp.MessageHandlers
         private readonly ConcurrentDictionary<Guid, Subscriber<HeartbeatFrame<IHeartbeat>>> _subscriptions =
             new ConcurrentDictionary<Guid, Subscriber<HeartbeatFrame<IHeartbeat>>>();
 
-        public IDisposable Subscribe<THeartbeat>(Action<HeartbeatFrame<THeartbeat>> subscription)
-            where THeartbeat : IHeartbeat
+        public IDisposable Subscribe<THeartbeat>(Action<HeartbeatFrame<THeartbeat>> subscription) 
+            where THeartbeat : class, IHeartbeat
         {
             var subscriptionId = Guid.NewGuid();
 

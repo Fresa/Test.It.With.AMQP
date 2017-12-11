@@ -79,7 +79,7 @@ namespace Test.It.With.Amqp.Extensions
                 return false;
             }
 
-            methodExpectation = new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor<TMethod>().Add(method.Responses()));
+            methodExpectation = new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor<TMethod>());
 
             _expectationManager.Set(channel, methodExpectation);
 
@@ -168,16 +168,6 @@ namespace Test.It.With.Amqp.Extensions
             }
 
             return true;
-        }
-    }
-
-    internal static class ArrayExtensions
-    {
-        public static T[] Add<T>(this T[] array, params T[] items)
-        {
-            var list = new List<T>(array);
-            list.AddRange(items);
-            return list.ToArray();
         }
     }
 }

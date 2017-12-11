@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Extensions;
@@ -13,7 +12,8 @@ namespace Test.It.With.Amqp.MessageHandlers
     {
         private readonly ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>> _methodSubscriptions = new ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>>();
 
-        public IDisposable Subscribe<TMethod>(Action<MethodFrame<TMethod>> subscription) where TMethod : IMethod
+        public IDisposable Subscribe<TMethod>(Action<MethodFrame<TMethod>> subscription) 
+            where TMethod : class, IMethod
         {
             var subscriptionId = Guid.NewGuid();
             

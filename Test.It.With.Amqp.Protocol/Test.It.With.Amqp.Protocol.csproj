@@ -64,6 +64,7 @@
     <Compile Include="IContentHeader.cs" />
     <Compile Include="IContentMethod.cs" />
     <Compile Include="IHeartbeat.cs" />
+    <Compile Include="INonContentMethod.cs" />
     <Compile Include="IRespond.cs" />
     <Compile Include="IServerMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
