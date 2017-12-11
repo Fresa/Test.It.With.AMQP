@@ -17,7 +17,6 @@ namespace Test.It.With.Amqp
     public class AmqpTestFramework : IDisposable
     {
         private readonly ILogger _logger = LogFactory.Create<AmqpTestFramework>();
-        private readonly InternalRoutedNetworkClientFactory _networkClientFactory;
         private readonly FrameClient2 _frameClient;
         private readonly IPublish<ProtocolHeader> _protocolHeaderPublisher;
         private readonly IPublishMethod _methodFramePublisher;
@@ -32,15 +31,15 @@ namespace Test.It.With.Amqp
         
         public AmqpTestFramework()
         {
-            _networkClientFactory = new InternalRoutedNetworkClientFactory(out var serverNetworkClient);
-            _networkClientFactory.OnException += exception =>
+            var networkClientFactory = new InternalRoutedNetworkClientFactory(out var serverNetworkClient);
+            networkClientFactory.OnException += exception =>
             {
                 // todo: Update base class (it sends Fatal on Error)
                 _logger.Error(exception, "Test framework error.");
                 OnException?.Invoke(exception);
             };
-            ConnectionFactory = _networkClientFactory;
-            _disposables.Add(_networkClientFactory);
+            ConnectionFactory = networkClientFactory;
+            _disposables.Add(networkClientFactory);
 
             var protocol = new AmqProtocol();
 
@@ -119,7 +118,7 @@ namespace Test.It.With.Amqp
 
             var contentBodySubscription = _contentBodyFramePublisher.Subscribe(frame =>
             {
-                _logger.Debug($"Received content body {frame.ContentBody.GetType().Name} on channel {frame.Channel}.");
+                _logger.Debug($"Received content body {frame.ContentBody.GetType().Name} on channel {frame.Channel}. {frame.ContentBody.Serialize()}");
                 if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentBody, out TClientMethod method))
                 {
                     _logger.Debug($"Content body {frame.ContentBody.GetType().Name} for method {typeof(TClientMethod).Name} on channel {frame.Channel} was expected.");
@@ -177,7 +176,7 @@ namespace Test.It.With.Amqp
 
             var protocolHeaderSubscription = _protocolHeaderPublisher.Subscribe(header =>
             {
-                _logger.Debug($"Received protocol header.");
+                _logger.Debug($"Received protocol header. {header.Serialize()}");
                 if (_expectationStateMachine.ShouldPass(header))
                 {
                     _logger.Debug($"Protocol header was expected.");
