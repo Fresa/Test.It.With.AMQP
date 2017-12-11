@@ -455,11 +455,7 @@ namespace Test.It.With.Amqp<# Block(() =>
 					
 		#>public void ReadFrom(AmqpReader reader)<# Block(() =>
         {
-            #>Payload = reader.ReadBytes(reader.Length - 1);<# _();
-			#>if (reader.ReadByte() != Constants.FrameEnd)<# Block(() =>
-            {
-                #>throw new <#= protocol.Constants.GetExceptionName(501) #>Exception();<#
-            });
+            #>Payload = reader.ReadBytes(reader.Length);<#
         }); _(2);
 
         #>public void WriteTo(AmqpWriter writer)<# Block(() =>

@@ -4785,11 +4785,7 @@ namespace Test.It.With.Amqp
 
 		public void ReadFrom(AmqpReader reader)
 		{
-			Payload = reader.ReadBytes(reader.Length - 1);
-			if (reader.ReadByte() != Constants.FrameEnd)
-			{
-				throw new FrameErrorException();
-			}
+			Payload = reader.ReadBytes(reader.Length);
 		}
 
 		public void WriteTo(AmqpWriter writer)
