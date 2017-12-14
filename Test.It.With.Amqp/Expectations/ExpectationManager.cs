@@ -17,12 +17,22 @@ namespace Test.It.With.Amqp.Expectations
             }
         }
 
+        public bool IsExpecting<TExpectation>(int channel) where TExpectation : Expectation
+        {
+            if (_expectations.TryGetValue(channel, out var expectation) == false)
+            {
+                expectation = Create(channel);
+            }
+
+            return expectation is TExpectation;
+        }
+
         public TExpectation Get<TExpectation>(int channel) where TExpectation : Expectation
         {
             if (_expectations.TryGetValue(channel, out var expectation) == false)
             {
                 expectation = Create(channel);
-                _expectations[channel] = expectation;
+                Set(channel, expectation);
             }
 
             if (expectation is TExpectation == false)

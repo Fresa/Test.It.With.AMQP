@@ -24,9 +24,10 @@ namespace Test.It.With.RabbitMQ.Tests
         private MethodFrame<Channel.Open> _channelOpen;
         private MethodFrame<Connection.CloseOk> _closeOk;
         private MethodFrame<Exchange.Declare> _exchangeDeclare;
-        private MethodFrame<Basic.Publish, Basic.ContentHeader> _basicPublish;
+        private MethodFrame<Basic.Publish> _basicPublish;
+        private MethodFrame<Channel.Close> _channelClose;
 
-        protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(500);
+        protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
 
         public When_publishing_a_message(ITestOutputHelper output) : base(output)
         {
@@ -35,17 +36,7 @@ namespace Test.It.With.RabbitMQ.Tests
         protected override void Given(IServiceContainer container)
         {
             var testServer = new AmqpTestFramework();
-
-            testServer.OnException += exception =>
-            {
-                testServer.Send(new MethodFrame<Connection.Close>(0, new Connection.Close()));
-            };
-
-            testServer.On<Connection.CloseOk>(frame =>
-            {
-                _closeOk = frame;
-            });
-
+            
             testServer.OnProtocolHeader(header => new Connection.Start
             {
                 VersionMajor = new Octet((byte)header.Version.Major),
@@ -58,7 +49,7 @@ namespace Test.It.With.RabbitMQ.Tests
             testServer.On<Connection.Close, Connection.CloseOk>(frame =>
             {
                 _closeMethod = frame;
-                return frame.Method.Respond(new Connection.CloseOk());
+                return new Connection.CloseOk();
             });
 
             testServer.On<Connection.StartOk>(frame =>
@@ -86,10 +77,10 @@ namespace Test.It.With.RabbitMQ.Tests
                 _tuneOk = frame;
             });
 
-            testServer.On<Connection.Open>(frame =>
+            testServer.On<Connection.Open, Connection.OpenOk>(frame =>
             {
                 _open = frame;
-                testServer.Send(new MethodFrame<Connection.OpenOk>(frame.Channel, new Connection.OpenOk()));
+                return new Connection.OpenOk();
             });
 
             testServer.On<Channel.Open, Channel.OpenOk>(frame =>
@@ -104,9 +95,17 @@ namespace Test.It.With.RabbitMQ.Tests
                 return new Exchange.DeclareOk();
             });
 
-            testServer.On<Basic.Publish, Basic.ContentHeader>(frame =>
+            testServer.On<Basic.Publish>(frame =>
             {
                 _basicPublish = frame;
+            });
+
+            testServer.On<Channel.Close>(frame =>
+            {
+                _channelClose = frame;
+                testServer.Send(new MethodFrame<Channel.CloseOk>(frame.Channel, new Channel.CloseOk()));
+
+                ServiceController.Stop();
             });
 
             testServer.On<Heartbeat>(frame =>

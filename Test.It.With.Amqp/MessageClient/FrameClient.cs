@@ -73,6 +73,7 @@ namespace Test.It.With.Amqp.MessageClient
                 }
 
                 var frame = Frame.ReadFrom(reader);
+                reader.ThrowIfMoreData();
 
                 frameHandler.Handle(frame);
             };

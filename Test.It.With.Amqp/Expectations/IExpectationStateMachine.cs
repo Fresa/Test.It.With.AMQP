@@ -10,10 +10,10 @@ namespace Test.It.With.Amqp.Expectations
             where TMethod : IClientMethod;
 
         bool ShouldPass<TMethod>(int channel, IContentHeader contentHeader, out TMethod method)
-            where TMethod : IClientMethod, IContentMethod;
+            where TMethod : IClientMethod;
 
         bool ShouldPass<TMethod>(int channel, IContentBody contentBody, out TMethod method)
-            where TMethod : IClientMethod, IContentMethod;
+            where TMethod : IClientMethod;
 
         bool ShouldPass(int channel, IHeartbeat method);
     }

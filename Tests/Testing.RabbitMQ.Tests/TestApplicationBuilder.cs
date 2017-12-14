@@ -1,4 +1,5 @@
-﻿using Test.It.Specifications;
+﻿using System;
+using Test.It.Specifications;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.RabbitMQ.Tests.TestApplication;
 
@@ -21,10 +22,12 @@ namespace Test.It.With.RabbitMQ.Tests
         private class TestConsoleApplicationWrapper : IWindowsService
         {
             private readonly TestApplicationSpecification _app;
+            private bool _stopping;
 
             public TestConsoleApplicationWrapper(TestApplicationSpecification app)
             {
                 _app = app;
+                app.OnUnhandledException += OnUnhandledException;
             }
             
             public int Start(params string[] args)
@@ -35,9 +38,16 @@ namespace Test.It.With.RabbitMQ.Tests
 
             public int Stop()
             {
+                if (_stopping)
+                {
+                    return 0;
+                }
+                _stopping = true;
                 _app.Stop();
                 return 0;
             }
+
+            public event Action<Exception> OnUnhandledException;
         }
     }
 }

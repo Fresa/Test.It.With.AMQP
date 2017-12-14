@@ -87,14 +87,18 @@ namespace Test.It.With.Amqp.Extensions
         }
 
         public bool ShouldPass<TMethod>(int channel, IContentHeader contentHeader, out TMethod method)
-            where TMethod : IClientMethod, IContentMethod
+            where TMethod : IClientMethod 
         {
             if (contentHeader.SentOnValidChannel(channel) == false)
             {
                 throw new CommandInvalidException($"{ contentHeader.GetType()} cannot be sent on channel {channel}.");
             }
 
-            _expectationManager.Get<ContentHeaderExpectation>(channel);
+            if (_expectationManager.IsExpecting<ContentHeaderExpectation>(channel) == false)
+            {
+                method = default;
+                return false;
+            }
 
             if (_contentMethodStates[channel].GetType() != typeof(TMethod))
             {
@@ -119,13 +123,19 @@ namespace Test.It.With.Amqp.Extensions
         }
 
         public bool ShouldPass<TMethod>(int channel, IContentBody contentBody, out TMethod method)
-            where TMethod : IClientMethod, IContentMethod
+            where TMethod : IClientMethod
         {
             if (contentBody.SentOnValidChannel(channel) == false)
             {
                 throw new CommandInvalidException($"{ contentBody.GetType()} cannot be sent on channel {channel}.");
             }
 
+            if (_expectationManager.IsExpecting<ContentBodyExpectation>(channel) == false)
+            {
+                method = default;
+                return false;
+            }
+            
             var contentBodyExpectation = _expectationManager.Get<ContentBodyExpectation>(channel);
 
             if (_contentMethodStates[channel].GetType() != typeof(TMethod))

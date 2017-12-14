@@ -26,7 +26,6 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
 
         public void Dispose()
         {
-            _model.Close();
             _model.Dispose();
         }
     }

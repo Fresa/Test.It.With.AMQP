@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using Log.It;
+using Test.It.With.Amqp.Extensions;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Extensions;
@@ -10,6 +12,7 @@ namespace Test.It.With.Amqp.MessageHandlers
 {
     internal class MethodFrameHandler : IHandle<MethodFrame>, IPublishMethod
     {
+        private readonly ILogger _logger = LogFactory.Create<MethodFrameHandler>();
         private readonly ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>> _methodSubscriptions = new ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>>();
 
         public IDisposable Subscribe<TMethod>(Action<MethodFrame<TMethod>> subscription) 
@@ -38,6 +41,7 @@ namespace Test.It.With.Amqp.MessageHandlers
                     $"There is no subscriptions on {methodFrame.Method.GetType().FullName}.");
             }
 
+            _logger.Debug($"Received method {methodFrame.Method.GetType().GetPrettyFullName()} on channel {methodFrame.Channel}. {methodFrame.Method.Serialize()}");
             foreach (var subscription in subsciptions)
             {
                 subscription(new MethodFrame<IMethod>(methodFrame.Channel, methodFrame.Method));

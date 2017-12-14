@@ -20,6 +20,14 @@ namespace Test.It.With.Amqp.Protocol
             _bitReader = new BitReader(this);
         }
 
+        public void ThrowIfMoreData()
+        {
+            if (_position < Length)
+            {
+                throw new Exception("Has more data.");
+            }
+        }
+
         public int Length { get; }
 
         public ushort ReadShortUnsignedInteger()

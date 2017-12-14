@@ -262,10 +262,11 @@ namespace Test.It.With.Amqp<# Block(() =>
 		GenerateDocumentation(@class.Documentation, @class.GrammarDocumentation);
 		#>public class <#= className #><# Block(() => 
 		{
+		    const string contentHeaderName = "ContentHeader";
+
 			// Content Header
 		    if (@class.Fields.Any())
 		    {
-		        var contentHeaderName = "ContentHeader";
 		        #>public class <#= contentHeaderName #> : IContentHeader<# Block(() =>
 				{
 					#>public int ClassId { get; } = <#= @class.Index #>;<# _(2);
@@ -368,11 +369,16 @@ namespace Test.It.With.Amqp<# Block(() =>
 
 					if (method.HasContent)
 					{
-						#>public IContentHeader ContentHeader { get; private set; }<# _(2);
+						#>public <#= className + "." + contentHeaderName #> ContentHeader { get; private set; }<# _(2);
 
 						#>public void SetContentHeader(IContentHeader contentHeader)<# Block(() =>
 						{
-							#>ContentHeader = contentHeader;<#
+							#>if (typeof(<#= className + "." + contentHeaderName #>) != contentHeader.GetType())<# Block(() =>
+						    {
+						        #>throw new UnexpectedFrameException($"Did not expect {contentHeader.GetType()}, expected {typeof(<#= className + "." + contentHeaderName #>)}.");<#
+						    }); _();
+
+							#>ContentHeader = (<#= className + "." + contentHeaderName #>) contentHeader;<#
 						}); _(2);
 
 						#>public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();<# _();

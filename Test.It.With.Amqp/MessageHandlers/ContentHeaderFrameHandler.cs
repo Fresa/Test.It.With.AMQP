@@ -1,48 +1,40 @@
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
+using Log.It;
+using Test.It.With.Amqp.Extensions;
 using Test.It.With.Amqp.Messages;
-using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Extensions;
 using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp.MessageHandlers
 {
-    internal class ContentHeaderFrameHandler : IHandle<ContentHeaderFrame>, IPublishContentHeader
+    internal class ContentHeaderFrameHandler : IHandle<ContentHeaderFrame>, IPublish<ContentHeaderFrame>
     {
-        private readonly ConcurrentDictionary<Guid, Subscriber<ContentHeaderFrame<IContentHeader>>> _subscriptions =
-            new ConcurrentDictionary<Guid, Subscriber<ContentHeaderFrame<IContentHeader>>>();
+        private readonly ILogger _logger = LogFactory.Create<ContentHeaderFrameHandler>();
+        private readonly ConcurrentDictionary<Guid, Action<ContentHeaderFrame>> _subscriptions =
+            new ConcurrentDictionary<Guid, Action<ContentHeaderFrame>>();
 
-        public IDisposable Subscribe<TContentHeader>(Action<ContentHeaderFrame<TContentHeader>> subscription) 
-            where TContentHeader : class, IContentHeader
+        public IDisposable Subscribe(Action<ContentHeaderFrame> subscription)
         {
             var subscriptionId = Guid.NewGuid();
 
-            _subscriptions.TryAdd(subscriptionId,
-                new TypeSubscriber<TContentHeader, ContentHeaderFrame<IContentHeader>>(
-                    frame => subscription(
-                        new ContentHeaderFrame<TContentHeader>(frame.Channel, (TContentHeader)frame.ContentHeader))));
-                
+            _subscriptions.TryAdd(subscriptionId, subscription);
+
             return new Unsubscriber(() => _subscriptions.TryRemove(subscriptionId, out _));
         }
 
-        public void Handle(ContentHeaderFrame contentHeaderFrame)
+        public void Handle(ContentHeaderFrame frame)
         {
-            var subscriptions = _subscriptions
-                .Where(pair => pair.Value.Id == contentHeaderFrame.ContentHeader.GetType())
-                .Select(pair => pair.Value.Subscription)
-                .ToList();
-
-            if (subscriptions.IsEmpty())
+            if (_subscriptions.IsEmpty)
             {
                 throw new InvalidOperationException(
-                    $"There are no subscriptions on {contentHeaderFrame.ContentHeader.GetType().FullName}.");
+                    $"There are no subscribers that can handle {typeof(ContentHeaderFrame).FullName}.");
             }
 
-            foreach (var subscription in subscriptions)
+            _logger.Debug($"Received content body {frame.ContentHeader.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.ContentHeader.Serialize()}");
+            foreach (var subscription in _subscriptions.Values)
             {
-                subscription(new ContentHeaderFrame<IContentHeader>(contentHeaderFrame.Channel,
-                    contentHeaderFrame.ContentHeader));
+                subscription(frame);
             }
         }
     }

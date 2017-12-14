@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using RabbitMQ.Client;
 using SimpleInjector;
 
@@ -25,15 +26,23 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
         {
             var messagePublisherFactory = _configurer.Resolve<IMessagePublisherFactory>();
 
-            using (var messagePublisher = messagePublisherFactory.Create("myExchange"))
+            Task.Run(() =>
             {
-                messagePublisher.Publish("myMessage", new TestMessage("Testing sending a message using RabbitMQ"));
-            }
+                using (var messagePublisher = messagePublisherFactory.Create("myExchange"))
+                {
+                    messagePublisher.Publish("myMessage", new TestMessage("Testing sending a message using RabbitMQ"));
+                }
+            }).ContinueWith(task =>
+            {
+                OnUnhandledException?.Invoke(task.Exception);
+            }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
         public void Stop()
         {
             _configurer.Dispose();
         }
+
+        public event Action<Exception> OnUnhandledException;
     }
 }

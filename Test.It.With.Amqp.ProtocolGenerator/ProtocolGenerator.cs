@@ -3784,11 +3784,15 @@ namespace Test.It.With.Amqp
 				return channel > 0;
 			}
 
-			public IContentHeader ContentHeader { get; private set; }
+			public Basic.ContentHeader ContentHeader { get; private set; }
 
 			public void SetContentHeader(IContentHeader contentHeader)
 			{
-				ContentHeader = contentHeader;
+				if (typeof(Basic.ContentHeader) != contentHeader.GetType())
+				{
+					throw new UnexpectedFrameException($"Did not expect {contentHeader.GetType()}, expected {typeof(Basic.ContentHeader)}.");
+				}
+				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
 			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
@@ -3908,11 +3912,15 @@ namespace Test.It.With.Amqp
 				return channel > 0;
 			}
 
-			public IContentHeader ContentHeader { get; private set; }
+			public Basic.ContentHeader ContentHeader { get; private set; }
 
 			public void SetContentHeader(IContentHeader contentHeader)
 			{
-				ContentHeader = contentHeader;
+				if (typeof(Basic.ContentHeader) != contentHeader.GetType())
+				{
+					throw new UnexpectedFrameException($"Did not expect {contentHeader.GetType()}, expected {typeof(Basic.ContentHeader)}.");
+				}
+				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
 			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
@@ -4007,11 +4015,15 @@ namespace Test.It.With.Amqp
 				return channel > 0;
 			}
 
-			public IContentHeader ContentHeader { get; private set; }
+			public Basic.ContentHeader ContentHeader { get; private set; }
 
 			public void SetContentHeader(IContentHeader contentHeader)
 			{
-				ContentHeader = contentHeader;
+				if (typeof(Basic.ContentHeader) != contentHeader.GetType())
+				{
+					throw new UnexpectedFrameException($"Did not expect {contentHeader.GetType()}, expected {typeof(Basic.ContentHeader)}.");
+				}
+				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
 			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
@@ -4195,11 +4207,15 @@ namespace Test.It.With.Amqp
 				return channel > 0;
 			}
 
-			public IContentHeader ContentHeader { get; private set; }
+			public Basic.ContentHeader ContentHeader { get; private set; }
 
 			public void SetContentHeader(IContentHeader contentHeader)
 			{
-				ContentHeader = contentHeader;
+				if (typeof(Basic.ContentHeader) != contentHeader.GetType())
+				{
+					throw new UnexpectedFrameException($"Did not expect {contentHeader.GetType()}, expected {typeof(Basic.ContentHeader)}.");
+				}
+				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
 			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();

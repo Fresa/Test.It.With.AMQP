@@ -98,7 +98,6 @@
     <Compile Include="Protocol\ProtocolProcessor.cs" />
     <Compile Include="Subscriptions\IPublish.cs" />
     <Compile Include="Subscriptions\IPublishHeartbeat.cs" />
-    <Compile Include="Subscriptions\IPublishContentHeader.cs" />
     <Compile Include="Subscriptions\IPublishMethod.cs" />
     <Compile Include="Subscriptions\Subscriber.cs" />
     <Compile Include="Subscriptions\TypeSubscriber.cs" />

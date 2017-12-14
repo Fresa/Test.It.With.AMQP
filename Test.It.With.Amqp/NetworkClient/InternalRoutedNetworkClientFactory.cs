@@ -17,22 +17,7 @@ namespace Test.It.With.Amqp.NetworkClient
         {
             var clientNetworkClient = new InternalRoutedNetworkClient();
 
-            void OnServerDisconnect(object sender, EventArgs args)
-            {
-                clientNetworkClient.SendReceived -= _serverNetworkClient.TriggerReceive;
-                clientNetworkClient.Dispose();
-            }
-
-            _serverNetworkClient.SendReceived += clientNetworkClient.TriggerReceive;
-            _serverNetworkClient.Disconnected += OnServerDisconnect;
-
-            void OnClientDisconnected(object sender, EventArgs args)
-            {
-                _serverNetworkClient.SendReceived -= clientNetworkClient.TriggerReceive;
-                _serverNetworkClient.Disconnected -= OnServerDisconnect;
-            }
-
-            clientNetworkClient.SendReceived += (sender, args) =>
+            void OnClientTriggerReceive(object sender, ReceivedEventArgs args)
             {
                 try
                 {
@@ -53,12 +38,29 @@ namespace Test.It.With.Amqp.NetworkClient
 
                     ExceptionDispatchInfo.Capture(ex).Throw();
                 }
-            };
+            }
+
+            void OnServerDisconnect(object sender, EventArgs args)
+            {
+                clientNetworkClient.SendReceived -= OnClientTriggerReceive;
+                clientNetworkClient.Dispose();
+            }
+
+            _serverNetworkClient.SendReceived += clientNetworkClient.TriggerReceive;
+            _serverNetworkClient.Disconnected += OnServerDisconnect;
+
+            void OnClientDisconnected(object sender, EventArgs args)
+            {
+                _serverNetworkClient.SendReceived -= clientNetworkClient.TriggerReceive;
+                _serverNetworkClient.Disconnected -= OnServerDisconnect;
+            }
+            
+            clientNetworkClient.SendReceived += OnClientTriggerReceive;
             clientNetworkClient.Disconnected += OnClientDisconnected;
 
             return clientNetworkClient;
         }
-
+        
         public event Action<Exception> OnException;
 
         public void Dispose()

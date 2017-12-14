@@ -28,7 +28,6 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
         {
             foreach (var connection in _connections.Values)
             {
-                connection.Close();
                 connection.Dispose();
             }
         }
