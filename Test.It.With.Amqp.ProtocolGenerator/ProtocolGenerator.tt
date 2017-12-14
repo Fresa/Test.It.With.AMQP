@@ -381,13 +381,14 @@ namespace Test.It.With.Amqp<# Block(() =>
 							#>ContentHeader = (<#= className + "." + contentHeaderName #>) contentHeader;<#
 						}); _(2);
 
-						#>public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();<# _();
-						#>private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();<# _(2);
+						#>public byte[] ContentBody { get; private set; }<# _(2);
 
-						#>public void AddContentBody(IContentBody contentBody)<# Block(() =>
+						#>public void AddContentBody(IContentBody contentBody)<# Block(() => {
 						{
-							#>_contentBodyFragments.Add(contentBody);<#
-						}); _(2);
+							#>var body = new List<byte>(ContentBody);<# _();
+							#>body.AddRange(contentBody.Payload);<# _();
+							#>ContentBody = body.ToArray();<#
+						}}); _(2);
 					}
 
 					PrintOnNewRowForEachWithIndex(method.Responses.Values, (response, responseIndex, responseLength) =>

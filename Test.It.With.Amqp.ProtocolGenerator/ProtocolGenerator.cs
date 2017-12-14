@@ -3795,12 +3795,13 @@ namespace Test.It.With.Amqp
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
-			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
+			public byte[] ContentBody { get; private set; }
 
 			public void AddContentBody(IContentBody contentBody)
 			{
-				_contentBodyFragments.Add(contentBody);
+				var body = new List<byte>(ContentBody);
+				body.AddRange(contentBody.Payload);
+				ContentBody = body.ToArray();
 			}
 
 			public Type[] Responses() 
@@ -3923,12 +3924,13 @@ namespace Test.It.With.Amqp
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
-			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
+			public byte[] ContentBody { get; private set; }
 
 			public void AddContentBody(IContentBody contentBody)
 			{
-				_contentBodyFragments.Add(contentBody);
+				var body = new List<byte>(ContentBody);
+				body.AddRange(contentBody.Payload);
+				ContentBody = body.ToArray();
 			}
 
 			public Type[] Responses() 
@@ -4026,12 +4028,13 @@ namespace Test.It.With.Amqp
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
-			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
+			public byte[] ContentBody { get; private set; }
 
 			public void AddContentBody(IContentBody contentBody)
 			{
-				_contentBodyFragments.Add(contentBody);
+				var body = new List<byte>(ContentBody);
+				body.AddRange(contentBody.Payload);
+				ContentBody = body.ToArray();
 			}
 
 			public Type[] Responses() 
@@ -4218,12 +4221,13 @@ namespace Test.It.With.Amqp
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
-			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
+			public byte[] ContentBody { get; private set; }
 
 			public void AddContentBody(IContentBody contentBody)
 			{
-				_contentBodyFragments.Add(contentBody);
+				var body = new List<byte>(ContentBody);
+				body.AddRange(contentBody.Payload);
+				ContentBody = body.ToArray();
 			}
 
 			public Type[] Responses() 
