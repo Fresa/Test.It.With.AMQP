@@ -577,6 +577,31 @@ namespace Test.It.With.Amqp
 		{
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is ClassId comparingClassId && this == comparingClassId;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (ClassId x, ClassId y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (ClassId x, ClassId y)
+		{
+			return !(x == y);
+		}
+
+		public static ClassId From(System.Int16 value)
+		{
+			return new ClassId(value);
+		}
 	}
 
 	/// <summary>
@@ -590,6 +615,31 @@ namespace Test.It.With.Amqp
 		{
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is ConsumerTag comparingConsumerTag && this == comparingConsumerTag;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (ConsumerTag x, ConsumerTag y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (ConsumerTag x, ConsumerTag y)
+		{
+			return !(x == y);
+		}
+
+		public static ConsumerTag From(System.String value)
+		{
+			return new ConsumerTag(value);
+		}
 	}
 
 	/// <summary>
@@ -602,6 +652,31 @@ namespace Test.It.With.Amqp
 		public DeliveryTag(System.Int64 value)
 		{
 			Value = value;
+		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is DeliveryTag comparingDeliveryTag && this == comparingDeliveryTag;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (DeliveryTag x, DeliveryTag y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (DeliveryTag x, DeliveryTag y)
+		{
+			return !(x == y);
+		}
+
+		public static DeliveryTag From(System.Int64 value)
+		{
+			return new DeliveryTag(value);
 		}
 	}
 
@@ -619,6 +694,31 @@ namespace Test.It.With.Amqp
 			Requires.That(Regex.IsMatch(value, "^[a-zA-Z0-9-_.:]*$"), nameof(value), "Value must meet the following regex criteria: ^[a-zA-Z0-9-_.:]*$");
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is ExchangeName comparingExchangeName && this == comparingExchangeName;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (ExchangeName x, ExchangeName y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (ExchangeName x, ExchangeName y)
+		{
+			return !(x == y);
+		}
+
+		public static ExchangeName From(System.String value)
+		{
+			return new ExchangeName(value);
+		}
 	}
 
 	public struct MethodId 
@@ -628,6 +728,31 @@ namespace Test.It.With.Amqp
 		public MethodId(System.Int16 value)
 		{
 			Value = value;
+		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is MethodId comparingMethodId && this == comparingMethodId;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (MethodId x, MethodId y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (MethodId x, MethodId y)
+		{
+			return !(x == y);
+		}
+
+		public static MethodId From(System.Int16 value)
+		{
+			return new MethodId(value);
 		}
 	}
 
@@ -647,6 +772,31 @@ namespace Test.It.With.Amqp
 		{
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is NoAck comparingNoAck && this == comparingNoAck;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (NoAck x, NoAck y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (NoAck x, NoAck y)
+		{
+			return !(x == y);
+		}
+
+		public static NoAck From(System.Boolean value)
+		{
+			return new NoAck(value);
+		}
 	}
 
 	/// <summary>
@@ -660,6 +810,31 @@ namespace Test.It.With.Amqp
 		public NoLocal(System.Boolean value)
 		{
 			Value = value;
+		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is NoLocal comparingNoLocal && this == comparingNoLocal;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (NoLocal x, NoLocal y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (NoLocal x, NoLocal y)
+		{
+			return !(x == y);
+		}
+
+		public static NoLocal From(System.Boolean value)
+		{
+			return new NoLocal(value);
 		}
 	}
 
@@ -676,6 +851,31 @@ namespace Test.It.With.Amqp
 		{
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is NoWait comparingNoWait && this == comparingNoWait;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (NoWait x, NoWait y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (NoWait x, NoWait y)
+		{
+			return !(x == y);
+		}
+
+		public static NoWait From(System.Boolean value)
+		{
+			return new NoWait(value);
+		}
 	}
 
 	/// <summary>
@@ -691,6 +891,31 @@ namespace Test.It.With.Amqp
 			Requires.Range(value.Length <= 127, nameof(value));
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is Path comparingPath && this == comparingPath;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (Path x, Path y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (Path x, Path y)
+		{
+			return !(x == y);
+		}
+
+		public static Path From(System.String value)
+		{
+			return new Path(value);
+		}
 	}
 
 	/// <summary>
@@ -704,6 +929,31 @@ namespace Test.It.With.Amqp
 		public PeerProperties(System.Collections.Generic.IDictionary<System.String, System.Object> value)
 		{
 			Value = value;
+		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is PeerProperties comparingPeerProperties && this == comparingPeerProperties;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (PeerProperties x, PeerProperties y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (PeerProperties x, PeerProperties y)
+		{
+			return !(x == y);
+		}
+
+		public static PeerProperties From(System.Collections.Generic.IDictionary<System.String, System.Object> value)
+		{
+			return new PeerProperties(value);
 		}
 	}
 
@@ -724,6 +974,31 @@ namespace Test.It.With.Amqp
 			Requires.That(Regex.IsMatch(value, "^[a-zA-Z0-9-_.:]*$"), nameof(value), "Value must meet the following regex criteria: ^[a-zA-Z0-9-_.:]*$");
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is QueueName comparingQueueName && this == comparingQueueName;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (QueueName x, QueueName y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (QueueName x, QueueName y)
+		{
+			return !(x == y);
+		}
+
+		public static QueueName From(System.String value)
+		{
+			return new QueueName(value);
+		}
 	}
 
 	/// <summary>
@@ -737,6 +1012,31 @@ namespace Test.It.With.Amqp
 		public Redelivered(System.Boolean value)
 		{
 			Value = value;
+		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is Redelivered comparingRedelivered && this == comparingRedelivered;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (Redelivered x, Redelivered y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (Redelivered x, Redelivered y)
+		{
+			return !(x == y);
+		}
+
+		public static Redelivered From(System.Boolean value)
+		{
+			return new Redelivered(value);
 		}
 	}
 
@@ -754,6 +1054,31 @@ namespace Test.It.With.Amqp
 		{
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is MessageCount comparingMessageCount && this == comparingMessageCount;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (MessageCount x, MessageCount y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (MessageCount x, MessageCount y)
+		{
+			return !(x == y);
+		}
+
+		public static MessageCount From(System.Int32 value)
+		{
+			return new MessageCount(value);
+		}
 	}
 
 	/// <summary>
@@ -768,6 +1093,31 @@ namespace Test.It.With.Amqp
 		{
 			Requires.NotNullAllowStructs(value, nameof(value));
 			Value = value;
+		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is ReplyCode comparingReplyCode && this == comparingReplyCode;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (ReplyCode x, ReplyCode y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (ReplyCode x, ReplyCode y)
+		{
+			return !(x == y);
+		}
+
+		public static ReplyCode From(System.Int16 value)
+		{
+			return new ReplyCode(value);
 		}
 	}
 
@@ -784,6 +1134,31 @@ namespace Test.It.With.Amqp
 			Requires.NotNullAllowStructs(value, nameof(value));
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is ReplyText comparingReplyText && this == comparingReplyText;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (ReplyText x, ReplyText y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (ReplyText x, ReplyText y)
+		{
+			return !(x == y);
+		}
+
+		public static ReplyText From(System.String value)
+		{
+			return new ReplyText(value);
+		}
 	}
 
 	public struct Bit 
@@ -793,6 +1168,31 @@ namespace Test.It.With.Amqp
 		public Bit(System.Boolean value)
 		{
 			Value = value;
+		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is Bit comparingBit && this == comparingBit;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (Bit x, Bit y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (Bit x, Bit y)
+		{
+			return !(x == y);
+		}
+
+		public static Bit From(System.Boolean value)
+		{
+			return new Bit(value);
 		}
 	}
 
@@ -804,6 +1204,31 @@ namespace Test.It.With.Amqp
 		{
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is Octet comparingOctet && this == comparingOctet;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (Octet x, Octet y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (Octet x, Octet y)
+		{
+			return !(x == y);
+		}
+
+		public static Octet From(System.Byte value)
+		{
+			return new Octet(value);
+		}
 	}
 
 	public struct Short 
@@ -813,6 +1238,31 @@ namespace Test.It.With.Amqp
 		public Short(System.Int16 value)
 		{
 			Value = value;
+		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is Short comparingShort && this == comparingShort;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (Short x, Short y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (Short x, Short y)
+		{
+			return !(x == y);
+		}
+
+		public static Short From(System.Int16 value)
+		{
+			return new Short(value);
 		}
 	}
 
@@ -824,6 +1274,31 @@ namespace Test.It.With.Amqp
 		{
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is Long comparingLong && this == comparingLong;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (Long x, Long y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (Long x, Long y)
+		{
+			return !(x == y);
+		}
+
+		public static Long From(System.Int32 value)
+		{
+			return new Long(value);
+		}
 	}
 
 	public struct Longlong 
@@ -833,6 +1308,31 @@ namespace Test.It.With.Amqp
 		public Longlong(System.Int64 value)
 		{
 			Value = value;
+		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is Longlong comparingLonglong && this == comparingLonglong;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (Longlong x, Longlong y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (Longlong x, Longlong y)
+		{
+			return !(x == y);
+		}
+
+		public static Longlong From(System.Int64 value)
+		{
+			return new Longlong(value);
 		}
 	}
 
@@ -844,6 +1344,31 @@ namespace Test.It.With.Amqp
 		{
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is Shortstr comparingShortstr && this == comparingShortstr;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (Shortstr x, Shortstr y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (Shortstr x, Shortstr y)
+		{
+			return !(x == y);
+		}
+
+		public static Shortstr From(System.String value)
+		{
+			return new Shortstr(value);
+		}
 	}
 
 	public struct Longstr 
@@ -853,6 +1378,31 @@ namespace Test.It.With.Amqp
 		public Longstr(System.Byte[] value)
 		{
 			Value = value;
+		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is Longstr comparingLongstr && this == comparingLongstr;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (Longstr x, Longstr y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (Longstr x, Longstr y)
+		{
+			return !(x == y);
+		}
+
+		public static Longstr From(System.Byte[] value)
+		{
+			return new Longstr(value);
 		}
 	}
 
@@ -864,6 +1414,31 @@ namespace Test.It.With.Amqp
 		{
 			Value = value;
 		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is Timestamp comparingTimestamp && this == comparingTimestamp;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (Timestamp x, Timestamp y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (Timestamp x, Timestamp y)
+		{
+			return !(x == y);
+		}
+
+		public static Timestamp From(System.DateTime value)
+		{
+			return new Timestamp(value);
+		}
 	}
 
 	public struct Table 
@@ -873,6 +1448,31 @@ namespace Test.It.With.Amqp
 		public Table(System.Collections.Generic.IDictionary<System.String, System.Object> value)
 		{
 			Value = value;
+		}
+
+		public override bool Equals(object obj) 
+		{
+			return obj is Table comparingTable && this == comparingTable;
+		}
+
+		public override int GetHashCode() 
+		{
+			return Value.GetHashCode();
+		}
+
+		public static bool operator == (Table x, Table y)
+		{
+			return x.Value == y.Value;
+		}
+
+		public static bool operator != (Table x, Table y)
+		{
+			return !(x == y);
+		}
+
+		public static Table From(System.Collections.Generic.IDictionary<System.String, System.Object> value)
+		{
+			return new Table(value);
 		}
 	}
 
@@ -3795,7 +4395,7 @@ namespace Test.It.With.Amqp
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public byte[] ContentBody { get; private set; }
+			public byte[] ContentBody { get; private set; } = new byte[0];
 
 			public void AddContentBody(IContentBody contentBody)
 			{
@@ -3924,7 +4524,7 @@ namespace Test.It.With.Amqp
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public byte[] ContentBody { get; private set; }
+			public byte[] ContentBody { get; private set; } = new byte[0];
 
 			public void AddContentBody(IContentBody contentBody)
 			{
@@ -4028,7 +4628,7 @@ namespace Test.It.With.Amqp
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public byte[] ContentBody { get; private set; }
+			public byte[] ContentBody { get; private set; } = new byte[0];
 
 			public void AddContentBody(IContentBody contentBody)
 			{
@@ -4221,7 +4821,7 @@ namespace Test.It.With.Amqp
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public byte[] ContentBody { get; private set; }
+			public byte[] ContentBody { get; private set; } = new byte[0];
 
 			public void AddContentBody(IContentBody contentBody)
 			{

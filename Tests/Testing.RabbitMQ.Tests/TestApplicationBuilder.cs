@@ -27,7 +27,10 @@ namespace Test.It.With.RabbitMQ.Tests
             public TestConsoleApplicationWrapper(TestApplicationSpecification app)
             {
                 _app = app;
-                app.OnUnhandledException += OnUnhandledException;
+                app.OnUnhandledException += exception =>
+                {
+                    OnUnhandledException?.Invoke(exception);
+                };
             }
             
             public int Start(params string[] args)

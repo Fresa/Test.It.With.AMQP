@@ -17,7 +17,7 @@ namespace Test.It.With.Amqp
     public class AmqpTestFramework : IDisposable
     {
         private readonly ILogger _logger = LogFactory.Create<AmqpTestFramework>();
-        private readonly FrameClient2 _frameClient;
+        private readonly FrameClient _frameClient;
         private readonly IPublish<ProtocolHeader> _protocolHeaderPublisher;
         private readonly IPublishMethod _methodFramePublisher;
         private readonly IPublish<ContentHeaderFrame> _contentHeaderFramePublisher;
@@ -36,7 +36,6 @@ namespace Test.It.With.Amqp
             {
                 // todo: Update base class (it sends Fatal on Error)
                 _logger.Error(exception, "Test framework error.");
-                OnException?.Invoke(exception);
             };
             ConnectionFactory = networkClientFactory;
             _disposables.Add(networkClientFactory);
@@ -54,7 +53,7 @@ namespace Test.It.With.Amqp
             var contentHeaderFrameRouter = new ContentHeaderFrameRouter(contentBodyFrameRouter, protocol, contentHeaderFrameHandler);
             var methodFrameRouter = new MethodFrameRouter(contentHeaderFrameRouter, protocol, methodFrameHandler);
 
-            _frameClient = new FrameClient2(serverNetworkClient, protocolHeaderHandler, methodFrameRouter);
+            _frameClient = new FrameClient(serverNetworkClient, protocolHeaderHandler, methodFrameRouter);
 
             _protocolHeaderPublisher = protocolHeaderHandler;
             _methodFramePublisher = methodFrameHandler;
@@ -175,8 +174,6 @@ namespace Test.It.With.Amqp
 
             _disposables.Add(heartbeatSubscription);
         }
-
-        public event Action<Exception> OnException;
 
         public void Dispose()
         {

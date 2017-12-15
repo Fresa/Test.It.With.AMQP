@@ -20,7 +20,11 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
         public string Publish<TMessage>(string key, TMessage message)
         {
             var correlationId = Guid.NewGuid().ToString();
-            _model.BasicPublish(_exchange, key, new BasicProperties { CorrelationId = correlationId }, _serializer.Serialize(message));
+            _model.BasicPublish(_exchange, key, new BasicProperties
+            {
+                Type = message.GetType().FullName,
+                CorrelationId = correlationId
+            }, _serializer.Serialize(message));
             return correlationId;
         }
 

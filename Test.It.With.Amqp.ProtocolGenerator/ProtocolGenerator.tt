@@ -251,6 +251,31 @@ namespace Test.It.With.Amqp<# Block(() =>
             {
                 PrintOnNewRowForEach(domain.Asserts, assert => { GenerateAssertion(assert, "value"); }); if (domain.Asserts.Any()) _();
                 #>Value = value;<#
+            }); _(2);
+
+			#>public override bool Equals(object obj) <# Block(() =>
+            {
+                #>return obj is <#= className #> comparing<#= className #> && this == comparing<#= className #>;<#
+            }); _(2);
+
+			#>public override int GetHashCode() <# Block(() => 
+			{
+				#>return Value.GetHashCode();<#
+			}); _(2);
+
+			#>public static bool operator == (<#= className #> x, <#= className #> y)<# Block(() => 
+			{
+				#>return x.Value == y.Value;<#
+			}); _(2);
+
+			#>public static bool operator != (<#= className #> x, <#= className #> y)<# Block(() =>
+            {
+                #>return !(x == y);<#
+            }); _(2);
+
+			#>public static <#= className #> From(<#= type #> value)<# Block(() =>
+            {
+                #>return new <#= className #>(value);<#
             });
         }); _();
     });
@@ -381,7 +406,7 @@ namespace Test.It.With.Amqp<# Block(() =>
 							#>ContentHeader = (<#= className + "." + contentHeaderName #>) contentHeader;<#
 						}); _(2);
 
-						#>public byte[] ContentBody { get; private set; }<# _(2);
+						#>public byte[] ContentBody { get; private set; } = new byte[0];<# _(2);
 
 						#>public void AddContentBody(IContentBody contentBody)<# Block(() => {
 						{

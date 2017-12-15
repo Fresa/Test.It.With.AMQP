@@ -12,11 +12,11 @@ namespace Test.It.With.Amqp.MessageClient
         {
             _frameClient = frameClient;
 
-            frameClient.Next += (sender, args) =>
+            frameClient.Next += frame =>
             {
-                if (args.Type == Constants.FrameBody)
+                if (frame.Type == Constants.FrameBody)
                 {
-                    var reader = new AmqpReader(args.Payload);
+                    var reader = new AmqpReader(frame.Payload);
                     var contentBody = protocol.GetContentBody(reader);
 
                     if (Received == null)
@@ -24,31 +24,31 @@ namespace Test.It.With.Amqp.MessageClient
                         throw new InvalidOperationException($"Missing subscription on {contentBody.GetType().FullName}.");
                     }
 
-                    Received.Invoke(this, new ContentBodyFrame(args.Channel, contentBody));
+                    Received.Invoke(new ContentBodyFrame(frame.Channel, contentBody));
                 }
                 else
                 {
                     if (Next == null)
                     {
-                        throw new InvalidOperationException($"Missing handler of frame type {args.Type}.");
+                        throw new InvalidOperationException($"Missing handler of frame type {frame.Type}.");
                     }
 
-                    Next.Invoke(sender, args);
+                    Next.Invoke(frame);
                 }
             };
 
             frameClient.Disconnected += Disconnected;
         }
 
-        public event EventHandler<ContentBodyFrame> Received;
+        public event Action<ContentBodyFrame> Received;
 
-        public event EventHandler Disconnected;
+        public event Action Disconnected;
 
         public void Send(Frame frame)
         {
             _frameClient.Send(frame);
         }
 
-        public event EventHandler<Frame> Next;
+        public event Action<Frame> Next;
     }
 }

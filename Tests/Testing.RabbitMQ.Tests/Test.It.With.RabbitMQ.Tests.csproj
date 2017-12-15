@@ -103,8 +103,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayExtensions.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="StringExtensionTests.cs" />
+    <Compile Include="TestApplication\DictionaryExtensions.cs" />
     <Compile Include="TestApplication\IMessagePublisher.cs" />
     <Compile Include="TestApplication\IMessagePublisherFactory.cs" />
     <Compile Include="TestApplication\IMessageQueueApplication.cs" />
