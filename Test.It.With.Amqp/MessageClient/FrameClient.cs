@@ -1,33 +1,35 @@
-using Test.It.With.Amqp.MessageHandlers;
+using System;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
 
 namespace Test.It.With.Amqp.MessageClient
 {  
-    internal class FrameClient
+    internal class FrameClient : ITypedMessageClient<Frame, Frame>
     {
-        private readonly INetworkClient _networkClient;
+        private readonly IChainableTypedMessageClient<ReceivedEventArgs, Frame> _networkClient;
 
-        public FrameClient(INetworkClient networkClient, IHandle<ProtocolHeader> protocolHeaderHandler,
-            IHandle<Frame> frameHandler)
+        public FrameClient(IChainableTypedMessageClient<ReceivedEventArgs, Frame> networkClient)
         {
             _networkClient = networkClient;
-            networkClient.BufferReceived += (sender, args) =>
+            networkClient.Next += args =>
             {
                 var reader = new AmqpReader(args.Buffer);
-                if (reader.PeekByte() == 'A')
-                {
-                    var header = ProtocolHeader.ReadFrom(reader);
-                    protocolHeaderHandler.Handle(header);
-                    return;
-                }
-
                 var frame = Frame.ReadFrom(reader);
                 reader.ThrowIfMoreData();
 
-                frameHandler.Handle(frame);
+                if (Received == null)
+                {
+                    throw new InvalidOperationException($"Missing subscription on {frame.GetType().FullName}.");
+                }
+
+                Received.Invoke(frame);
             };
+
+            networkClient.Disconnected += Disconnected;
         }
+
+        public event Action<Frame> Received;
+        public event Action Disconnected;
 
         public void Send(Frame frame)
         {

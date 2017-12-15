@@ -30,19 +30,19 @@ namespace Test.It.With.Amqp.MessageHandlers
 
         public void Handle(MethodFrame methodFrame)
         {
-            var subsciptions = _methodSubscriptions
+            var subscriptions = _methodSubscriptions
                 .Where(pair => pair.Value.Id == methodFrame.Method.GetType())
                 .Select(pair => pair.Value.Subscription)
                 .ToList();
 
-            if (subsciptions.IsEmpty())
+            if (subscriptions.IsEmpty())
             {
                 throw new InvalidOperationException(
-                    $"There is no subscriptions on {methodFrame.Method.GetType().FullName}.");
+                    $"There are no subscriptions on {methodFrame.Method.GetType().FullName}.");
             }
 
             _logger.Debug($"Received method {methodFrame.Method.GetType().GetPrettyFullName()} on channel {methodFrame.Channel}. {methodFrame.Method.Serialize()}");
-            foreach (var subscription in subsciptions)
+            foreach (var subscription in subscriptions)
             {
                 subscription(new MethodFrame<IMethod>(methodFrame.Channel, methodFrame.Method));
             }

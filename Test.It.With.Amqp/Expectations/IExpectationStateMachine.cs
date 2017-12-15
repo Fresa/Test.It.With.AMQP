@@ -4,7 +4,7 @@ namespace Test.It.With.Amqp.Expectations
 {
     internal interface IExpectationStateMachine
     {
-        bool ShouldPass(ProtocolHeader protocolHeader);
+        bool ShouldPass(int channel, IProtocolHeader protocolHeader);
 
         bool ShouldPass<TMethod>(int channel, TMethod method)
             where TMethod : IClientMethod;

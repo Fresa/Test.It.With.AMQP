@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.Amqp;
@@ -24,14 +25,14 @@ namespace Test.It.With.RabbitMQ.Tests
             protected override void Given(IServiceContainer container)
             {
                 var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
-
-                testServer.OnProtocolHeader(header => new Connection.Start
+                
+                testServer.On((Func<ProtocolHeaderFrame<ProtocolHeader>, Connection.Start>) (handler => new Connection.Start
                 {
-                    VersionMajor = new Octet((byte)header.Version.Major),
-                    VersionMinor = new Octet((byte)header.Version.Minor),
+                    VersionMajor = new Octet((byte)handler.ProtocolHeader.Version.Major),
+                    VersionMinor = new Octet((byte)handler.ProtocolHeader.Version.Minor),
                     Locales = new Longstr(Encoding.UTF8.GetBytes("en_US")),
                     Mechanisms = new Longstr(Encoding.UTF8.GetBytes("PLAIN")),
-                });
+                }));
                 testServer.On<Connection.StartOk>(frame =>
                 {
                     testServer.Send(new MethodFrame<Connection.Secure>(frame.Channel, new Connection.Secure

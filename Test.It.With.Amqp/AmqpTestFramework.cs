@@ -19,8 +19,8 @@ namespace Test.It.With.Amqp
     public class AmqpTestFramework : IDisposable
     {
         private readonly ILogger _logger = LogFactory.Create<AmqpTestFramework>();
-        private readonly FrameClient _frameClient;
-        private readonly IPublish<ProtocolHeader> _protocolHeaderPublisher;
+        private readonly ITypedMessageClient<ProtocolHeaderFrame, Frame> _frameClient;
+        private readonly IPublishProtocolHeader _protocolHeaderPublisher;
         private readonly IPublishMethod _methodFramePublisher;
         private readonly IPublish<ContentHeaderFrame> _contentHeaderFramePublisher;
         private readonly IPublish<ContentBodyFrame> _contentBodyFramePublisher;
@@ -45,7 +45,7 @@ namespace Test.It.With.Amqp
             };
             ConnectionFactory = networkClientFactory;
             _disposables.Add(networkClientFactory);
-            
+
             var protocolHeaderHandler = new ProtocolHeaderHandler();
             var methodFrameHandler = new MethodFrameHandler();
             var contentHeaderFrameHandler = new ContentHeaderFrameHandler();
@@ -57,7 +57,11 @@ namespace Test.It.With.Amqp
             var contentHeaderFrameRouter = new ContentHeaderFrameRouter(contentBodyFrameRouter, protocol, contentHeaderFrameHandler);
             var methodFrameRouter = new MethodFrameRouter(contentHeaderFrameRouter, protocol, methodFrameHandler);
 
-            _frameClient = new FrameClient(serverNetworkClient, protocolHeaderHandler, methodFrameRouter);
+            var frameClient = new ProtocolHeaderClient(serverNetworkClient, protocol);
+            frameClient.Received += protocolHeaderHandler.Handle;
+            _frameClient = frameClient;
+            var b = new FrameClient(frameClient);
+            b.Received += methodFrameRouter.Handle;
 
             _protocolHeaderPublisher = protocolHeaderHandler;
             _methodFramePublisher = methodFrameHandler;
@@ -137,29 +141,31 @@ namespace Test.It.With.Amqp
             });
         }
 
-        public void OnProtocolHeader(Action<ProtocolHeader> messageHandler)
+        public void On<TProtocolHeader>(Action<ProtocolHeaderFrame<TProtocolHeader>> messageHandler)
+            where TProtocolHeader : class, IProtocolHeader
         {
-            AssertNoDuplicateSubscriptions<ProtocolHeader>();
+            AssertNoDuplicateSubscriptions<TProtocolHeader>();
 
-            var protocolHeaderSubscription = _protocolHeaderPublisher.Subscribe(header =>
-            {
-                if (_expectationStateMachine.ShouldPass(header))
-                {
-                    _logger.Debug($"Protocol header was expected.");
-                    messageHandler(header);
-                }
-            });
+            var protocolHeaderSubscription = _protocolHeaderPublisher.Subscribe<TProtocolHeader>(frame =>
+           {
+               if (_expectationStateMachine.ShouldPass(frame.Channel, (IProtocolHeader)frame.ProtocolHeader))
+               {
+                   _logger.Debug($"{typeof(TProtocolHeader).GetPrettyFullName()} on channel {frame.Channel} was expected.");
+                   messageHandler(frame);
+               }
+           });
 
             _disposables.Add(protocolHeaderSubscription);
         }
 
-        public void OnProtocolHeader(Func<ProtocolHeader, Connection.Start> messageHandler)
+        public void On<TProtocolHeader>(Func<ProtocolHeaderFrame<TProtocolHeader>, Connection.Start> messageHandler)
+            where TProtocolHeader : class, IProtocolHeader
         {
-            OnProtocolHeader(header =>
-            {
-                var response = messageHandler(header);
-                Send(new MethodFrame<Connection.Start>(0, response));
-            });
+            On<TProtocolHeader>(header =>
+           {
+               var response = messageHandler(header);
+               Send(new MethodFrame<Connection.Start>(0, response));
+           });
         }
 
         public void On<THeartbeat>(Action<HeartbeatFrame<THeartbeat>> messageHandler)

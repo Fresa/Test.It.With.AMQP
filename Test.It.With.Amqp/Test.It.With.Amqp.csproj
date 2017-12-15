@@ -65,6 +65,7 @@
     <Compile Include="MessageClient\IChainableTypedMessageClient.cs" />
     <Compile Include="MessageClient\ITypedMessageClient.cs" />
     <Compile Include="MessageClient\MethodFrameClient.cs" />
+    <Compile Include="MessageClient\ProtocolHeaderClient.cs" />
     <Compile Include="MessageHandlers\ContentBodyFrameHandler.cs" />
     <Compile Include="MessageHandlers\ContentHeaderFrameHandler.cs" />
     <Compile Include="MessageHandlers\HeartbeatFrameHandler.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Messages\ContentBodyFrame.cs" />
     <Compile Include="Messages\ContentHeaderFrame.cs" />
     <Compile Include="Messages\HeartbeatFrame.cs" />
+    <Compile Include="Messages\ProtocolHeaderFrame.cs" />
     <Compile Include="Messages\MethodFrame.cs" />
     <Compile Include="NetworkClient\BlockingStream.cs" />
     <Compile Include="NetworkClient\INetworkClient.cs" />
@@ -92,15 +94,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolResolver.cs" />
     <Compile Include="ProtocolVersion.cs" />
-    <Compile Include="Protocol\Exceptions\FatalProtocolException.cs" />
-    <Compile Include="Protocol\Exceptions\InvalidFrameEndException.cs" />
-    <Compile Include="Protocol\Exceptions\InvalidFrameTypeException.cs" />
     <Compile Include="Protocol\Frame.cs" />
-    <Compile Include="Protocol\ProtocolHeader.cs" />
-    <Compile Include="Protocol\ProtocolProcessor.cs" />
     <Compile Include="Subscriptions\IPublish.cs" />
     <Compile Include="Subscriptions\IPublishHeartbeat.cs" />
     <Compile Include="Subscriptions\IPublishMethod.cs" />
+    <Compile Include="Subscriptions\IPublishProtocolHeader.cs" />
     <Compile Include="Subscriptions\Subscriber.cs" />
     <Compile Include="Subscriptions\TypeSubscriber.cs" />
     <Compile Include="Subscriptions\Unsubscriber.cs" />

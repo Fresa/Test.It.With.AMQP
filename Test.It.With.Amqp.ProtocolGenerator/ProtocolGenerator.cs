@@ -4,16 +4,25 @@
 using System;
 using System.Net;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using Validation;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Extensions;
+using Log.It;
 
 namespace Test.It.With.Amqp
 {
 	internal class Amq091Protocol : IProtocol
 	{
 		public IVersion Version { get; } = new ProtocolVersion(); 
+
+		public IProtocolHeader GetProtocolHeader(AmqpReader reader)
+		{
+			var protocolHeader = new ProtocolHeader();
+			protocolHeader.ReadFrom(reader);
+			return protocolHeader;
+		}
 
 		public IMethod GetMethod(AmqpReader reader)
 		{
@@ -5391,6 +5400,65 @@ namespace Test.It.With.Amqp
 			{
 
 			}
+		}
+	}
+
+	public class ProtocolHeader : IProtocolHeader, IRespond<Connection.Start>
+	{
+		private readonly ILogger _logger = LogFactory.Create<Amq091Protocol>();
+
+		public string Protocol { get; } = "AMQP";
+		public IVersion Version { get; private set; } 
+		private const byte ProtocolId = 0;
+
+		public void WriteTo(AmqpWriter writer)
+		{
+			writer.WriteBytes(Encoding.UTF8.GetBytes(Protocol));
+			writer.WriteByte(ProtocolId);
+			writer.WriteByte((byte)Version.Major);
+			writer.WriteByte((byte)Version.Minor);
+			writer.WriteByte((byte)Version.Revision);
+		}
+
+		public void ReadFrom(AmqpReader reader)
+		{
+			var protocol = Encoding.UTF8.GetString(reader.ReadBytes(4));
+
+			var constant = reader.ReadByte();
+
+			Version = new ProtocolHeaderVersion(reader);
+
+			if (protocol != Protocol || constant != ProtocolId)
+			{
+				IsValid = false;
+				_logger.Error($"Incorrect header. Expected '{Protocol}{ProtocolId}<major version><minor version><revision>'. Got '{protocol}{constant}{Version.Major}{Version.Minor}{Version.Revision}'.");
+			}
+		}
+
+		public bool IsValid { get; private set; } = true;
+
+		private class ProtocolHeaderVersion : IVersion
+		{
+			public ProtocolHeaderVersion(AmqpReader reader)
+			{
+				Major = reader.ReadByte();
+				Minor = reader.ReadByte();
+				Revision = reader.ReadByte();
+			}
+
+			public int Major { get; }
+			public int Minor { get; }
+			public int Revision { get; }
+		}
+
+		public Connection.Start Respond(Connection.Start method)
+		{
+			return method;
+		}
+
+		public ProtocolHeader Respond(ProtocolHeader protocolHeader)
+		{
+			return protocolHeader;
 		}
 	}
 

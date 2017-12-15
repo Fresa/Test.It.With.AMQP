@@ -13,7 +13,7 @@ namespace Test.It.With.Amqp.Expectations.MethodExpectationBuilders
         public NextExpectedMethodBuilder WhenProtocolHeader()
         {
             var expecting = new NextExpectedMethodBuilder(this);
-            _expectations.Add(typeof(ProtocolHeader), expecting);
+            _expectations.Add(typeof(IProtocolHeader), expecting);
             return expecting;
         }
 

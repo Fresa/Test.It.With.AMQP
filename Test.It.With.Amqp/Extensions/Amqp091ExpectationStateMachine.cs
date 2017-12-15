@@ -33,11 +33,11 @@ namespace Test.It.With.Amqp.Extensions
 
         private readonly ExpectedMethodManager _expectedMethodManager;
 
-        public bool ShouldPass(ProtocolHeader protocolHeader)
+        public bool ShouldPass(int channel, IProtocolHeader protocolHeader)
         {
-            _expectationManager.Get<ProtocolHeaderExpectation>(0);
+            _expectationManager.Get<ProtocolHeaderExpectation>(channel);
 
-            _expectationManager.Set(0, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor<ProtocolHeader>()));
+            _expectationManager.Set(channel, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor<IProtocolHeader>()));
             return true;
         }
 

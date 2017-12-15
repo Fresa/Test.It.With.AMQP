@@ -35,12 +35,6 @@ namespace Test.It.With.Amqp.Protocol
 
         private Frame(AmqpReader reader)
         {
-            if (reader.PeekByte() == 'A')
-            {
-                ProtocolHeader.ReadFrom(reader);
-                throw new ProtocolViolationException("Did not expect a protocol header at this time.");
-            }
-
             Type = reader.ReadByte();
             AssertValidFrameType(Type);
             
@@ -52,7 +46,7 @@ namespace Test.It.With.Amqp.Protocol
 
             if (frameEnd != Constants.FrameEnd)
             {
-                throw new InvalidFrameEndException($"Expected '{Constants.FrameEnd}', got '{frameEnd}'.");
+                throw new FrameErrorException($"Expected '{Constants.FrameEnd}', got '{frameEnd}'.");
             }
         }
 
@@ -68,7 +62,8 @@ namespace Test.It.With.Amqp.Protocol
         {
             if (_validFrameTypes.ContainsKey(type) == false)
             {
-                throw new InvalidFrameTypeException($"Expected: {_validFrameTypes.Join(", ", " or ", frameType => $"{frameType.Value}: {frameType.Key}")}, got: {type}.");
+                // todo: Resolve protocol specific expcetions in an abstract way
+                throw new FrameErrorException($"Expected: {_validFrameTypes.Join(", ", " or ", frameType => $"{frameType.Value}: {frameType.Key}")}, got: {type}.");
             }
         }
 
