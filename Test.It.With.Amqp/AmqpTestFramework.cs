@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Log.It;
+using Test.It.With.Amqp;
+using Test.It.With.Amqp.Expectations;
 using Test.It.With.Amqp.Extensions;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.MessageHandlers;
@@ -26,11 +28,15 @@ namespace Test.It.With.Amqp
 
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
-        private readonly Amqp091ExpectationStateMachine _expectationStateMachine = new Amqp091ExpectationStateMachine();
+        private readonly IExpectationStateMachine _expectationStateMachine;
         private readonly List<Type> _subscribedMethods = new List<Type>();
 
-        public AmqpTestFramework()
+        public AmqpTestFramework(ProtocolVersion protocolVersion)
         {
+            var protocolResolver = new ProtocolResolver(protocolVersion);
+            _expectationStateMachine = protocolResolver.ExpectationStateMachine;
+            var protocol = protocolResolver.Protocol;
+
             var networkClientFactory = new InternalRoutedNetworkClientFactory(out var serverNetworkClient);
             networkClientFactory.OnException += exception =>
             {
@@ -39,9 +45,7 @@ namespace Test.It.With.Amqp
             };
             ConnectionFactory = networkClientFactory;
             _disposables.Add(networkClientFactory);
-
-            var protocol = new AmqProtocol();
-
+            
             var protocolHeaderHandler = new ProtocolHeaderHandler();
             var methodFrameHandler = new MethodFrameHandler();
             var contentHeaderFrameHandler = new ContentHeaderFrameHandler();
@@ -121,7 +125,7 @@ namespace Test.It.With.Amqp
 
             _disposables.Add(contentBodySubscription);
         }
-        
+
         public void On<TClientMethod, TServerMethod>(Func<MethodFrame<TClientMethod>, TServerMethod> messageHandler)
             where TClientMethod : class, IClientMethod, INonContentMethod, IRespond<TServerMethod>
             where TServerMethod : class, IServerMethod

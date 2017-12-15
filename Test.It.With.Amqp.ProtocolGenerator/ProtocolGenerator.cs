@@ -11,7 +11,7 @@ using Test.It.With.Amqp.Protocol.Extensions;
 
 namespace Test.It.With.Amqp
 {
-	internal class AmqProtocol : IProtocol
+	internal class Amq091Protocol : IProtocol
 	{
 		public IVersion Version { get; } = new ProtocolVersion(); 
 

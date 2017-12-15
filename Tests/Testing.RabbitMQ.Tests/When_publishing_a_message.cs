@@ -23,7 +23,7 @@ namespace Test.It.With.RabbitMQ.Tests
 
             protected override void Given(IServiceContainer container)
             {
-                var testServer = new AmqpTestFramework();
+                var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
 
                 testServer.OnProtocolHeader(header => new Connection.Start
                 {

@@ -82,7 +82,7 @@ using Test.It.With.Amqp.Protocol.Extensions;
 namespace Test.It.With.Amqp<# Block(() =>
 {
 	// Protocol
-	#>internal class AmqProtocol : IProtocol<# Block(() =>
+	#>internal class Amq<#= protocol.Major #><#= protocol.Minor #><#= protocol.Revision #>Protocol : IProtocol<# Block(() =>
 	{
 	    #>public IVersion Version { get; } = new ProtocolVersion(); <# _(2);
 

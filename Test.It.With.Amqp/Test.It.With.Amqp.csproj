@@ -90,6 +90,8 @@
     <Compile Include="NetworkClient\NetworkClientStream.cs" />
     <Compile Include="NetworkClient\ReceivedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtocolResolver.cs" />
+    <Compile Include="ProtocolVersion.cs" />
     <Compile Include="Protocol\Exceptions\FatalProtocolException.cs" />
     <Compile Include="Protocol\Exceptions\InvalidFrameEndException.cs" />
     <Compile Include="Protocol\Exceptions\InvalidFrameTypeException.cs" />
