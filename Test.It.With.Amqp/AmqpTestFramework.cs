@@ -19,7 +19,7 @@ namespace Test.It.With.Amqp
     public class AmqpTestFramework : IDisposable
     {
         private readonly ILogger _logger = LogFactory.Create<AmqpTestFramework>();
-        private readonly ITypedMessageClient<ProtocolHeaderFrame, Frame> _frameClient;
+        private readonly ITypedMessageClient<Frame, Frame> _frameClient;
         private readonly IPublishProtocolHeader _protocolHeaderPublisher;
         private readonly IPublishMethod _methodFramePublisher;
         private readonly IPublish<ContentHeaderFrame> _contentHeaderFramePublisher;
@@ -57,11 +57,11 @@ namespace Test.It.With.Amqp
             var contentHeaderFrameRouter = new ContentHeaderFrameRouter(contentBodyFrameRouter, protocol, contentHeaderFrameHandler);
             var methodFrameRouter = new MethodFrameRouter(contentHeaderFrameRouter, protocol, methodFrameHandler);
 
-            var frameClient = new ProtocolHeaderClient(serverNetworkClient, protocol);
-            frameClient.Received += protocolHeaderHandler.Handle;
+            var protocolHeaderClient = new ProtocolHeaderClient(serverNetworkClient, protocol);
+            protocolHeaderClient.Received += protocolHeaderHandler.Handle;
+            var frameClient = new FrameClient(protocolHeaderClient);
+            frameClient.Received += methodFrameRouter.Handle;
             _frameClient = frameClient;
-            var b = new FrameClient(frameClient);
-            b.Received += methodFrameRouter.Handle;
 
             _protocolHeaderPublisher = protocolHeaderHandler;
             _methodFramePublisher = methodFrameHandler;
@@ -107,14 +107,14 @@ namespace Test.It.With.Amqp
             _disposables.Add(methodSubscription);
 
             var contentHeaderSubscription = _contentHeaderFramePublisher.Subscribe(frame =>
-           {
-               if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentHeader,
-                   out TClientMethod method))
-               {
-                   _logger.Debug($"Content header {frame.ContentHeader.GetType().GetPrettyFullName()} for method {typeof(TClientMethod).Name} on channel {frame.Channel} was expected.");
-                   messageHandler(new MethodFrame<TClientMethod>(frame.Channel, method));
-               }
-           });
+            {
+                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentHeader,
+                    out TClientMethod method))
+                {
+                    _logger.Debug($"Content header {frame.ContentHeader.GetType().GetPrettyFullName()} for method {typeof(TClientMethod).Name} on channel {frame.Channel} was expected.");
+                    messageHandler(new MethodFrame<TClientMethod>(frame.Channel, method));
+                }
+            });
 
             _disposables.Add(contentHeaderSubscription);
 
@@ -147,13 +147,13 @@ namespace Test.It.With.Amqp
             AssertNoDuplicateSubscriptions<TProtocolHeader>();
 
             var protocolHeaderSubscription = _protocolHeaderPublisher.Subscribe<TProtocolHeader>(frame =>
-           {
-               if (_expectationStateMachine.ShouldPass(frame.Channel, (IProtocolHeader)frame.ProtocolHeader))
-               {
-                   _logger.Debug($"{typeof(TProtocolHeader).GetPrettyFullName()} on channel {frame.Channel} was expected.");
-                   messageHandler(frame);
-               }
-           });
+            {
+                if (_expectationStateMachine.ShouldPass(frame.Channel, (IProtocolHeader)frame.ProtocolHeader))
+                {
+                    _logger.Debug($"{typeof(TProtocolHeader).GetPrettyFullName()} on channel {frame.Channel} was expected.");
+                    messageHandler(frame);
+                }
+            });
 
             _disposables.Add(protocolHeaderSubscription);
         }
