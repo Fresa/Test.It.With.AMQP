@@ -31,7 +31,7 @@ namespace Test.It.With.RabbitMQ.Tests
             {
                 var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
 
-                testServer.On((Func<ClientId, ProtocolHeaderFrame<ProtocolHeader>, Connection.Start>)((clientId, handler) => new Connection.Start
+                testServer.On((Func<ConnectionId, ProtocolHeaderFrame<ProtocolHeader>, Connection.Start>)((clientId, handler) => new Connection.Start
                 {
                     VersionMajor = Octet.From((byte)handler.ProtocolHeader.Version.Major),
                     VersionMinor = Octet.From((byte)handler.ProtocolHeader.Version.Minor),

@@ -3,25 +3,18 @@ using System.Runtime.ExceptionServices;
 
 namespace Test.It.With.Amqp.NetworkClient
 {
-    internal class InternalRoutedNetworkClientFactory : INetworkClientFactory, IDisposable
+    internal class InternalRoutedNetworkClientFactory
     {
-        private readonly InternalRoutedNetworkClient _serverNetworkClient;
-
-        public InternalRoutedNetworkClientFactory(out INetworkClient serverNetworkClient)
+        public INetworkClient Create(out INetworkClient serverNetworkClient)
         {
-            // todo: should generate a new server client on each network creation
-            serverNetworkClient = _serverNetworkClient = new InternalRoutedNetworkClient();
-        }
-
-        public INetworkClient Create()
-        {
+            var internalServerNetworkClient = new InternalRoutedNetworkClient();
             var clientNetworkClient = new InternalRoutedNetworkClient();
 
             void OnClientTriggerReceive(object sender, ReceivedEventArgs args)
             {
                 try
                 {
-                    _serverNetworkClient.TriggerReceive(sender, args);
+                    internalServerNetworkClient.TriggerReceive(sender, args);
                 }
                 catch (Exception ex)
                 {
@@ -29,7 +22,7 @@ namespace Test.It.With.Amqp.NetworkClient
 
                     try
                     {
-                        OnServerDisconnect(_serverNetworkClient, EventArgs.Empty);
+                        OnServerDisconnect(internalServerNetworkClient, EventArgs.Empty);
                     }
                     catch (Exception onDisconnectException)
                     {
@@ -46,26 +39,22 @@ namespace Test.It.With.Amqp.NetworkClient
                 clientNetworkClient.Dispose();
             }
 
-            _serverNetworkClient.SendReceived += clientNetworkClient.TriggerReceive;
-            _serverNetworkClient.Disconnected += OnServerDisconnect;
+            internalServerNetworkClient.SendReceived += clientNetworkClient.TriggerReceive;
+            internalServerNetworkClient.Disconnected += OnServerDisconnect;
 
             void OnClientDisconnected(object sender, EventArgs args)
             {
-                _serverNetworkClient.SendReceived -= clientNetworkClient.TriggerReceive;
-                _serverNetworkClient.Disconnected -= OnServerDisconnect;
+                internalServerNetworkClient.SendReceived -= clientNetworkClient.TriggerReceive;
+                internalServerNetworkClient.Disconnected -= OnServerDisconnect;
             }
             
             clientNetworkClient.SendReceived += OnClientTriggerReceive;
             clientNetworkClient.Disconnected += OnClientDisconnected;
 
+            serverNetworkClient = internalServerNetworkClient;
             return clientNetworkClient;
         }
         
-        public event Action<Exception> OnException;
-
-        public void Dispose()
-        {
-            _serverNetworkClient.Dispose();
-        }
+        public event Action<Exception> OnException;        
     }
 }

@@ -44,7 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmqpTestServer.cs" />
     <Compile Include="AmqpTestFramework.cs" />
+    <Compile Include="ConnectionId.cs" />
     <Compile Include="Expectations\ContentBodyExpectation.cs" />
     <Compile Include="Expectations\ContentHeaderExpectation.cs" />
     <Compile Include="Expectations\Expectation.cs" />
@@ -89,6 +91,7 @@
     <Compile Include="NetworkClient\InternalRoutedNetworkClient.cs" />
     <Compile Include="NetworkClient\InternalRoutedNetworkClientFactory.cs" />
     <Compile Include="NetworkClient\NetworkClientExtensions.cs" />
+    <Compile Include="NetworkClient\NetworkClientFactory.cs" />
     <Compile Include="NetworkClient\NetworkClientStream.cs" />
     <Compile Include="NetworkClient\ReceivedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

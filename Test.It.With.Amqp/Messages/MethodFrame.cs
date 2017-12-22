@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Test.It.With.Amqp.Messages
+﻿namespace Test.It.With.Amqp.Messages
 {
     public class MethodFrame : BaseFrame
     {
@@ -24,15 +22,5 @@ namespace Test.It.With.Amqp.Messages
 
         public override short Channel { get; }
         public TMethod Method { get; }
-    }
-
-    public struct ClientId
-    {
-        public ClientId(Guid value)
-        {
-            Value = value;
-        }
-
-        public Guid Value { get; }
     }
 }
