@@ -3,7 +3,7 @@ using Test.It.With.Amqp.Protocol.Extensions;
 using Test.It.With.XUnit;
 using Xunit;
 
-namespace Test.It.With.Amqp.Protocol
+namespace Test.It.With.Amqp.Protocol.Tests
 {
     public class When_converting_a_string_to_pascal_case : XUnit2Specification
     {

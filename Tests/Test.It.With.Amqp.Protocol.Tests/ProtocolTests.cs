@@ -8,7 +8,7 @@ using Test.It.With.Amqp.Protocol.Definitions;
 using Test.It.With.XUnit;
 using Xunit;
 
-namespace Test.It.With.Amqp.Protocol
+namespace Test.It.With.Amqp.Protocol.Tests
 {
     public class When_parsing_the_amqp_0_9_1_protocol : XUnit2Specification
     {
