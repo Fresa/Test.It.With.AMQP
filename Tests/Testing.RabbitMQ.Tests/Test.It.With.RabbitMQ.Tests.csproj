@@ -64,6 +64,7 @@
       <HintPath>..\..\packages\SimpleInjector.4.0.7\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
@@ -103,9 +104,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArrayExtensions.cs" />
-    <Compile Include="ISerializer.cs" />
-    <Compile Include="StringExtensionTests.cs" />
+    <Compile Include="Assertion\ArrayExtensions.cs" />
+    <Compile Include="Assertion\ExtendedContain.cs" />
+    <Compile Include="TestApplication\ISerializer.cs" />
+    <Compile Include="Assertion\ShouldExtensions.cs" />
     <Compile Include="TestApplication\DictionaryExtensions.cs" />
     <Compile Include="TestApplication\IMessagePublisher.cs" />
     <Compile Include="TestApplication\IMessagePublisherFactory.cs" />
@@ -116,12 +118,12 @@
     <Compile Include="TestApplication\NewtonsoftSerializer.cs" />
     <Compile Include="TestApplication\TestApplicationSpecification.cs" />
     <Compile Include="TestApplication\TestMessage.cs" />
-    <Compile Include="TestOutputHelperTextWriter.cs" />
+    <Compile Include="XUnit\TestOutputHelperTextWriter.cs" />
     <Compile Include="When_publishing_a_message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestApplicationBuilder.cs" />
-    <Compile Include="XUnit2Target.cs" />
-    <Compile Include="XUnitWindowsServiceSpecification.cs" />
+    <Compile Include="XUnit\XUnit2Target.cs" />
+    <Compile Include="XUnit\XUnitWindowsServiceSpecification.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\External\rabbitmq-dotnet-client\projects\client\RabbitMQ.Client\RabbitMQ.Client.csproj">
@@ -154,5 +156,6 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Newtonsoft.Json;
 
-namespace Test.It.With.RabbitMQ.Tests
+namespace Test.It.With.RabbitMQ.Tests.Assertion
 {
     internal static class ArrayExtensions
     {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using RabbitMQ.Client;
 
 namespace Test.It.With.RabbitMQ.Tests.TestApplication
@@ -7,7 +8,7 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
     {
         private readonly IConnectionFactory _connectionFactory;
         private readonly ISerializer _serializer;
-        private readonly Dictionary<string, IConnection> _connections = new Dictionary<string, IConnection>();
+        private readonly ConcurrentDictionary<string, IConnection> _connections = new ConcurrentDictionary<string, IConnection>();
 
         public RabbitMqMessagePublisherFactory(IConnectionFactory connectionFactory, ISerializer serializer)
         {
@@ -17,7 +18,7 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
 
         public IMessagePublisher Create(string exchange)
         {
-            var connection = _connections.GetOrAdd(exchange, () => _connectionFactory.CreateConnection());
+            var connection = _connections.GetOrAdd(exchange, ex => _connectionFactory.CreateConnection());
             var model = connection.CreateModel();
             model.ExchangeDeclare(exchange, "topic");
             return new RabbitMqMessagePublisher(model, exchange, _serializer);

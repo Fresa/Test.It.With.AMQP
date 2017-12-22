@@ -2,7 +2,7 @@ using System.IO;
 using System.Text;
 using Xunit.Abstractions;
 
-namespace Test.It.With.RabbitMQ.Tests
+namespace Test.It.With.RabbitMQ.Tests.XUnit
 {
     internal class TestOutputHelperTextWriter : TextWriter
     {

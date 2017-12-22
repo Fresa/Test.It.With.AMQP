@@ -22,15 +22,15 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
             _configurer.Verify();
         }
 
-        public void Start()
+        public void Start(int messagesToPublish)
         {
             var messagePublisherFactory = _configurer.Resolve<IMessagePublisherFactory>();
 
             Task.Run(() =>
             {
-                Parallel.For(0, 2, i =>
+                Parallel.For(0, messagesToPublish, i =>
                 {
-                    using (var messagePublisher = messagePublisherFactory.Create("myExchange" + i))
+                    using (var messagePublisher = messagePublisherFactory.Create("myExchange" + i % 2))
                     {
                         messagePublisher.Publish("myMessage",
                             new TestMessage("Testing sending a message using RabbitMQ"));
