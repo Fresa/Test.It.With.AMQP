@@ -142,8 +142,8 @@
       <Project>{0F31E538-8FFC-4A6D-97D9-CFA18CEB6D47}</Project>
       <Name>Test.It.With.Amqp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Testing.RabbitMQ\Test.It.With.RabbitMQ.csproj">
-      <Project>{4012460B-68EE-414C-868F-938443DE9680}</Project>
+    <ProjectReference Include="..\..\Test.It.With.RabbitMQ\Test.It.With.RabbitMQ.csproj">
+      <Project>{4012460b-68ee-414c-868f-938443de9680}</Project>
       <Name>Test.It.With.RabbitMQ</Name>
     </ProjectReference>
   </ItemGroup>

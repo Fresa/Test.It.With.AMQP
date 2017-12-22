@@ -79,11 +79,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj">
+    <ProjectReference Include="..\..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj">
       <Project>{672EC94A-A850-4018-A656-93A1EABC1DA0}</Project>
       <Name>Test.It.With.Amqp.Protocol</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Test.It.With.Amqp\Test.It.With.Amqp.csproj">
+    <ProjectReference Include="..\..\Test.It.With.Amqp\Test.It.With.Amqp.csproj">
       <Project>{0F31E538-8FFC-4A6D-97D9-CFA18CEB6D47}</Project>
       <Name>Test.It.With.Amqp</Name>
     </ProjectReference>

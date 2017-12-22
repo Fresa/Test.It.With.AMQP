@@ -1,0 +1,7 @@
+F:\Projects\Testing.RabbitMQ\Testing.RabbitMQ\bin\Debug\Testing.RabbitMQ.dll
+F:\Projects\Testing.RabbitMQ\Testing.RabbitMQ\bin\Debug\Testing.RabbitMQ.pdb
+F:\Projects\Testing.RabbitMQ\Testing.RabbitMQ\bin\Debug\RabbitMQ.Client.dll
+F:\Projects\Testing.RabbitMQ\Testing.RabbitMQ\bin\Debug\RabbitMQ.Client.xml
+F:\Projects\Testing.RabbitMQ\Testing.RabbitMQ\obj\Debug\Testing.RabbitMQ.dll
+F:\Projects\Testing.RabbitMQ\Testing.RabbitMQ\obj\Debug\Testing.RabbitMQ.pdb
+F:\Projects\Testing.RabbitMQ\Testing.RabbitMQ\obj\Debug\Testing.RabbitMQ.csprojResolveAssemblyReference.cache
