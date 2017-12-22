@@ -1,2 +1,2 @@
-# Testing.RabbitMQ
-An application and hardware independent test framework for RabbitMQ.
+# Test.It.With.AMQP
+An application and hardware independent test framework for AMQP.
