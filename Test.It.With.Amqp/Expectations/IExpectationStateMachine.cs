@@ -1,3 +1,4 @@
+using System;
 using Test.It.With.Amqp.Protocol;
 
 namespace Test.It.With.Amqp.Expectations
@@ -6,14 +7,11 @@ namespace Test.It.With.Amqp.Expectations
     {
         bool ShouldPass(int channel, IProtocolHeader protocolHeader);
 
-        bool ShouldPass<TMethod>(int channel, TMethod method)
-            where TMethod : IClientMethod;
+        bool ShouldPass(int channel, IMethod method);
 
-        bool ShouldPass<TMethod>(int channel, IContentHeader contentHeader, out TMethod method)
-            where TMethod : IClientMethod;
+        bool ShouldPass(int channel, IContentHeader contentHeader, Type type, out IContentMethod method);
 
-        bool ShouldPass<TMethod>(int channel, IContentBody contentBody, out TMethod method)
-            where TMethod : IClientMethod;
+        bool ShouldPass(int channel, IContentBody contentBody, Type type, out IContentMethod method);
 
         bool ShouldPass(int channel, IHeartbeat method);
     }

@@ -274,6 +274,11 @@ namespace Test.It.With.Amqp<# Block(() =>
 				#>return Value.GetHashCode();<#
 			}); _(2);
 
+			#>public override string ToString() <# Block(() => 
+			{
+				#>return Value.ToString();<#
+			}); _(2);
+
 			#>public static bool operator == (<#= className #> x, <#= className #> y)<# Block(() => 
 			{
 				#>return x.Value == y.Value;<#

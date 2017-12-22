@@ -29,6 +29,18 @@ namespace Test.It.With.Amqp.MessageHandlers
             return new Unsubscriber(() => _subscriptions.TryRemove(subscriptionId, out _));
         }
 
+        public IDisposable Subscribe(Type type, Action<HeartbeatFrame> subscription)
+        {
+            var subscriptionId = Guid.NewGuid();
+
+            _subscriptions.TryAdd(subscriptionId,
+                new TypeSubscriber<HeartbeatFrame<IHeartbeat>>(type,
+                    frame => subscription(
+                        new HeartbeatFrame(frame.Channel, frame.Heartbeat))));
+
+            return new Unsubscriber(() => _subscriptions.TryRemove(subscriptionId, out _));
+        }
+
         public void Handle(HeartbeatFrame heartbeatFrame)
         {
             var subscriptions = _subscriptions

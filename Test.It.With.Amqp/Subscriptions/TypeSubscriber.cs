@@ -8,4 +8,11 @@ namespace Test.It.With.Amqp.Subscriptions
         {
         }
     }
+
+    internal class TypeSubscriber<TValue> : Subscriber<TValue>
+    {
+        public TypeSubscriber(Type key, Action<TValue> subscription) : base(key, subscription)
+        {
+        }
+    }
 }

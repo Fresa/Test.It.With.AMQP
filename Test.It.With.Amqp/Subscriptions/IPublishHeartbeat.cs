@@ -8,5 +8,7 @@ namespace Test.It.With.Amqp.Subscriptions
     {
         IDisposable Subscribe<THeartbeat>(Action<HeartbeatFrame<THeartbeat>> subscription)
             where THeartbeat : class, IHeartbeat;
+
+        IDisposable Subscribe(Type type, Action<HeartbeatFrame> subscription);
     }
 }

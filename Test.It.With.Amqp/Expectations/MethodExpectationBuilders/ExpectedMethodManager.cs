@@ -1,4 +1,5 @@
 using System;
+using Test.It.With.Amqp.Protocol;
 
 namespace Test.It.With.Amqp.Expectations.MethodExpectationBuilders
 {
@@ -11,14 +12,19 @@ namespace Test.It.With.Amqp.Expectations.MethodExpectationBuilders
             _methodExpectationBuilder = methodExpectationBuilder;
         }
 
-        public Type[] GetExpectingMethodsFor<TMethod>()
+        public Type[] GetExpectingMethodsFor(Type type)
         {
-            if (_methodExpectationBuilder.Expectations.ContainsKey(typeof(TMethod)))
+            if (_methodExpectationBuilder.Expectations.ContainsKey(type))
             {
-                return _methodExpectationBuilder.Expectations[typeof(TMethod)].Types;
+                return _methodExpectationBuilder.Expectations[type].Types;
             }
 
             return Array.Empty<Type>();
+        }
+
+        public Type[] GetExpectingMethodsFor<TMethod>()
+        {
+            return GetExpectingMethodsFor(typeof(TMethod));
         }
     }
 }

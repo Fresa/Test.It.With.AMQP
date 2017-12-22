@@ -28,6 +28,18 @@ namespace Test.It.With.Amqp.MessageHandlers
             return new Unsubscriber(() => _methodSubscriptions.TryRemove(subscriptionId, out _));
         }
 
+        public IDisposable Subscribe(Type type, Action<MethodFrame> subscription)
+        {            
+            var subscriptionId = Guid.NewGuid();
+
+            _methodSubscriptions.TryAdd(subscriptionId,
+                new TypeSubscriber<MethodFrame<IMethod>>(type,
+                    frame =>
+                        subscription(new MethodFrame(frame.Channel, frame.Method))));
+
+            return new Unsubscriber(() => _methodSubscriptions.TryRemove(subscriptionId, out _));
+        }
+
         public void Handle(MethodFrame methodFrame)
         {
             var subscriptions = _methodSubscriptions

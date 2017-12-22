@@ -28,10 +28,14 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
 
             Task.Run(() =>
             {
-                using (var messagePublisher = messagePublisherFactory.Create("myExchange"))
+                Parallel.For(0, 2, i =>
                 {
-                    messagePublisher.Publish("myMessage", new TestMessage("Testing sending a message using RabbitMQ"));
-                }
+                    using (var messagePublisher = messagePublisherFactory.Create("myExchange" + i))
+                    {
+                        messagePublisher.Publish("myMessage",
+                            new TestMessage("Testing sending a message using RabbitMQ"));
+                    }
+                });
             }).ContinueWith(task =>
             {
                 OnUnhandledException?.Invoke(task.Exception);

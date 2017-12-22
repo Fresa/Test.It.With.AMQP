@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Test.It.With.Amqp.Expectations;
@@ -41,8 +42,7 @@ namespace Test.It.With.Amqp.Extensions
             return true;
         }
 
-        public bool ShouldPass<TMethod>(int channel, TMethod method)
-            where TMethod : IClientMethod
+        public bool ShouldPass(int channel, IMethod method)
         {
             if (method.SentOnValidChannel(channel) == false)
             {
@@ -79,15 +79,15 @@ namespace Test.It.With.Amqp.Extensions
                 return false;
             }
 
-            methodExpectation = new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor<TMethod>());
+            methodExpectation = new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor(method.GetType()));
 
             _expectationManager.Set(channel, methodExpectation);
 
             return true;
         }
+        
 
-        public bool ShouldPass<TMethod>(int channel, IContentHeader contentHeader, out TMethod method)
-            where TMethod : IClientMethod 
+        public bool ShouldPass(int channel, IContentHeader contentHeader, Type type, out IContentMethod method)
         {
             if (contentHeader.SentOnValidChannel(channel) == false)
             {
@@ -100,7 +100,7 @@ namespace Test.It.With.Amqp.Extensions
                 return false;
             }
 
-            if (_contentMethodStates[channel].GetType() != typeof(TMethod))
+            if (_contentMethodStates[channel].GetType() != type)
             {
                 method = default;
                 return false;
@@ -115,15 +115,14 @@ namespace Test.It.With.Amqp.Extensions
                 return false;
             }
 
-            method = (TMethod)_contentMethodStates[channel];
+            method = _contentMethodStates[channel];
             _contentMethodStates.Remove(channel);
 
-            _expectationManager.Set(channel, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor<TMethod>()));
+            _expectationManager.Set(channel, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor(type)));
             return true;
         }
 
-        public bool ShouldPass<TMethod>(int channel, IContentBody contentBody, out TMethod method)
-            where TMethod : IClientMethod
+        public bool ShouldPass(int channel, IContentBody contentBody, Type type, out IContentMethod method)
         {
             if (contentBody.SentOnValidChannel(channel) == false)
             {
@@ -138,7 +137,7 @@ namespace Test.It.With.Amqp.Extensions
             
             var contentBodyExpectation = _expectationManager.Get<ContentBodyExpectation>(channel);
 
-            if (_contentMethodStates[channel].GetType() != typeof(TMethod))
+            if (_contentMethodStates[channel].GetType() != type)
             {
                 method = default;
                 return false;
@@ -159,8 +158,8 @@ namespace Test.It.With.Amqp.Extensions
 
             if (size == contentBodyExpectation.Size)
             {
-                _expectationManager.Set(channel, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor<TMethod>()));
-                method = (TMethod)_contentMethodStates[channel];
+                _expectationManager.Set(channel, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor(type)));
+                method = _contentMethodStates[channel];
                 _contentMethodStates.Remove(channel);
                 return true;
             }

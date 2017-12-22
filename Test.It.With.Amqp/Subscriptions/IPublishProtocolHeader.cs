@@ -8,5 +8,7 @@ namespace Test.It.With.Amqp.Subscriptions
     {
         IDisposable Subscribe<TProtocolHeader>(Action<ProtocolHeaderFrame<TProtocolHeader>> subscription)
             where TProtocolHeader : class, IProtocolHeader;
+
+        IDisposable Subscribe(Type type, Action<ProtocolHeaderFrame> subscription);
     }
 }

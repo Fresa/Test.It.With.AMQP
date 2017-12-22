@@ -8,7 +8,7 @@ namespace Test.It.With.Amqp.MessageClient
     {
         private readonly ITypedMessageClient<MethodFrame, Frame> _methodFrameClient;
 
-        public MethodFrameClient(ITypedMessageClient<MethodFrame, Frame> methodFrameClient)
+        public MethodFrameClient( ITypedMessageClient<MethodFrame, Frame> methodFrameClient)
         {
             _methodFrameClient = methodFrameClient;
 

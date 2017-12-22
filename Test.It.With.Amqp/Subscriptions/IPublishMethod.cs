@@ -8,5 +8,7 @@ namespace Test.It.With.Amqp.Subscriptions
     {
         IDisposable Subscribe<TMethod>(Action<MethodFrame<TMethod>> subscription)
             where TMethod : class, IMethod;
+
+        IDisposable Subscribe(Type type, Action<MethodFrame> subscription);
     }
 }

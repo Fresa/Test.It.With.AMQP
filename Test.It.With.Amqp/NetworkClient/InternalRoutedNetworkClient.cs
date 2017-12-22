@@ -7,6 +7,7 @@ namespace Test.It.With.Amqp.NetworkClient
     {
         public event EventHandler<ReceivedEventArgs> SendReceived;
 
+        public Guid Id { get; } = Guid.NewGuid();
         public event EventHandler<ReceivedEventArgs> BufferReceived;
         public event EventHandler Disconnected;
 

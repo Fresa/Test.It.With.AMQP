@@ -23,7 +23,7 @@ namespace Test.It.With.Amqp.MessageRouters
             {
                 var reader = new AmqpReader(frame.Payload);
                 var contentHeader = _protocol.GetContentHeader(reader);
-                _contentHeaderFrameHandler.Handle(new ContentHeaderFrame(frame.Channel, contentHeader));
+                _contentHeaderFrameHandler.Handle(new ContentHeaderFrame( frame.Channel, contentHeader));
                 return;
             }
 
