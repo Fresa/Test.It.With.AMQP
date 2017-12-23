@@ -294,7 +294,7 @@
             </summary>
             <param name="expected">The expected value</param>
             <param name="actual">The value to be compared against</param>
-            <param name="precision">The number of decimal places (valid values: 0-15)</param>
+            <param name="precision">The number of decimal places (valid values: 0-28)</param>
             <exception cref="T:Xunit.Sdk.EqualException">Thrown when the values are not equal</exception>
         </member>
         <member name="M:Xunit.Assert.StrictEqual``1(``0,``0)">
@@ -342,7 +342,7 @@
             </summary>
             <param name="expected">The expected value</param>
             <param name="actual">The value to be compared against</param>
-            <param name="precision">The number of decimal places (valid values: 0-15)</param>
+            <param name="precision">The number of decimal places (valid values: 0-28)</param>
             <exception cref="T:Xunit.Sdk.EqualException">Thrown when the values are equal</exception>
         </member>
         <member name="M:Xunit.Assert.NotStrictEqual``1(``0,``0)">
@@ -1083,10 +1083,18 @@
             Exception thrown when a collection is unexpectedly not empty.
             </summary>
         </member>
-        <member name="M:Xunit.Sdk.EmptyException.#ctor">
+        <member name="M:Xunit.Sdk.EmptyException.#ctor(System.Collections.IEnumerable)">
             <summary>
             Creates a new instance of the <see cref="T:Xunit.Sdk.EmptyException"/> class.
             </summary>
+        </member>
+        <member name="P:Xunit.Sdk.EmptyException.Collection">
+            <summary>
+            The collection that failed the test.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.EmptyException.Message">
+            <inheritdoc/>
         </member>
         <member name="T:Xunit.Sdk.EndsWithException">
             <summary>

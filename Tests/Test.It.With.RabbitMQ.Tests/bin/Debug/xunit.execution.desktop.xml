@@ -119,15 +119,15 @@
         </member>
         <member name="M:TestFrameworkOptionsReadExtensions.PreEnumerateTheories(Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
             <summary>
-            Gets a flag that determines whether theories are pre-enumerated. If they enabled, then the
-            discovery system will return a test case for each row of test data; they are disabled, then the
+            Gets a flag that determines whether theories are pre-enumerated. If enabled, then the
+            discovery system will return a test case for each row of test data; if disabled, the
             discovery system will return a single test case for the theory.
             </summary>
         </member>
         <member name="M:TestFrameworkOptionsReadExtensions.PreEnumerateTheoriesOrDefault(Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
             <summary>
-            Gets a flag that determines whether theories are pre-enumerated. If they enabled, then the
-            discovery system will return a test case for each row of test data; they are disabled, then the
+            Gets a flag that determines whether theories are pre-enumerated. If enabled, then the
+            discovery system will return a test case for each row of test data; if disabled, then the
             discovery system will return a single test case for the theory. If the flag is not present,
             returns the default value (<c>true</c>).
             </summary>
@@ -175,6 +175,17 @@
             Gets the maximum number of threads to use when running tests in parallel. If set to 0 (or not set),
             the value of <see cref="P:System.Environment.ProcessorCount"/> is used; if set to a value less
             than 0, does not limit the number of threads.
+            </summary>
+        </member>
+        <member name="M:TestFrameworkOptionsReadExtensions.StopOnTestFail(Xunit.Abstractions.ITestFrameworkExecutionOptions)">
+            <summary>
+            Gets a flag to stop testing on test failure.
+            </summary>
+        </member>
+        <member name="M:TestFrameworkOptionsReadExtensions.StopOnTestFailOrDefault(Xunit.Abstractions.ITestFrameworkExecutionOptions)">
+            <summary>
+            Gets a flag to stop testing on test failure. If the flag is not present, returns the 
+            default value (<c>false</c>).
             </summary>
         </member>
         <member name="M:TestFrameworkOptionsReadExtensions.SynchronousMessageReporting(Xunit.Abstractions.ITestFrameworkExecutionOptions)">
@@ -380,185 +391,6 @@
             <param name="testAssembly">The test assembly.</param>
             <returns>The collection factory.</returns>
         </member>
-        <member name="T:Xunit.Sdk.MaxConcurrencySyncContext">
-            <summary>
-            An implementation of <see cref="T:System.Threading.SynchronizationContext"/> which runs work on custom threads
-            rather than in the thread pool, and limits the number of in-flight actions.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.MaxConcurrencySyncContext.#ctor(System.Int32)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.MaxConcurrencySyncContext"/> class.
-            </summary>
-            <param name="maximumConcurrencyLevel">The maximum number of tasks to run at any one time.</param>
-        </member>
-        <member name="P:Xunit.Sdk.MaxConcurrencySyncContext.IsSupported">
-            <summary>
-            Gets a flag indicating whether maximum concurrency is supported.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.MaxConcurrencySyncContext.Dispose">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.MaxConcurrencySyncContext.Post(System.Threading.SendOrPostCallback,System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.MaxConcurrencySyncContext.Send(System.Threading.SendOrPostCallback,System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.MessageBus">
-            <summary>
-            This is an internal class, and is not intended to be called from end-user code.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.MessageBus.#ctor(Xunit.Abstractions.IMessageSink)">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.MessageBus.Dispose">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.MessageBus.QueueMessage(Xunit.Abstractions.IMessageSinkMessage)">
-            <summary/>
-        </member>
-        <member name="T:Xunit.Sdk.SynchronousMessageBus">
-            <summary>
-            This is an internal class, and is not intended to be called from end-user code.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.SynchronousMessageBus.#ctor(Xunit.Abstractions.IMessageSink)">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.SynchronousMessageBus.Dispose">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.SynchronousMessageBus.QueueMessage(Xunit.Abstractions.IMessageSinkMessage)">
-            <summary/>
-        </member>
-        <member name="T:Xunit.Sdk.TestClassException">
-            <summary>
-            Represents an exception that happened during the process of a test class. This typically
-            means there were problems identifying the correct test class constructor, or problems
-            creating the fixture data for the test class.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestClassException.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestClassException"/> class.
-            </summary>
-            <param name="message">The exception message.</param>
-        </member>
-        <member name="M:Xunit.Sdk.TestClassException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestDiscoveryVisitor.Dispose">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestDiscoveryVisitor.OnMessage(Xunit.Abstractions.IMessageSinkMessage)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestFrameworkTypeDiscoverer">
-            <summary>
-            The implementation of <see cref="T:Xunit.Sdk.ITestFrameworkTypeDiscoverer"/> that supports attributes
-            of type <see cref="T:Xunit.Sdk.TestFrameworkDiscovererAttribute"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkTypeDiscoverer.GetTestFrameworkType(Xunit.Abstractions.IAttributeInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TraitHelper">
-            <summary>
-            A helper class to retrieve the traits from a method.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TraitHelper.GetTraits(System.Reflection.MemberInfo)">
-            <summary>
-            Get the traits from a method.
-            </summary>
-            <param name="member">The member (method, field, etc.) to get the traits for.</param>
-            <returns>A list of traits that are defined on the method.</returns>
-        </member>
-        <member name="T:Xunit.Sdk.TypeUtility">
-            <summary>
-            Extension methods for <see cref="T:Xunit.Abstractions.ITypeInfo"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TypeUtility.ResolveMethodArguments(System.Reflection.MethodBase,System.Object[])">
-            <summary>
-            Resolves argument values for the test method, including support for optional method
-            arguments.
-            </summary>
-            <param name="testMethod">The test method to resolve.</param>
-            <param name="arguments">The user-supplied method arguments.</param>
-            <returns>The argument values</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TypeUtility.GetDisplayNameWithArguments(Xunit.Abstractions.IMethodInfo,System.String,System.Object[],Xunit.Abstractions.ITypeInfo[])">
-            <summary>
-            Formulates the extended portion of the display name for a test method. For tests with no arguments, this will
-            return just the base name; for tests with arguments, attempts to format the arguments and appends the argument
-            list to the test name.
-            </summary>
-            <param name="method">The test method</param>
-            <param name="baseDisplayName">The base part of the display name</param>
-            <param name="arguments">The test method arguments</param>
-            <param name="genericTypes">The test method's generic types</param>
-            <returns>The full display name for the test method</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TypeUtility.ResolveGenericParameter(Xunit.Abstractions.ITypeInfo,Xunit.Abstractions.ITypeInfo,System.Type,System.Type@)">
-            <summary>
-            Resolves an individual generic type given an intended generic parameter type and the type of an object passed to that type.
-            </summary>
-            <param name="genericType">The generic type, e.g. T, to resolve.</param>
-            <param name="methodParameterType">The non-generic or open generic type, e.g. T, to try to match with the type of the objecct passed to that type.</param>
-            <param name="passedParameterType">The non-generic or closed generic type, e.g. string, used to resolve the method parameter.</param>
-            <param name="resultType">The resolved type, e.g. the parameters (T, T, string, typeof(object)) -> (T, T, string, typeof(string)).</param>
-            <returns>True if resolving was successful, else false.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TypeUtility.GetArrayElementTypeOrThis(System.Type)">
-            <summary>
-            Gets the ElementType of a type, only if it is an array.
-            </summary>
-            <param name="type">The type to get the ElementType of.</param>
-            <returns>If type is an array, the ElementType of the type, else the original type.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TypeUtility.StripElementType(Xunit.Abstractions.ITypeInfo,System.Boolean@)">
-            <summary>
-            Gets the underlying ElementType of a type, if the ITypeInfo supports reflection.
-            </summary>
-            <param name="type">The type to get the ElementType of.</param>
-            <param name="isArray">A flag indicating whether the type is an array.</param>
-            <returns>If type has an element type, underlying ElementType of a type, else the original type.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TypeUtility.ResolveMismatchedGenericArguments(Xunit.Abstractions.ITypeInfo,System.Type,Xunit.Abstractions.ITypeInfo[],System.Type@)">
-            <summary>
-            Resolves an individual generic type given an intended generic parameter type and the type of an object passed to that type. 
-            </summary>
-            <param name="genericType">The generic type, e.g. T, to resolve.</param>
-            <param name="passedParameterType">The non-generic or closed generic type, e.g. string, used to resolve the method parameter.</param>
-            <param name="methodGenericTypeArguments">The generic arguments of the open generic type to match with the passed parameter.</param>
-            <param name="resultType">The resolved type.</param>
-            <returns>True if resolving was successful, else false.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TypeUtility.ResolveGenericType(Xunit.Abstractions.ITypeInfo,System.Object[],Xunit.Abstractions.IParameterInfo[])">
-            <summary>
-            Resolves a generic type for a test method. The test parameters (and associated parameter infos) are
-            used to determine the best matching generic type for the test method that can be satisfied by all
-            the generic parameters and their values.
-            </summary>
-            <param name="genericType">The generic type to be resolved</param>
-            <param name="parameters">The parameter values being passed to the test method</param>
-            <param name="parameterInfos">The parameter infos for the test method</param>
-            <returns>The best matching generic type</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TypeUtility.ResolveGenericTypes(Xunit.Abstractions.IMethodInfo,System.Object[])">
-            <summary>
-            Resolves all the generic types for a test method. The test parameters are used to determine
-            the best matching generic types for the test method that can be satisfied by all
-            the generic parameters and their values.
-            </summary>
-            <param name="method">The test method</param>
-            <param name="parameters">The parameter values being passed to the test method</param>
-            <returns>The best matching generic types</returns>
-        </member>
         <member name="T:Xunit.Sdk.CollectionPerAssemblyTestCollectionFactory">
             <summary>
             Implementation of <see cref="T:Xunit.Sdk.IXunitTestCollectionFactory"/> that creates a single
@@ -670,6 +502,11 @@
             </summary>
             <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
         </member>
+        <member name="P:Xunit.Sdk.FactDiscoverer.DiagnosticMessageSink">
+            <summary>
+            Gets the message sink used to report <see cref="T:Xunit.Abstractions.IDiagnosticMessage"/> messages.
+            </summary>
+        </member>
         <member name="M:Xunit.Sdk.FactDiscoverer.CreateTestCase(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo)">
             <summary>
             Creates a single <see cref="T:Xunit.Sdk.XunitTestCase"/> for the given test method.
@@ -689,856 +526,6 @@
             <param name="testMethod">The test method the test cases belong to.</param>
             <param name="factAttribute">The fact attribute attached to the test method.</param>
             <returns>Returns zero or more test cases represented by the test method.</returns>
-        </member>
-        <member name="T:Xunit.Sdk.TestAssembly">
-            <summary>
-            The default implementation of <see cref="T:Xunit.Abstractions.ITestAssembly"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestAssembly.#ctor">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.TestAssembly.#ctor(Xunit.Abstractions.IAssemblyInfo,System.String,System.Version)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestAssembly"/> class.
-            </summary>
-            <param name="assembly">The test assembly.</param>
-            <param name="configFileName">The optional configuration filename (defaults to the
-            configuration file of the current app domain if not provided)</param>
-            <param name="version">The version number of the assembly (defaults to "0.0.0.0")</param>
-        </member>
-        <member name="P:Xunit.Sdk.TestAssembly.Assembly">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestAssembly.ConfigFileName">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestAssembly.Version">
-            <summary>
-            Gets or sets the assembly version.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestAssembly.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestAssembly.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestClass">
-            <summary>
-            The default implementation of <see cref="T:Xunit.Abstractions.ITestClass"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestClass.#ctor">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.TestClass.#ctor(Xunit.Abstractions.ITestCollection,Xunit.Abstractions.ITypeInfo)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestClass"/> class.
-            </summary>
-            <param name="testCollection">The test collection the class belongs to</param>
-            <param name="class">The test class</param>
-        </member>
-        <member name="P:Xunit.Sdk.TestClass.Class">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestClass.TestCollection">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestClass.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestClass.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestClassComparer">
-            <summary>
-            An implementation of <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> for <see cref="T:Xunit.Abstractions.ITestClass"/>.
-            Compares the fully qualified names of the types.
-            </summary>
-        </member>
-        <member name="F:Xunit.Sdk.TestClassComparer.Instance">
-            <summary>
-            The singleton instance of the comparer.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestClassComparer.Equals(Xunit.Abstractions.ITestClass,Xunit.Abstractions.ITestClass)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestClassComparer.GetHashCode(Xunit.Abstractions.ITestClass)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestCollection">
-            <summary>
-            The default implementation of <see cref="T:Xunit.Abstractions.ITestCollection"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestCollection.#ctor">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.TestCollection.#ctor(Xunit.Abstractions.ITestAssembly,Xunit.Abstractions.ITypeInfo,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestCollection"/> class.
-            </summary>
-            <param name="testAssembly">The test assembly the collection belongs to</param>
-            <param name="collectionDefinition">The optional type which contains the collection definition</param>
-            <param name="displayName">The display name for the test collection</param>
-        </member>
-        <member name="P:Xunit.Sdk.TestCollection.CollectionDefinition">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestCollection.DisplayName">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestCollection.TestAssembly">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestCollection.UniqueID">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestCollection.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestCollection.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestCollectionComparer">
-            <summary>
-            An implementation of <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> for <see cref="T:Xunit.Abstractions.ITestCollection"/>.
-            Compares the IDs of the test collections.
-            </summary>
-        </member>
-        <member name="F:Xunit.Sdk.TestCollectionComparer.Instance">
-            <summary>
-            The singleton instance of the comparer.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestCollectionComparer.Equals(Xunit.Abstractions.ITestCollection,Xunit.Abstractions.ITestCollection)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestCollectionComparer.GetHashCode(Xunit.Abstractions.ITestCollection)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestCollectionFactoryHelper">
-            <summary>
-            A helper class that gets the list of test collection definitions for a given assembly.
-            Reports any misconfigurations of the test assembly via the diagnostic message sink.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestCollectionFactoryHelper.GetTestCollectionDefinitions(Xunit.Abstractions.IAssemblyInfo,Xunit.Abstractions.IMessageSink)">
-            <summary>
-            Gets the test collection definitions for the given assembly.
-            </summary>
-            <param name="assemblyInfo">The assembly.</param>
-            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
-            <returns>A list of mappings from test collection name to test collection definitions (as <see cref="T:Xunit.Abstractions.ITypeInfo"/></returns>
-        </member>
-        <member name="T:Xunit.Sdk.TestFramework">
-            <summary>
-            A default implementation of <see cref="T:Xunit.Abstractions.ITestFramework"/> that tracks objects to be
-            disposed when the framework is disposed. The discoverer and executor are automatically
-            tracked for disposal, since those interfaces mandate an implementation of <see cref="T:System.IDisposable"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestFramework.#ctor(Xunit.Abstractions.IMessageSink)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestFramework"/> class.
-            </summary>
-            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
-        </member>
-        <member name="P:Xunit.Sdk.TestFramework.DiagnosticMessageSink">
-            <summary>
-            Gets the message sink used to send diagnostic messages.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestFramework.DisposalTracker">
-            <summary>
-            Gets the disposal tracker for the test framework.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestFramework.SourceInformationProvider">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFramework.Dispose">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFramework.CreateDiscoverer(Xunit.Abstractions.IAssemblyInfo)">
-            <summary>
-            Override this method to provide the implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkDiscoverer"/>.
-            </summary>
-            <param name="assemblyInfo">The assembly that is being discovered.</param>
-            <returns>Returns the test framework discoverer.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TestFramework.CreateExecutor(System.Reflection.AssemblyName)">
-            <summary>
-            Override this method to provide the implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkExecutor"/>.
-            </summary>
-            <param name="assemblyName">The assembly that is being executed.</param>
-            <returns>Returns the test framework executor.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TestFramework.GetDiscoverer(Xunit.Abstractions.IAssemblyInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFramework.GetExecutor(System.Reflection.AssemblyName)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestFrameworkDiscoverer">
-            <summary>
-            A base implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkDiscoverer"/> that supports test filtering
-            and runs the discovery process on a thread pool thread.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.#ctor(Xunit.Abstractions.IAssemblyInfo,Xunit.Abstractions.ISourceInformationProvider,Xunit.Abstractions.IMessageSink)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTestFrameworkDiscoverer"/> class.
-            </summary>
-            <param name="assemblyInfo">The test assembly.</param>
-            <param name="sourceProvider">The source information provider.</param>
-            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.AssemblyInfo">
-            <summary>
-            Gets the assembly that's being discovered.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.DiagnosticMessageSink">
-            <summary>
-            Gets the message sink used to report diagnostic messages.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.DisposalTracker">
-            <summary>
-            Gets the disposal tracker for the test framework discoverer.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.SourceProvider">
-            <summary>
-            Get the source code information provider used during discovery.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.TargetFramework">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.TestFrameworkDisplayName">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.CreateTestClass(Xunit.Abstractions.ITypeInfo)">
-            <summary>
-            Implement this method to create a test class for the given CLR type.
-            </summary>
-            <param name="class">The CLR type.</param>
-            <returns>The test class.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.Dispose">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.Find(System.Boolean,Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.Find(System.String,System.Boolean,Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.FindTestsForType(Xunit.Abstractions.ITestClass,System.Boolean,Xunit.Sdk.IMessageBus,Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
-            <summary>
-            Core implementation to discover unit tests in a given test class.
-            </summary>
-            <param name="testClass">The test class.</param>
-            <param name="includeSourceInformation">Set to <c>true</c> to attempt to include source information.</param>
-            <param name="messageBus">The message sink to send discovery messages to.</param>
-            <param name="discoveryOptions">The options used by the test framework during discovery.</param>
-            <returns>Returns <c>true</c> if discovery should continue; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.IsValidTestClass(Xunit.Abstractions.ITypeInfo)">
-            <summary>
-            Determines if a type should be used for discovery. Can be used to filter out types that
-            are not desirable. The default implementation filters out abstract (non-static) classes.
-            </summary>
-            <param name="type">The type.</param>
-            <returns>Returns <c>true</c> if the type can contain tests; <c>false</c>, otherwise.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.ReportDiscoveredTestCase(Xunit.Abstractions.ITestCase,System.Boolean,Xunit.Sdk.IMessageBus)">
-            <summary>
-            Reports a discovered test case to the message bus, after updating the source code information
-            (if desired).
-            </summary>
-            <param name="testCase"></param>
-            <param name="includeSourceInformation"></param>
-            <param name="messageBus"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.Serialize(Xunit.Abstractions.ITestCase)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestFrameworkExecutor`1">
-            <summary>
-            A reusable implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkExecutor"/> which contains the basic behavior
-            for running tests.
-            </summary>
-            <typeparam name="TTestCase">The type of the test case used by the test framework. Must
-            derive from <see cref="T:Xunit.Abstractions.ITestCase"/>.</typeparam>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.#ctor(System.Reflection.AssemblyName,Xunit.Abstractions.ISourceInformationProvider,Xunit.Abstractions.IMessageSink)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestFrameworkExecutor`1"/> class.
-            </summary>
-            <param name="assemblyName">Name of the test assembly.</param>
-            <param name="sourceInformationProvider">The source line number information provider.</param>
-            <param name="diagnosticMessageSink">The message sink to report diagnostic messages to.</param>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkExecutor`1.AssemblyInfo">
-            <summary>
-            Gets the assembly information of the assembly under test.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkExecutor`1.DiagnosticMessageSink">
-            <summary>
-            Gets the message sink to send diagnostic messages to.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkExecutor`1.DisposalTracker">
-            <summary>
-            Gets the disposal tracker for the test framework discoverer.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkExecutor`1.SourceInformationProvider">
-            <summary>
-            Gets the source information provider.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.CreateDiscoverer">
-            <summary>
-            Override to create a test framework discoverer that can be used to discover
-            tests when the user asks to run all test.
-            </summary>
-            <returns>The test framework discoverer</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.Deserialize(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.Dispose">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.RunAll(Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestFrameworkExecutionOptions)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.RunTests(System.Collections.Generic.IEnumerable{Xunit.Abstractions.ITestCase},Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkExecutionOptions)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.RunTestCases(System.Collections.Generic.IEnumerable{`0},Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkExecutionOptions)">
-            <summary>
-            Override to run test cases.
-            </summary>
-            <param name="testCases">The test cases to be run.</param>
-            <param name="executionMessageSink">The message sink to report run status to.</param>
-            <param name="executionOptions">The user's requested execution options.</param>
-        </member>
-        <member name="T:Xunit.Sdk.TestFrameworkProxy">
-            <summary>
-            This class proxies for the real implementation of <see cref="T:Xunit.Abstractions.ITestFramework"/>, based on
-            whether the user has overridden the choice via <see cref="T:Xunit.TestFrameworkAttribute"/>. If
-            no attribute is found, defaults to <see cref="T:Xunit.Sdk.XunitTestFramework"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkProxy.#ctor(System.Object,System.Object,System.Object)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestFrameworkProxy"/> class.
-            </summary>
-            <param name="testAssemblyObject">The test assembly (expected to implement <see cref="T:Xunit.Abstractions.IAssemblyInfo"/>).</param>
-            <param name="sourceInformationProviderObject">The source information provider (expected to implement <see cref="T:Xunit.Abstractions.ISourceInformationProvider"/>).</param>
-            <param name="diagnosticMessageSinkObject">The diagnostic message sink (expected to implement <see cref="T:Xunit.Abstractions.IMessageSink"/>).</param>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkProxy.InnerTestFramework">
-            <summary>
-            Gets the test framework that's being wrapped by the proxy.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestFrameworkProxy.SourceInformationProvider">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkProxy.GetDiscoverer(Xunit.Abstractions.IAssemblyInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkProxy.GetExecutor(System.Reflection.AssemblyName)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkProxy.Dispose">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestFrameworkProxy.MessageSinkWrapper">
-            <summary>
-            INTERNAL CLASS. DO NOT USE.
-            </summary>
-        </member>
-        <member name="F:Xunit.Sdk.TestFrameworkProxy.MessageSinkWrapper.InnerSink">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkProxy.MessageSinkWrapper.#ctor(Xunit.Abstractions.IMessageSink)">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.TestFrameworkProxy.MessageSinkWrapper.OnMessage(Xunit.Abstractions.IMessageSinkMessage)">
-            <summary/>
-        </member>
-        <member name="T:Xunit.Sdk.TestMethod">
-            <summary>
-            The default implementation of <see cref="T:Xunit.Abstractions.ITestMethod"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethod.#ctor">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethod.#ctor(Xunit.Abstractions.ITestClass,Xunit.Abstractions.IMethodInfo)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestMethod"/> class.
-            </summary>
-            <param name="class">The test class</param>
-            <param name="method">The test method</param>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethod.Method">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethod.TestClass">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethod.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethod.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestMethodComparer">
-            <summary>
-            An implementation of <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> for <see cref="T:Xunit.Abstractions.ITestMethod"/>.
-            Compares the names of the methods.
-            </summary>
-        </member>
-        <member name="F:Xunit.Sdk.TestMethodComparer.Instance">
-            <summary>
-            The singleton instance of the comparer.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodComparer.Equals(Xunit.Abstractions.ITestMethod,Xunit.Abstractions.ITestMethod)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodComparer.GetHashCode(Xunit.Abstractions.ITestMethod)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestMethodTestCase">
-            <summary>
-            A base class implementation of <see cref="T:Xunit.Abstractions.ITestCase"/> which is based on test cases being
-            related directly to test methods.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodTestCase.#ctor">
-            <summary>
-            Used for de-serialization.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodTestCase.#ctor(Xunit.Sdk.TestMethodDisplay,Xunit.Abstractions.ITestMethod,System.Object[])">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestMethodTestCase"/> class.
-            </summary>
-            <param name="defaultMethodDisplay">Default method display to use (when not customized).</param>
-            <param name="testMethod">The test method this test case belongs to.</param>
-            <param name="testMethodArguments">The arguments for the test method.</param>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodTestCase.BaseDisplayName">
-            <summary>
-            Returns the base display name for a test ("TestClassName.MethodName").
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodTestCase.DefaultMethodDisplay">
-            <summary>
-            Returns the default method display to use (when not customized).
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodTestCase.DisplayName">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodTestCase.Method">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodTestCase.MethodGenericTypes">
-            <summary>
-            Gets the generic types that were used to close the generic test method, if
-            applicable; <c>null</c>, if the test method was not an open generic.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodTestCase.SkipReason">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodTestCase.SourceInformation">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodTestCase.TestMethod">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodTestCase.TestMethodArguments">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodTestCase.Traits">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodTestCase.UniqueID">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodTestCase.Dispose">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodTestCase.EnsureInitialized">
-            <summary>
-            Call to ensure the object is fully initialized().
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodTestCase.GetUniqueID">
-            <summary>
-            Gets the unique ID for the test case.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodTestCase.BytesToHexString(System.Byte[])">
-            <summary>Converts an array of bytes to its hexadecimal value as a string.</summary>
-            <param name="bytes">The bytes.</param>
-            <returns>A string containing the hexademical representation of the provided bytes.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodTestCase.NibbleToHexChar(System.Int32)">
-            <summary>Gets a hexademical digit character from the 4-bit value.</summary>
-            <param name="b">A value in the range [0, 15].</param>
-            <returns>A character in the range ['0','9'] or ['a','f'].</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodTestCase.Initialize">
-            <summary>
-            Called when initializing the test cases, either after constructor or de-serialization.
-            Override this method to add additional initialization-time work.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodTestCase.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodTestCase.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestOutputHelper">
-            <summary>
-            Default implementation of <see cref="T:Xunit.Abstractions.ITestOutputHelper"/>.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestOutputHelper.Output">
-            <summary>
-            Gets the output provided by the test.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestOutputHelper.Initialize(Xunit.Sdk.IMessageBus,Xunit.Abstractions.ITest)">
-            <summary>
-            Initialize the test output helper with information about a test.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestOutputHelper.Uninitialize">
-            <summary>
-            Resets the test output helper to its uninitialized state.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestOutputHelper.WriteLine(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.TestOutputHelper.WriteLine(System.String,System.Object[])">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TheoryDiscoverer">
-            <summary>
-            Implementation of <see cref="T:Xunit.Sdk.IXunitTestCaseDiscoverer"/> that supports finding test cases
-            on methods decorated with <see cref="T:Xunit.TheoryAttribute"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TheoryDiscoverer.#ctor(Xunit.Abstractions.IMessageSink)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TheoryDiscoverer"/> class.
-            </summary>
-            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
-        </member>
-        <member name="P:Xunit.Sdk.TheoryDiscoverer.DiagnosticMessageSink">
-            <summary>
-            Gets the message sink to be used to send diagnostic messages.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[])">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCasesForDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[])">
-            <summary>
-            Creates test cases for a single row of data. By default, returns a single instance of <see cref="T:Xunit.Sdk.XunitTestCase"/>
-            with the data row inside of it.
-            </summary>
-            <param name="discoveryOptions">The discovery options to be used.</param>
-            <param name="testMethod">The test method the test cases belong to.</param>
-            <param name="theoryAttribute">The theory attribute attached to the test method.</param>
-            <param name="dataRow">The row of data for this test case.</param>
-            <returns>The test cases</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForSkip(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.String)">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCasesForSkip(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.String)">
-            <summary>
-            Creates test cases for a skipped theory. By default, returns a single instance of <see cref="T:Xunit.Sdk.XunitTestCase"/>
-            (which inherently discovers the skip reason via the fact attribute).
-            </summary>
-            <param name="discoveryOptions">The discovery options to be used.</param>
-            <param name="testMethod">The test method the test cases belong to.</param>
-            <param name="theoryAttribute">The theory attribute attached to the test method.</param>
-            <param name="skipReason">The skip reason that decorates <paramref name="theoryAttribute"/>.</param>
-            <returns>The test cases</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForTheory(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo)">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCasesForTheory(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo)">
-            <summary>
-            Creates test cases for the entire theory. This is used when one or more of the theory data items
-            are not serializable, or if the user has requested to skip theory pre-enumeration. By default,
-            returns a single instance of <see cref="T:Xunit.Sdk.XunitTheoryTestCase"/>, which performs the data discovery
-            at runtime.
-            </summary>
-            <param name="discoveryOptions">The discovery options to be used.</param>
-            <param name="testMethod">The test method the test cases belong to.</param>
-            <param name="theoryAttribute">The theory attribute attached to the test method.</param>
-            <returns>The test case</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForSkippedDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[],System.String)">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCasesForSkippedDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[],System.String)">
-            <summary>
-            Creates test cases for a single row of skipped data. By default, returns a single instance of <see cref="T:Xunit.Sdk.XunitSkippedDataRowTestCase"/>
-            with the data row inside of it.
-            </summary>
-            <remarks>If this method is overridden, the implementation will have to override <see cref="P:Xunit.Sdk.TestMethodTestCase.SkipReason"/> otherwise
-            the default behavior will look at the <see cref="T:Xunit.TheoryAttribute"/> and the test case will not be skipped.</remarks>
-            <param name="discoveryOptions">The discovery options to be used.</param>
-            <param name="testMethod">The test method the test cases belong to.</param>
-            <param name="theoryAttribute">The theory attribute attached to the test method.</param>
-            <param name="dataRow">The row of data for this test case.</param>
-            <param name="skipReason">The reason this test case is to be skipped</param>
-            <returns>The test cases</returns>
-        </member>
-        <member name="M:Xunit.Sdk.TheoryDiscoverer.Discover(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo)">
-            <summary>
-            Discover test cases from a test method.
-            </summary>
-            <remarks>
-            This method performs the following steps:
-            - If the theory attribute is marked with Skip, returns the single test case from <see cref="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForSkip(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.String)"/>;
-            - If pre-enumeration is off, or any of the test data is non serializable, returns the single test case from <see cref="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForTheory(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo)"/>;
-            - If there is no theory data, returns a single test case of <see cref="T:Xunit.Sdk.ExecutionErrorTestCase"/> with the error in it;
-            - Otherwise, it returns one test case per data row, created by calling <see cref="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[])"/> or <see cref="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForSkippedDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[],System.String)"/> if the data attribute has a skip reason.
-            </remarks>
-            <param name="discoveryOptions">The discovery options to be used.</param>
-            <param name="testMethod">The test method the test cases belong to.</param>
-            <param name="theoryAttribute">The theory attribute attached to the test method.</param>
-            <returns>Returns zero or more test cases represented by the test method.</returns>
-        </member>
-        <member name="T:Xunit.Sdk.XunitSkippedDataRowTestCase">
-            <summary>
-            Represents a test case that had a valid datarow but the datarow was generated by a data attribute with the skip property set.
-            </summary>
-            <remarks>This class is only ever used if the discoverer is preenumerating theories and the datarow is serializable.</remarks>
-        </member>
-        <member name="M:Xunit.Sdk.XunitSkippedDataRowTestCase.#ctor">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.XunitSkippedDataRowTestCase.#ctor(Xunit.Abstractions.IMessageSink,Xunit.Sdk.TestMethodDisplay,Xunit.Abstractions.ITestMethod,System.String,System.Object[])">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitSkippedDataRowTestCase"/> class.
-            </summary>
-            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
-            <param name="defaultMethodDisplay">Default method display to use (when not customized).</param>
-            <param name="testMethod">The test method this test case belongs to.</param>
-            <param name="skipReason">The reason that this test case will be skipped</param>
-            <param name="testMethodArguments">The arguments for the test method.</param>
-        </member>
-        <member name="M:Xunit.Sdk.XunitSkippedDataRowTestCase.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.XunitSkippedDataRowTestCase.GetSkipReason(Xunit.Abstractions.IAttributeInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.XunitSkippedDataRowTestCase.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.XunitTest">
-            <summary>
-            An implementation of <see cref="T:Xunit.Abstractions.ITest"/> for xUnit v2.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTest.#ctor(Xunit.Sdk.IXunitTestCase,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTest"/> class.
-            </summary>
-            <param name="testCase">The test case this test belongs to.</param>
-            <param name="displayName">The display name for this test.</param>
-        </member>
-        <member name="P:Xunit.Sdk.XunitTest.DisplayName">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.XunitTest.TestCase">
-            <summary>
-            Gets the xUnit v2 test case.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.XunitTest.Xunit#Abstractions#ITest#TestCase">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.XunitTestCase">
-            <summary>
-            Default implementation of <see cref="T:Xunit.Sdk.IXunitTestCase"/> for xUnit v2 that supports tests decorated with
-            both <see cref="T:Xunit.FactAttribute"/> and <see cref="T:Xunit.TheoryAttribute"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestCase.#ctor">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestCase.#ctor(Xunit.Abstractions.IMessageSink,Xunit.Sdk.TestMethodDisplay,Xunit.Abstractions.ITestMethod,System.Object[])">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTestCase"/> class.
-            </summary>
-            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
-            <param name="defaultMethodDisplay">Default method display to use (when not customized).</param>
-            <param name="testMethod">The test method this test case belongs to.</param>
-            <param name="testMethodArguments">The arguments for the test method.</param>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestCase.GetDisplayName(Xunit.Abstractions.IAttributeInfo,System.String)">
-            <summary>
-            Gets the display name for the test case. Calls <see cref="M:Xunit.Sdk.TypeUtility.GetDisplayNameWithArguments(Xunit.Abstractions.IMethodInfo,System.String,System.Object[],Xunit.Abstractions.ITypeInfo[])"/>
-            with the given base display name (which is itself either derived from <see cref="P:Xunit.FactAttribute.DisplayName"/>,
-            falling back to <see cref="P:Xunit.Sdk.TestMethodTestCase.BaseDisplayName"/>.
-            </summary>
-            <param name="factAttribute">The fact attribute the decorated the test case.</param>
-            <param name="displayName">The base display name from <see cref="P:Xunit.Sdk.TestMethodTestCase.BaseDisplayName"/>.</param>
-            <returns>The display name for the test case.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestCase.GetSkipReason(Xunit.Abstractions.IAttributeInfo)">
-            <summary>
-            Gets the skip reason for the test case. By default, pulls the skip reason from the
-            <see cref="P:Xunit.FactAttribute.Skip"/> property.
-            </summary>
-            <param name="factAttribute">The fact attribute the decorated the test case.</param>
-            <returns>The skip reason, if skipped; <c>null</c>, otherwise.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestCase.Initialize">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestCase.RunAsync(Xunit.Abstractions.IMessageSink,Xunit.Sdk.IMessageBus,System.Object[],Xunit.Sdk.ExceptionAggregator,System.Threading.CancellationTokenSource)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.XunitTestFramework">
-            <summary>
-            The implementation of <see cref="T:Xunit.Abstractions.ITestFramework"/> that supports discovery and
-            execution of unit tests linked against xunit.core.dll, using xunit.execution.dll.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestFramework.#ctor(Xunit.Abstractions.IMessageSink)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTestFramework"/> class.
-            </summary>
-            <param name="messageSink">The message sink used to send diagnostic messages</param>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestFramework.CreateDiscoverer(Xunit.Abstractions.IAssemblyInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestFramework.CreateExecutor(System.Reflection.AssemblyName)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.XunitTestFrameworkDiscoverer">
-            <summary>
-            The implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkDiscoverer"/> that supports discovery
-            of unit tests linked against xunit.core.dll, using xunit.execution.dll.
-            </summary>
-        </member>
-        <member name="F:Xunit.Sdk.XunitTestFrameworkDiscoverer.DisplayName">
-            <summary>
-            Gets the display name of the xUnit.net v2 test framework.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestFrameworkDiscoverer.#ctor(Xunit.Abstractions.IAssemblyInfo,Xunit.Abstractions.ISourceInformationProvider,Xunit.Abstractions.IMessageSink,Xunit.Sdk.IXunitTestCollectionFactory)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTestFrameworkDiscoverer"/> class.
-            </summary>
-            <param name="assemblyInfo">The test assembly.</param>
-            <param name="sourceProvider">The source information provider.</param>
-            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
-            <param name="collectionFactory">The test collection factory used to look up test collections.</param>
-        </member>
-        <member name="P:Xunit.Sdk.XunitTestFrameworkDiscoverer.TestCollectionFactory">
-            <summary>
-            Gets the test collection factory that makes test collections.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestFrameworkDiscoverer.CreateTestClass(Xunit.Abstractions.ITypeInfo)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestFrameworkDiscoverer.FindTestsForMethod(Xunit.Abstractions.ITestMethod,System.Boolean,Xunit.Sdk.IMessageBus,Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
-            <summary>
-            Finds the tests on a test method.
-            </summary>
-            <param name="testMethod">The test method.</param>
-            <param name="includeSourceInformation">Set to <c>true</c> to indicate that source information should be included.</param>
-            <param name="messageBus">The message bus to report discovery messages to.</param>
-            <param name="discoveryOptions">The options used by the test framework during discovery.</param>
-            <returns>Return <c>true</c> to continue test discovery, <c>false</c>, otherwise.</returns>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestFrameworkDiscoverer.FindTestsForType(Xunit.Abstractions.ITestClass,System.Boolean,Xunit.Sdk.IMessageBus,Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestFrameworkDiscoverer.GetDiscoverer(System.Type)">
-            <summary>
-            Gets the test case discover instance for the given discoverer type. The instances are cached
-            and reused, since they should not be stateful.
-            </summary>
-            <param name="discovererType">The discoverer type.</param>
-            <returns>Returns the test case discoverer instance.</returns>
-        </member>
-        <member name="T:Xunit.Sdk.XunitTestFrameworkExecutor">
-            <summary>
-            The implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkExecutor"/> that supports execution
-            of unit tests linked against xunit.core.dll, using xunit.execution.dll.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestFrameworkExecutor.#ctor(System.Reflection.AssemblyName,Xunit.Abstractions.ISourceInformationProvider,Xunit.Abstractions.IMessageSink)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTestFrameworkExecutor"/> class.
-            </summary>
-            <param name="assemblyName">Name of the test assembly.</param>
-            <param name="sourceInformationProvider">The source line number information provider.</param>
-            <param name="diagnosticMessageSink">The message sink to report diagnostic messages to.</param>
-        </member>
-        <member name="P:Xunit.Sdk.XunitTestFrameworkExecutor.TestAssembly">
-            <summary>
-            Gets the test assembly that contains the test.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestFrameworkExecutor.CreateDiscoverer">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTestFrameworkExecutor.RunTestCases(System.Collections.Generic.IEnumerable{Xunit.Sdk.IXunitTestCase},Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkExecutionOptions)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.XunitTheoryTestCase">
-            <summary>
-            Represents a test case which runs multiple tests for theory data, either because the
-            data was not enumerable or because the data was not serializable.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTheoryTestCase.#ctor">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTheoryTestCase.#ctor(Xunit.Abstractions.IMessageSink,Xunit.Sdk.TestMethodDisplay,Xunit.Abstractions.ITestMethod)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTheoryTestCase"/> class.
-            </summary>
-            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
-            <param name="defaultMethodDisplay">Default method display to use (when not customized).</param>
-            <param name="testMethod">The method under test.</param>
-        </member>
-        <member name="M:Xunit.Sdk.XunitTheoryTestCase.RunAsync(Xunit.Abstractions.IMessageSink,Xunit.Sdk.IMessageBus,System.Object[],Xunit.Sdk.ExceptionAggregator,System.Threading.CancellationTokenSource)">
-            <inheritdoc />
         </member>
         <member name="T:Xunit.Sdk.ExecutionErrorTestCaseRunner">
             <summary>
@@ -2372,6 +1359,21 @@
             Gets or sets the arguments to pass to the test method when it's being invoked.
             </summary>
         </member>
+        <member name="M:Xunit.Sdk.XunitTestCaseRunner.CreateTest(Xunit.Sdk.IXunitTestCase,System.String)">
+            <summary>
+            Creates the <see cref="T:Xunit.Abstractions.ITest"/> instance for the given test case.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestCaseRunner.CreateTestRunner(Xunit.Abstractions.ITest,Xunit.Sdk.IMessageBus,System.Type,System.Object[],System.Reflection.MethodInfo,System.Object[],System.String,System.Collections.Generic.IReadOnlyList{Xunit.Sdk.BeforeAfterTestAttribute},Xunit.Sdk.ExceptionAggregator,System.Threading.CancellationTokenSource)">
+            <summary>
+            Creates the test runner used to run the given test.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestCaseRunner.GetBeforeAfterTestAttributes">
+            <summary>
+            Gets the list of <see cref="T:Xunit.Sdk.BeforeAfterTestAttribute"/> attributes that apply to this test case.
+            </summary>
+        </member>
         <member name="M:Xunit.Sdk.XunitTestCaseRunner.RunTestAsync">
             <inheritdoc/>
         </member>
@@ -2582,6 +1584,11 @@
             <param name="aggregator">The exception aggregator used to run code and collect exceptions.</param>
             <param name="cancellationTokenSource">The task cancellation token source, used to cancel the test run.</param>
         </member>
+        <member name="P:Xunit.Sdk.XunitTheoryTestCaseRunner.DiagnosticMessageSink">
+            <summary>
+            Gets the message sink used to report <see cref="T:Xunit.Abstractions.IDiagnosticMessage"/> messages.
+            </summary>
+        </member>
         <member name="M:Xunit.Sdk.XunitTheoryTestCaseRunner.AfterTestCaseStartingAsync">
             <inheritdoc/>
         </member>
@@ -2590,6 +1597,912 @@
         </member>
         <member name="M:Xunit.Sdk.XunitTheoryTestCaseRunner.RunTestAsync">
             <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestAssembly">
+            <summary>
+            The default implementation of <see cref="T:Xunit.Abstractions.ITestAssembly"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestAssembly.#ctor">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.TestAssembly.#ctor(Xunit.Abstractions.IAssemblyInfo,System.String,System.Version)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestAssembly"/> class.
+            </summary>
+            <param name="assembly">The test assembly.</param>
+            <param name="configFileName">The optional configuration filename (defaults to the
+            configuration file of the current app domain if not provided)</param>
+            <param name="version">The version number of the assembly (defaults to "0.0.0.0")</param>
+        </member>
+        <member name="P:Xunit.Sdk.TestAssembly.Assembly">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestAssembly.ConfigFileName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestAssembly.Version">
+            <summary>
+            Gets or sets the assembly version.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestAssembly.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestAssembly.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestClass">
+            <summary>
+            The default implementation of <see cref="T:Xunit.Abstractions.ITestClass"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestClass.#ctor">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.TestClass.#ctor(Xunit.Abstractions.ITestCollection,Xunit.Abstractions.ITypeInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestClass"/> class.
+            </summary>
+            <param name="testCollection">The test collection the class belongs to</param>
+            <param name="class">The test class</param>
+        </member>
+        <member name="P:Xunit.Sdk.TestClass.Class">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestClass.TestCollection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestClass.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestClass.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestClassComparer">
+            <summary>
+            An implementation of <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> for <see cref="T:Xunit.Abstractions.ITestClass"/>.
+            Compares the fully qualified names of the types.
+            </summary>
+        </member>
+        <member name="F:Xunit.Sdk.TestClassComparer.Instance">
+            <summary>
+            The singleton instance of the comparer.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestClassComparer.Equals(Xunit.Abstractions.ITestClass,Xunit.Abstractions.ITestClass)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestClassComparer.GetHashCode(Xunit.Abstractions.ITestClass)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestCollection">
+            <summary>
+            The default implementation of <see cref="T:Xunit.Abstractions.ITestCollection"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestCollection.#ctor">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.TestCollection.#ctor(Xunit.Abstractions.ITestAssembly,Xunit.Abstractions.ITypeInfo,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestCollection"/> class.
+            </summary>
+            <param name="testAssembly">The test assembly the collection belongs to</param>
+            <param name="collectionDefinition">The optional type which contains the collection definition</param>
+            <param name="displayName">The display name for the test collection</param>
+        </member>
+        <member name="P:Xunit.Sdk.TestCollection.CollectionDefinition">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestCollection.DisplayName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestCollection.TestAssembly">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestCollection.UniqueID">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestCollection.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestCollection.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestCollectionComparer">
+            <summary>
+            An implementation of <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> for <see cref="T:Xunit.Abstractions.ITestCollection"/>.
+            Compares the IDs of the test collections.
+            </summary>
+        </member>
+        <member name="F:Xunit.Sdk.TestCollectionComparer.Instance">
+            <summary>
+            The singleton instance of the comparer.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestCollectionComparer.Equals(Xunit.Abstractions.ITestCollection,Xunit.Abstractions.ITestCollection)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestCollectionComparer.GetHashCode(Xunit.Abstractions.ITestCollection)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestCollectionFactoryHelper">
+            <summary>
+            A helper class that gets the list of test collection definitions for a given assembly.
+            Reports any misconfigurations of the test assembly via the diagnostic message sink.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestCollectionFactoryHelper.GetTestCollectionDefinitions(Xunit.Abstractions.IAssemblyInfo,Xunit.Abstractions.IMessageSink)">
+            <summary>
+            Gets the test collection definitions for the given assembly.
+            </summary>
+            <param name="assemblyInfo">The assembly.</param>
+            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
+            <returns>A list of mappings from test collection name to test collection definitions (as <see cref="T:Xunit.Abstractions.ITypeInfo"/></returns>
+        </member>
+        <member name="T:Xunit.Sdk.TestFramework">
+            <summary>
+            A default implementation of <see cref="T:Xunit.Abstractions.ITestFramework"/> that tracks objects to be
+            disposed when the framework is disposed. The discoverer and executor are automatically
+            tracked for disposal, since those interfaces mandate an implementation of <see cref="T:System.IDisposable"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestFramework.#ctor(Xunit.Abstractions.IMessageSink)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestFramework"/> class.
+            </summary>
+            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
+        </member>
+        <member name="P:Xunit.Sdk.TestFramework.DiagnosticMessageSink">
+            <summary>
+            Gets the message sink used to send diagnostic messages.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestFramework.DisposalTracker">
+            <summary>
+            Gets the disposal tracker for the test framework.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestFramework.SourceInformationProvider">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFramework.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFramework.CreateDiscoverer(Xunit.Abstractions.IAssemblyInfo)">
+            <summary>
+            Override this method to provide the implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkDiscoverer"/>.
+            </summary>
+            <param name="assemblyInfo">The assembly that is being discovered.</param>
+            <returns>Returns the test framework discoverer.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TestFramework.CreateExecutor(System.Reflection.AssemblyName)">
+            <summary>
+            Override this method to provide the implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkExecutor"/>.
+            </summary>
+            <param name="assemblyName">The assembly that is being executed.</param>
+            <returns>Returns the test framework executor.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TestFramework.GetDiscoverer(Xunit.Abstractions.IAssemblyInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFramework.GetExecutor(System.Reflection.AssemblyName)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestFrameworkDiscoverer">
+            <summary>
+            A base implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkDiscoverer"/> that supports test filtering
+            and runs the discovery process on a thread pool thread.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.#ctor(Xunit.Abstractions.IAssemblyInfo,Xunit.Abstractions.ISourceInformationProvider,Xunit.Abstractions.IMessageSink)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTestFrameworkDiscoverer"/> class.
+            </summary>
+            <param name="assemblyInfo">The test assembly.</param>
+            <param name="sourceProvider">The source information provider.</param>
+            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.AssemblyInfo">
+            <summary>
+            Gets the assembly that's being discovered.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.DiagnosticMessageSink">
+            <summary>
+            Gets the message sink used to report diagnostic messages.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.DisposalTracker">
+            <summary>
+            Gets the disposal tracker for the test framework discoverer.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.SourceProvider">
+            <summary>
+            Get the source code information provider used during discovery.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.TargetFramework">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkDiscoverer.TestFrameworkDisplayName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.CreateTestClass(Xunit.Abstractions.ITypeInfo)">
+            <summary>
+            Implement this method to create a test class for the given CLR type.
+            </summary>
+            <param name="class">The CLR type.</param>
+            <returns>The test class.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.Find(System.Boolean,Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.Find(System.String,System.Boolean,Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.FindTestsForType(Xunit.Abstractions.ITestClass,System.Boolean,Xunit.Sdk.IMessageBus,Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
+            <summary>
+            Core implementation to discover unit tests in a given test class.
+            </summary>
+            <param name="testClass">The test class.</param>
+            <param name="includeSourceInformation">Set to <c>true</c> to attempt to include source information.</param>
+            <param name="messageBus">The message sink to send discovery messages to.</param>
+            <param name="discoveryOptions">The options used by the test framework during discovery.</param>
+            <returns>Returns <c>true</c> if discovery should continue; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.IsValidTestClass(Xunit.Abstractions.ITypeInfo)">
+            <summary>
+            Determines if a type should be used for discovery. Can be used to filter out types that
+            are not desirable. The default implementation filters out abstract (non-static) classes.
+            </summary>
+            <param name="type">The type.</param>
+            <returns>Returns <c>true</c> if the type can contain tests; <c>false</c>, otherwise.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.ReportDiscoveredTestCase(Xunit.Abstractions.ITestCase,System.Boolean,Xunit.Sdk.IMessageBus)">
+            <summary>
+            Reports a discovered test case to the message bus, after updating the source code information
+            (if desired).
+            </summary>
+            <param name="testCase"></param>
+            <param name="includeSourceInformation"></param>
+            <param name="messageBus"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkDiscoverer.Serialize(Xunit.Abstractions.ITestCase)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestFrameworkExecutor`1">
+            <summary>
+            A reusable implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkExecutor"/> which contains the basic behavior
+            for running tests.
+            </summary>
+            <typeparam name="TTestCase">The type of the test case used by the test framework. Must
+            derive from <see cref="T:Xunit.Abstractions.ITestCase"/>.</typeparam>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.#ctor(System.Reflection.AssemblyName,Xunit.Abstractions.ISourceInformationProvider,Xunit.Abstractions.IMessageSink)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestFrameworkExecutor`1"/> class.
+            </summary>
+            <param name="assemblyName">Name of the test assembly.</param>
+            <param name="sourceInformationProvider">The source line number information provider.</param>
+            <param name="diagnosticMessageSink">The message sink to report diagnostic messages to.</param>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkExecutor`1.AssemblyInfo">
+            <summary>
+            Gets the assembly information of the assembly under test.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkExecutor`1.DiagnosticMessageSink">
+            <summary>
+            Gets the message sink to send diagnostic messages to.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkExecutor`1.DisposalTracker">
+            <summary>
+            Gets the disposal tracker for the test framework discoverer.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkExecutor`1.SourceInformationProvider">
+            <summary>
+            Gets the source information provider.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.CreateDiscoverer">
+            <summary>
+            Override to create a test framework discoverer that can be used to discover
+            tests when the user asks to run all test.
+            </summary>
+            <returns>The test framework discoverer</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.Deserialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.RunAll(Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestFrameworkExecutionOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.RunTests(System.Collections.Generic.IEnumerable{Xunit.Abstractions.ITestCase},Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkExecutionOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkExecutor`1.RunTestCases(System.Collections.Generic.IEnumerable{`0},Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkExecutionOptions)">
+            <summary>
+            Override to run test cases.
+            </summary>
+            <param name="testCases">The test cases to be run.</param>
+            <param name="executionMessageSink">The message sink to report run status to.</param>
+            <param name="executionOptions">The user's requested execution options.</param>
+        </member>
+        <member name="T:Xunit.Sdk.TestFrameworkProxy">
+            <summary>
+            This class proxies for the real implementation of <see cref="T:Xunit.Abstractions.ITestFramework"/>, based on
+            whether the user has overridden the choice via <see cref="T:Xunit.TestFrameworkAttribute"/>. If
+            no attribute is found, defaults to <see cref="T:Xunit.Sdk.XunitTestFramework"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkProxy.#ctor(System.Object,System.Object,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestFrameworkProxy"/> class.
+            </summary>
+            <param name="testAssemblyObject">The test assembly (expected to implement <see cref="T:Xunit.Abstractions.IAssemblyInfo"/>).</param>
+            <param name="sourceInformationProviderObject">The source information provider (expected to implement <see cref="T:Xunit.Abstractions.ISourceInformationProvider"/>).</param>
+            <param name="diagnosticMessageSinkObject">The diagnostic message sink (expected to implement <see cref="T:Xunit.Abstractions.IMessageSink"/>).</param>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkProxy.InnerTestFramework">
+            <summary>
+            Gets the test framework that's being wrapped by the proxy.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestFrameworkProxy.SourceInformationProvider">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkProxy.GetDiscoverer(Xunit.Abstractions.IAssemblyInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkProxy.GetExecutor(System.Reflection.AssemblyName)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkProxy.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestFrameworkProxy.MessageSinkWrapper">
+            <summary>
+            INTERNAL CLASS. DO NOT USE.
+            </summary>
+        </member>
+        <member name="F:Xunit.Sdk.TestFrameworkProxy.MessageSinkWrapper.InnerSink">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkProxy.MessageSinkWrapper.#ctor(Xunit.Abstractions.IMessageSink)">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkProxy.MessageSinkWrapper.OnMessage(Xunit.Abstractions.IMessageSinkMessage)">
+            <summary/>
+        </member>
+        <member name="T:Xunit.Sdk.TestMethod">
+            <summary>
+            The default implementation of <see cref="T:Xunit.Abstractions.ITestMethod"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethod.#ctor">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethod.#ctor(Xunit.Abstractions.ITestClass,Xunit.Abstractions.IMethodInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestMethod"/> class.
+            </summary>
+            <param name="class">The test class</param>
+            <param name="method">The test method</param>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethod.Method">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethod.TestClass">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethod.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethod.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestMethodComparer">
+            <summary>
+            An implementation of <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> for <see cref="T:Xunit.Abstractions.ITestMethod"/>.
+            Compares the names of the methods.
+            </summary>
+        </member>
+        <member name="F:Xunit.Sdk.TestMethodComparer.Instance">
+            <summary>
+            The singleton instance of the comparer.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodComparer.Equals(Xunit.Abstractions.ITestMethod,Xunit.Abstractions.ITestMethod)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodComparer.GetHashCode(Xunit.Abstractions.ITestMethod)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestMethodTestCase">
+            <summary>
+            A base class implementation of <see cref="T:Xunit.Abstractions.ITestCase"/> which is based on test cases being
+            related directly to test methods.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodTestCase.#ctor">
+            <summary>
+            Used for de-serialization.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodTestCase.#ctor(Xunit.Sdk.TestMethodDisplay,Xunit.Abstractions.ITestMethod,System.Object[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestMethodTestCase"/> class.
+            </summary>
+            <param name="defaultMethodDisplay">Default method display to use (when not customized).</param>
+            <param name="testMethod">The test method this test case belongs to.</param>
+            <param name="testMethodArguments">The arguments for the test method.</param>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodTestCase.BaseDisplayName">
+            <summary>
+            Returns the base display name for a test ("TestClassName.MethodName").
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodTestCase.DefaultMethodDisplay">
+            <summary>
+            Returns the default method display to use (when not customized).
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodTestCase.DisplayName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodTestCase.Method">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodTestCase.MethodGenericTypes">
+            <summary>
+            Gets the generic types that were used to close the generic test method, if
+            applicable; <c>null</c>, if the test method was not an open generic.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodTestCase.SkipReason">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodTestCase.SourceInformation">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodTestCase.TestMethod">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodTestCase.TestMethodArguments">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodTestCase.Traits">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodTestCase.UniqueID">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodTestCase.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodTestCase.EnsureInitialized">
+            <summary>
+            Call to ensure the object is fully initialized().
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodTestCase.GetUniqueID">
+            <summary>
+            Gets the unique ID for the test case.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodTestCase.BytesToHexString(System.Byte[])">
+            <summary>Converts an array of bytes to its hexadecimal value as a string.</summary>
+            <param name="bytes">The bytes.</param>
+            <returns>A string containing the hexadecimal representation of the provided bytes.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodTestCase.NibbleToHexChar(System.Int32)">
+            <summary>Gets a hexadecimal digit character from the 4-bit value.</summary>
+            <param name="b">A value in the range [0, 15].</param>
+            <returns>A character in the range ['0','9'] or ['a','f'].</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodTestCase.Initialize">
+            <summary>
+            Called when initializing the test cases, either after constructor or de-serialization.
+            Override this method to add additional initialization-time work.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodTestCase.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodTestCase.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestOutputHelper">
+            <summary>
+            Default implementation of <see cref="T:Xunit.Abstractions.ITestOutputHelper"/>.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestOutputHelper.Output">
+            <summary>
+            Gets the output provided by the test.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestOutputHelper.Initialize(Xunit.Sdk.IMessageBus,Xunit.Abstractions.ITest)">
+            <summary>
+            Initialize the test output helper with information about a test.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestOutputHelper.Uninitialize">
+            <summary>
+            Resets the test output helper to its uninitialized state.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestOutputHelper.WriteLine(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestOutputHelper.WriteLine(System.String,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TheoryDiscoverer">
+            <summary>
+            Implementation of <see cref="T:Xunit.Sdk.IXunitTestCaseDiscoverer"/> that supports finding test cases
+            on methods decorated with <see cref="T:Xunit.TheoryAttribute"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TheoryDiscoverer.#ctor(Xunit.Abstractions.IMessageSink)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TheoryDiscoverer"/> class.
+            </summary>
+            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
+        </member>
+        <member name="P:Xunit.Sdk.TheoryDiscoverer.DiagnosticMessageSink">
+            <summary>
+            Gets the message sink to be used to send diagnostic messages.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[])">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCasesForDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[])">
+            <summary>
+            Creates test cases for a single row of data. By default, returns a single instance of <see cref="T:Xunit.Sdk.XunitTestCase"/>
+            with the data row inside of it.
+            </summary>
+            <param name="discoveryOptions">The discovery options to be used.</param>
+            <param name="testMethod">The test method the test cases belong to.</param>
+            <param name="theoryAttribute">The theory attribute attached to the test method.</param>
+            <param name="dataRow">The row of data for this test case.</param>
+            <returns>The test cases</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForSkip(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.String)">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCasesForSkip(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.String)">
+            <summary>
+            Creates test cases for a skipped theory. By default, returns a single instance of <see cref="T:Xunit.Sdk.XunitTestCase"/>
+            (which inherently discovers the skip reason via the fact attribute).
+            </summary>
+            <param name="discoveryOptions">The discovery options to be used.</param>
+            <param name="testMethod">The test method the test cases belong to.</param>
+            <param name="theoryAttribute">The theory attribute attached to the test method.</param>
+            <param name="skipReason">The skip reason that decorates <paramref name="theoryAttribute"/>.</param>
+            <returns>The test cases</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForTheory(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo)">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCasesForTheory(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo)">
+            <summary>
+            Creates test cases for the entire theory. This is used when one or more of the theory data items
+            are not serializable, or if the user has requested to skip theory pre-enumeration. By default,
+            returns a single instance of <see cref="T:Xunit.Sdk.XunitTheoryTestCase"/>, which performs the data discovery
+            at runtime.
+            </summary>
+            <param name="discoveryOptions">The discovery options to be used.</param>
+            <param name="testMethod">The test method the test cases belong to.</param>
+            <param name="theoryAttribute">The theory attribute attached to the test method.</param>
+            <returns>The test case</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForSkippedDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[],System.String)">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCasesForSkippedDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[],System.String)">
+            <summary>
+            Creates test cases for a single row of skipped data. By default, returns a single instance of <see cref="T:Xunit.Sdk.XunitSkippedDataRowTestCase"/>
+            with the data row inside of it.
+            </summary>
+            <remarks>If this method is overridden, the implementation will have to override <see cref="P:Xunit.Sdk.TestMethodTestCase.SkipReason"/> otherwise
+            the default behavior will look at the <see cref="T:Xunit.TheoryAttribute"/> and the test case will not be skipped.</remarks>
+            <param name="discoveryOptions">The discovery options to be used.</param>
+            <param name="testMethod">The test method the test cases belong to.</param>
+            <param name="theoryAttribute">The theory attribute attached to the test method.</param>
+            <param name="dataRow">The row of data for this test case.</param>
+            <param name="skipReason">The reason this test case is to be skipped</param>
+            <returns>The test cases</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TheoryDiscoverer.Discover(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo)">
+            <summary>
+            Discover test cases from a test method.
+            </summary>
+            <remarks>
+            This method performs the following steps:
+            - If the theory attribute is marked with Skip, returns the single test case from <see cref="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForSkip(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.String)"/>;
+            - If pre-enumeration is off, or any of the test data is non serializable, returns the single test case from <see cref="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForTheory(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo)"/>;
+            - If there is no theory data, returns a single test case of <see cref="T:Xunit.Sdk.ExecutionErrorTestCase"/> with the error in it;
+            - Otherwise, it returns one test case per data row, created by calling <see cref="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[])"/> or <see cref="M:Xunit.Sdk.TheoryDiscoverer.CreateTestCaseForSkippedDataRow(Xunit.Abstractions.ITestFrameworkDiscoveryOptions,Xunit.Abstractions.ITestMethod,Xunit.Abstractions.IAttributeInfo,System.Object[],System.String)"/> if the data attribute has a skip reason.
+            </remarks>
+            <param name="discoveryOptions">The discovery options to be used.</param>
+            <param name="testMethod">The test method the test cases belong to.</param>
+            <param name="theoryAttribute">The theory attribute attached to the test method.</param>
+            <returns>Returns zero or more test cases represented by the test method.</returns>
+        </member>
+        <member name="T:Xunit.Sdk.XunitSkippedDataRowTestCase">
+            <summary>
+            Represents a test case that had a valid data row, but the data row was generated by a data attribute with the skip property set.
+            </summary>
+            <remarks>This class is only ever used if the discoverer is pre-enumerating theories and the data row is serializable.</remarks>
+        </member>
+        <member name="M:Xunit.Sdk.XunitSkippedDataRowTestCase.#ctor">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.XunitSkippedDataRowTestCase.#ctor(Xunit.Abstractions.IMessageSink,Xunit.Sdk.TestMethodDisplay,Xunit.Abstractions.ITestMethod,System.String,System.Object[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitSkippedDataRowTestCase"/> class.
+            </summary>
+            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
+            <param name="defaultMethodDisplay">Default method display to use (when not customized).</param>
+            <param name="testMethod">The test method this test case belongs to.</param>
+            <param name="skipReason">The reason that this test case will be skipped</param>
+            <param name="testMethodArguments">The arguments for the test method.</param>
+        </member>
+        <member name="M:Xunit.Sdk.XunitSkippedDataRowTestCase.Deserialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.XunitSkippedDataRowTestCase.GetSkipReason(Xunit.Abstractions.IAttributeInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.XunitSkippedDataRowTestCase.Serialize(Xunit.Abstractions.IXunitSerializationInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.XunitTest">
+            <summary>
+            An implementation of <see cref="T:Xunit.Abstractions.ITest"/> for xUnit v2.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTest.#ctor(Xunit.Sdk.IXunitTestCase,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTest"/> class.
+            </summary>
+            <param name="testCase">The test case this test belongs to.</param>
+            <param name="displayName">The display name for this test.</param>
+        </member>
+        <member name="P:Xunit.Sdk.XunitTest.DisplayName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.XunitTest.TestCase">
+            <summary>
+            Gets the xUnit v2 test case.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.XunitTest.Xunit#Abstractions#ITest#TestCase">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.XunitTestCase">
+            <summary>
+            Default implementation of <see cref="T:Xunit.Sdk.IXunitTestCase"/> for xUnit v2 that supports tests decorated with
+            both <see cref="T:Xunit.FactAttribute"/> and <see cref="T:Xunit.TheoryAttribute"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestCase.#ctor">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestCase.#ctor(Xunit.Abstractions.IMessageSink,Xunit.Sdk.TestMethodDisplay,Xunit.Abstractions.ITestMethod,System.Object[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTestCase"/> class.
+            </summary>
+            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
+            <param name="defaultMethodDisplay">Default method display to use (when not customized).</param>
+            <param name="testMethod">The test method this test case belongs to.</param>
+            <param name="testMethodArguments">The arguments for the test method.</param>
+        </member>
+        <member name="P:Xunit.Sdk.XunitTestCase.DiagnosticMessageSink">
+            <summary>
+            Gets the message sink used to report <see cref="T:Xunit.Abstractions.IDiagnosticMessage"/> messages.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestCase.GetDisplayName(Xunit.Abstractions.IAttributeInfo,System.String)">
+            <summary>
+            Gets the display name for the test case. Calls <see cref="M:Xunit.Sdk.TypeUtility.GetDisplayNameWithArguments(Xunit.Abstractions.IMethodInfo,System.String,System.Object[],Xunit.Abstractions.ITypeInfo[])"/>
+            with the given base display name (which is itself either derived from <see cref="P:Xunit.FactAttribute.DisplayName"/>,
+            falling back to <see cref="P:Xunit.Sdk.TestMethodTestCase.BaseDisplayName"/>.
+            </summary>
+            <param name="factAttribute">The fact attribute the decorated the test case.</param>
+            <param name="displayName">The base display name from <see cref="P:Xunit.Sdk.TestMethodTestCase.BaseDisplayName"/>.</param>
+            <returns>The display name for the test case.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestCase.GetSkipReason(Xunit.Abstractions.IAttributeInfo)">
+            <summary>
+            Gets the skip reason for the test case. By default, pulls the skip reason from the
+            <see cref="P:Xunit.FactAttribute.Skip"/> property.
+            </summary>
+            <param name="factAttribute">The fact attribute the decorated the test case.</param>
+            <returns>The skip reason, if skipped; <c>null</c>, otherwise.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestCase.Initialize">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestCase.RunAsync(Xunit.Abstractions.IMessageSink,Xunit.Sdk.IMessageBus,System.Object[],Xunit.Sdk.ExceptionAggregator,System.Threading.CancellationTokenSource)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.XunitTestFramework">
+            <summary>
+            The implementation of <see cref="T:Xunit.Abstractions.ITestFramework"/> that supports discovery and
+            execution of unit tests linked against xunit.core.dll, using xunit.execution.dll.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFramework.#ctor(Xunit.Abstractions.IMessageSink)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTestFramework"/> class.
+            </summary>
+            <param name="messageSink">The message sink used to send diagnostic messages</param>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFramework.CreateDiscoverer(Xunit.Abstractions.IAssemblyInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFramework.CreateExecutor(System.Reflection.AssemblyName)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.XunitTestFrameworkDiscoverer">
+            <summary>
+            The implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkDiscoverer"/> that supports discovery
+            of unit tests linked against xunit.core.dll, using xunit.execution.dll.
+            </summary>
+        </member>
+        <member name="F:Xunit.Sdk.XunitTestFrameworkDiscoverer.DisplayName">
+            <summary>
+            Gets the display name of the xUnit.net v2 test framework.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFrameworkDiscoverer.#ctor(Xunit.Abstractions.IAssemblyInfo,Xunit.Abstractions.ISourceInformationProvider,Xunit.Abstractions.IMessageSink,Xunit.Sdk.IXunitTestCollectionFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTestFrameworkDiscoverer"/> class.
+            </summary>
+            <param name="assemblyInfo">The test assembly.</param>
+            <param name="sourceProvider">The source information provider.</param>
+            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
+            <param name="collectionFactory">The test collection factory used to look up test collections.</param>
+        </member>
+        <member name="P:Xunit.Sdk.XunitTestFrameworkDiscoverer.DiscovererTypeCache">
+            <summary>
+            Gets the mapping dictionary of fact attribute type to discoverer type.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.XunitTestFrameworkDiscoverer.TestCollectionFactory">
+            <summary>
+            Gets the test collection factory that makes test collections.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFrameworkDiscoverer.CreateTestClass(Xunit.Abstractions.ITypeInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFrameworkDiscoverer.FindTestsForMethod(Xunit.Abstractions.ITestMethod,System.Boolean,Xunit.Sdk.IMessageBus,Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
+            <summary>
+            Finds the tests on a test method.
+            </summary>
+            <param name="testMethod">The test method.</param>
+            <param name="includeSourceInformation">Set to <c>true</c> to indicate that source information should be included.</param>
+            <param name="messageBus">The message bus to report discovery messages to.</param>
+            <param name="discoveryOptions">The options used by the test framework during discovery.</param>
+            <returns>Return <c>true</c> to continue test discovery, <c>false</c>, otherwise.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFrameworkDiscoverer.FindTestsForType(Xunit.Abstractions.ITestClass,System.Boolean,Xunit.Sdk.IMessageBus,Xunit.Abstractions.ITestFrameworkDiscoveryOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFrameworkDiscoverer.GetDiscoverer(System.Type)">
+            <summary>
+            Gets the test case discover instance for the given discoverer type. The instances are cached
+            and reused, since they should not be stateful.
+            </summary>
+            <param name="discovererType">The discoverer type.</param>
+            <returns>Returns the test case discoverer instance.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFrameworkDiscoverer.Serialize(Xunit.Abstractions.ITestCase)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.XunitTestFrameworkExecutor">
+            <summary>
+            The implementation of <see cref="T:Xunit.Abstractions.ITestFrameworkExecutor"/> that supports execution
+            of unit tests linked against xunit.core.dll, using xunit.execution.dll.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFrameworkExecutor.#ctor(System.Reflection.AssemblyName,Xunit.Abstractions.ISourceInformationProvider,Xunit.Abstractions.IMessageSink)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTestFrameworkExecutor"/> class.
+            </summary>
+            <param name="assemblyName">Name of the test assembly.</param>
+            <param name="sourceInformationProvider">The source line number information provider.</param>
+            <param name="diagnosticMessageSink">The message sink to report diagnostic messages to.</param>
+        </member>
+        <member name="P:Xunit.Sdk.XunitTestFrameworkExecutor.TestAssembly">
+            <summary>
+            Gets the test assembly that contains the test.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFrameworkExecutor.CreateDiscoverer">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFrameworkExecutor.Deserialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTestFrameworkExecutor.RunTestCases(System.Collections.Generic.IEnumerable{Xunit.Sdk.IXunitTestCase},Xunit.Abstractions.IMessageSink,Xunit.Abstractions.ITestFrameworkExecutionOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.XunitTheoryTestCase">
+            <summary>
+            Represents a test case which runs multiple tests for theory data, either because the
+            data was not enumerable or because the data was not serializable.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTheoryTestCase.#ctor">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTheoryTestCase.#ctor(Xunit.Abstractions.IMessageSink,Xunit.Sdk.TestMethodDisplay,Xunit.Abstractions.ITestMethod)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.XunitTheoryTestCase"/> class.
+            </summary>
+            <param name="diagnosticMessageSink">The message sink used to send diagnostic messages</param>
+            <param name="defaultMethodDisplay">Default method display to use (when not customized).</param>
+            <param name="testMethod">The method under test.</param>
+        </member>
+        <member name="M:Xunit.Sdk.XunitTheoryTestCase.RunAsync(Xunit.Abstractions.IMessageSink,Xunit.Sdk.IMessageBus,System.Object[],Xunit.Sdk.ExceptionAggregator,System.Threading.CancellationTokenSource)">
+            <inheritdoc />
+        </member>
+        <member name="T:Xunit.Sdk.MaxConcurrencySyncContext">
+            <summary>
+            An implementation of <see cref="T:System.Threading.SynchronizationContext"/> which runs work on custom threads
+            rather than in the thread pool, and limits the number of in-flight actions.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.MaxConcurrencySyncContext.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.MaxConcurrencySyncContext"/> class.
+            </summary>
+            <param name="maximumConcurrencyLevel">The maximum number of tasks to run at any one time.</param>
+        </member>
+        <member name="P:Xunit.Sdk.MaxConcurrencySyncContext.IsSupported">
+            <summary>
+            Gets a flag indicating whether maximum concurrency is supported.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.MaxConcurrencySyncContext.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.MaxConcurrencySyncContext.Post(System.Threading.SendOrPostCallback,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.MaxConcurrencySyncContext.Send(System.Threading.SendOrPostCallback,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.MessageBus">
+            <summary>
+            This is an internal class, and is not intended to be called from end-user code.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.MessageBus.#ctor(Xunit.Abstractions.IMessageSink,System.Boolean)">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.MessageBus.Dispose">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.MessageBus.QueueMessage(Xunit.Abstractions.IMessageSinkMessage)">
+            <summary/>
         </member>
         <member name="T:Xunit.Sdk.DelegatingMessageBus">
             <summary>
@@ -2929,6 +2842,168 @@
             <param name="type">The type to wrap</param>
             <returns>The wrapper</returns>
         </member>
+        <member name="T:Xunit.Sdk.SynchronousMessageBus">
+            <summary>
+            This is an internal class, and is not intended to be called from end-user code.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.SynchronousMessageBus.#ctor(Xunit.Abstractions.IMessageSink)">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.SynchronousMessageBus.Dispose">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Sdk.SynchronousMessageBus.QueueMessage(Xunit.Abstractions.IMessageSinkMessage)">
+            <summary/>
+        </member>
+        <member name="T:Xunit.Sdk.TestCaseBulkDeserializer">
+            <summary>
+            INTERNAL CLASS. DO NOT USE.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestCaseBulkDeserializer.#ctor(System.Object,System.Object,System.Object,System.Object)">
+            <summary/>
+        </member>
+        <member name="T:Xunit.Sdk.TestCaseDescriptorFactory">
+            <summary>
+            INTERNAL CLASS. DO NOT USE.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestCaseDescriptorFactory.#ctor(System.Object,System.Object,System.Object)">
+            <summary/>
+        </member>
+        <member name="T:Xunit.Sdk.TestClassException">
+            <summary>
+            Represents an exception that happened during the process of a test class. This typically
+            means there were problems identifying the correct test class constructor, or problems
+            creating the fixture data for the test class.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestClassException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestClassException"/> class.
+            </summary>
+            <param name="message">The exception message.</param>
+        </member>
+        <member name="M:Xunit.Sdk.TestClassException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestDiscoveryVisitor.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.Sdk.TestDiscoveryVisitor.OnMessage(Xunit.Abstractions.IMessageSinkMessage)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestFrameworkTypeDiscoverer">
+            <summary>
+            The implementation of <see cref="T:Xunit.Sdk.ITestFrameworkTypeDiscoverer"/> that supports attributes
+            of type <see cref="T:Xunit.Sdk.TestFrameworkDiscovererAttribute"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestFrameworkTypeDiscoverer.GetTestFrameworkType(Xunit.Abstractions.IAttributeInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TraitHelper">
+            <summary>
+            A helper class to retrieve the traits from a method.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TraitHelper.GetTraits(System.Reflection.MemberInfo)">
+            <summary>
+            Get the traits from a method.
+            </summary>
+            <param name="member">The member (method, field, etc.) to get the traits for.</param>
+            <returns>A list of traits that are defined on the method.</returns>
+        </member>
+        <member name="T:Xunit.Sdk.TypeUtility">
+            <summary>
+            Extension methods for <see cref="T:Xunit.Abstractions.ITypeInfo"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TypeUtility.ConvertToSimpleTypeName(Xunit.Abstractions.ITypeInfo)">
+            <summary>
+            Converts a type into a name string.
+            </summary>
+            <param name="type">The type to convert.</param>
+            <returns>Name string of type.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TypeUtility.ResolveMethodArguments(System.Reflection.MethodBase,System.Object[])">
+            <summary>
+            Resolves argument values for the test method, including support for optional method
+            arguments.
+            </summary>
+            <param name="testMethod">The test method to resolve.</param>
+            <param name="arguments">The user-supplied method arguments.</param>
+            <returns>The argument values</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TypeUtility.GetDisplayNameWithArguments(Xunit.Abstractions.IMethodInfo,System.String,System.Object[],Xunit.Abstractions.ITypeInfo[])">
+            <summary>
+            Formulates the extended portion of the display name for a test method. For tests with no arguments, this will
+            return just the base name; for tests with arguments, attempts to format the arguments and appends the argument
+            list to the test name.
+            </summary>
+            <param name="method">The test method</param>
+            <param name="baseDisplayName">The base part of the display name</param>
+            <param name="arguments">The test method arguments</param>
+            <param name="genericTypes">The test method's generic types</param>
+            <returns>The full display name for the test method</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TypeUtility.ResolveGenericParameter(Xunit.Abstractions.ITypeInfo,Xunit.Abstractions.ITypeInfo,System.Type,System.Type@)">
+            <summary>
+            Resolves an individual generic type given an intended generic parameter type and the type of an object passed to that type.
+            </summary>
+            <param name="genericType">The generic type, e.g. T, to resolve.</param>
+            <param name="methodParameterType">The non-generic or open generic type, e.g. T, to try to match with the type of the object passed to that type.</param>
+            <param name="passedParameterType">The non-generic or closed generic type, e.g. string, used to resolve the method parameter.</param>
+            <param name="resultType">The resolved type, e.g. the parameters (T, T, string, typeof(object)) -> (T, T, string, typeof(string)).</param>
+            <returns>True if resolving was successful, else false.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TypeUtility.GetArrayElementTypeOrThis(System.Type)">
+            <summary>
+            Gets the ElementType of a type, only if it is an array.
+            </summary>
+            <param name="type">The type to get the ElementType of.</param>
+            <returns>If type is an array, the ElementType of the type, else the original type.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TypeUtility.StripElementType(Xunit.Abstractions.ITypeInfo,System.Boolean@)">
+            <summary>
+            Gets the underlying ElementType of a type, if the ITypeInfo supports reflection.
+            </summary>
+            <param name="type">The type to get the ElementType of.</param>
+            <param name="isArray">A flag indicating whether the type is an array.</param>
+            <returns>If type has an element type, underlying ElementType of a type, else the original type.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TypeUtility.ResolveMismatchedGenericArguments(Xunit.Abstractions.ITypeInfo,System.Type,Xunit.Abstractions.ITypeInfo[],System.Type@)">
+            <summary>
+            Resolves an individual generic type given an intended generic parameter type and the type of an object passed to that type. 
+            </summary>
+            <param name="genericType">The generic type, e.g. T, to resolve.</param>
+            <param name="passedParameterType">The non-generic or closed generic type, e.g. string, used to resolve the method parameter.</param>
+            <param name="methodGenericTypeArguments">The generic arguments of the open generic type to match with the passed parameter.</param>
+            <param name="resultType">The resolved type.</param>
+            <returns>True if resolving was successful, else false.</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TypeUtility.ResolveGenericType(Xunit.Abstractions.ITypeInfo,System.Object[],Xunit.Abstractions.IParameterInfo[])">
+            <summary>
+            Resolves a generic type for a test method. The test parameters (and associated parameter infos) are
+            used to determine the best matching generic type for the test method that can be satisfied by all
+            the generic parameters and their values.
+            </summary>
+            <param name="genericType">The generic type to be resolved</param>
+            <param name="parameters">The parameter values being passed to the test method</param>
+            <param name="parameterInfos">The parameter infos for the test method</param>
+            <returns>The best matching generic type</returns>
+        </member>
+        <member name="M:Xunit.Sdk.TypeUtility.ResolveGenericTypes(Xunit.Abstractions.IMethodInfo,System.Object[])">
+            <summary>
+            Resolves all the generic types for a test method. The test parameters are used to determine
+            the best matching generic types for the test method that can be satisfied by all
+            the generic parameters and their values.
+            </summary>
+            <param name="method">The test method</param>
+            <param name="parameters">The parameter values being passed to the test method</param>
+            <returns>The best matching generic types</returns>
+        </member>
         <member name="T:Xunit.Sdk.GeneralDigest">
             base implementation of MD4 family style digest as outlined in
             "Handbook of Applied Cryptography", pages 344 - 347.
@@ -3130,6 +3205,123 @@
             </summary>
         </member>
         <member name="P:Xunit.Sdk.AfterTestStarting.AttributeName">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestAssemblyMessage">
+            <summary>
+            Default implementation of <see cref="T:Xunit.Abstractions.ITestAssemblyMessage"/> and <see cref="T:Xunit.Abstractions.IExecutionMessage"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestAssemblyMessage.#ctor(System.Collections.Generic.IEnumerable{Xunit.Abstractions.ITestCase},Xunit.Abstractions.ITestAssembly)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestAssemblyMessage"/> class.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestAssemblyMessage.#ctor(Xunit.Abstractions.ITestCase,Xunit.Abstractions.ITestAssembly)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestAssemblyMessage"/> class.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestAssemblyMessage.TestAssembly">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestAssemblyMessage.TestCases">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestCaseMessage">
+            <summary>
+            Default implementation of <see cref="T:Xunit.Abstractions.ITestCaseMessage"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestCaseMessage.#ctor(Xunit.Abstractions.ITestCase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestCaseMessage"/> class.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestCaseMessage.TestCase">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestClassMessage">
+            <summary>
+            Default implementation of <see cref="T:Xunit.Abstractions.ITestClassMessage"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestClassMessage.#ctor(System.Collections.Generic.IEnumerable{Xunit.Abstractions.ITestCase},Xunit.Abstractions.ITestClass)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestClassMessage"/> class.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestClassMessage.#ctor(Xunit.Abstractions.ITestCase,Xunit.Abstractions.ITestClass)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestClassMessage"/> class.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestClassMessage.TestClass">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestCollectionMessage">
+            <summary>
+            Default implementation of <see cref="T:Xunit.Abstractions.ITestCollectionMessage"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestCollectionMessage.#ctor(System.Collections.Generic.IEnumerable{Xunit.Abstractions.ITestCase},Xunit.Abstractions.ITestCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestCollectionMessage"/> class.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestCollectionMessage.#ctor(Xunit.Abstractions.ITestCase,Xunit.Abstractions.ITestCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestCollectionMessage"/> class.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestCollectionMessage.TestCollection">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestMessage">
+            <summary>
+            Default implementation of <see cref="T:Xunit.Abstractions.ITestMessage"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestMessage.#ctor(Xunit.Abstractions.ITest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestMessage"/> class.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestMessage.Test">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestMethodMessage">
+            <summary>
+            Default implementation of <see cref="T:Xunit.Abstractions.ITestMethodMessage"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodMessage.#ctor(System.Collections.Generic.IEnumerable{Xunit.Abstractions.ITestCase},Xunit.Abstractions.ITestMethod)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestMethodMessage"/> class.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestMethodMessage.#ctor(Xunit.Abstractions.ITestCase,Xunit.Abstractions.ITestMethod)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestMethodMessage"/> class.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestMethodMessage.TestMethod">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.Sdk.TestResultMessage">
+            <summary>
+            Default implementation of <see cref="T:Xunit.Abstractions.ITestResultMessage"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.Sdk.TestResultMessage.#ctor(Xunit.Abstractions.ITest,System.Decimal,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestResultMessage"/> class.
+            </summary>
+        </member>
+        <member name="P:Xunit.Sdk.TestResultMessage.ExecutionTime">
+            <inheritdoc/>
+        </member>
+        <member name="P:Xunit.Sdk.TestResultMessage.Output">
             <inheritdoc/>
         </member>
         <member name="T:Xunit.Sdk.BeforeTestFinished">
@@ -3691,123 +3883,6 @@
             <summary>
             Initializes a new instance of the <see cref="T:Xunit.Sdk.TestStarting"/> class.
             </summary>
-        </member>
-        <member name="T:Xunit.Sdk.TestAssemblyMessage">
-            <summary>
-            Default implementation of <see cref="T:Xunit.Abstractions.ITestAssemblyMessage"/> and <see cref="T:Xunit.Abstractions.IExecutionMessage"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestAssemblyMessage.#ctor(System.Collections.Generic.IEnumerable{Xunit.Abstractions.ITestCase},Xunit.Abstractions.ITestAssembly)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestAssemblyMessage"/> class.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestAssemblyMessage.#ctor(Xunit.Abstractions.ITestCase,Xunit.Abstractions.ITestAssembly)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestAssemblyMessage"/> class.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestAssemblyMessage.TestAssembly">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestAssemblyMessage.TestCases">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestCaseMessage">
-            <summary>
-            Default implementation of <see cref="T:Xunit.Abstractions.ITestCaseMessage"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestCaseMessage.#ctor(Xunit.Abstractions.ITestCase)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestCaseMessage"/> class.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestCaseMessage.TestCase">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestClassMessage">
-            <summary>
-            Default implementation of <see cref="T:Xunit.Abstractions.ITestClassMessage"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestClassMessage.#ctor(System.Collections.Generic.IEnumerable{Xunit.Abstractions.ITestCase},Xunit.Abstractions.ITestClass)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestClassMessage"/> class.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestClassMessage.#ctor(Xunit.Abstractions.ITestCase,Xunit.Abstractions.ITestClass)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestClassMessage"/> class.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestClassMessage.TestClass">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestCollectionMessage">
-            <summary>
-            Default implementation of <see cref="T:Xunit.Abstractions.ITestCollectionMessage"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestCollectionMessage.#ctor(System.Collections.Generic.IEnumerable{Xunit.Abstractions.ITestCase},Xunit.Abstractions.ITestCollection)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestCollectionMessage"/> class.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestCollectionMessage.#ctor(Xunit.Abstractions.ITestCase,Xunit.Abstractions.ITestCollection)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestCollectionMessage"/> class.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestCollectionMessage.TestCollection">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestMessage">
-            <summary>
-            Default implementation of <see cref="T:Xunit.Abstractions.ITestMessage"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestMessage.#ctor(Xunit.Abstractions.ITest)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestMessage"/> class.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestMessage.Test">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestMethodMessage">
-            <summary>
-            Default implementation of <see cref="T:Xunit.Abstractions.ITestMethodMessage"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodMessage.#ctor(System.Collections.Generic.IEnumerable{Xunit.Abstractions.ITestCase},Xunit.Abstractions.ITestMethod)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestMethodMessage"/> class.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestMethodMessage.#ctor(Xunit.Abstractions.ITestCase,Xunit.Abstractions.ITestMethod)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestMethodMessage"/> class.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestMethodMessage.TestMethod">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.Sdk.TestResultMessage">
-            <summary>
-            Default implementation of <see cref="T:Xunit.Abstractions.ITestResultMessage"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.Sdk.TestResultMessage.#ctor(Xunit.Abstractions.ITest,System.Decimal,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.Sdk.TestResultMessage"/> class.
-            </summary>
-        </member>
-        <member name="P:Xunit.Sdk.TestResultMessage.ExecutionTime">
-            <inheritdoc/>
-        </member>
-        <member name="P:Xunit.Sdk.TestResultMessage.Output">
-            <inheritdoc/>
         </member>
         <member name="T:Xunit.Sdk.ArgumentFormatter">
             <summary>

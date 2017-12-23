@@ -68,7 +68,7 @@
         </member>
         <member name="T:Xunit.CollectionBehaviorAttribute">
             <summary>
-            Used to declare a the default test collection behavior for the assembly.
+            Used to declare the default test collection behavior for the assembly.
             </summary>
         </member>
         <member name="M:Xunit.CollectionBehaviorAttribute.#ctor">
@@ -114,6 +114,20 @@
             Initializes a new instance of the <see cref="T:Xunit.CollectionDefinitionAttribute" /> class.
             </summary>
             <param name="name">The test collection name.</param>
+        </member>
+        <member name="P:Xunit.CollectionDefinitionAttribute.DisableParallelization">
+            <summary>
+            Determines whether tests in this collection runs in parallel with any other collections.
+            </summary>
+        </member>
+        <member name="T:Xunit.Extensions.PropertyDataAttribute">
+            <summary/>
+        </member>
+        <member name="M:Xunit.Extensions.PropertyDataAttribute.#ctor(System.String)">
+            <summary/>
+        </member>
+        <member name="P:Xunit.Extensions.PropertyDataAttribute.PropertyType">
+            <summary/>
         </member>
         <member name="T:Xunit.FactAttribute">
             <summary>
@@ -236,7 +250,7 @@
         <member name="T:Xunit.MemberDataAttributeBase">
             <summary>
             Provides a base class for attributes that will provide member data. The member data must return
-            something compatible with <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            something compatible with <see cref="T:System.Collections.IEnumerable"/>.
             Caution: the property is completely enumerated by .ToList() before any test is run. Hence it should return independent object sets.
             </summary>
         </member>
@@ -290,7 +304,7 @@
             <summary>
             Records any exception which is thrown by the given code.
             </summary>
-            <param name="testCode">The code which may thrown an exception.</param>
+            <param name="testCode">The code which may throw an exception.</param>
             <returns>Returns the exception that was thrown by the code; null, otherwise.</returns>
         </member>
         <member name="M:Xunit.Record.Exception(System.Func{System.Object})">
@@ -298,7 +312,7 @@
             Records any exception which is thrown by the given code that has
             a return value. Generally used for testing property accessors.
             </summary>
-            <param name="testCode">The code which may thrown an exception.</param>
+            <param name="testCode">The code which may throw an exception.</param>
             <returns>Returns the exception that was thrown by the code; null, otherwise.</returns>
         </member>
         <member name="M:Xunit.Record.Exception(System.Func{System.Threading.Tasks.Task})">
@@ -308,182 +322,10 @@
             <summary>
             Records any exception which is thrown by the given task.
             </summary>
-            <param name="testCode">The task which may thrown an exception.</param>
+            <param name="testCode">The task which may throw an exception.</param>
             <returns>Returns the exception that was thrown by the code; null, otherwise.</returns>
         </member>
         <member name="M:Xunit.Record.GuardArgumentNotNull(System.String,System.Object)">
-            <summary/>
-        </member>
-        <member name="T:Xunit.TestCaseOrdererAttribute">
-            <summary>
-            Used to decorate an assembly, test collection, or test class to allow
-            the use a custom <see cref="T:Xunit.Sdk.ITestCaseOrderer"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.TestCaseOrdererAttribute.#ctor(System.String,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.TestCaseOrdererAttribute"/> class.
-            </summary>
-            <param name="ordererTypeName">The type name of the orderer class (that implements <see cref="T:Xunit.Sdk.ITestCaseOrderer"/>).</param>
-            <param name="ordererAssemblyName">The assembly that <paramref name="ordererTypeName"/> exists in.</param>
-        </member>
-        <member name="T:Xunit.TestCollectionOrdererAttribute">
-            <summary>
-            Used to decorate an assembly to allow the use a custom <see cref="T:Xunit.Sdk.ITestCollectionOrderer"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.TestCollectionOrdererAttribute.#ctor(System.String,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Xunit.TestCollectionOrdererAttribute"/> class.
-            </summary>
-            <param name="ordererTypeName">The type name of the orderer class (that implements <see cref="T:Xunit.Sdk.ITestCollectionOrderer"/>).</param>
-            <param name="ordererAssemblyName">The assembly that <paramref name="ordererTypeName"/> exists in.</param>
-        </member>
-        <member name="T:Xunit.TestFrameworkAttribute">
-            <summary>
-            Used to decorate an assembly to allow the use a custom <see cref="T:Xunit.Sdk.ITestFramework"/>.
-            </summary>
-        </member>
-        <member name="M:Xunit.TestFrameworkAttribute.#ctor(System.String,System.String)">
-            <summary>
-            Initializes an instance of <see cref="T:Xunit.TestFrameworkAttribute"/>.
-            </summary>
-            <param name="typeName">The fully qualified type name of the test framework
-            (f.e., 'Xunit.Sdk.XunitTestFramework')</param>
-            <param name="assemblyName">The name of the assembly that the test framework type
-            is located in, without file extension (f.e., 'xunit.execution')</param>
-        </member>
-        <member name="T:Xunit.TheoryAttribute">
-            <summary>
-            Marks a test method as being a data theory. Data theories are tests which are fed
-            various bits of data from a data source, mapping to parameters on the test method.
-            If the data source contains multiple rows, then the test method is executed
-            multiple times (once with each data row). Data is provided by attributes which
-            derive from <see cref="T:Xunit.Sdk.DataAttribute"/> (notably, <see cref="T:Xunit.InlineDataAttribute"/> and
-            <see cref="T:Xunit.MemberDataAttribute"/>).
-            </summary>
-        </member>
-        <member name="T:Xunit.TheoryData">
-            <summary>
-            Provides data for theories based on collection initialization syntax.
-            </summary>
-        </member>
-        <member name="M:Xunit.TheoryData.AddRow(System.Object[])">
-            <summary>
-            Adds a row to the theory.
-            </summary>
-            <param name="values">The values to be added.</param>
-        </member>
-        <member name="M:Xunit.TheoryData.GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="M:Xunit.TheoryData.System#Collections#IEnumerable#GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="T:Xunit.TheoryData`1">
-            <summary>
-            Represents a set of data for a theory with a single parameter. Data can
-            be added to the data set using the collection initializer syntax.
-            </summary>
-            <typeparam name="T">The parameter type.</typeparam>
-        </member>
-        <member name="M:Xunit.TheoryData`1.Add(`0)">
-            <summary>
-            Adds data to the theory data set.
-            </summary>
-            <param name="p">The data value.</param>
-        </member>
-        <member name="T:Xunit.TheoryData`2">
-            <summary>
-            Represents a set of data for a theory with 2 parameters. Data can
-            be added to the data set using the collection initializer syntax.
-            </summary>
-            <typeparam name="T1">The first parameter type.</typeparam>
-            <typeparam name="T2">The second parameter type.</typeparam>
-        </member>
-        <member name="M:Xunit.TheoryData`2.Add(`0,`1)">
-            <summary>
-            Adds data to the theory data set.
-            </summary>
-            <param name="p1">The first data value.</param>
-            <param name="p2">The second data value.</param>
-        </member>
-        <member name="T:Xunit.TheoryData`3">
-            <summary>
-            Represents a set of data for a theory with 3 parameters. Data can
-            be added to the data set using the collection initializer syntax.
-            </summary>
-            <typeparam name="T1">The first parameter type.</typeparam>
-            <typeparam name="T2">The second parameter type.</typeparam>
-            <typeparam name="T3">The third parameter type.</typeparam>
-        </member>
-        <member name="M:Xunit.TheoryData`3.Add(`0,`1,`2)">
-            <summary>
-            Adds data to the theory data set.
-            </summary>
-            <param name="p1">The first data value.</param>
-            <param name="p2">The second data value.</param>
-            <param name="p3">The third data value.</param>
-        </member>
-        <member name="T:Xunit.TheoryData`4">
-            <summary>
-            Represents a set of data for a theory with 3 parameters. Data can
-            be added to the data set using the collection initializer syntax.
-            </summary>
-            <typeparam name="T1">The first parameter type.</typeparam>
-            <typeparam name="T2">The second parameter type.</typeparam>
-            <typeparam name="T3">The third parameter type.</typeparam>
-            <typeparam name="T4">The fourth parameter type.</typeparam>
-        </member>
-        <member name="M:Xunit.TheoryData`4.Add(`0,`1,`2,`3)">
-            <summary>
-            Adds data to the theory data set.
-            </summary>
-            <param name="p1">The first data value.</param>
-            <param name="p2">The second data value.</param>
-            <param name="p3">The third data value.</param>
-            <param name="p4">The fourth data value.</param>
-        </member>
-        <member name="T:Xunit.TheoryData`5">
-            <summary>
-            Represents a set of data for a theory with 3 parameters. Data can
-            be added to the data set using the collection initializer syntax.
-            </summary>
-            <typeparam name="T1">The first parameter type.</typeparam>
-            <typeparam name="T2">The second parameter type.</typeparam>
-            <typeparam name="T3">The third parameter type.</typeparam>
-            <typeparam name="T4">The fourth parameter type.</typeparam>
-            <typeparam name="T5">The fifth parameter type.</typeparam>
-        </member>
-        <member name="M:Xunit.TheoryData`5.Add(`0,`1,`2,`3,`4)">
-            <summary>
-            Adds data to the theory data set.
-            </summary>
-            <param name="p1">The first data value.</param>
-            <param name="p2">The second data value.</param>
-            <param name="p3">The third data value.</param>
-            <param name="p4">The fourth data value.</param>
-            <param name="p5">The fifth data value.</param>
-        </member>
-        <member name="T:Xunit.TraitAttribute">
-            <summary>
-            Attribute used to decorate a test method with arbitrary name/value pairs ("traits").
-            </summary>
-        </member>
-        <member name="M:Xunit.TraitAttribute.#ctor(System.String,System.String)">
-            <summary>
-            Creates a new instance of the <see cref="T:Xunit.TraitAttribute"/> class.
-            </summary>
-            <param name="name">The trait name</param>
-            <param name="value">The trait value</param>
-        </member>
-        <member name="T:Xunit.Extensions.PropertyDataAttribute">
-            <summary/>
-        </member>
-        <member name="M:Xunit.Extensions.PropertyDataAttribute.#ctor(System.String)">
-            <summary/>
-        </member>
-        <member name="P:Xunit.Extensions.PropertyDataAttribute.PropertyType">
             <summary/>
         </member>
         <member name="T:Xunit.Sdk.AssemblyTraitDiscoverer">
@@ -629,7 +471,7 @@
             passed to the <see cref="M:Xunit.Sdk.ExceptionAggregator.Run(System.Action)"/> or <see cref="M:Xunit.Sdk.ExceptionAggregator.RunAsync(System.Func{System.Threading.Tasks.Task})"/> method.
             </summary>
             <returns>Returns <c>null</c> if no exceptions were thrown; returns the
-            exact exception is a single exception was thrown; returns <see cref="T:System.AggregateException"/>
+            exact exception if a single exception was thrown; returns <see cref="T:System.AggregateException"/>
             if more than one exception was thrown.</returns>
         </member>
         <member name="T:Xunit.Sdk.IDataDiscoverer">
@@ -993,6 +835,304 @@
         </member>
         <member name="M:Xunit.Sdk.AssertEqualityComparerAdapter`1.GetHashCode(System.Object)">
             <inheritdoc/>
+        </member>
+        <member name="T:Xunit.TestCaseOrdererAttribute">
+            <summary>
+            Used to decorate an assembly, test collection, or test class to allow
+            the use of a custom <see cref="T:Xunit.Sdk.ITestCaseOrderer"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.TestCaseOrdererAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.TestCaseOrdererAttribute"/> class.
+            </summary>
+            <param name="ordererTypeName">The type name of the orderer class (that implements <see cref="T:Xunit.Sdk.ITestCaseOrderer"/>).</param>
+            <param name="ordererAssemblyName">The assembly that <paramref name="ordererTypeName"/> exists in.</param>
+        </member>
+        <member name="T:Xunit.TestCollectionOrdererAttribute">
+            <summary>
+            Used to decorate an assembly to allow the use of a custom <see cref="T:Xunit.Sdk.ITestCollectionOrderer"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.TestCollectionOrdererAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Xunit.TestCollectionOrdererAttribute"/> class.
+            </summary>
+            <param name="ordererTypeName">The type name of the orderer class (that implements <see cref="T:Xunit.Sdk.ITestCollectionOrderer"/>).</param>
+            <param name="ordererAssemblyName">The assembly that <paramref name="ordererTypeName"/> exists in.</param>
+        </member>
+        <member name="T:Xunit.TestFrameworkAttribute">
+            <summary>
+            Used to decorate an assembly to allow the use of a custom <see cref="T:Xunit.Sdk.ITestFramework"/>.
+            </summary>
+        </member>
+        <member name="M:Xunit.TestFrameworkAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Initializes an instance of <see cref="T:Xunit.TestFrameworkAttribute"/>.
+            </summary>
+            <param name="typeName">The fully qualified type name of the test framework
+            (f.e., 'Xunit.Sdk.XunitTestFramework')</param>
+            <param name="assemblyName">The name of the assembly that the test framework type
+            is located in, without file extension (f.e., 'xunit.execution')</param>
+        </member>
+        <member name="T:Xunit.TheoryAttribute">
+            <summary>
+            Marks a test method as being a data theory. Data theories are tests which are fed
+            various bits of data from a data source, mapping to parameters on the test method.
+            If the data source contains multiple rows, then the test method is executed
+            multiple times (once with each data row). Data is provided by attributes which
+            derive from <see cref="T:Xunit.Sdk.DataAttribute"/> (notably, <see cref="T:Xunit.InlineDataAttribute"/> and
+            <see cref="T:Xunit.MemberDataAttribute"/>).
+            </summary>
+        </member>
+        <member name="T:Xunit.TheoryData">
+            <summary>
+            Provides data for theories based on collection initialization syntax.
+            </summary>
+        </member>
+        <member name="M:Xunit.TheoryData.AddRow(System.Object[])">
+            <summary>
+            Adds a row to the theory.
+            </summary>
+            <param name="values">The values to be added.</param>
+        </member>
+        <member name="M:Xunit.TheoryData.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:Xunit.TheoryData.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="T:Xunit.TheoryData`1">
+            <summary>
+            Represents a set of data for a theory with a single parameter. Data can
+            be added to the data set using the collection initializer syntax.
+            </summary>
+            <typeparam name="T">The parameter type.</typeparam>
+        </member>
+        <member name="M:Xunit.TheoryData`1.Add(`0)">
+            <summary>
+            Adds data to the theory data set.
+            </summary>
+            <param name="p">The data value.</param>
+        </member>
+        <member name="T:Xunit.TheoryData`2">
+            <summary>
+            Represents a set of data for a theory with 2 parameters. Data can
+            be added to the data set using the collection initializer syntax.
+            </summary>
+            <typeparam name="T1">The first parameter type.</typeparam>
+            <typeparam name="T2">The second parameter type.</typeparam>
+        </member>
+        <member name="M:Xunit.TheoryData`2.Add(`0,`1)">
+            <summary>
+            Adds data to the theory data set.
+            </summary>
+            <param name="p1">The first data value.</param>
+            <param name="p2">The second data value.</param>
+        </member>
+        <member name="T:Xunit.TheoryData`3">
+            <summary>
+            Represents a set of data for a theory with 3 parameters. Data can
+            be added to the data set using the collection initializer syntax.
+            </summary>
+            <typeparam name="T1">The first parameter type.</typeparam>
+            <typeparam name="T2">The second parameter type.</typeparam>
+            <typeparam name="T3">The third parameter type.</typeparam>
+        </member>
+        <member name="M:Xunit.TheoryData`3.Add(`0,`1,`2)">
+            <summary>
+            Adds data to the theory data set.
+            </summary>
+            <param name="p1">The first data value.</param>
+            <param name="p2">The second data value.</param>
+            <param name="p3">The third data value.</param>
+        </member>
+        <member name="T:Xunit.TheoryData`4">
+            <summary>
+            Represents a set of data for a theory with 4 parameters. Data can
+            be added to the data set using the collection initializer syntax.
+            </summary>
+            <typeparam name="T1">The first parameter type.</typeparam>
+            <typeparam name="T2">The second parameter type.</typeparam>
+            <typeparam name="T3">The third parameter type.</typeparam>
+            <typeparam name="T4">The fourth parameter type.</typeparam>
+        </member>
+        <member name="M:Xunit.TheoryData`4.Add(`0,`1,`2,`3)">
+            <summary>
+            Adds data to the theory data set.
+            </summary>
+            <param name="p1">The first data value.</param>
+            <param name="p2">The second data value.</param>
+            <param name="p3">The third data value.</param>
+            <param name="p4">The fourth data value.</param>
+        </member>
+        <member name="T:Xunit.TheoryData`5">
+            <summary>
+            Represents a set of data for a theory with 5 parameters. Data can
+            be added to the data set using the collection initializer syntax.
+            </summary>
+            <typeparam name="T1">The first parameter type.</typeparam>
+            <typeparam name="T2">The second parameter type.</typeparam>
+            <typeparam name="T3">The third parameter type.</typeparam>
+            <typeparam name="T4">The fourth parameter type.</typeparam>
+            <typeparam name="T5">The fifth parameter type.</typeparam>
+        </member>
+        <member name="M:Xunit.TheoryData`5.Add(`0,`1,`2,`3,`4)">
+            <summary>
+            Adds data to the theory data set.
+            </summary>
+            <param name="p1">The first data value.</param>
+            <param name="p2">The second data value.</param>
+            <param name="p3">The third data value.</param>
+            <param name="p4">The fourth data value.</param>
+            <param name="p5">The fifth data value.</param>
+        </member>
+        <member name="T:Xunit.TheoryData`6">
+            <summary>
+            Represents a set of data for a theory with 5 parameters. Data can
+            be added to the data set using the collection initializer syntax.
+            </summary>
+            <typeparam name="T1">The first parameter type.</typeparam>
+            <typeparam name="T2">The second parameter type.</typeparam>
+            <typeparam name="T3">The third parameter type.</typeparam>
+            <typeparam name="T4">The fourth parameter type.</typeparam>
+            <typeparam name="T5">The fifth parameter type.</typeparam>
+            <typeparam name="T6">The sixth parameter type.</typeparam>
+        </member>
+        <member name="M:Xunit.TheoryData`6.Add(`0,`1,`2,`3,`4,`5)">
+            <summary>
+            Adds data to the theory data set.
+            </summary>
+            <param name="p1">The first data value.</param>
+            <param name="p2">The second data value.</param>
+            <param name="p3">The third data value.</param>
+            <param name="p4">The fourth data value.</param>
+            <param name="p5">The fifth data value.</param>
+            <param name="p6">The sixth data value.</param>
+        </member>
+        <member name="T:Xunit.TheoryData`7">
+            <summary>
+            Represents a set of data for a theory with 5 parameters. Data can
+            be added to the data set using the collection initializer syntax.
+            </summary>
+            <typeparam name="T1">The first parameter type.</typeparam>
+            <typeparam name="T2">The second parameter type.</typeparam>
+            <typeparam name="T3">The third parameter type.</typeparam>
+            <typeparam name="T4">The fourth parameter type.</typeparam>
+            <typeparam name="T5">The fifth parameter type.</typeparam>
+            <typeparam name="T6">The sixth parameter type.</typeparam>
+            <typeparam name="T7">The seventh parameter type.</typeparam>
+        </member>
+        <member name="M:Xunit.TheoryData`7.Add(`0,`1,`2,`3,`4,`5,`6)">
+            <summary>
+            Adds data to the theory data set.
+            </summary>
+            <param name="p1">The first data value.</param>
+            <param name="p2">The second data value.</param>
+            <param name="p3">The third data value.</param>
+            <param name="p4">The fourth data value.</param>
+            <param name="p5">The fifth data value.</param>
+            <param name="p6">The sixth data value.</param>
+            <param name="p7">The seventh data value.</param>
+        </member>
+        <member name="T:Xunit.TheoryData`8">
+            <summary>
+            Represents a set of data for a theory with 5 parameters. Data can
+            be added to the data set using the collection initializer syntax.
+            </summary>
+            <typeparam name="T1">The first parameter type.</typeparam>
+            <typeparam name="T2">The second parameter type.</typeparam>
+            <typeparam name="T3">The third parameter type.</typeparam>
+            <typeparam name="T4">The fourth parameter type.</typeparam>
+            <typeparam name="T5">The fifth parameter type.</typeparam>
+            <typeparam name="T6">The sixth parameter type.</typeparam>
+            <typeparam name="T7">The seventh parameter type.</typeparam>
+            <typeparam name="T8">The eigth parameter type.</typeparam>
+        </member>
+        <member name="M:Xunit.TheoryData`8.Add(`0,`1,`2,`3,`4,`5,`6,`7)">
+            <summary>
+            Adds data to the theory data set.
+            </summary>
+            <param name="p1">The first data value.</param>
+            <param name="p2">The second data value.</param>
+            <param name="p3">The third data value.</param>
+            <param name="p4">The fourth data value.</param>
+            <param name="p5">The fifth data value.</param>
+            <param name="p6">The sixth data value.</param>
+            <param name="p7">The seventh data value.</param>
+            <param name="p8">The eigth data value.</param>
+        </member>
+        <member name="T:Xunit.TheoryData`9">
+            <summary>
+            Represents a set of data for a theory with 5 parameters. Data can
+            be added to the data set using the collection initializer syntax.
+            </summary>
+            <typeparam name="T1">The first parameter type.</typeparam>
+            <typeparam name="T2">The second parameter type.</typeparam>
+            <typeparam name="T3">The third parameter type.</typeparam>
+            <typeparam name="T4">The fourth parameter type.</typeparam>
+            <typeparam name="T5">The fifth parameter type.</typeparam>
+            <typeparam name="T6">The sixth parameter type.</typeparam>
+            <typeparam name="T7">The seventh parameter type.</typeparam>
+            <typeparam name="T8">The eigth parameter type.</typeparam>
+            <typeparam name="T9">The nineth parameter type.</typeparam>
+        </member>
+        <member name="M:Xunit.TheoryData`9.Add(`0,`1,`2,`3,`4,`5,`6,`7,`8)">
+            <summary>
+            Adds data to the theory data set.
+            </summary>
+            <param name="p1">The first data value.</param>
+            <param name="p2">The second data value.</param>
+            <param name="p3">The third data value.</param>
+            <param name="p4">The fourth data value.</param>
+            <param name="p5">The fifth data value.</param>
+            <param name="p6">The sixth data value.</param>
+            <param name="p7">The seventh data value.</param>
+            <param name="p8">The eigth data value.</param>
+            <param name="p9">The nineth data value.</param>
+        </member>
+        <member name="T:Xunit.TheoryData`10">
+            <summary>
+            Represents a set of data for a theory with 5 parameters. Data can
+            be added to the data set using the collection initializer syntax.
+            </summary>
+            <typeparam name="T1">The first parameter type.</typeparam>
+            <typeparam name="T2">The second parameter type.</typeparam>
+            <typeparam name="T3">The third parameter type.</typeparam>
+            <typeparam name="T4">The fourth parameter type.</typeparam>
+            <typeparam name="T5">The fifth parameter type.</typeparam>
+            <typeparam name="T6">The sixth parameter type.</typeparam>
+            <typeparam name="T7">The seventh parameter type.</typeparam>
+            <typeparam name="T8">The eigth parameter type.</typeparam>
+            <typeparam name="T9">The nineth parameter type.</typeparam>
+            <typeparam name="T10">The tenth parameter type.</typeparam>
+        </member>
+        <member name="M:Xunit.TheoryData`10.Add(`0,`1,`2,`3,`4,`5,`6,`7,`8,`9)">
+            <summary>
+            Adds data to the theory data set.
+            </summary>
+            <param name="p1">The first data value.</param>
+            <param name="p2">The second data value.</param>
+            <param name="p3">The third data value.</param>
+            <param name="p4">The fourth data value.</param>
+            <param name="p5">The fifth data value.</param>
+            <param name="p6">The sixth data value.</param>
+            <param name="p7">The seventh data value.</param>
+            <param name="p8">The eigth data value.</param>
+            <param name="p9">The nineth data value.</param>
+            <param name="p10">The tenth data value.</param>
+        </member>
+        <member name="T:Xunit.TraitAttribute">
+            <summary>
+            Attribute used to decorate a test method with arbitrary name/value pairs ("traits").
+            </summary>
+        </member>
+        <member name="M:Xunit.TraitAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Xunit.TraitAttribute"/> class.
+            </summary>
+            <param name="name">The trait name</param>
+            <param name="value">The trait value</param>
         </member>
         <member name="M:ExceptionExtensions.RethrowWithNoStackTraceLoss(System.Exception)">
             <summary>
