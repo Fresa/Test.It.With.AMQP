@@ -9,9 +9,9 @@ namespace Test.It.With.Amqp.Expectations
 
         bool ShouldPass(int channel, IMethod method);
 
-        bool ShouldPass(int channel, IContentHeader contentHeader, Type type, out IContentMethod method);
+        bool ShouldPass(int channel, IContentHeader contentHeader, out IContentMethod method);
 
-        bool ShouldPass(int channel, IContentBody contentBody, Type type, out IContentMethod method);
+        bool ShouldPass(int channel, IContentBody contentBody, out IContentMethod method);
 
         bool ShouldPass(int channel, IHeartbeat method);
     }

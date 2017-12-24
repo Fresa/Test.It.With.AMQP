@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Test.It.With.Amqp.Expectations;
@@ -87,7 +86,7 @@ namespace Test.It.With.Amqp.Extensions
         }
         
 
-        public bool ShouldPass(int channel, IContentHeader contentHeader, Type type, out IContentMethod method)
+        public bool ShouldPass(int channel, IContentHeader contentHeader, out IContentMethod method)
         {
             if (contentHeader.SentOnValidChannel(channel) == false)
             {
@@ -99,13 +98,7 @@ namespace Test.It.With.Amqp.Extensions
                 method = default;
                 return false;
             }
-
-            if (_contentMethodStates[channel].GetType() != type)
-            {
-                method = default;
-                return false;
-            }
-
+            
             _contentMethodStates[channel].SetContentHeader(contentHeader);
 
             if (contentHeader.BodySize > 0)
@@ -118,11 +111,11 @@ namespace Test.It.With.Amqp.Extensions
             method = _contentMethodStates[channel];
             _contentMethodStates.Remove(channel);
 
-            _expectationManager.Set(channel, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor(type)));
+            _expectationManager.Set(channel, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor(method.GetType())));
             return true;
         }
 
-        public bool ShouldPass(int channel, IContentBody contentBody, Type type, out IContentMethod method)
+        public bool ShouldPass(int channel, IContentBody contentBody, out IContentMethod method)
         {
             if (contentBody.SentOnValidChannel(channel) == false)
             {
@@ -136,13 +129,7 @@ namespace Test.It.With.Amqp.Extensions
             }
             
             var contentBodyExpectation = _expectationManager.Get<ContentBodyExpectation>(channel);
-
-            if (_contentMethodStates[channel].GetType() != type)
-            {
-                method = default;
-                return false;
-            }
-
+            
             var size = contentBody.Payload.Length;
             if (size > contentBodyExpectation.Size)
             {
@@ -158,8 +145,8 @@ namespace Test.It.With.Amqp.Extensions
 
             if (size == contentBodyExpectation.Size)
             {
-                _expectationManager.Set(channel, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor(type)));
                 method = _contentMethodStates[channel];
+                _expectationManager.Set(channel, new MethodExpectation(_expectedMethodManager.GetExpectingMethodsFor(method.GetType())));
                 _contentMethodStates.Remove(channel);
                 return true;
             }

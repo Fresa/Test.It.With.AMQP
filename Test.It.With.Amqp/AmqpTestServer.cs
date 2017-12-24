@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Log.It;
 using Test.It.With.Amqp.Expectations;
 using Test.It.With.Amqp.Extensions;
@@ -68,6 +69,11 @@ namespace Test.It.With.Amqp
             _heartbeatFramePublisher = heartbeatFrameHandler;
         }
 
+        public AmqpTestServer(ProtocolVersion protocolVersion, IExpectationStateMachine expectationStateMachine) : this(protocolVersion)
+        {
+            _expectationStateMachine = expectationStateMachine;
+        }
+
         private void AssertNoDuplicateSubscriptions(Type type)
         {
             if (_subscribedMethods.Contains(type))
@@ -103,38 +109,42 @@ namespace Test.It.With.Amqp
 
             _disposables.Add(methodSubscription);
 
-            var contentHeaderSubscription = _contentHeaderFramePublisher.Subscribe(frame =>
+            if (methodType.GetInterfaces().Contains(typeof(IContentMethod)))
             {
-                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentHeader, methodType,
-                    out var method))
+                var contentHeaderSubscription = _contentHeaderFramePublisher.Subscribe(frame =>
                 {
-                    if (method.GetType() != methodType)
+                    if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentHeader, out var method))
                     {
-                        throw new InvalidOperationException($"Expected {methodType.FullName}, got {method.GetType().FullName}.");
+                        if (method.GetType() != methodType)
+                        {
+                            throw new InvalidOperationException($"Expected {methodType.FullName}, got {method.GetType().FullName}.");
+                        }
+
+                        _logger.Debug(
+                            $"Content header {frame.ContentHeader.GetType().GetPrettyFullName()} for method {method.GetType().Name} on channel {frame.Channel} was expected.");
+                        messageHandler(new MethodFrame(frame.Channel, method));
                     }
+                });
 
-                    _logger.Debug($"Content header {frame.ContentHeader.GetType().GetPrettyFullName()} for method {method.GetType().Name} on channel {frame.Channel} was expected.");
-                    messageHandler(new MethodFrame(frame.Channel, method));
-                }
-            });
+                _disposables.Add(contentHeaderSubscription);
 
-            _disposables.Add(contentHeaderSubscription);
-
-            var contentBodySubscription = _contentBodyFramePublisher.Subscribe(frame =>
-            {
-                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentBody, methodType, out var method))
+                var contentBodySubscription = _contentBodyFramePublisher.Subscribe(frame =>
                 {
-                    if (method.GetType() != methodType)
+                    if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentBody, out var method))
                     {
-                        throw new InvalidOperationException($"Expected {methodType.FullName}, got {method.GetType().FullName}.");
+                        if (method.GetType() != methodType)
+                        {
+                            throw new InvalidOperationException($"Expected {methodType.FullName}, got {method.GetType().FullName}.");
+                        }
+
+                        _logger.Debug(
+                            $"Content body {frame.ContentBody.GetType().GetPrettyFullName()} for method {method.GetType().Name} on channel {frame.Channel} was expected.");
+                        messageHandler(new MethodFrame(frame.Channel, method));
                     }
+                });
 
-                    _logger.Debug($"Content body {frame.ContentBody.GetType().GetPrettyFullName()} for method {method.GetType().Name} on channel {frame.Channel} was expected.");
-                    messageHandler(new MethodFrame(frame.Channel, method));
-                }
-            });
-
-            _disposables.Add(contentBodySubscription);
+                _disposables.Add(contentBodySubscription);
+            }
         }
 
         public void On(Type type, Action<ProtocolHeaderFrame> messageHandler)
