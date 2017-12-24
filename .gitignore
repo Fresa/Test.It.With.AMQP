@@ -38,3 +38,7 @@ _NCrunch_Test.It.With.AMQP/
 Test.It.With.RabbitMQ/obj/
 Tests/Test.It.With.Amqp.Tests/obj/
 Tests/Test.It.With.RabbitMQ.Tests/obj/
+Test.It.With.RabbitMQ/bin/
+Tests/Test.It.With.Amqp.Tests/bin/
+Tests/Test.It.With.RabbitMQ.Tests/bin/
+Test.It.With.AMQP.v3.ncrunchsolution.user

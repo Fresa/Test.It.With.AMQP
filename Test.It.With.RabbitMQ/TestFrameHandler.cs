@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Text;
 using RabbitMQ.Client;
@@ -37,22 +36,7 @@ namespace Test.It.With.RabbitMQ
         {
             lock (_reader)
             {
-                try
-                {
-                    return InboundFrame.ReadFrom(_reader);
-                }
-                catch
-                {
-                    // Send heartbeat
-                    var stream = new MemoryStream();
-                    var writer = new NetworkBinaryWriter(stream);
-                    
-                    var outbound = new OutboundFrame(FrameType.FrameHeartbeat, 0);
-                    outbound.WriteTo(writer);
-                    stream.Position = 0;
-                    var reader = new NetworkBinaryReader(stream);
-                    return InboundFrame.ReadFrom(reader);
-                }
+                return InboundFrame.ReadFrom(_reader);
             }
         }
 
