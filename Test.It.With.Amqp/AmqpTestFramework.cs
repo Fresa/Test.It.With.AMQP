@@ -120,17 +120,7 @@ namespace Test.It.With.Amqp
                 }
             }
         }
-
-        public void On<TProtocolHeader>(Func<ConnectionId, ProtocolHeaderFrame<TProtocolHeader>, Connection.Start> messageHandler)
-            where TProtocolHeader : class, IProtocolHeader
-        {
-            On<TProtocolHeader>((clientId, header) =>
-            {
-                var response = messageHandler(clientId, header);
-                Send(clientId, new MethodFrame<Connection.Start>(0, response));
-            });
-        }
-
+        
         public void On<THeartbeat>(Action<ConnectionId, HeartbeatFrame<THeartbeat>> messageHandler)
             where THeartbeat : class, IHeartbeat
         {

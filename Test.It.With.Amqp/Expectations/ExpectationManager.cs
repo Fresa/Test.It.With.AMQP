@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Test.It.With.Amqp091;
 
 namespace Test.It.With.Amqp.Expectations
 {
@@ -37,6 +38,7 @@ namespace Test.It.With.Amqp.Expectations
 
             if (expectation is TExpectation == false)
             {
+                // todo: need to abstract protocol specific exceptions
                 throw new UnexpectedFrameException(
                     $"Expected {expectation.Name}, got {typeof(TExpectation).FullName}.");
             }

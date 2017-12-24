@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Amqp091ExpectationStateMachine.cs" />
     <Compile Include="AmqpTestServer.cs" />
     <Compile Include="AmqpTestFramework.cs" />
     <Compile Include="ConnectionId.cs" />
@@ -59,7 +60,6 @@
     <Compile Include="Expectations\MethodExpectationBuilders\NextExpectedMethodBuilder.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\OrMethodExpectedBuilder.cs" />
     <Compile Include="Expectations\ProtocolHeaderExpectation.cs" />
-    <Compile Include="Extensions\Amqp091ExpectationStateMachine.cs" />
     <Compile Include="Extensions\HeartbeatExtensions.cs" />
     <Compile Include="Extensions\MethodExtensions.cs" />
     <Compile Include="MessageClient\ContentBodyFrameClient.cs" />

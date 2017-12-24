@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Test.It.With.Amqp.Protocol;
+using Test.It.With.Amqp091;
 
 namespace Test.It.With.Amqp.Expectations.MethodExpectationBuilders
 {

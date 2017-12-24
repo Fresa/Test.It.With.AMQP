@@ -82,7 +82,7 @@ using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Extensions;
 using Log.It;
 
-namespace Test.It.With.Amqp<# Block(() =>
+namespace Test.It.With.Amqp<#= protocol.Major #><#=protocol.Minor#><#= protocol.Revision #><# Block(() =>
 {
 	var amqpClass = $"Amq{protocol.Major}{protocol.Minor}{protocol.Revision}Protocol";
 	// Protocol

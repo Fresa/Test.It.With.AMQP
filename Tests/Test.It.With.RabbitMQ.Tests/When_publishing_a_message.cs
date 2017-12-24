@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Text;
 using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.Amqp;
 using Test.It.With.Amqp.Messages;
+using Test.It.With.Amqp.Protocol;
+using Test.It.With.Amqp091;
 using Test.It.With.RabbitMQ.Tests.Assertion;
 using Test.It.With.RabbitMQ.Tests.TestApplication;
 using Test.It.With.RabbitMQ.Tests.XUnit;
 using Xunit;
 using Xunit.Abstractions;
-using Connection = Test.It.With.Amqp.Connection;
 
 namespace Test.It.With.RabbitMQ.Tests
 {
@@ -31,13 +31,16 @@ namespace Test.It.With.RabbitMQ.Tests
             {
                 var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
 
-                testServer.On((Func<ConnectionId, ProtocolHeaderFrame<ProtocolHeader>, Connection.Start>)((clientId, handler) => new Connection.Start
+                testServer.On<ProtocolHeader>((clientId, handler) =>
                 {
-                    VersionMajor = Octet.From((byte)handler.ProtocolHeader.Version.Major),
-                    VersionMinor = Octet.From((byte)handler.ProtocolHeader.Version.Minor),
-                    Locales = Longstr.From(Encoding.UTF8.GetBytes("en_US")),
-                    Mechanisms = Longstr.From(Encoding.UTF8.GetBytes("PLAIN")),
-                }));
+                    testServer.Send(clientId, new MethodFrame<Connection.Start>(handler.Channel, new Connection.Start
+                    {
+                        VersionMajor = Octet.From((byte) ((IProtocolHeader) handler.ProtocolHeader).Version.Major),
+                        VersionMinor = Octet.From((byte) ((IProtocolHeader) handler.ProtocolHeader).Version.Minor),
+                        Locales = Longstr.From(Encoding.UTF8.GetBytes("en_US")),
+                        Mechanisms = Longstr.From(Encoding.UTF8.GetBytes("PLAIN")),
+                    }));
+                });
                 testServer.On<Connection.StartOk>((client, frame) =>
                 {
                     testServer.Send(client, new MethodFrame<Connection.Secure>(frame.Channel, new Connection.Secure

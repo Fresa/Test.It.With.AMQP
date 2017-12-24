@@ -1,6 +1,7 @@
 using Test.It.With.Amqp.Expectations;
 using Test.It.With.Amqp.Extensions;
 using Test.It.With.Amqp.Protocol;
+using Test.It.With.Amqp091;
 
 namespace Test.It.With.Amqp
 {

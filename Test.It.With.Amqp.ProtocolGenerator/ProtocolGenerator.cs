@@ -11,7 +11,7 @@ using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Extensions;
 using Log.It;
 
-namespace Test.It.With.Amqp
+namespace Test.It.With.Amqp091
 {
 	internal class Amq091Protocol : IProtocol
 	{

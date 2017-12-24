@@ -3,8 +3,9 @@ using System.Linq;
 using Test.It.With.Amqp.Expectations;
 using Test.It.With.Amqp.Expectations.MethodExpectationBuilders;
 using Test.It.With.Amqp.Protocol;
+using Test.It.With.Amqp091;
 
-namespace Test.It.With.Amqp.Extensions
+namespace Test.It.With.Amqp
 {
     internal class Amqp091ExpectationStateMachine : IExpectationStateMachine
     {
@@ -65,9 +66,7 @@ namespace Test.It.With.Amqp.Extensions
 
             if (method is Connection.TuneOk tuneOk)
             {
-                // todo: need to check against server proposal
                 _channelMax = tuneOk.ChannelMax.Value == 0 ? short.MaxValue : tuneOk.ChannelMax.Value;
-                // todo: need to check against server proposal
                 _frameMax = tuneOk.FrameMax.Value == 0 ? long.MaxValue : tuneOk.FrameMax.Value;
             }
 

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using Test.It.With.Amqp.Protocol.Exceptions;
 using Test.It.With.Amqp.Protocol.Extensions;
+using Test.It.With.Amqp091; // todo: need to remove this reference. A Frame should be abstract
 
 namespace Test.It.With.Amqp.Protocol
 {
@@ -62,7 +61,7 @@ namespace Test.It.With.Amqp.Protocol
         {
             if (_validFrameTypes.ContainsKey(type) == false)
             {
-                // todo: Resolve protocol specific expcetions in an abstract way
+                // todo: Resolve protocol specific exceptions in an abstract way
                 throw new FrameErrorException($"Expected: {_validFrameTypes.Join(", ", " or ", frameType => $"{frameType.Value}: {frameType.Key}")}, got: {type}.");
             }
         }

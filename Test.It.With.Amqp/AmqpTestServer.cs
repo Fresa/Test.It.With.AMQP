@@ -12,6 +12,7 @@ using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Extensions;
 using Test.It.With.Amqp.Subscriptions;
+using Test.It.With.Amqp091; // todo: cannot reference explicit protocol
 
 namespace Test.It.With.Amqp
 {
