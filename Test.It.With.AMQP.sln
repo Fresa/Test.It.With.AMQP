@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4AA9FA82-1CF5-4017-8D0B-588B446CA315}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.Amqp.Tests", "Tests\Test.It.With.Amqp.Tests\Test.It.With.Amqp.Tests.csproj", "{D289C3E5-4737-4CB5-BF3B-D48C89B1B6A0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.RabbitMQ", "Test.It.With.RabbitMQ\Test.It.With.RabbitMQ.csproj", "{4012460B-68EE-414C-868F-938443DE9680}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.Amqp.Protocol.091", "Test.It.With.Amqp.Protocol.091\Test.It.With.Amqp.Protocol.091.csproj", "{868541AE-B137-47ED-ABC8-4CDA157A57B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,12 @@ Global
 		{4012460B-68EE-414C-868F-938443DE9680}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4012460B-68EE-414C-868F-938443DE9680}.SignedRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{4012460B-68EE-414C-868F-938443DE9680}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
+		{868541AE-B137-47ED-ABC8-4CDA157A57B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{868541AE-B137-47ED-ABC8-4CDA157A57B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{868541AE-B137-47ED-ABC8-4CDA157A57B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{868541AE-B137-47ED-ABC8-4CDA157A57B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{868541AE-B137-47ED-ABC8-4CDA157A57B5}.SignedRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{868541AE-B137-47ED-ABC8-4CDA157A57B5}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

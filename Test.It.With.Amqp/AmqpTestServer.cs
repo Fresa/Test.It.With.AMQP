@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Log.It;
-using Test.It.With.Amqp.Expectations;
 using Test.It.With.Amqp.Extensions;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.MessageHandlers;
@@ -10,9 +9,10 @@ using Test.It.With.Amqp.MessageRouters;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
+using Test.It.With.Amqp.Protocol.Expectations;
 using Test.It.With.Amqp.Protocol.Extensions;
+using Test.It.With.Amqp.Protocol._091;
 using Test.It.With.Amqp.Subscriptions;
-using Test.It.With.Amqp091; // todo: cannot reference explicit protocol
 
 namespace Test.It.With.Amqp
 {
@@ -90,7 +90,7 @@ namespace Test.It.With.Amqp
         public void Send(MethodFrame frame)
         {
             _logger.Debug($"Sending method {frame.Method.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.Method.Serialize()}");
-            _frameClient.Send(new Frame(Constants.FrameMethod, frame.Channel, frame.Method));
+            _frameClient.Send(new FrameMethod(frame.Channel, frame.Method));
         }
 
         public void On(Type methodType, Action<MethodFrame> messageHandler)

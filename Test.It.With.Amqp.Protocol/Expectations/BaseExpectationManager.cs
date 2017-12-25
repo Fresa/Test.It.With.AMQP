@@ -1,22 +1,13 @@
 using System.Collections.Concurrent;
-using Test.It.With.Amqp091;
 
-namespace Test.It.With.Amqp.Expectations
+namespace Test.It.With.Amqp.Protocol.Expectations
 {
-    internal class ExpectationManager
+    internal abstract class BaseExpectationManager
     {
         private readonly ConcurrentDictionary<int, Expectation> _expectations = new ConcurrentDictionary<int, Expectation>();
 
-        private static Expectation Create(int channel)
-        {
-            switch (channel)
-            {
-                case 0:
-                    return new ProtocolHeaderExpectation();
-                default:
-                    return new MethodExpectation(typeof(Channel.Open));
-            }
-        }
+        protected abstract Expectation Create(int channel);
+        protected abstract void ThrowUnexpectedFrameException(string message);
 
         public bool IsExpecting<TExpectation>(int channel) where TExpectation : Expectation
         {
@@ -38,8 +29,7 @@ namespace Test.It.With.Amqp.Expectations
 
             if (expectation is TExpectation == false)
             {
-                // todo: need to abstract protocol specific exceptions
-                throw new UnexpectedFrameException(
+                ThrowUnexpectedFrameException(
                     $"Expected {expectation.Name}, got {typeof(TExpectation).FullName}.");
             }
 

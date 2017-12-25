@@ -1,6 +1,7 @@
 using System;
 using Test.It.With.Amqp.MessageHandlers;
 using Test.It.With.Amqp.Protocol;
+using Test.It.With.Amqp.Protocol._091;
 
 namespace Test.It.With.Amqp.MessageRouters
 {

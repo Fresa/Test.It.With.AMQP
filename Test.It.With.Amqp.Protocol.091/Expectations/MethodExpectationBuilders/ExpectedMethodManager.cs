@@ -1,7 +1,6 @@
 using System;
-using Test.It.With.Amqp.Protocol;
 
-namespace Test.It.With.Amqp.Expectations.MethodExpectationBuilders
+namespace Test.It.With.Amqp.Protocol._091.Expectations.MethodExpectationBuilders
 {
     internal class ExpectedMethodManager
     {

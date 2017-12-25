@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using Test.It.With.Amqp.Expectations;
-using Test.It.With.Amqp.Expectations.MethodExpectationBuilders;
-using Test.It.With.Amqp.Protocol;
-using Test.It.With.Amqp091;
+using Test.It.With.Amqp.Protocol.Expectations;
+using Test.It.With.Amqp.Protocol._091.Expectations.MethodExpectationBuilders;
 
-namespace Test.It.With.Amqp
+namespace Test.It.With.Amqp.Protocol._091
 {
     internal class Amqp091ExpectationStateMachine : IExpectationStateMachine
     {
@@ -22,8 +20,6 @@ namespace Test.It.With.Amqp
                 .When<Channel.CloseOk>().Then<Channel.Open>()
                 .Manager;
         }
-
-        // todo: Set agreed content body frame size
 
         private short _channelMax = short.MaxValue;
         private long _frameMax = Constants.FrameMinSize;

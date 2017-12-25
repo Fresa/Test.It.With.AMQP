@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +9,7 @@ namespace Test.It.With.Amqp.Protocol
     {
         private readonly byte[] _buffer;
         private int _position;
-        private BitReader _bitReader;
+        private readonly BitReader _bitReader;
 
         public AmqpReader(byte[] buffer)
         {

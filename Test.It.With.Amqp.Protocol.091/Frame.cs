@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Test.It.With.Amqp.Protocol.Extensions;
-using Test.It.With.Amqp091; // todo: need to remove this reference. A Frame should be abstract
 
-namespace Test.It.With.Amqp.Protocol
+// todo: need to remove this reference. A Frame should be abstract
+
+namespace Test.It.With.Amqp.Protocol._091
 {
     public class Frame
     {

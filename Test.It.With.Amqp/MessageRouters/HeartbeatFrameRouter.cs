@@ -1,7 +1,7 @@
 using Test.It.With.Amqp.MessageHandlers;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
-using Test.It.With.Amqp091; // todo: cannot reference explicit protocol
+using Test.It.With.Amqp.Protocol._091; // todo: cannot reference explicit protocol
 
 namespace Test.It.With.Amqp.MessageRouters
 {

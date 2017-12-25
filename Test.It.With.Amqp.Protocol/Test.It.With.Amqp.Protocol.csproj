@@ -48,6 +48,13 @@
     <Compile Include="BitReader.cs" />
     <Compile Include="BitWriter.cs" />
     <Compile Include="ByteArray.cs" />
+    <Compile Include="Expectations\BaseExpectationManager.cs" />
+    <Compile Include="Expectations\ContentBodyExpectation.cs" />
+    <Compile Include="Expectations\ContentHeaderExpectation.cs" />
+    <Compile Include="Expectations\Expectation.cs" />
+    <Compile Include="Expectations\IExpectationStateMachine.cs" />
+    <Compile Include="Expectations\MethodExpectation.cs" />
+    <Compile Include="Expectations\ProtocolHeaderExpectation.cs" />
     <Compile Include="Extensions\ConstantExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\EnumerableStringExtensions.cs" />

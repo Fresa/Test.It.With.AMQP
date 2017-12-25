@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 [assembly: InternalsVisibleTo("Test.It.With.Amqp.Tests")]
 [assembly: InternalsVisibleTo("Test.It.With.Amqp.ProtocolGenerator")]
+[assembly: InternalsVisibleTo("Test.It.With.Amqp.Protocol.091")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from

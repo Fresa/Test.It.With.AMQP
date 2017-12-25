@@ -1,5 +1,6 @@
 using System.IO;
 using Test.It.With.Amqp.Protocol;
+using Test.It.With.Amqp.Protocol._091;
 
 namespace Test.It.With.Amqp.NetworkClient
 {

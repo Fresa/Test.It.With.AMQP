@@ -1,9 +1,6 @@
-using System;
-using Test.It.With.Amqp.Protocol;
-
-namespace Test.It.With.Amqp.Expectations
+namespace Test.It.With.Amqp.Protocol.Expectations
 {
-    internal interface IExpectationStateMachine
+    public interface IExpectationStateMachine
     {
         bool ShouldPass(int channel, IProtocolHeader protocolHeader);
 

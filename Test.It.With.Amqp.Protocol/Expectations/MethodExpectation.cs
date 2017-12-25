@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Test.It.With.Amqp.Expectations
+namespace Test.It.With.Amqp.Protocol.Expectations
 {
     internal class MethodExpectation : Expectation
     {
@@ -11,5 +11,13 @@ namespace Test.It.With.Amqp.Expectations
         }
 
         public Type[] MethodResponses { get; }
+    }
+
+    internal class MethodExpectation<T> : MethodExpectation
+    {
+        public MethodExpectation() : base(typeof(T))
+        {
+            
+        }
     }
 }
