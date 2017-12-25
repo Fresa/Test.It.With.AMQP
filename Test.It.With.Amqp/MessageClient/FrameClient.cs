@@ -5,17 +5,17 @@ using Test.It.With.Amqp.Protocol._091;
 
 namespace Test.It.With.Amqp.MessageClient
 {  
-    internal class FrameClient : ITypedMessageClient<Frame, Frame>
+    internal class FrameClient : ITypedMessageClient<IFrame, IFrame>
     {
-        private readonly IChainableTypedMessageClient<ReceivedEventArgs, Frame> _networkClient;
+        private readonly IChainableTypedMessageClient<ReceivedEventArgs, IFrame> _networkClient;
 
-        public FrameClient(IChainableTypedMessageClient<ReceivedEventArgs, Frame> networkClient)
+        public FrameClient(IChainableTypedMessageClient<ReceivedEventArgs, IFrame> networkClient)
         {
             _networkClient = networkClient;
             networkClient.Next += args =>
             {
-                var reader = new AmqpReader(args.Buffer);
-                var frame = Frame.ReadFrom(reader);
+                var reader = new Amqp091Reader(args.Buffer);
+                var frame = Amqp091Frame.ReadFrom(reader);
                 reader.ThrowIfMoreData();
 
                 if (Received == null)
@@ -29,10 +29,10 @@ namespace Test.It.With.Amqp.MessageClient
             networkClient.Disconnected += Disconnected;
         }
 
-        public event Action<Frame> Received;
+        public event Action<IFrame> Received;
         public event Action Disconnected;
 
-        public void Send(Frame frame)
+        public void Send(IFrame frame)
         {
             _networkClient.Send(frame);
         }

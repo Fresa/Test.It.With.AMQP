@@ -6,6 +6,6 @@ namespace Test.It.With.Amqp.MessageClient
     {
         event Action<TReceive> Received;
         event Action Disconnected;
-        void Send(TSend frame);
+        void Send(TSend message);
     }
 }

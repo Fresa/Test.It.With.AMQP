@@ -10,18 +10,18 @@ namespace Test.It.With.Amqp.MessageRouters
         private readonly IProtocol _protocol;
         private readonly IHandle<MethodFrame> _methodFrameHandler;
 
-        public MethodFrameRouter(IHandle<Frame> next, IProtocol protocol, IHandle<MethodFrame> methodFrameHandler) :
+        public MethodFrameRouter(IHandle<IFrame> next, IProtocol protocol, IHandle<MethodFrame> methodFrameHandler) :
             base(next)
         {
             _protocol = protocol;
             _methodFrameHandler = methodFrameHandler;
         }
 
-        public override void Handle(Frame frame)
+        public override void Handle(IFrame frame)
         {
-            if (frame.Type == Constants.FrameMethod)
+            if (frame.IsMethod())
             {
-                var reader = new AmqpReader(frame.Payload);
+                var reader = new Amqp091Reader(frame.Payload);
                 var method = _protocol.GetMethod(reader);
                 _methodFrameHandler.Handle(new MethodFrame(frame.Channel, method));
                 return;

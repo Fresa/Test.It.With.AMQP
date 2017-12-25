@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Test.It.With.Amqp.Protocol
+namespace Test.It.With.Amqp.Protocol._091
 {
-    public class AmqpWriter : IDisposable, IByteWriter
+    public class Amqp091Writer : IDisposable, IByteWriter, IAmqpWriter
     {
         private readonly Stream _buffer;
         private readonly BitWriter _bitWriter;
 
-        public AmqpWriter(Stream buffer)
+        public Amqp091Writer(Stream buffer)
         {
             _buffer = buffer;
             _bitWriter = new BitWriter(this);

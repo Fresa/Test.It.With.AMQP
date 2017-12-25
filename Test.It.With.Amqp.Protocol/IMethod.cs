@@ -9,7 +9,7 @@ namespace Test.It.With.Amqp.Protocol
         bool SentOnValidChannel(int channel);
         Type[] Responses();
 
-        void ReadFrom(AmqpReader reader);
-        void WriteTo(AmqpWriter writer);
+        void ReadFrom(IAmqpReader reader);
+        void WriteTo(IAmqpWriter writer);
     }
 }

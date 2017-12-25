@@ -6,7 +6,7 @@ using Test.It.With.Amqp.Protocol._091;
 
 namespace Test.It.With.Amqp.MessageClient
 {
-    internal class ProtocolHeaderClient : ITypedMessageClient<ProtocolHeaderFrame, Frame>, IChainableTypedMessageClient<ReceivedEventArgs, Frame>
+    internal class ProtocolHeaderClient : ITypedMessageClient<ProtocolHeaderFrame, IFrame>, IChainableTypedMessageClient<ReceivedEventArgs, IFrame>
     {
         private readonly INetworkClient _client;
 
@@ -15,7 +15,7 @@ namespace Test.It.With.Amqp.MessageClient
             _client = networkClient;
             _client.BufferReceived += (sender, args) =>
             {
-                var reader = new AmqpReader(args.Buffer);
+                var reader = new Amqp091Reader(args.Buffer);
                 if (reader.PeekByte() == 'A')
                 {
                     var header = protocol.GetProtocolHeader(reader);
@@ -48,7 +48,7 @@ namespace Test.It.With.Amqp.MessageClient
         public event Action<ReceivedEventArgs> Next;
         public event Action Disconnected;
 
-        public void Send(Frame frame)
+        public void Send(IFrame frame)
         {
             _client.Send(frame);
         }

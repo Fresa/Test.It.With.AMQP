@@ -5,19 +5,19 @@ using Test.It.With.Amqp.Protocol._091; // todo: cannot reference explicit protoc
 
 namespace Test.It.With.Amqp.MessageClient
 {
-    internal class ContentBodyFrameClient : ITypedMessageClient<ContentBodyFrame, Frame>, IChainableTypedMessageClient<Frame, Frame>
+    internal class ContentBodyFrameClient : ITypedMessageClient<ContentBodyFrame, IFrame>, IChainableTypedMessageClient<IFrame, IFrame>
     {
-        private readonly IChainableTypedMessageClient<Frame, Frame> _frameClient;
+        private readonly IChainableTypedMessageClient<IFrame, IFrame> _frameClient;
 
-        public ContentBodyFrameClient(IChainableTypedMessageClient<Frame, Frame> frameClient, IProtocol protocol)
+        public ContentBodyFrameClient(IChainableTypedMessageClient<IFrame, IFrame> frameClient, IProtocol protocol)
         {
             _frameClient = frameClient;
 
             frameClient.Next += frame =>
             {
-                if (frame.Type == Constants.FrameBody)
+                if (frame.IsBody())
                 {
-                    var reader = new AmqpReader(frame.Payload);
+                    var reader = new Amqp091Reader(frame.Payload);
                     var contentBody = protocol.GetContentBody(reader);
 
                     if (Received == null)
@@ -31,7 +31,7 @@ namespace Test.It.With.Amqp.MessageClient
                 {
                     if (Next == null)
                     {
-                        throw new InvalidOperationException($"Missing handler of frame type {frame.Type}.");
+                        throw new InvalidOperationException($"Missing handler for frame {frame}.");
                     }
 
                     Next.Invoke(frame);
@@ -45,11 +45,11 @@ namespace Test.It.With.Amqp.MessageClient
 
         public event Action Disconnected;
 
-        public void Send(Frame frame)
+        public void Send(IFrame frame)
         {
             _frameClient.Send(frame);
         }
 
-        public event Action<Frame> Next;
+        public event Action<IFrame> Next;
     }
 }

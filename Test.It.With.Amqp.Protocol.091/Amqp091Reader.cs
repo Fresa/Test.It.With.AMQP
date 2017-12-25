@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Test.It.With.Amqp.Protocol
+namespace Test.It.With.Amqp.Protocol._091
 {
-    public class AmqpReader : IByteReader
+    public class Amqp091Reader : IByteReader, IAmqpReader
     {
         private readonly byte[] _buffer;
         private int _position;
         private readonly BitReader _bitReader;
 
-        public AmqpReader(byte[] buffer)
+        public Amqp091Reader(byte[] buffer)
         {
             _buffer = buffer;
             Length = _buffer.Length;

@@ -3,7 +3,7 @@
     public interface IHeartbeat
     {
         bool SentOnValidChannel(int channel);
-        void ReadFrom(AmqpReader reader);
-        void WriteTo(AmqpWriter writer);
+        void ReadFrom(IAmqpReader reader);
+        void WriteTo(IAmqpWriter writer);
     }
 }

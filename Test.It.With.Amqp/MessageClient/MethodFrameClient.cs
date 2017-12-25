@@ -5,11 +5,11 @@ using Test.It.With.Amqp.Protocol._091;
 
 namespace Test.It.With.Amqp.MessageClient
 {  
-    internal class MethodFrameClient<TMethod> : ITypedMessageClient<MethodFrame<TMethod>, Frame> where TMethod : class, IMethod
+    internal class MethodFrameClient<TMethod> : ITypedMessageClient<MethodFrame<TMethod>, IFrame> where TMethod : class, IMethod
     {
-        private readonly ITypedMessageClient<MethodFrame, Frame> _methodFrameClient;
+        private readonly ITypedMessageClient<MethodFrame, IFrame> _methodFrameClient;
 
-        public MethodFrameClient( ITypedMessageClient<MethodFrame, Frame> methodFrameClient)
+        public MethodFrameClient( ITypedMessageClient<MethodFrame, IFrame> methodFrameClient)
         {
             _methodFrameClient = methodFrameClient;
 
@@ -33,7 +33,7 @@ namespace Test.It.With.Amqp.MessageClient
 
         public event Action Disconnected;
 
-        public void Send(Frame frame)
+        public void Send(IFrame frame)
         {
             _methodFrameClient.Send(frame);
         }

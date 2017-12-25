@@ -5,7 +5,7 @@ namespace Test.It.With.Amqp.Protocol
         string Protocol { get; }
         IVersion Version { get; }
         bool IsValid { get; }
-        void WriteTo(AmqpWriter writer);
-        void ReadFrom(AmqpReader reader);
+        void WriteTo(IAmqpWriter writer);
+        void ReadFrom(IAmqpReader reader);
     }
 }

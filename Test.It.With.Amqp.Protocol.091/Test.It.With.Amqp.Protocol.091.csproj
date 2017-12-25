@@ -44,14 +44,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Amqp091ExpectationStateMachine.cs" />
-    <Compile Include="ExpectationManager.cs" />
+    <Compile Include="Amqp091ExpectationManager.cs" />
+    <Compile Include="Amqp091Reader.cs" />
+    <Compile Include="Amqp091Writer.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\ExpectedMethodBuilder.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\ExpectedMethodManager.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\MethodExpectationBuilder.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\NextExpectedMethodBuilder.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\OrMethodExpectedBuilder.cs" />
-    <Compile Include="Frame.cs" />
-    <Compile Include="FrameMethod.cs" />
+    <Compile Include="Amqp091Frame.cs" />
+    <Compile Include="Amqp091FrameMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

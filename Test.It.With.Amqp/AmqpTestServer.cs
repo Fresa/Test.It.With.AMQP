@@ -11,7 +11,7 @@ using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Expectations;
 using Test.It.With.Amqp.Protocol.Extensions;
-using Test.It.With.Amqp.Protocol._091;
+using Test.It.With.Amqp.Protocol._091; // todo: cannot reference explicit protocol
 using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp
@@ -19,7 +19,7 @@ namespace Test.It.With.Amqp
     internal class AmqpTestServer : IDisposable
     {
         private readonly ILogger _logger = LogFactory.Create<AmqpTestServer>();
-        private readonly ITypedMessageClient<Frame, Frame> _frameClient;
+        private readonly ITypedMessageClient<IFrame, IFrame> _frameClient;
         private readonly IPublishProtocolHeader _protocolHeaderPublisher;
         private readonly IPublishMethod _methodFramePublisher;
         private readonly IPublish<ContentHeaderFrame> _contentHeaderFramePublisher;
@@ -90,7 +90,7 @@ namespace Test.It.With.Amqp
         public void Send(MethodFrame frame)
         {
             _logger.Debug($"Sending method {frame.Method.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.Method.Serialize()}");
-            _frameClient.Send(new FrameMethod(frame.Channel, frame.Method));
+            _frameClient.Send(new Amqp091FrameMethod(frame.Channel, frame.Method));
         }
 
         public void On(Type methodType, Action<MethodFrame> messageHandler)

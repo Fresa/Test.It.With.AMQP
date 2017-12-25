@@ -17,14 +17,14 @@ namespace Test.It.With.Amqp.Protocol._091
 	{
 		public IVersion Version { get; } = new ProtocolVersion(); 
 
-		public IProtocolHeader GetProtocolHeader(AmqpReader reader)
+		public IProtocolHeader GetProtocolHeader(IAmqpReader reader)
 		{
 			var protocolHeader = new ProtocolHeader();
 			protocolHeader.ReadFrom(reader);
 			return protocolHeader;
 		}
 
-		public IMethod GetMethod(AmqpReader reader)
+		public IMethod GetMethod(IAmqpReader reader)
 		{
 			var classId = reader.ReadShortUnsignedInteger();
 
@@ -45,7 +45,7 @@ namespace Test.It.With.Amqp.Protocol._091
 			return method;
 		}
 
-		public IContentHeader GetContentHeader(AmqpReader reader)
+		public IContentHeader GetContentHeader(IAmqpReader reader)
 		{
 			var classId = reader.ReadShortUnsignedInteger();
 
@@ -65,14 +65,14 @@ namespace Test.It.With.Amqp.Protocol._091
 			return contentHeader;
 		}
 
-		public IContentBody GetContentBody(AmqpReader reader)
+		public IContentBody GetContentBody(IAmqpReader reader)
 		{
 			var contentBody = new ContentBody();
 			contentBody.ReadFrom(reader);
 			return contentBody;
 		}
 
-		public IHeartbeat GetHeartbeat(AmqpReader reader)
+		public IHeartbeat GetHeartbeat(IAmqpReader reader)
 		{
 			var heartbeat = new Heartbeat();
 			heartbeat.ReadFrom(reader);
@@ -1715,7 +1715,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_versionMajor = new Octet(reader.ReadByte());
 				_versionMinor = new Octet(reader.ReadByte());
@@ -1724,7 +1724,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_locales = new Longstr(reader.ReadLongString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteByte(_versionMajor.Value);
 				writer.WriteByte(_versionMinor.Value);
@@ -1806,7 +1806,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_clientProperties = new PeerProperties(reader.ReadTable());
 				_mechanism = new Shortstr(reader.ReadShortString());
@@ -1814,7 +1814,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_locale = new Shortstr(reader.ReadShortString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteTable(_clientProperties.Value);
 				writer.WriteShortString(_mechanism.Value);
@@ -1861,12 +1861,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_challenge = new Longstr(reader.ReadLongString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteLongString(_challenge.Value);
 			}
@@ -1905,12 +1905,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_response = new Longstr(reader.ReadLongString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteLongString(_response.Value);
 			}
@@ -1983,14 +1983,14 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_channelMax = new Short(reader.ReadShortInteger());
 				_frameMax = new Long(reader.ReadLongInteger());
 				_heartbeat = new Short(reader.ReadShortInteger());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_channelMax.Value);
 				writer.WriteLongInteger(_frameMax.Value);
@@ -2062,14 +2062,14 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_channelMax = new Short(reader.ReadShortInteger());
 				_frameMax = new Long(reader.ReadLongInteger());
 				_heartbeat = new Short(reader.ReadShortInteger());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_channelMax.Value);
 				writer.WriteLongInteger(_frameMax.Value);
@@ -2135,14 +2135,14 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_virtualHost = new Path(reader.ReadShortString());
 				_reserved1 = new Shortstr(reader.ReadShortString());
 				_reserved2 = new Bit(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortString(_virtualHost.Value);
 				writer.WriteShortString(_reserved1.Value);
@@ -2177,12 +2177,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Shortstr(reader.ReadShortString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortString(_reserved1.Value);
 			}
@@ -2260,7 +2260,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_replyCode = new ReplyCode(reader.ReadShortInteger());
 				_replyText = new ReplyText(reader.ReadShortString());
@@ -2268,7 +2268,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_methodId = new MethodId(reader.ReadShortInteger());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_replyCode.Value);
 				writer.WriteShortString(_replyText.Value);
@@ -2295,12 +2295,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] {  };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -2355,12 +2355,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Shortstr(reader.ReadShortString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortString(_reserved1.Value);
 			}
@@ -2393,12 +2393,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Longstr(reader.ReadLongString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteLongString(_reserved1.Value);
 			}
@@ -2444,12 +2444,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_active = new Bit(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteBit(_active.Value);
 			}
@@ -2486,12 +2486,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_active = new Bit(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteBit(_active.Value);
 			}
@@ -2569,7 +2569,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_replyCode = new ReplyCode(reader.ReadShortInteger());
 				_replyText = new ReplyText(reader.ReadShortString());
@@ -2577,7 +2577,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_methodId = new MethodId(reader.ReadShortInteger());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_replyCode.Value);
 				writer.WriteShortString(_replyText.Value);
@@ -2604,12 +2604,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] {  };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -2764,7 +2764,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_exchange = new ExchangeName(reader.ReadShortString());
@@ -2777,7 +2777,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_arguments = new Table(reader.ReadTable());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_exchange.Value);
@@ -2809,12 +2809,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] {  };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -2889,7 +2889,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_exchange = new ExchangeName(reader.ReadShortString());
@@ -2897,7 +2897,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_noWait = new NoWait(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_exchange.Value);
@@ -2923,12 +2923,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] {  };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -3084,7 +3084,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
@@ -3096,7 +3096,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_arguments = new Table(reader.ReadTable());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
@@ -3166,14 +3166,14 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_queue = new QueueName(reader.ReadShortString());
 				_messageCount = new MessageCount(reader.ReadLongInteger());
 				_consumerCount = new Long(reader.ReadLongInteger());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortString(_queue.Value);
 				writer.WriteLongInteger(_messageCount.Value);
@@ -3283,7 +3283,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
@@ -3293,7 +3293,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_arguments = new Table(reader.ReadTable());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
@@ -3321,12 +3321,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] {  };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -3416,7 +3416,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
@@ -3425,7 +3425,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_arguments = new Table(reader.ReadTable());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
@@ -3452,12 +3452,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] {  };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -3519,14 +3519,14 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
 				_noWait = new NoWait(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
@@ -3564,12 +3564,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_messageCount = new MessageCount(reader.ReadLongInteger());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteLongInteger(_messageCount.Value);
 			}
@@ -3660,7 +3660,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
@@ -3669,7 +3669,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_noWait = new NoWait(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
@@ -3709,12 +3709,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_messageCount = new MessageCount(reader.ReadLongInteger());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteLongInteger(_messageCount.Value);
 			}
@@ -3905,7 +3905,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				BodySize = reader.ReadLongLongInteger();
 				var propertyFlags = reader.ReadPropertyFlags(); 
@@ -3999,7 +3999,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteLongLongInteger(BodySize);
 
@@ -4171,14 +4171,14 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_prefetchSize = new Long(reader.ReadLongInteger());
 				_prefetchCount = new Short(reader.ReadShortInteger());
 				_global = new Bit(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteLongInteger(_prefetchSize.Value);
 				writer.WriteShortInteger(_prefetchCount.Value);
@@ -4205,12 +4205,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] {  };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -4336,7 +4336,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
@@ -4348,7 +4348,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_arguments = new Table(reader.ReadTable());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
@@ -4392,12 +4392,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_consumerTag = new ConsumerTag(reader.ReadShortString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortString(_consumerTag.Value);
 			}
@@ -4448,13 +4448,13 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_consumerTag = new ConsumerTag(reader.ReadShortString());
 				_noWait = new NoWait(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortString(_consumerTag.Value);
 				writer.WriteBit(_noWait.Value);
@@ -4488,12 +4488,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_consumerTag = new ConsumerTag(reader.ReadShortString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortString(_consumerTag.Value);
 			}
@@ -4608,7 +4608,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_exchange = new ExchangeName(reader.ReadShortString());
@@ -4617,7 +4617,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_immediate = new Bit(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_exchange.Value);
@@ -4714,7 +4714,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_replyCode = new ReplyCode(reader.ReadShortInteger());
 				_replyText = new ReplyText(reader.ReadShortString());
@@ -4722,7 +4722,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_routingKey = new Shortstr(reader.ReadShortString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_replyCode.Value);
 				writer.WriteShortString(_replyText.Value);
@@ -4828,7 +4828,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_consumerTag = new ConsumerTag(reader.ReadShortString());
 				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
@@ -4837,7 +4837,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_routingKey = new Shortstr(reader.ReadShortString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortString(_consumerTag.Value);
 				writer.WriteLongLongInteger(_deliveryTag.Value);
@@ -4910,14 +4910,14 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Short(reader.ReadShortInteger());
 				_queue = new QueueName(reader.ReadShortString());
 				_noAck = new NoAck(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
@@ -5021,7 +5021,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
 				_redelivered = new Redelivered(reader.ReadBit());
@@ -5030,7 +5030,7 @@ namespace Test.It.With.Amqp.Protocol._091
 				_messageCount = new MessageCount(reader.ReadLongInteger());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteLongLongInteger(_deliveryTag.Value);
 				writer.WriteBit(_redelivered.Value);
@@ -5068,12 +5068,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_reserved1 = new Shortstr(reader.ReadShortString());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteShortString(_reserved1.Value);
 			}
@@ -5124,13 +5124,13 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
 				_multiple = new Bit(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteLongLongInteger(_deliveryTag.Value);
 				writer.WriteBit(_multiple.Value);
@@ -5180,13 +5180,13 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_deliveryTag = new DeliveryTag(reader.ReadLongLongInteger());
 				_requeue = new Bit(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteLongLongInteger(_deliveryTag.Value);
 				writer.WriteBit(_requeue.Value);
@@ -5227,12 +5227,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_requeue = new Bit(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteBit(_requeue.Value);
 			}
@@ -5272,12 +5272,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				}
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 				_requeue = new Bit(reader.ReadBit());
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 				writer.WriteBit(_requeue.Value);
 			}
@@ -5300,12 +5300,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] {  };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -5354,12 +5354,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] { typeof(SelectOk) };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -5383,12 +5383,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] {  };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -5417,12 +5417,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] { typeof(CommitOk) };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -5446,12 +5446,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] {  };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -5482,12 +5482,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] { typeof(RollbackOk) };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -5511,12 +5511,12 @@ namespace Test.It.With.Amqp.Protocol._091
 				return new Type[] {  };
 			}
 
-			public void ReadFrom(AmqpReader reader)
+			public void ReadFrom(IAmqpReader reader)
 			{
 
 			}
 
-			public void WriteTo(AmqpWriter writer)
+			public void WriteTo(IAmqpWriter writer)
 			{
 
 			}
@@ -5531,7 +5531,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		public IVersion Version { get; private set; } 
 		private const byte ProtocolId = 0;
 
-		public void WriteTo(AmqpWriter writer)
+		public void WriteTo(IAmqpWriter writer)
 		{
 			writer.WriteBytes(Encoding.UTF8.GetBytes(Protocol));
 			writer.WriteByte(ProtocolId);
@@ -5540,7 +5540,7 @@ namespace Test.It.With.Amqp.Protocol._091
 			writer.WriteByte((byte)Version.Revision);
 		}
 
-		public void ReadFrom(AmqpReader reader)
+		public void ReadFrom(IAmqpReader reader)
 		{
 			var protocol = Encoding.UTF8.GetString(reader.ReadBytes(4));
 
@@ -5559,7 +5559,7 @@ namespace Test.It.With.Amqp.Protocol._091
 
 		private class ProtocolHeaderVersion : IVersion
 		{
-			public ProtocolHeaderVersion(AmqpReader reader)
+			public ProtocolHeaderVersion(IAmqpReader reader)
 			{
 				Major = reader.ReadByte();
 				Minor = reader.ReadByte();
@@ -5591,12 +5591,12 @@ namespace Test.It.With.Amqp.Protocol._091
 			return channel > 0;
 		}
 
-		public void ReadFrom(AmqpReader reader)
+		public void ReadFrom(IAmqpReader reader)
 		{
 			Payload = reader.ReadBytes(reader.Length);
 		}
 
-		public void WriteTo(AmqpWriter writer)
+		public void WriteTo(IAmqpWriter writer)
 		{
 			writer.WriteBytes(Payload);
 			writer.WriteByte(Constants.FrameEnd);
@@ -5610,12 +5610,12 @@ namespace Test.It.With.Amqp.Protocol._091
 			return channel == 0;
 		}
 
-		public void ReadFrom(AmqpReader reader)
+		public void ReadFrom(IAmqpReader reader)
 		{
 
 		}
 
-		public void WriteTo(AmqpWriter writer)
+		public void WriteTo(IAmqpWriter writer)
 		{
 
 		}

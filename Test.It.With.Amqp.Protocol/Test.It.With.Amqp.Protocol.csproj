@@ -43,8 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmqpReader.cs" />
-    <Compile Include="AmqpWriter.cs" />
     <Compile Include="BitReader.cs" />
     <Compile Include="BitWriter.cs" />
     <Compile Include="ByteArray.cs" />
@@ -64,12 +62,15 @@
     <Compile Include="Extensions\XmlElementExtensions.cs" />
     <Compile Include="Extensions\XmlNodeListExtensions.cs" />
     <Compile Include="Extensions\XPathNavigatorExtensions.cs" />
+    <Compile Include="IAmqpReader.cs" />
+    <Compile Include="IAmqpWriter.cs" />
     <Compile Include="IByteReader.cs" />
     <Compile Include="IByteWriter.cs" />
     <Compile Include="IClientMethod.cs" />
     <Compile Include="IContentBody.cs" />
     <Compile Include="IContentHeader.cs" />
     <Compile Include="IContentMethod.cs" />
+    <Compile Include="IFrame.cs" />
     <Compile Include="IHeartbeat.cs" />
     <Compile Include="INonContentMethod.cs" />
     <Compile Include="IProtocolHeader.cs" />

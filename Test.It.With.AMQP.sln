@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.RabbitMQ", "Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.Amqp.Protocol.091", "Test.It.With.Amqp.Protocol.091\Test.It.With.Amqp.Protocol.091.csproj", "{868541AE-B137-47ED-ABC8-4CDA157A57B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.Amqp.Protocol.091.Tests", "Tests\Test.It.With.Amqp.Protocol.091.Tests\Test.It.With.Amqp.Protocol.091.Tests.csproj", "{FD386404-1DE7-44E1-8CC4-9CE2037CB31F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,6 +86,12 @@ Global
 		{868541AE-B137-47ED-ABC8-4CDA157A57B5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{868541AE-B137-47ED-ABC8-4CDA157A57B5}.SignedRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{868541AE-B137-47ED-ABC8-4CDA157A57B5}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
+		{FD386404-1DE7-44E1-8CC4-9CE2037CB31F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD386404-1DE7-44E1-8CC4-9CE2037CB31F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD386404-1DE7-44E1-8CC4-9CE2037CB31F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD386404-1DE7-44E1-8CC4-9CE2037CB31F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD386404-1DE7-44E1-8CC4-9CE2037CB31F}.SignedRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{FD386404-1DE7-44E1-8CC4-9CE2037CB31F}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +100,7 @@ Global
 		{353BEEAC-9923-49DB-8217-FCB44BFB44BB} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
 		{7AA8B5EB-D671-4D79-A013-0A055626A901} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
 		{D289C3E5-4737-4CB5-BF3B-D48C89B1B6A0} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
+		{FD386404-1DE7-44E1-8CC4-9CE2037CB31F} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F86A6A97-6E21-4052-9893-60EAE07F3E79}

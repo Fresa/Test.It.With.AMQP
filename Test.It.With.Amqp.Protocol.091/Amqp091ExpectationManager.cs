@@ -2,7 +2,7 @@ using Test.It.With.Amqp.Protocol.Expectations;
 
 namespace Test.It.With.Amqp.Protocol._091
 {
-    internal class ExpectationManager : BaseExpectationManager
+    internal class Amqp091ExpectationManager : BaseExpectationManager
     {
         protected override Expectation Create(int channel)
         {

@@ -10,18 +10,18 @@ namespace Test.It.With.Amqp.MessageRouters
         private readonly IProtocol _protocol;
         private readonly IHandle<ContentHeaderFrame> _contentHeaderFrameHandler;
 
-        public ContentHeaderFrameRouter(IHandle<Frame> next, IProtocol protocol,
+        public ContentHeaderFrameRouter(IHandle<IFrame> next, IProtocol protocol,
             IHandle<ContentHeaderFrame> contentHeaderFrameHandler) : base(next)
         {
             _protocol = protocol;
             _contentHeaderFrameHandler = contentHeaderFrameHandler;
         }
 
-        public override void Handle(Frame frame)
+        public override void Handle(IFrame frame)
         {
-            if (frame.Type == Constants.FrameHeader)
+            if (frame.IsHeader())
             {
-                var reader = new AmqpReader(frame.Payload);
+                var reader = new Amqp091Reader(frame.Payload);
                 var contentHeader = _protocol.GetContentHeader(reader);
                 _contentHeaderFrameHandler.Handle(new ContentHeaderFrame( frame.Channel, contentHeader));
                 return;

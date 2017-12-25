@@ -10,18 +10,18 @@ namespace Test.It.With.Amqp.MessageRouters
         private readonly IProtocol _protocol;
         private readonly IHandle<HeartbeatFrame> _heartbeatFrameHandler;
 
-        public HeartbeatFrameRouter(IHandle<Frame> next, IProtocol protocol, IHandle<HeartbeatFrame> heartbeatFrameHandler) :
+        public HeartbeatFrameRouter(IHandle<IFrame> next, IProtocol protocol, IHandle<HeartbeatFrame> heartbeatFrameHandler) :
             base(next)
         {
             _protocol = protocol;
             _heartbeatFrameHandler = heartbeatFrameHandler;
         }
 
-        public override void Handle(Frame frame)
+        public override void Handle(IFrame frame)
         {
-            if (frame.Type == Constants.FrameHeartbeat)
+            if (frame.IsHeartbeat())
             {
-                var reader = new AmqpReader(frame.Payload);
+                var reader = new Amqp091Reader(frame.Payload);
                 var heartbeat = _protocol.GetHeartbeat(reader);
                 _heartbeatFrameHandler.Handle(new HeartbeatFrame(frame.Channel, heartbeat));
                 return;

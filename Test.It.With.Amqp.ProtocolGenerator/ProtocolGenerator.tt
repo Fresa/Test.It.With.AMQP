@@ -90,14 +90,14 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 	{
 	    #>public IVersion Version { get; } = new ProtocolVersion(); <# _(2);
 
-		#>public IProtocolHeader GetProtocolHeader(AmqpReader reader)<# Block(() =>
+		#>public IProtocolHeader GetProtocolHeader(IAmqpReader reader)<# Block(() =>
 	    {
 			#>var protocolHeader = new ProtocolHeader();<# _();
 			#>protocolHeader.ReadFrom(reader);<# _();
 			#>return protocolHeader;<#
 	    }); _(2);
 
-	    #>public IMethod GetMethod(AmqpReader reader)<# Block(() =>
+	    #>public IMethod GetMethod(IAmqpReader reader)<# Block(() =>
 	    {
 			#>var classId = reader.ReadShortUnsignedInteger();<# _(2);
 			
@@ -118,7 +118,7 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 			#>return method;<#
 	    }); _(2);
 
-		#>public IContentHeader GetContentHeader(AmqpReader reader)<# Block(() =>
+		#>public IContentHeader GetContentHeader(IAmqpReader reader)<# Block(() =>
 	    {
 			#>var classId = reader.ReadShortUnsignedInteger();<# _(2);
 			#>var weight = reader.ReadShortInteger();<# _();
@@ -137,14 +137,14 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 			#>return contentHeader;<#
 	    }); _(2);
 
-		#>public IContentBody GetContentBody(AmqpReader reader)<# Block(() =>
+		#>public IContentBody GetContentBody(IAmqpReader reader)<# Block(() =>
 	    {
 			#>var contentBody = new ContentBody();<# _();
 			#>contentBody.ReadFrom(reader);<# _();
 			#>return contentBody;<#
 	    }); _(2);
 
-		#>public IHeartbeat GetHeartbeat(AmqpReader reader)<# Block(() =>
+		#>public IHeartbeat GetHeartbeat(IAmqpReader reader)<# Block(() =>
 	    {
 			#>var heartbeat = new Heartbeat();<# _();
 			#>heartbeat.ReadFrom(reader);<# _();
@@ -343,7 +343,7 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 					});
 					if (@class.Fields.Values.Any()) {_();}
 
-					#>public void ReadFrom(AmqpReader reader)<# Block(() =>
+					#>public void ReadFrom(IAmqpReader reader)<# Block(() =>
 					{
 						#>BodySize = reader.ReadLongLongInteger();<# _();
 
@@ -364,7 +364,7 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 						});
 					}); _(2);
 
-					#>public void WriteTo(AmqpWriter writer)<#
+					#>public void WriteTo(IAmqpWriter writer)<#
 					Block(() =>
 					{
 						#>writer.WriteLongLongInteger(BodySize);<# _(2);
@@ -468,7 +468,7 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 					});
 					if (method.Fields.Values.Any()) {_();}
 
-					#>public void ReadFrom(AmqpReader reader)<# Block(() =>
+					#>public void ReadFrom(IAmqpReader reader)<# Block(() =>
 					{
 						PrintOnNewRowForEach(method.Fields.Values, field =>
 						{
@@ -476,7 +476,7 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 						});
 					}); _(2);
 
-					#>public void WriteTo(AmqpWriter writer)<#
+					#>public void WriteTo(IAmqpWriter writer)<#
 					Block(() =>
 					{
 						PrintOnNewRowForEach(method.Fields.Values, field =>
@@ -500,7 +500,7 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 		#>public IVersion Version { get; private set; } <# _();
 		#>private const byte ProtocolId = 0;<# _(2);
 
-		#>public void WriteTo(AmqpWriter writer)<# Block(() => 
+		#>public void WriteTo(IAmqpWriter writer)<# Block(() => 
 		{
 			#>writer.WriteBytes(Encoding.UTF8.GetBytes(Protocol));<# _();
 			#>writer.WriteByte(ProtocolId);<# _();
@@ -509,7 +509,7 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 			#>writer.WriteByte((byte)Version.Revision);<#
 		}); _(2);
 
-		#>public void ReadFrom(AmqpReader reader)<# Block(() => 
+		#>public void ReadFrom(IAmqpReader reader)<# Block(() => 
 		{
 			#>var protocol = Encoding.UTF8.GetString(reader.ReadBytes(4));<# _(2);
 
@@ -528,7 +528,7 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 
 		#>private class ProtocolHeaderVersion : IVersion<# Block(() => 
 		{
-			#>public ProtocolHeaderVersion(AmqpReader reader)<# Block(() => 
+			#>public ProtocolHeaderVersion(IAmqpReader reader)<# Block(() => 
 			{
 				#>Major = reader.ReadByte();<# _();
 				#>Minor = reader.ReadByte();<# _();
@@ -561,12 +561,12 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 			#>return channel > 0;<#
 		}); _(2);
 					
-		#>public void ReadFrom(AmqpReader reader)<# Block(() =>
+		#>public void ReadFrom(IAmqpReader reader)<# Block(() =>
         {
             #>Payload = reader.ReadBytes(reader.Length);<#
         }); _(2);
 
-        #>public void WriteTo(AmqpWriter writer)<# Block(() =>
+        #>public void WriteTo(IAmqpWriter writer)<# Block(() =>
         {
             #>writer.WriteBytes(Payload);<# _();
 			#>writer.WriteByte(Constants.FrameEnd);<# 
@@ -581,11 +581,11 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 			#>return channel == 0;<#
 		}); _(2);
 					
-		#>public void ReadFrom(AmqpReader reader)<# Block(() =>
+		#>public void ReadFrom(IAmqpReader reader)<# Block(() =>
         {
         }); _(2);
 
-        #>public void WriteTo(AmqpWriter writer)<# Block(() =>
+        #>public void WriteTo(IAmqpWriter writer)<# Block(() =>
         {
         });
     });

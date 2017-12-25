@@ -2,25 +2,25 @@
 using System.IO;
 using Test.It.With.Amqp.Protocol.Extensions;
 
-// todo: need to remove this reference. A Frame should be abstract
-
 namespace Test.It.With.Amqp.Protocol._091
 {
-    public class Frame
+    internal class Amqp091Frame : IFrame
     {
-        public static Frame ReadFrom(AmqpReader reader)
+        public static Amqp091Frame ReadFrom(Amqp091Reader reader)
         {
-            return new Frame(reader);
+            return new Amqp091Frame(reader);
         }
         
-        public Frame(int type, short channel, IMethod method)
+        public Amqp091Frame(int type, short channel, IMethod method)
         {
             Type = type;
+            AssertValidFrameType(Type);
+
             Channel = channel;
 
             using (var memoryStream = new MemoryStream())
             {
-                using (var writer = new AmqpWriter(memoryStream))
+                using (var writer = new Amqp091Writer(memoryStream))
                 {
                     writer.WriteShortInteger((short)method.ProtocolClassId);
                     writer.WriteShortInteger((short)method.ProtocolMethodId);
@@ -33,7 +33,7 @@ namespace Test.It.With.Amqp.Protocol._091
             Size = Payload.Length;
         }
 
-        private Frame(AmqpReader reader)
+        private Amqp091Frame(IAmqpReader reader)
         {
             Type = reader.ReadByte();
             AssertValidFrameType(Type);
@@ -72,13 +72,33 @@ namespace Test.It.With.Amqp.Protocol._091
         public int Size { get; }
         public byte[] Payload { get; }
 
-        public void WriteTo(AmqpWriter writer)
+        public void WriteTo(IAmqpWriter writer)
         {
             writer.WriteByte((byte)Type);
             writer.WriteShortInteger(Channel);
             writer.WriteLongInteger(Size);
             writer.WriteBytes(Payload);
             writer.WriteByte(Constants.FrameEnd);
+        }
+
+        public bool IsMethod()
+        {
+            return Type == Constants.FrameMethod;
+        }
+
+        public bool IsBody()
+        {
+            return Type == Constants.FrameBody;
+        }
+
+        public bool IsHeader()
+        {
+            return Type == Constants.FrameHeader;
+        }
+
+        public bool IsHeartbeat()
+        {
+            return Type == Constants.FrameHeartbeat;
         }
     }
 }

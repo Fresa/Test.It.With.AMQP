@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using Should.Fluent;
-using Test.It.With.Amqp.Protocol;
 using Test.It.With.XUnit;
 using Xunit;
 
-namespace Test.It.With.Amqp.Tests
+namespace Test.It.With.Amqp.Protocol._091.Tests
 {
     public class When_writing_a_short_unsigned_integer_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[2];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -34,13 +33,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_long_unsigned_integer_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[4];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -57,13 +56,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_long_long_unsigned_integer_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[8];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -80,13 +79,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_short_string_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[6];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -103,13 +102,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_byte_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[1];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -126,13 +125,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_boolean_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[1];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -149,13 +148,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_bytes_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[3];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -172,13 +171,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_long_string_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[9];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -195,13 +194,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_character_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[2];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -218,13 +217,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_short_short_integer_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[1];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -241,13 +240,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_long_long_integer_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[8];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -264,13 +263,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_decimal_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[5];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -287,13 +286,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_negative_decimal_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[5];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -310,13 +309,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_long_integer_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[4];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -333,13 +332,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_short_integer_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[2];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -356,13 +355,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_floating_point_number_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[4];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -379,13 +378,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_long_floating_point_number_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[8];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -402,13 +401,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_timestamp_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[8];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -425,13 +424,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_table_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[12];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -448,13 +447,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_boolean_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[2];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -471,13 +470,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_short_short_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[2];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -494,13 +493,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_byte_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[2];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -517,13 +516,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_short_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[3];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -540,13 +539,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_short_unsigned_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[3];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -563,13 +562,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_long_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[5];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -586,13 +585,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_long_unsigned_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[5];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -609,13 +608,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_long_long_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[9];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -632,13 +631,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_long_long_unsigned_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[9];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -655,13 +654,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_floating_point_number_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[5];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -678,13 +677,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_long_floating_point_number_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[9];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -701,13 +700,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_decimal_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[6];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -724,13 +723,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_negative_decimal_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[6];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -747,13 +746,13 @@ namespace Test.It.With.Amqp.Tests
     
     public class When_writing_a_short_string_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[7];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -770,13 +769,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_long_string_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[10];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -793,13 +792,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_timestamp_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[9];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -816,13 +815,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_table_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[13];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -839,13 +838,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_a_non_generic_table_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[13];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -862,13 +861,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_an_array_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[7];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -885,13 +884,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_no_field_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[1];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -908,13 +907,13 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_writing_rabbitmq_qpid_array_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpWriter _reader;
+        private Amqp091Writer _reader;
         private readonly byte[] _buffer = new byte[10];
 
         protected override void Given()
         {
             var stream = new MemoryStream(_buffer);
-            _reader = new AmqpWriter(stream);
+            _reader = new Amqp091Writer(stream);
         }
 
         protected override void When()
@@ -933,12 +932,12 @@ namespace Test.It.With.Amqp.Tests
     {
         private bool[] _array;
         private MemoryStream _stream;
-        private AmqpWriter _writer;
+        private Amqp091Writer _writer;
 
         protected override void Given()
         {
             _stream = new MemoryStream();
-            _writer = new AmqpWriter(_stream);
+            _writer = new Amqp091Writer(_stream);
             _array = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, true };
         }
 
@@ -958,12 +957,12 @@ namespace Test.It.With.Amqp.Tests
     {
         private bool[] _array;
         private MemoryStream _stream;
-        private AmqpWriter _writer;
+        private Amqp091Writer _writer;
 
         protected override void Given()
         {
             _stream = new MemoryStream();
-            _writer = new AmqpWriter(_stream);
+            _writer = new Amqp091Writer(_stream);
             _array = new[] { true, false };
         }
 
@@ -983,12 +982,12 @@ namespace Test.It.With.Amqp.Tests
     {
         private bool[] _array;
         private MemoryStream _stream;
-        private AmqpWriter _writer;
+        private Amqp091Writer _writer;
 
         protected override void Given()
         {
             _stream = new MemoryStream();
-            _writer = new AmqpWriter(_stream);
+            _writer = new Amqp091Writer(_stream);
             _array = new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false };
         }
 

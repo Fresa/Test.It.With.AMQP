@@ -10,20 +10,20 @@ namespace Test.It.With.Amqp.MessageRouters
         private readonly IProtocol _protocol;
         private readonly IHandle<ContentBodyFrame> _contentBodyFrameHandler;
 
-        public ContentBodyFrameRouter(IHandle<Frame> next, IProtocol protocol,
+        public ContentBodyFrameRouter(IHandle<IFrame> next, IProtocol protocol,
             IHandle<ContentBodyFrame> contentBodyFrameHandler) : base(next)
         {
             _protocol = protocol;
             _contentBodyFrameHandler = contentBodyFrameHandler;
         }
 
-        public override void Handle(Frame frame)
+        public override void Handle(IFrame frame)
         {
-            if (frame.Type == Constants.FrameBody)
+            if (frame.IsBody())
             {
-                var reader = new AmqpReader(frame.Payload);
+                var reader = new Amqp091Reader(frame.Payload);
                 var contentBody = _protocol.GetContentBody(reader);
-                _contentBodyFrameHandler.Handle(new ContentBodyFrame(frame.Channel, contentBody));
+                _contentBodyFrameHandler.Handle(new ContentBodyFrame((short)frame.Channel, contentBody));
                 return;
             }
 

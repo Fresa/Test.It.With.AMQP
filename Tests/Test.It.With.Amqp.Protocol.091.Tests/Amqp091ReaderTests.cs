@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using Should.Fluent;
-using Test.It.With.Amqp.Protocol;
 using Test.It.With.XUnit;
 using Xunit;
 
-namespace Test.It.With.Amqp.Tests
+namespace Test.It.With.Amqp.Protocol._091.Tests
 {
     public class When_reading_a_short_unsigned_integer_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private ushort _ushort;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 0, 2 });
+            _reader = new Amqp091Reader(new byte[] { 0, 2 });
         }
 
         protected override void When()
@@ -31,12 +30,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_long_unsigned_integer_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private uint _ushort;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 0, 0, 0, 2 });
+            _reader = new Amqp091Reader(new byte[] { 0, 0, 0, 2 });
         }
 
         protected override void When()
@@ -53,12 +52,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_long_long_unsigned_integer_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private ulong _ushort;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 0, 0, 0, 0, 0, 0, 0, 2 });
+            _reader = new Amqp091Reader(new byte[] { 0, 0, 0, 0, 0, 0, 0, 2 });
         }
 
         protected override void When()
@@ -75,12 +74,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_short_string_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private string _parsedData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 5, 65, 66, 67, 68, 69, 6 });
+            _reader = new Amqp091Reader(new byte[] { 5, 65, 66, 67, 68, 69, 6 });
         }
 
         protected override void When()
@@ -97,12 +96,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_byte_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private byte _parsedData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 16, 14 });
+            _reader = new Amqp091Reader(new byte[] { 16, 14 });
         }
 
         protected override void When()
@@ -119,12 +118,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_boolean_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private bool _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 1, 0 });
+            _reader = new Amqp091Reader(new byte[] { 1, 0 });
         }
 
         protected override void When()
@@ -141,12 +140,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_bytes_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private byte[] _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 1, 0, 6 });
+            _reader = new Amqp091Reader(new byte[] { 1, 0, 6 });
         }
 
         protected override void When()
@@ -163,12 +162,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_long_string_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private byte[] _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 0, 0, 0, 5, 0, 6, 1, 2, 3, 6 });
+            _reader = new Amqp091Reader(new byte[] { 0, 0, 0, 5, 0, 6, 1, 2, 3, 6 });
         }
 
         protected override void When()
@@ -185,12 +184,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_character_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private char _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 14, 9, 5 });
+            _reader = new Amqp091Reader(new byte[] { 14, 9, 5 });
         }
 
         protected override void When()
@@ -207,12 +206,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_short_short_integer_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private sbyte _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 65 });
+            _reader = new Amqp091Reader(new byte[] { 65 });
         }
 
         protected override void When()
@@ -229,12 +228,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_long_long_integer_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private long _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 0,0,0,0,0,0,0,65 });
+            _reader = new Amqp091Reader(new byte[] { 0,0,0,0,0,0,0,65 });
         }
 
         protected override void When()
@@ -251,12 +250,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_decimal_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private decimal _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 2, 0, 0, 0, 4, 5 });
+            _reader = new Amqp091Reader(new byte[] { 2, 0, 0, 0, 4, 5 });
         }
 
         protected override void When()
@@ -273,12 +272,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_negative_decimal_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 2, 255, 255, 255, 252, 5 });
+            _reader = new Amqp091Reader(new byte[] { 2, 255, 255, 255, 252, 5 });
         }
 
         protected override void When()
@@ -295,12 +294,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_long_integer_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private int _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 0, 0, 1, 1, 4, 5 });
+            _reader = new Amqp091Reader(new byte[] { 0, 0, 1, 1, 4, 5 });
         }
 
         protected override void When()
@@ -317,12 +316,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_short_integer_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private int _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 1, 0, 1, 1, 4, 5 });
+            _reader = new Amqp091Reader(new byte[] { 1, 0, 1, 1, 4, 5 });
         }
 
         protected override void When()
@@ -339,12 +338,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_floating_point_number_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private float _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 65, 112, 0, 0 });
+            _reader = new Amqp091Reader(new byte[] { 65, 112, 0, 0 });
         }
 
         protected override void When()
@@ -361,12 +360,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_long_floating_point_number_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private double _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 64, 111, 224, 0, 0, 0, 0, 0 });
+            _reader = new Amqp091Reader(new byte[] { 64, 111, 224, 0, 0, 0, 0, 0 });
         }
 
         protected override void When()
@@ -383,12 +382,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_timestamp_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private DateTime _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 0, 0, 0, 0, 1, 0, 0, 5 });
+            _reader = new Amqp091Reader(new byte[] { 0, 0, 0, 0, 1, 0, 0, 5 });
         }
 
         protected override void When()
@@ -405,12 +404,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_table_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private IDictionary<string, object> _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 0, 0, 0, 8, 5, 65, 66, 67, 68, 69, (byte)'t', 1 });
+            _reader = new Amqp091Reader(new byte[] { 0, 0, 0, 8, 5, 65, 66, 67, 68, 69, (byte)'t', 1 });
         }
 
         protected override void When()
@@ -429,12 +428,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_boolean_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'t', 1 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'t', 1 });
         }
 
         protected override void When()
@@ -451,12 +450,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_short_short_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'b', 5, 6 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'b', 5, 6 });
         }
 
         protected override void When()
@@ -473,12 +472,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_byte_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'B', 5, 6 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'B', 5, 6 });
         }
 
         protected override void When()
@@ -495,12 +494,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_short_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'U', 1, 6 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'U', 1, 6 });
         }
 
         protected override void When()
@@ -517,12 +516,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_short_unsigned_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'u', 1, 6 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'u', 1, 6 });
         }
 
         protected override void When()
@@ -539,12 +538,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_long_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'I', 0, 0, 1, 6 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'I', 0, 0, 1, 6 });
         }
 
         protected override void When()
@@ -561,12 +560,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_long_unsigned_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'i', 0, 0, 1, 6 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'i', 0, 0, 1, 6 });
         }
 
         protected override void When()
@@ -583,12 +582,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_long_long_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'L', 0, 0, 0, 0, 0, 0, 1, 6 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'L', 0, 0, 0, 0, 0, 0, 1, 6 });
         }
 
         protected override void When()
@@ -605,12 +604,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_long_long_unsigned_integer_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'l', 0, 0, 0, 0, 0, 0, 1, 6 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'l', 0, 0, 0, 0, 0, 0, 1, 6 });
         }
 
         protected override void When()
@@ -627,12 +626,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_floating_point_number_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'f', 65, 112, 0, 0 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'f', 65, 112, 0, 0 });
         }
 
         protected override void When()
@@ -649,12 +648,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_long_floating_point_number_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'d', 64, 111, 224, 0, 0, 0, 0, 0 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'d', 64, 111, 224, 0, 0, 0, 0, 0 });
         }
 
         protected override void When()
@@ -671,12 +670,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_decimal_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'D', 2, 0, 0, 0, 4, 5 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'D', 2, 0, 0, 0, 4, 5 });
         }
 
         protected override void When()
@@ -693,12 +692,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_negative_decimal_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'D', 2, 255, 255, 255, 252, 5 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'D', 2, 255, 255, 255, 252, 5 });
         }
 
         protected override void When()
@@ -715,12 +714,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_short_string_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'s', 5, 65, 66, 67, 68, 69, 6 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'s', 5, 65, 66, 67, 68, 69, 6 });
         }
 
         protected override void When()
@@ -737,12 +736,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_long_string_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'S', 0, 0, 0, 5, 65, 66, 67, 68, 69, 6 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'S', 0, 0, 0, 5, 65, 66, 67, 68, 69, 6 });
         }
 
         protected override void When()
@@ -759,12 +758,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_timestamp_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'T', 0, 0, 0, 0, 1, 0, 0, 5 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'T', 0, 0, 0, 0, 1, 0, 0, 5 });
         }
 
         protected override void When()
@@ -781,12 +780,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_a_table_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private IDictionary<string, object> _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'F', 0, 0, 0, 8, 5, 65, 66, 67, 68, 69, (byte)'t', 1 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'F', 0, 0, 0, 8, 5, 65, 66, 67, 68, 69, (byte)'t', 1 });
         }
 
         protected override void When()
@@ -805,12 +804,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_an_array_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object[] _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'A', 0, 0, 0, 2, (byte)'t', 1 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'A', 0, 0, 0, 2, (byte)'t', 1 });
         }
 
         protected override void When()
@@ -829,12 +828,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_no_field_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new[] { (byte)'V' });
+            _reader = new Amqp091Reader(new[] { (byte)'V' });
         }
 
         protected override void When()
@@ -852,12 +851,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_rabbitmq_qpid_array_field_value_via_amqp : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private object _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { (byte)'x', 0, 0, 0, 5, 0, 6, 1, 2, 3, 6 });
+            _reader = new Amqp091Reader(new byte[] { (byte)'x', 0, 0, 0, 5, 0, 6, 1, 2, 3, 6 });
         }
 
         protected override void When()
@@ -868,18 +867,18 @@ namespace Test.It.With.Amqp.Tests
         [Fact]
         public void It_should_parse_correctly()
         {
-            ShouldExtensions.Should<byte>(((ByteArray)_readData).Bytes).Equal(new byte[] { 0, 6, 1, 2, 3 });
+            ((ByteArray)_readData).Bytes.Should().Equal(new byte[] { 0, 6, 1, 2, 3 });
         }
     }
 
     public class When_reading_one_property_flag_set : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private bool[] _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 0, 2 });
+            _reader = new Amqp091Reader(new byte[] { 0, 2 });
         }
 
         protected override void When()
@@ -897,12 +896,12 @@ namespace Test.It.With.Amqp.Tests
 
     public class When_reading_multiple_property_flag_sets : XUnit2Specification
     {
-        private AmqpReader _reader;
+        private Amqp091Reader _reader;
         private bool[] _readData;
 
         protected override void Given()
         {
-            _reader = new AmqpReader(new byte[] { 0, 3, 128, 0 });
+            _reader = new Amqp091Reader(new byte[] { 0, 3, 128, 0 });
         }
 
         protected override void When()

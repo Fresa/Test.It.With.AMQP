@@ -24,7 +24,7 @@ namespace Test.It.With.Amqp.Protocol._091
         private short _channelMax = short.MaxValue;
         private long _frameMax = Constants.FrameMinSize;
 
-        private readonly ExpectationManager _expectationManager = new ExpectationManager();
+        private readonly Amqp091ExpectationManager _expectationManager = new Amqp091ExpectationManager();
 
         private readonly Dictionary<int, IContentMethod> _contentMethodStates = new Dictionary<int, IContentMethod>();
 
