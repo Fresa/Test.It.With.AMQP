@@ -44,3 +44,6 @@ Tests/Test.It.With.RabbitMQ.Tests/bin/
 Test.It.With.AMQP.v3.ncrunchsolution.user
 Tests/Test.It.With.Amqp.Protocol.091.Tests/obj/
 Tests/Test.It.With.Amqp.Protocol.091.Tests/bin/
+Test.It.With.Amqp.Protocol.091/bin/
+Test.It.With.Amqp.Protocol.091/obj/
+Tests/Test.It.With.Amqp.Protocol.Tests/bin/
