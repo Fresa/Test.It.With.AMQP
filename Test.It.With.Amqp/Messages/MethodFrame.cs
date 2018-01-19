@@ -1,26 +1,28 @@
-﻿namespace Test.It.With.Amqp.Messages
+﻿using Test.It.With.Amqp.Protocol;
+
+namespace Test.It.With.Amqp.Messages
 {
-    public class MethodFrame : BaseFrame
+    public class MethodFrame : BaseFrame<IMethod>
     {
-        public MethodFrame(short channel, Amqp.Protocol.IMethod method)
+        public MethodFrame(short channel, IMethod method)
         {
             Channel = channel;
-            Method = method;
+            Message = method;
         }
 
         public override short Channel { get; }
-        public Amqp.Protocol.IMethod Method { get; }
+        public override IMethod Message { get; }
     }
 
-    public class MethodFrame<TMethod> : BaseFrame where TMethod : class, Amqp.Protocol.IMethod
+    public class MethodFrame<TMethod> : BaseFrame<TMethod> where TMethod : class, IMethod
     {
         public MethodFrame(short channel, TMethod method)
         {
             Channel = channel;
-            Method = method;
+            Message = method;
         }
 
         public override short Channel { get; }
-        public TMethod Method { get; }
+        public override TMethod Message { get; }
     }
 }

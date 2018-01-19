@@ -11,13 +11,22 @@ namespace Test.It.With.Amqp.Protocol._091
             return new Amqp091Frame(reader);
         }
         
-        protected Amqp091Frame(int type, short channel)
+        internal Amqp091Frame(int type, short channel, IMessage message)
         {
             Type = type;
             AssertValidFrameType(Type);
 
             Channel = channel;
-            Payload = new byte[0];
+
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var writer = new Amqp091Writer(memoryStream))
+                {
+                    message.WriteTo(writer);
+                }
+
+                Payload = memoryStream.GetBuffer();
+            }
 
             Size = Payload.Length;
         }

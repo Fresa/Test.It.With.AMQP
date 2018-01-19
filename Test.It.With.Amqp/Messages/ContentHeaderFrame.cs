@@ -2,28 +2,28 @@
 
 namespace Test.It.With.Amqp.Messages
 {
-    public class ContentHeaderFrame : BaseFrame
+    public class ContentHeaderFrame : BaseFrame<IContentHeader>
     {
         public ContentHeaderFrame(short channel, IContentHeader contentHeader)
         {
             Channel = channel;
-            ContentHeader = contentHeader;
+            Message = contentHeader;
         }
 
         public override short Channel { get; }
-        public IContentHeader ContentHeader { get; }
+        public override IContentHeader Message { get; }
     }
 
-    public class ContentHeaderFrame<TContentHeader> : BaseFrame 
+    public class ContentHeaderFrame<TContentHeader> : BaseFrame <TContentHeader>
         where TContentHeader : class, IContentHeader
     {
-        public ContentHeaderFrame(short channel, TContentHeader contentHeader)
+        public ContentHeaderFrame(short channel, TContentHeader messageHeader)
         {
             Channel = channel;
-            ContentHeader = contentHeader;
+            Message = messageHeader;
         }
 
         public override short Channel { get; }
-        public TContentHeader ContentHeader { get; }
+        public override TContentHeader Message { get; }
     }
 }

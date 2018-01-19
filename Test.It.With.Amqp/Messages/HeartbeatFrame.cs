@@ -2,28 +2,28 @@
 
 namespace Test.It.With.Amqp.Messages
 {
-    public class HeartbeatFrame : BaseFrame
+    public class HeartbeatFrame : BaseFrame<IHeartbeat>
     {
         public HeartbeatFrame(short channel, IHeartbeat heartbeat)
         {
             Channel = channel;
-            Heartbeat = heartbeat;
+            Message = heartbeat;
         }
 
         public override short Channel { get; }
-        public IHeartbeat Heartbeat { get; }
+        public override IHeartbeat Message { get; }
     }
 
-    public class HeartbeatFrame<THeartbeat> : BaseFrame
+    public class HeartbeatFrame<THeartbeat> : BaseFrame<THeartbeat>
         where THeartbeat : class, IHeartbeat
     {
         public HeartbeatFrame(short channel, THeartbeat heartbeat)
         {
             Channel = channel;
-            Heartbeat = heartbeat;
+            Message = heartbeat;
         }
 
         public override short Channel { get; }
-        public THeartbeat Heartbeat { get; }
+        public override THeartbeat Message { get; }
     }
 }

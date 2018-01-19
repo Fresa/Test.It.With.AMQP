@@ -35,8 +35,8 @@ namespace Test.It.With.RabbitMQ.Tests
                 {
                     testServer.Send(clientId, new MethodFrame<Connection.Start>(handler.Channel, new Connection.Start
                     {
-                        VersionMajor = Octet.From((byte) ((IProtocolHeader) handler.ProtocolHeader).Version.Major),
-                        VersionMinor = Octet.From((byte) ((IProtocolHeader) handler.ProtocolHeader).Version.Minor),
+                        VersionMajor = Octet.From((byte) ((IProtocolHeader) handler.Message).Version.Major),
+                        VersionMinor = Octet.From((byte) ((IProtocolHeader) handler.Message).Version.Minor),
                         Locales = Longstr.From(Encoding.UTF8.GetBytes("en_US")),
                         Mechanisms = Longstr.From(Encoding.UTF8.GetBytes("PLAIN")),
                     }));
@@ -94,20 +94,20 @@ namespace Test.It.With.RabbitMQ.Tests
             public void It_should_have_published_the_correct_message_type()
             {
                 _basicPublish.Should().Contain().Four(frame =>
-                    frame.Method.ContentHeader.Type.Equals(Shortstr.From(typeof(TestMessage).FullName)));
+                    frame.Message.ContentHeader.Type.Equals(Shortstr.From(typeof(TestMessage).FullName)));
             }
 
             [Fact]
             public void It_should_have_published_the_correct_message()
             {
-                _basicPublish.Should().Contain.Any(frame => frame.Method.ContentBody.Deserialize<TestMessage>().Message.Equals("Testing sending a message using RabbitMQ"));
+                _basicPublish.Should().Contain.Any(frame => frame.Message.ContentBody.Deserialize<TestMessage>().Message.Equals("Testing sending a message using RabbitMQ"));
             }
 
             [Fact]
             public void It_should_have_published_the_message_on_the_correct_exchange()
             {
-                _basicPublish.Should().Contain().Two(frame => frame.Method.Exchange.Equals(ExchangeName.From("myExchange0")));
-                _basicPublish.Should().Contain().Two(frame => frame.Method.Exchange.Equals(ExchangeName.From("myExchange1")));
+                _basicPublish.Should().Contain().Two(frame => frame.Message.Exchange.Equals(ExchangeName.From("myExchange0")));
+                _basicPublish.Should().Contain().Two(frame => frame.Message.Exchange.Equals(ExchangeName.From("myExchange1")));
             }
 
             [Fact]
@@ -119,14 +119,14 @@ namespace Test.It.With.RabbitMQ.Tests
             [Fact]
             public void It_should_have_declared_an_exchange_with_name()
             {
-                _exchangeDeclare.Should().Contain().Two(frame => frame.Method.Exchange.Equals(ExchangeName.From("myExchange0")));
-                _exchangeDeclare.Should().Contain().Two(frame => frame.Method.Exchange.Equals(ExchangeName.From("myExchange1")));
+                _exchangeDeclare.Should().Contain().Two(frame => frame.Message.Exchange.Equals(ExchangeName.From("myExchange0")));
+                _exchangeDeclare.Should().Contain().Two(frame => frame.Message.Exchange.Equals(ExchangeName.From("myExchange1")));
             }
 
             [Fact]
             public void It_should_have_declared_an_exchange_with_type()
             {
-                _exchangeDeclare.Should().Contain.Any(frame => frame.Method.Type.Equals(Shortstr.From("topic")));
+                _exchangeDeclare.Should().Contain.Any(frame => frame.Message.Type.Equals(Shortstr.From("topic")));
             }
         }
     }

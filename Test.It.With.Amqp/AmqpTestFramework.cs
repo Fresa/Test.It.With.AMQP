@@ -62,12 +62,12 @@ namespace Test.It.With.Amqp
 
         public void Send<TMessage>(ConnectionId connectionId, MethodFrame<TMessage> frame) where TMessage : class, IServerMethod
         {
-            _connections[connectionId].Send(new MethodFrame(frame.Channel, frame.Method));
+            _connections[connectionId].Send(new MethodFrame(frame.Channel, frame.Message));
         }
 
         public void Send<TMessage>(ConnectionId connectionId, HeartbeatFrame<TMessage> frame) where TMessage : class, IHeartbeat
         {
-            _connections[connectionId].Send(new HeartbeatFrame(frame.Channel, frame.Heartbeat));
+            _connections[connectionId].Send(new HeartbeatFrame(frame.Channel, frame.Message));
         }
 
         public void On<TClientMethod>(Action<ConnectionId, MethodFrame<TClientMethod>> messageHandler)
@@ -76,7 +76,7 @@ namespace Test.It.With.Amqp
             void FrameHandler(ConnectionId connectionId, MethodFrame frame)
             {
                 messageHandler(connectionId,
-                    new MethodFrame<TClientMethod>(frame.Channel, (TClientMethod)frame.Method));
+                    new MethodFrame<TClientMethod>(frame.Channel, (TClientMethod)frame.Message));
             }
 
             lock (_methodSubscriptions)
@@ -110,7 +110,7 @@ namespace Test.It.With.Amqp
             void FrameHandler(ConnectionId connectionId, ProtocolHeaderFrame frame)
             {
                 messageHandler(connectionId,
-                    new ProtocolHeaderFrame<TProtocolHeader>(frame.Channel, (TProtocolHeader)frame.ProtocolHeader));
+                    new ProtocolHeaderFrame<TProtocolHeader>(frame.Channel, (TProtocolHeader)frame.Message));
             }
 
             lock (_protocolHeaderSubscriptions)
@@ -133,7 +133,7 @@ namespace Test.It.With.Amqp
             void FrameHandler(ConnectionId connectionId, HeartbeatFrame frame)
             {
                 messageHandler(connectionId,
-                    new HeartbeatFrame<THeartbeat>(frame.Channel, (THeartbeat)frame.Heartbeat));
+                    new HeartbeatFrame<THeartbeat>(frame.Channel, (THeartbeat)frame.Message));
             }
 
             lock (_heartbeatSubscriptions)

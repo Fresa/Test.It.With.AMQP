@@ -11,7 +11,6 @@ using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Expectations;
 using Test.It.With.Amqp.Protocol.Extensions;
-using Test.It.With.Amqp.Protocol._091; // todo: cannot reference explicit protocol
 using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp
@@ -30,11 +29,13 @@ namespace Test.It.With.Amqp
 
         private readonly IExpectationStateMachine _expectationStateMachine;
         private readonly List<Type> _subscribedMethods = new List<Type>();
+        private IFrameFactory _frameFactory;
 
         public AmqpTestServer(ProtocolVersion protocolVersion)
         {
             var protocolResolver = new ProtocolResolver(protocolVersion);
             _expectationStateMachine = protocolResolver.ExpectationStateMachine;
+            _frameFactory = protocolResolver.FrameFactory;
             var protocol = protocolResolver.Protocol;
 
             var networkClientFactory = new InternalRoutedNetworkClientFactory();
@@ -86,56 +87,43 @@ namespace Test.It.With.Amqp
         }
 
         public INetworkClient Client { get; }
-
-        public void Send(BaseFrame frame)
+        
+        public void Send(MethodFrame frame)
         {
-            switch (frame)
-            {
-                case MethodFrame methodFrame:
-                    Send(methodFrame);
-                    return;
-                case HeartbeatFrame heartbeatFrame:
-                    Send(heartbeatFrame);
-                    return;
-            }
+            _logger.Debug($"Sending {nameof(MethodFrame)} {frame.Message.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.Message.Serialize()}");
+            _frameClient.Send(_frameFactory.Create(frame.Channel, frame.Message));
         }
 
-        private void Send(MethodFrame frame)
+        public void Send(HeartbeatFrame frame)
         {
-            _logger.Debug($"Sending method {frame.Method.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.Method.Serialize()}");
-            _frameClient.Send(new Amqp091MethodFrame(frame.Channel, frame.Method));
+            _logger.Debug($"Sending {nameof(HeartbeatFrame)} {frame.Message.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.Message.Serialize()}");
+            _frameClient.Send(_frameFactory.Create(frame.Channel, frame.Message));
         }
 
-        private void Send(HeartbeatFrame frame)
+        public void Send(ContentHeaderFrame frame)
         {
-            _logger.Debug($"Sending heartbeat {frame.Heartbeat.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.Heartbeat.Serialize()}");
-            _frameClient.Send(new Amqp091HeartbeatFrame(frame.Channel, frame.Heartbeat));
+            _logger.Debug($"Sending {nameof(ContentHeaderFrame)} {frame.Message.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.Message.Serialize()}");
+            _frameClient.Send(_frameFactory.Create(frame.Channel, frame.Message));
         }
 
-        private void Send(ContentHeaderFrame frame)
+        public void Send(ContentBodyFrame frame)
         {
-            _logger.Debug($"Sending content header {frame.ContentHeader.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.ContentHeader.Serialize()}");
-            _frameClient.Send(new Amqp091ContentHeaderFrame(frame.Channel, frame.ContentHeader));
+            _logger.Debug($"Sending {nameof(ContentBodyFrame)} {frame.Message.GetType().GetPrettyFullName()} on channel {frame.Channel}.");
+            _frameClient.Send(_frameFactory.Create(frame.Channel, frame.Message));
         }
-
-        private void Send(ContentBodyFrame frame)
-        {
-            _logger.Debug($"Sending content body {frame.ContentBody.GetType().GetPrettyFullName()} on channel {frame.Channel}.");
-            _frameClient.Send(new Amqp091ContentBodyFrame(frame.Channel, frame.ContentBody));
-        }
-
+        
         public void On(Type methodType, Action<MethodFrame> messageHandler)
         {
             AssertNoDuplicateSubscriptions(methodType);
 
             var methodSubscription = _methodFramePublisher.Subscribe(methodType, frame =>
             {
-                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Method))
+                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Message))
                 {
                     _logger.Debug($"Method {methodType.GetPrettyFullName()} on channel {frame.Channel} was expected.");
                     messageHandler(new MethodFrame(
                         frame.Channel,
-                        frame.Method));
+                        frame.Message));
                 }
             });
 
@@ -145,7 +133,7 @@ namespace Test.It.With.Amqp
             {
                 var contentHeaderSubscription = _contentHeaderFramePublisher.Subscribe(frame =>
                 {
-                    if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentHeader, out var method))
+                    if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Message, out var method))
                     {
                         if (method.GetType() != methodType)
                         {
@@ -153,7 +141,7 @@ namespace Test.It.With.Amqp
                         }
 
                         _logger.Debug(
-                            $"Content header {frame.ContentHeader.GetType().GetPrettyFullName()} for method {method.GetType().Name} on channel {frame.Channel} was expected.");
+                            $"Content header {frame.Message.GetType().GetPrettyFullName()} for method {method.GetType().Name} on channel {frame.Channel} was expected.");
                         messageHandler(new MethodFrame(frame.Channel, method));
                     }
                 });
@@ -162,7 +150,7 @@ namespace Test.It.With.Amqp
 
                 var contentBodySubscription = _contentBodyFramePublisher.Subscribe(frame =>
                 {
-                    if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ContentBody, out var method))
+                    if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Message, out var method))
                     {
                         if (method.GetType() != methodType)
                         {
@@ -170,7 +158,7 @@ namespace Test.It.With.Amqp
                         }
 
                         _logger.Debug(
-                            $"Content body {frame.ContentBody.GetType().GetPrettyFullName()} for method {method.GetType().Name} on channel {frame.Channel} was expected.");
+                            $"Content body {frame.Message.GetType().GetPrettyFullName()} for method {method.GetType().Name} on channel {frame.Channel} was expected.");
                         messageHandler(new MethodFrame(frame.Channel, method));
                     }
                 });
@@ -185,7 +173,7 @@ namespace Test.It.With.Amqp
 
             var protocolHeaderSubscription = _protocolHeaderPublisher.Subscribe(type, frame =>
             {
-                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.ProtocolHeader))
+                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Message))
                 {
                     _logger.Debug($"{type.GetPrettyFullName()} on channel {frame.Channel} was expected.");
                     messageHandler(frame);
@@ -201,7 +189,7 @@ namespace Test.It.With.Amqp
 
             var heartbeatSubscription = _heartbeatFramePublisher.Subscribe(type, frame =>
             {
-                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Heartbeat))
+                if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Message))
                 {
                     _logger.Debug($"{type.GetPrettyFullName()} on channel {frame.Channel} was expected.");
                     messageHandler(frame);

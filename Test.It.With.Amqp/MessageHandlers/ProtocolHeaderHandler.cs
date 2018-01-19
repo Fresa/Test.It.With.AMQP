@@ -23,7 +23,7 @@ namespace Test.It.With.Amqp.MessageHandlers
             _subscriptions.TryAdd(subscriptionId,
                 new TypeSubscriber<TProtocolHeader, ProtocolHeaderFrame<IProtocolHeader>>(
                     frame =>
-                        subscription(new ProtocolHeaderFrame<TProtocolHeader>(frame.Channel, (TProtocolHeader)frame.ProtocolHeader))));
+                        subscription(new ProtocolHeaderFrame<TProtocolHeader>(frame.Channel, (TProtocolHeader)frame.Message))));
 
             return new Unsubscriber(() => _subscriptions.TryRemove(subscriptionId, out _));
         }
@@ -35,7 +35,7 @@ namespace Test.It.With.Amqp.MessageHandlers
             _subscriptions.TryAdd(subscriptionId,
                 new TypeSubscriber<ProtocolHeaderFrame<IProtocolHeader>>(type,
                     frame =>
-                        subscription(new ProtocolHeaderFrame(frame.Channel, frame.ProtocolHeader))));
+                        subscription(new ProtocolHeaderFrame(frame.Channel, frame.Message))));
 
             return new Unsubscriber(() => _subscriptions.TryRemove(subscriptionId, out _));
         }
@@ -43,20 +43,20 @@ namespace Test.It.With.Amqp.MessageHandlers
         public void Handle(ProtocolHeaderFrame protocolHeader)
         {
             var subscriptions = _subscriptions
-                .Where(pair => pair.Value.Id == protocolHeader.ProtocolHeader.GetType())
+                .Where(pair => pair.Value.Id == protocolHeader.Message.GetType())
                 .Select(pair => pair.Value.Subscription)
                 .ToList();
 
             if (subscriptions.IsEmpty())
             {
                 throw new InvalidOperationException(
-                    $"There are no subscriptions on {protocolHeader.ProtocolHeader.GetType().FullName}.");
+                    $"There are no subscriptions on {protocolHeader.Message.GetType().FullName}.");
             }
 
-            _logger.Debug($"Received method {protocolHeader.ProtocolHeader.GetType().GetPrettyFullName()} on channel {protocolHeader.Channel}. {protocolHeader.ProtocolHeader.Serialize()}");
+            _logger.Debug($"Received method {protocolHeader.Message.GetType().GetPrettyFullName()} on channel {protocolHeader.Channel}. {protocolHeader.Message.Serialize()}");
             foreach (var subscription in subscriptions)
             {
-                subscription(new ProtocolHeaderFrame<IProtocolHeader>(protocolHeader.Channel, protocolHeader.ProtocolHeader));
+                subscription(new ProtocolHeaderFrame<IProtocolHeader>(protocolHeader.Channel, protocolHeader.Message));
             }
         }
     }

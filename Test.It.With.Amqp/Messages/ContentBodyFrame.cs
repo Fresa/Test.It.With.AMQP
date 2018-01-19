@@ -2,15 +2,15 @@
 
 namespace Test.It.With.Amqp.Messages
 {
-    public class ContentBodyFrame : BaseFrame
+    public class ContentBodyFrame : BaseFrame<IContentBody>
     {
         public ContentBodyFrame(short channel, IContentBody contentBody)
         {
             Channel = channel;
-            ContentBody = contentBody;
+            Message = contentBody;
         }
 
         public override short Channel { get; }
-        public IContentBody ContentBody { get; }
+        public override IContentBody Message { get; }
     }
 }

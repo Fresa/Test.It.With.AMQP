@@ -15,14 +15,14 @@ namespace Test.It.With.Amqp.MessageClient
 
             methodFrameClient.Received += args =>
             {
-                if (args.Method.GetType() == typeof(TMethod))
+                if (args.Message.GetType() == typeof(TMethod))
                 {
                     if (Received == null)
                     {
                         throw new InvalidOperationException($"Missing subscription on {typeof(TMethod).FullName}.");
                     }
 
-                    Received.Invoke(new MethodFrame<TMethod>(args.Channel, (TMethod)args.Method));
+                    Received.Invoke(new MethodFrame<TMethod>(args.Channel, (TMethod)args.Message));
                 }
             };
 

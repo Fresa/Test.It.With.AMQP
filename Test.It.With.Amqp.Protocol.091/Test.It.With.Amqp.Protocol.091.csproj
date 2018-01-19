@@ -54,7 +54,6 @@
     <Compile Include="Expectations\MethodExpectationBuilders\NextExpectedMethodBuilder.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\OrMethodExpectedBuilder.cs" />
     <Compile Include="Amqp091Frame.cs" />
-    <Compile Include="Amqp091MethodFrame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

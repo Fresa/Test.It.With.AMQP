@@ -1,9 +1,6 @@
 ﻿namespace Test.It.With.Amqp.Protocol
 {
-    public interface IHeartbeat
+    public interface IHeartbeat : IMessage
     {
-        bool SentOnValidChannel(int channel);
-        void ReadFrom(IAmqpReader reader);
-        void WriteTo(IAmqpWriter writer);
     }
 }

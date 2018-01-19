@@ -2,14 +2,10 @@
 
 namespace Test.It.With.Amqp.Protocol
 {
-    public interface IMethod
+    public interface IMethod : IMessage
     {
         int ProtocolClassId { get; }
         int ProtocolMethodId { get; }
-        bool SentOnValidChannel(int channel);
         Type[] Responses();
-
-        void ReadFrom(IAmqpReader reader);
-        void WriteTo(IAmqpWriter writer);
     }
 }

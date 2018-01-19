@@ -24,7 +24,7 @@ namespace Test.It.With.Amqp.MessageHandlers
             _subscriptions.TryAdd(subscriptionId,
                 new TypeSubscriber<THeartbeat, HeartbeatFrame<IHeartbeat>>(
                     frame => subscription(
-                        new HeartbeatFrame<THeartbeat>(frame.Channel, (THeartbeat)frame.Heartbeat))));
+                        new HeartbeatFrame<THeartbeat>(frame.Channel, (THeartbeat)frame.Message))));
 
             return new Unsubscriber(() => _subscriptions.TryRemove(subscriptionId, out _));
         }
@@ -36,7 +36,7 @@ namespace Test.It.With.Amqp.MessageHandlers
             _subscriptions.TryAdd(subscriptionId,
                 new TypeSubscriber<HeartbeatFrame<IHeartbeat>>(type,
                     frame => subscription(
-                        new HeartbeatFrame(frame.Channel, frame.Heartbeat))));
+                        new HeartbeatFrame(frame.Channel, frame.Message))));
 
             return new Unsubscriber(() => _subscriptions.TryRemove(subscriptionId, out _));
         }
@@ -44,21 +44,21 @@ namespace Test.It.With.Amqp.MessageHandlers
         public void Handle(HeartbeatFrame heartbeatFrame)
         {
             var subscriptions = _subscriptions
-                .Where(pair => pair.Value.Id == heartbeatFrame.Heartbeat.GetType())
+                .Where(pair => pair.Value.Id == heartbeatFrame.Message.GetType())
                 .Select(pair => pair.Value.Subscription)
                 .ToList();
 
             if (subscriptions.IsEmpty())
             {
                 throw new InvalidOperationException(
-                    $"There are no subscriptions on {heartbeatFrame.Heartbeat.GetType().FullName}.");
+                    $"There are no subscriptions on {heartbeatFrame.Message.GetType().FullName}.");
             }
 
-            _logger.Debug($"Received heartbeat {heartbeatFrame.Heartbeat.GetType().GetPrettyFullName()} on channel {heartbeatFrame.Channel}. {heartbeatFrame.Heartbeat.Serialize()}");
+            _logger.Debug($"Received heartbeat {heartbeatFrame.Message.GetType().GetPrettyFullName()} on channel {heartbeatFrame.Channel}. {heartbeatFrame.Message.Serialize()}");
             foreach (var subscription in subscriptions)
             {
                 subscription(new HeartbeatFrame<IHeartbeat>(heartbeatFrame.Channel,
-                    heartbeatFrame.Heartbeat));
+                    heartbeatFrame.Message));
             }
         }
     }

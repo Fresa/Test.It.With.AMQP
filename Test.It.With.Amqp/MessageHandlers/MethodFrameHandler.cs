@@ -23,7 +23,7 @@ namespace Test.It.With.Amqp.MessageHandlers
             _methodSubscriptions.TryAdd(subscriptionId, 
                 new TypeSubscriber<TMethod, MethodFrame<IMethod>>(
                     frame => 
-                        subscription(new MethodFrame<TMethod>(frame.Channel, (TMethod) frame.Method))));
+                        subscription(new MethodFrame<TMethod>(frame.Channel, (TMethod) frame.Message))));
             
             return new Unsubscriber(() => _methodSubscriptions.TryRemove(subscriptionId, out _));
         }
@@ -35,7 +35,7 @@ namespace Test.It.With.Amqp.MessageHandlers
             _methodSubscriptions.TryAdd(subscriptionId,
                 new TypeSubscriber<MethodFrame<IMethod>>(type,
                     frame =>
-                        subscription(new MethodFrame(frame.Channel, frame.Method))));
+                        subscription(new MethodFrame(frame.Channel, frame.Message))));
 
             return new Unsubscriber(() => _methodSubscriptions.TryRemove(subscriptionId, out _));
         }
@@ -43,20 +43,20 @@ namespace Test.It.With.Amqp.MessageHandlers
         public void Handle(MethodFrame methodFrame)
         {
             var subscriptions = _methodSubscriptions
-                .Where(pair => pair.Value.Id == methodFrame.Method.GetType())
+                .Where(pair => pair.Value.Id == methodFrame.Message.GetType())
                 .Select(pair => pair.Value.Subscription)
                 .ToList();
 
             if (subscriptions.IsEmpty())
             {
                 throw new InvalidOperationException(
-                    $"There are no subscriptions on {methodFrame.Method.GetType().FullName}.");
+                    $"There are no subscriptions on {methodFrame.Message.GetType().FullName}.");
             }
 
-            _logger.Debug($"Received method {methodFrame.Method.GetType().GetPrettyFullName()} on channel {methodFrame.Channel}. {methodFrame.Method.Serialize()}");
+            _logger.Debug($"Received method {methodFrame.Message.GetType().GetPrettyFullName()} on channel {methodFrame.Channel}. {methodFrame.Message.Serialize()}");
             foreach (var subscription in subscriptions)
             {
-                subscription(new MethodFrame<IMethod>(methodFrame.Channel, methodFrame.Method));
+                subscription(new MethodFrame<IMethod>(methodFrame.Channel, methodFrame.Message));
             }
         }
     }
