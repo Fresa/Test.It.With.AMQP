@@ -1633,6 +1633,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 10;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1726,6 +1727,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteByte(_versionMajor.Value);
 				writer.WriteByte(_versionMinor.Value);
 				writer.WriteTable(_serverProperties.Value);
@@ -1741,6 +1745,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 11;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1816,6 +1821,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteTable(_clientProperties.Value);
 				writer.WriteShortString(_mechanism.Value);
 				writer.WriteLongString(_response.Value);
@@ -1832,6 +1840,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 20;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1868,6 +1877,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteLongString(_challenge.Value);
 			}
 		}
@@ -1880,6 +1892,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 21;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1912,6 +1925,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteLongString(_response.Value);
 			}
 		}
@@ -1924,6 +1940,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 30;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -1992,6 +2009,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_channelMax.Value);
 				writer.WriteLongInteger(_frameMax.Value);
 				writer.WriteShortInteger(_heartbeat.Value);
@@ -2006,6 +2026,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 31;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -2071,6 +2092,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_channelMax.Value);
 				writer.WriteLongInteger(_frameMax.Value);
 				writer.WriteShortInteger(_heartbeat.Value);
@@ -2087,6 +2111,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 40;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -2144,6 +2169,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortString(_virtualHost.Value);
 				writer.WriteShortString(_reserved1.Value);
 				writer.WriteBit(_reserved2.Value);
@@ -2157,6 +2185,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 41;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -2184,6 +2213,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortString(_reserved1.Value);
 			}
 		}
@@ -2198,6 +2230,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 50;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -2270,6 +2303,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_replyCode.Value);
 				writer.WriteShortString(_replyText.Value);
 				writer.WriteShortInteger(_classId.Value);
@@ -2285,6 +2321,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 10;
 			public int ProtocolMethodId => 51;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel == 0;
@@ -2302,6 +2339,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -2330,6 +2370,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 10;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2362,6 +2403,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortString(_reserved1.Value);
 			}
 		}
@@ -2373,6 +2417,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 11;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2400,6 +2445,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteLongString(_reserved1.Value);
 			}
 		}
@@ -2415,6 +2463,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 20;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2451,6 +2500,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteBit(_active.Value);
 			}
 		}
@@ -2462,6 +2514,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 21;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2493,6 +2546,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteBit(_active.Value);
 			}
 		}
@@ -2507,6 +2563,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 40;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2579,6 +2636,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_replyCode.Value);
 				writer.WriteShortString(_replyText.Value);
 				writer.WriteShortInteger(_classId.Value);
@@ -2594,6 +2654,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 20;
 			public int ProtocolMethodId => 41;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2611,6 +2672,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -2635,6 +2699,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 10;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2779,6 +2844,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_exchange.Value);
 				writer.WriteShortString(_type.Value);
@@ -2799,6 +2867,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 11;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2816,6 +2885,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -2828,6 +2900,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 20;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2899,6 +2972,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_exchange.Value);
 				writer.WriteBit(_ifUnused.Value);
@@ -2913,6 +2989,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 40;
 			public int ProtocolMethodId => 21;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -2930,6 +3007,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -2959,6 +3039,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 10;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3098,6 +3179,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
 				writer.WriteBit(_passive.Value);
@@ -3117,6 +3201,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 11;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3175,6 +3260,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortString(_queue.Value);
 				writer.WriteLongInteger(_messageCount.Value);
 				writer.WriteLongInteger(_consumerCount.Value);
@@ -3191,6 +3279,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 20;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3295,6 +3384,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
 				writer.WriteShortString(_exchange.Value);
@@ -3311,6 +3403,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 21;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3328,6 +3421,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -3339,6 +3435,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 50;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3427,6 +3524,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
 				writer.WriteShortString(_exchange.Value);
@@ -3442,6 +3542,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 51;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3459,6 +3560,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -3471,6 +3575,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 30;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3528,6 +3633,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
 				writer.WriteBit(_noWait.Value);
@@ -3541,6 +3649,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 31;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3571,6 +3680,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteLongInteger(_messageCount.Value);
 			}
 		}
@@ -3584,6 +3696,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 40;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3671,6 +3784,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
 				writer.WriteBit(_ifUnused.Value);
@@ -3686,6 +3802,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 50;
 			public int ProtocolMethodId => 41;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -3716,6 +3833,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteLongInteger(_messageCount.Value);
 			}
 		}
@@ -4001,6 +4121,8 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ClassId);
+				writer.WriteShortUnsignedInteger(0);
 				writer.WriteLongLongInteger(BodySize);
 
 				var propertyFlags = new [] 
@@ -4106,6 +4228,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 10;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4180,6 +4303,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteLongInteger(_prefetchSize.Value);
 				writer.WriteShortInteger(_prefetchCount.Value);
 				writer.WriteBit(_global.Value);
@@ -4195,6 +4321,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 11;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4212,6 +4339,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -4225,6 +4355,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 20;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4350,6 +4481,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
 				writer.WriteShortString(_consumerTag.Value);
@@ -4369,6 +4503,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 21;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4399,6 +4534,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortString(_consumerTag.Value);
 			}
 		}
@@ -4413,6 +4551,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 30;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4456,6 +4595,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortString(_consumerTag.Value);
 				writer.WriteBit(_noWait.Value);
 			}
@@ -4468,6 +4610,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 31;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4495,6 +4638,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortString(_consumerTag.Value);
 			}
 		}
@@ -4504,10 +4650,11 @@ namespace Test.It.With.Amqp.Protocol._091
 		/// to queues as defined by the exchange configuration and distributed to any active
 		/// consumers when the transaction, if any, is committed.
 		/// </summary>
-		public class Publish : IMethod, IContentMethod, IClientMethod
+		public class Publish : IMethod, IContentMethod<Basic.ContentHeader>, IClientMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 40;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4619,6 +4766,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_exchange.Value);
 				writer.WriteShortString(_routingKey.Value);
@@ -4633,10 +4783,11 @@ namespace Test.It.With.Amqp.Protocol._091
 		/// reply code and text provide information about the reason that the message was
 		/// undeliverable.
 		/// </summary>
-		public class Return : IMethod, IContentMethod, IServerMethod
+		public class Return : IMethod, IContentMethod<Basic.ContentHeader>, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 50;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4724,6 +4875,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_replyCode.Value);
 				writer.WriteShortString(_replyText.Value);
 				writer.WriteShortString(_exchange.Value);
@@ -4737,10 +4891,11 @@ namespace Test.It.With.Amqp.Protocol._091
 		/// the server responds with Deliver methods as and when messages arrive for that
 		/// consumer.
 		/// </summary>
-		public class Deliver : IMethod, IContentMethod, IServerMethod
+		public class Deliver : IMethod, IContentMethod<Basic.ContentHeader>, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 60;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4839,6 +4994,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortString(_consumerTag.Value);
 				writer.WriteLongLongInteger(_deliveryTag.Value);
 				writer.WriteBit(_redelivered.Value);
@@ -4856,6 +5014,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 70;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -4919,6 +5078,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortInteger(_reserved1.Value);
 				writer.WriteShortString(_queue.Value);
 				writer.WriteBit(_noAck.Value);
@@ -4930,10 +5092,11 @@ namespace Test.It.With.Amqp.Protocol._091
 		/// delivered by 'get-ok' must be acknowledged unless the no-ack option was set in the
 		/// get method.
 		/// </summary>
-		public class GetOk : IMethod, IContentMethod, IServerMethod
+		public class GetOk : IMethod, IContentMethod<Basic.ContentHeader>, IServerMethod
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 71;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5032,6 +5195,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteLongLongInteger(_deliveryTag.Value);
 				writer.WriteBit(_redelivered.Value);
 				writer.WriteShortString(_exchange.Value);
@@ -5048,6 +5214,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 72;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5075,6 +5242,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteShortString(_reserved1.Value);
 			}
 		}
@@ -5088,6 +5258,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 80;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5132,6 +5303,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteLongLongInteger(_deliveryTag.Value);
 				writer.WriteBit(_multiple.Value);
 			}
@@ -5146,6 +5320,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 90;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5188,6 +5363,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteLongLongInteger(_deliveryTag.Value);
 				writer.WriteBit(_requeue.Value);
 			}
@@ -5202,6 +5380,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 100;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5234,6 +5413,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteBit(_requeue.Value);
 			}
 		}
@@ -5247,6 +5429,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 110;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5279,6 +5462,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 				writer.WriteBit(_requeue.Value);
 			}
 		}
@@ -5290,6 +5476,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 60;
 			public int ProtocolMethodId => 111;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5307,6 +5494,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -5339,6 +5529,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 10;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5361,6 +5552,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -5373,6 +5567,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 11;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5390,6 +5585,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -5402,6 +5600,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 20;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5424,6 +5623,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -5436,6 +5638,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 21;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5453,6 +5656,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -5467,6 +5673,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 30;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5489,6 +5696,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -5501,6 +5711,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ProtocolClassId => 90;
 			public int ProtocolMethodId => 31;
+
 			public bool SentOnValidChannel(int channel)
 			{
 				return channel > 0;
@@ -5518,6 +5729,9 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+
 
 			}
 		}
@@ -5599,7 +5813,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		public void WriteTo(IAmqpWriter writer)
 		{
 			writer.WriteBytes(Payload);
-			writer.WriteByte(Constants.FrameEnd);
+
 		}
 	}
 

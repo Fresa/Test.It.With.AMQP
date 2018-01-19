@@ -87,10 +87,41 @@ namespace Test.It.With.Amqp
 
         public INetworkClient Client { get; }
 
-        public void Send(MethodFrame frame)
+        public void Send(BaseFrame frame)
+        {
+            switch (frame)
+            {
+                case MethodFrame methodFrame:
+                    Send(methodFrame);
+                    return;
+                case HeartbeatFrame heartbeatFrame:
+                    Send(heartbeatFrame);
+                    return;
+            }
+        }
+
+        private void Send(MethodFrame frame)
         {
             _logger.Debug($"Sending method {frame.Method.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.Method.Serialize()}");
-            _frameClient.Send(new Amqp091FrameMethod(frame.Channel, frame.Method));
+            _frameClient.Send(new Amqp091MethodFrame(frame.Channel, frame.Method));
+        }
+
+        private void Send(HeartbeatFrame frame)
+        {
+            _logger.Debug($"Sending heartbeat {frame.Heartbeat.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.Heartbeat.Serialize()}");
+            _frameClient.Send(new Amqp091HeartbeatFrame(frame.Channel, frame.Heartbeat));
+        }
+
+        private void Send(ContentHeaderFrame frame)
+        {
+            _logger.Debug($"Sending content header {frame.ContentHeader.GetType().GetPrettyFullName()} on channel {frame.Channel}. {frame.ContentHeader.Serialize()}");
+            _frameClient.Send(new Amqp091ContentHeaderFrame(frame.Channel, frame.ContentHeader));
+        }
+
+        private void Send(ContentBodyFrame frame)
+        {
+            _logger.Debug($"Sending content body {frame.ContentBody.GetType().GetPrettyFullName()} on channel {frame.Channel}.");
+            _frameClient.Send(new Amqp091ContentBodyFrame(frame.Channel, frame.ContentBody));
         }
 
         public void On(Type methodType, Action<MethodFrame> messageHandler)

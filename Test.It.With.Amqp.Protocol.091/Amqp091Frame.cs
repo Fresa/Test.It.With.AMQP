@@ -6,33 +6,22 @@ namespace Test.It.With.Amqp.Protocol._091
 {
     internal class Amqp091Frame : IFrame
     {
-        public static Amqp091Frame ReadFrom(Amqp091Reader reader)
+        public static Amqp091Frame ReadFrom(IAmqpReader reader)
         {
             return new Amqp091Frame(reader);
         }
         
-        public Amqp091Frame(int type, short channel, IMethod method)
+        protected Amqp091Frame(int type, short channel)
         {
             Type = type;
             AssertValidFrameType(Type);
 
             Channel = channel;
-
-            using (var memoryStream = new MemoryStream())
-            {
-                using (var writer = new Amqp091Writer(memoryStream))
-                {
-                    writer.WriteShortInteger((short)method.ProtocolClassId);
-                    writer.WriteShortInteger((short)method.ProtocolMethodId);
-                    method.WriteTo(writer);
-                }
-
-                Payload = memoryStream.GetBuffer();
-            }
+            Payload = new byte[0];
 
             Size = Payload.Length;
         }
-
+        
         private Amqp091Frame(IAmqpReader reader)
         {
             Type = reader.ReadByte();
@@ -62,15 +51,14 @@ namespace Test.It.With.Amqp.Protocol._091
         {
             if (_validFrameTypes.ContainsKey(type) == false)
             {
-                // todo: Resolve protocol specific exceptions in an abstract way
                 throw new FrameErrorException($"Expected: {_validFrameTypes.Join(", ", " or ", frameType => $"{frameType.Value}: {frameType.Key}")}, got: {type}.");
             }
         }
 
         public int Type { get; }
         public short Channel { get; }
-        public int Size { get; }
-        public byte[] Payload { get; }
+        public int Size { get; protected set; }
+        public byte[] Payload { get; protected set; }
 
         public void WriteTo(IAmqpWriter writer)
         {

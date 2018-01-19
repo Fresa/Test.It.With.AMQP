@@ -2,8 +2,13 @@
 {
     public interface IContentMethod : IMethod
     {
-        byte[] ContentBody { get; }
         void SetContentHeader(IContentHeader contentHeader);
         void AddContentBody(IContentBody contentBody);
+    }
+
+    public interface IContentMethod<out THeader> : IContentMethod
+    {
+        byte[] ContentBody { get; }
+        THeader ContentHeader { get; }
     }
 }

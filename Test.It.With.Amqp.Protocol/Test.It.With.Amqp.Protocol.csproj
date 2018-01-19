@@ -71,6 +71,7 @@
     <Compile Include="IContentHeader.cs" />
     <Compile Include="IContentMethod.cs" />
     <Compile Include="IFrame.cs" />
+    <Compile Include="IFrameFactory.cs" />
     <Compile Include="IHeartbeat.cs" />
     <Compile Include="INonContentMethod.cs" />
     <Compile Include="IProtocolHeader.cs" />

@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Amqp091ExpectationStateMachine.cs" />
     <Compile Include="Amqp091ExpectationManager.cs" />
+    <Compile Include="Amqp091FrameFactory.cs" />
     <Compile Include="Amqp091Reader.cs" />
     <Compile Include="Amqp091Writer.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\ExpectedMethodBuilder.cs" />
@@ -53,7 +54,7 @@
     <Compile Include="Expectations\MethodExpectationBuilders\NextExpectedMethodBuilder.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\OrMethodExpectedBuilder.cs" />
     <Compile Include="Amqp091Frame.cs" />
-    <Compile Include="Amqp091FrameMethod.cs" />
+    <Compile Include="Amqp091MethodFrame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

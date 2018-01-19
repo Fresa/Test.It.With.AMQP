@@ -367,6 +367,8 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 					#>public void WriteTo(IAmqpWriter writer)<#
 					Block(() =>
 					{
+						#>writer.WriteShortUnsignedInteger((ushort)ClassId);<# _();
+						#>writer.WriteShortUnsignedInteger(0);<# _();
 						#>writer.WriteLongLongInteger(BodySize);<# _(2);
 					    
 						#>var propertyFlags = new [] <# Block(() =>
@@ -397,10 +399,10 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 				var methodName = method.Name.ToPascalCase('-');
 
 				GenerateDocumentation(method.Documentation);
-				#>public class <#= methodName #> : IMethod<# if (method.HasContent) { #>, IContentMethod<# } else { #>, INonContentMethod<# } foreach (var responseMethod in method.Responses.Values) { #>, IRespond<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Client)) { #>, IServerMethod<# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Server)) { #>, IClientMethod<# } Block(() =>
+				#>public class <#= methodName #> : IMethod<# if (method.HasContent) { #>, IContentMethod<<#= className + "." + contentHeaderName #>><# } else { #>, INonContentMethod<# } foreach (var responseMethod in method.Responses.Values) { #>, IRespond<<#= responseMethod.Method.Name.ToPascalCase('-') #>><# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Client)) { #>, IServerMethod<# } if (method.Chassis.Any(chassis => chassis.Name == ChassisName.Server)) { #>, IClientMethod<# } Block(() =>
 				{
 					#>public int ProtocolClassId => <#= @class.Index #>;<# _();
-					#>public int ProtocolMethodId => <#= method.Index #>;<# _();
+					#>public int ProtocolMethodId => <#= method.Index #>;<# _(2);
 					
 					#>public bool SentOnValidChannel(int channel)<# Block(() =>
 				    {
@@ -479,6 +481,9 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 					#>public void WriteTo(IAmqpWriter writer)<#
 					Block(() =>
 					{
+						#>writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);<# _();
+						#>writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);<# _(2);
+
 						PrintOnNewRowForEach(method.Fields.Values, field =>
 						{
 							#>writer.<#= typeConverter.GetWriterMethod(field.Domain.Type) #>(_<#= field.Name.ToCamelCase('-') #>.Value);<#
@@ -569,7 +574,6 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
         #>public void WriteTo(IAmqpWriter writer)<# Block(() =>
         {
             #>writer.WriteBytes(Payload);<# _();
-			#>writer.WriteByte(Constants.FrameEnd);<# 
         });
     }); _(2);
 

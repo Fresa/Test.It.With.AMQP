@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
@@ -64,6 +65,11 @@ namespace Test.It.With.Amqp
             _connections[connectionId].Send(new MethodFrame(frame.Channel, frame.Method));
         }
 
+        public void Send<TMessage>(ConnectionId connectionId, HeartbeatFrame<TMessage> frame) where TMessage : class, IHeartbeat
+        {
+            _connections[connectionId].Send(new HeartbeatFrame(frame.Channel, frame.Heartbeat));
+        }
+
         public void On<TClientMethod>(Action<ConnectionId, MethodFrame<TClientMethod>> messageHandler)
             where TClientMethod : class, IClientMethod
         {
@@ -88,7 +94,7 @@ namespace Test.It.With.Amqp
         }
 
         public void On<TClientMethod, TServerMethod>(Func<ConnectionId, MethodFrame<TClientMethod>, TServerMethod> messageHandler)
-            where TClientMethod : class, IClientMethod, INonContentMethod, IRespond<TServerMethod>
+            where TClientMethod : class, IClientMethod, IRespond<TServerMethod>
             where TServerMethod : class, IServerMethod
         {
             On<TClientMethod>((clientId, frame) =>
