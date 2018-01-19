@@ -9,6 +9,7 @@
     public interface IContentMethod<out THeader> : IContentMethod
     {
         byte[] ContentBody { get; }
+        IContentBody[] ContentBodyFragments { get; }
         THeader ContentHeader { get; }
     }
 }

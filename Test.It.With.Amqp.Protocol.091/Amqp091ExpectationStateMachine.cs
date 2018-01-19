@@ -22,7 +22,7 @@ namespace Test.It.With.Amqp.Protocol._091
         }
 
         private short _channelMax = short.MaxValue;
-        private long _frameMax = Constants.FrameMinSize;
+        public long FrameMax { get; private set; } = Constants.FrameMinSize;
 
         private readonly Amqp091ExpectationManager _expectationManager = new Amqp091ExpectationManager();
 
@@ -63,7 +63,7 @@ namespace Test.It.With.Amqp.Protocol._091
             if (method is Connection.TuneOk tuneOk)
             {
                 _channelMax = tuneOk.ChannelMax.Value == 0 ? short.MaxValue : tuneOk.ChannelMax.Value;
-                _frameMax = tuneOk.FrameMax.Value == 0 ? long.MaxValue : tuneOk.FrameMax.Value;
+                FrameMax = tuneOk.FrameMax.Value == 0 ? long.MaxValue : tuneOk.FrameMax.Value;
             }
 
             if (method is IContentMethod contentMethod)
@@ -131,9 +131,9 @@ namespace Test.It.With.Amqp.Protocol._091
                 throw new FrameErrorException($"Invalid content body frame size. Expected {contentBodyExpectation.Size}, got {size}.");
             }
 
-            if (size + 1 > _frameMax)
+            if (size + 1 > FrameMax)
             {
-                throw new FrameErrorException($"Invalid content body frame size. Maximum frame size is {_frameMax}. Current frame size was {size + 1}.");
+                throw new FrameErrorException($"Invalid content body frame size. Maximum frame size is {FrameMax}. Current frame size was {size + 1}.");
             }
 
             _contentMethodStates[channel].AddContentBody(contentBody);

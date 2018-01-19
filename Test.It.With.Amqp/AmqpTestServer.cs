@@ -29,7 +29,7 @@ namespace Test.It.With.Amqp
 
         private readonly IExpectationStateMachine _expectationStateMachine;
         private readonly List<Type> _subscribedMethods = new List<Type>();
-        private IFrameFactory _frameFactory;
+        private readonly IFrameFactory _frameFactory;
 
         public AmqpTestServer(ProtocolVersion protocolVersion)
         {

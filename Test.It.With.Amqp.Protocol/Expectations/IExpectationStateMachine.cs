@@ -11,5 +11,7 @@ namespace Test.It.With.Amqp.Protocol.Expectations
         bool ShouldPass(int channel, IContentBody contentBody, out IContentMethod method);
 
         bool ShouldPass(int channel, IHeartbeat method);
+
+        long FrameMax { get; }
     }
 }

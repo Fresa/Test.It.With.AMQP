@@ -2,6 +2,7 @@
 // WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
 
 using System;
+using System.Linq;
 using System.Net;
 using System.Collections.Generic;
 using System.Text;
@@ -4671,13 +4672,14 @@ namespace Test.It.With.Amqp.Protocol._091
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public byte[] ContentBody { get; private set; } = new byte[0];
+			public byte[] ContentBody => _contentBodyFragments.SelectMany(fragment => fragment.Payload).ToArray();
 
+			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
+
+			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
 			public void AddContentBody(IContentBody contentBody)
 			{
-				var body = new List<byte>(ContentBody);
-				body.AddRange(contentBody.Payload);
-				ContentBody = body.ToArray();
+				_contentBodyFragments.Add(contentBody);
 			}
 
 			public Type[] Responses() 
@@ -4804,13 +4806,14 @@ namespace Test.It.With.Amqp.Protocol._091
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public byte[] ContentBody { get; private set; } = new byte[0];
+			public byte[] ContentBody => _contentBodyFragments.SelectMany(fragment => fragment.Payload).ToArray();
 
+			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
+
+			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
 			public void AddContentBody(IContentBody contentBody)
 			{
-				var body = new List<byte>(ContentBody);
-				body.AddRange(contentBody.Payload);
-				ContentBody = body.ToArray();
+				_contentBodyFragments.Add(contentBody);
 			}
 
 			public Type[] Responses() 
@@ -4912,13 +4915,14 @@ namespace Test.It.With.Amqp.Protocol._091
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public byte[] ContentBody { get; private set; } = new byte[0];
+			public byte[] ContentBody => _contentBodyFragments.SelectMany(fragment => fragment.Payload).ToArray();
 
+			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
+
+			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
 			public void AddContentBody(IContentBody contentBody)
 			{
-				var body = new List<byte>(ContentBody);
-				body.AddRange(contentBody.Payload);
-				ContentBody = body.ToArray();
+				_contentBodyFragments.Add(contentBody);
 			}
 
 			public Type[] Responses() 
@@ -5113,13 +5117,14 @@ namespace Test.It.With.Amqp.Protocol._091
 				ContentHeader = (Basic.ContentHeader) contentHeader;
 			}
 
-			public byte[] ContentBody { get; private set; } = new byte[0];
+			public byte[] ContentBody => _contentBodyFragments.SelectMany(fragment => fragment.Payload).ToArray();
 
+			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
+
+			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
 			public void AddContentBody(IContentBody contentBody)
 			{
-				var body = new List<byte>(ContentBody);
-				body.AddRange(contentBody.Payload);
-				ContentBody = body.ToArray();
+				_contentBodyFragments.Add(contentBody);
 			}
 
 			public Type[] Responses() 

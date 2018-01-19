@@ -73,6 +73,7 @@
 // WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
 
 using System;
+using System.Linq;
 using System.Net;
 using System.Collections.Generic;
 using System.Text;
@@ -424,13 +425,14 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 							#>ContentHeader = (<#= className + "." + contentHeaderName #>) contentHeader;<#
 						}); _(2);
 
-						#>public byte[] ContentBody { get; private set; } = new byte[0];<# _(2);
+						#>public byte[] ContentBody => _contentBodyFragments.SelectMany(fragment => fragment.Payload).ToArray();<# _(2);
 
+						#>public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();<# _(2);
+						
+						#>private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();<# _();
 						#>public void AddContentBody(IContentBody contentBody)<# Block(() => {
 						{
-							#>var body = new List<byte>(ContentBody);<# _();
-							#>body.AddRange(contentBody.Payload);<# _();
-							#>ContentBody = body.ToArray();<#
+						    #>_contentBodyFragments.Add(contentBody);<#
 						}}); _(2);
 					}
 

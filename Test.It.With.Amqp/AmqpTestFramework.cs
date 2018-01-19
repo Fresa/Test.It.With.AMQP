@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
@@ -60,10 +59,22 @@ namespace Test.It.With.Amqp
 
         public INetworkClientFactory ConnectionFactory { get; }
 
-        public void Send<TMessage>(ConnectionId connectionId, MethodFrame<TMessage> frame) where TMessage : class, IServerMethod
+        public void Send<TMessage>(ConnectionId connectionId, MethodFrame<TMessage> frame) where TMessage : class, INonContentMethod, IServerMethod
         {
             _connections[connectionId].Send(new MethodFrame(frame.Channel, frame.Message));
         }
+
+        public void Send<TMessage, THeader>(ConnectionId connectionId, MethodFrame<TMessage> frame) 
+            where TMessage : class, IContentMethod<THeader>, IServerMethod
+            where THeader : IContentHeader
+        {
+            _connections[connectionId].Send(new MethodFrame(frame.Channel, frame.Message));
+            _connections[connectionId].Send(new ContentHeaderFrame(frame.Channel, frame.Message.ContentHeader));
+            foreach (var contentBodyFragment in frame.Message.ContentBodyFragments)
+            {
+                _connections[connectionId].Send(new ContentBodyFrame(frame.Channel, contentBodyFragment));
+            }
+         }
 
         public void Send<TMessage>(ConnectionId connectionId, HeartbeatFrame<TMessage> frame) where TMessage : class, IHeartbeat
         {
@@ -95,12 +106,24 @@ namespace Test.It.With.Amqp
 
         public void On<TClientMethod, TServerMethod>(Func<ConnectionId, MethodFrame<TClientMethod>, TServerMethod> messageHandler)
             where TClientMethod : class, IClientMethod, IRespond<TServerMethod>
-            where TServerMethod : class, IServerMethod
+            where TServerMethod : class, IServerMethod, INonContentMethod
         {
             On<TClientMethod>((clientId, frame) =>
             {
                 var response = messageHandler(clientId, frame);
                 Send(clientId, new MethodFrame<TServerMethod>(frame.Channel, response));
+            });
+        }
+
+        public void On<TClientMethod, TServerMethod, THeader>(Func<ConnectionId, MethodFrame<TClientMethod>, TServerMethod> messageHandler)
+            where TClientMethod : class, IClientMethod, IRespond<TServerMethod>
+            where TServerMethod : class, IServerMethod, IContentMethod<THeader>
+            where THeader : class, IContentHeader
+        {
+            On<TClientMethod>((clientId, frame) =>
+            {
+                var response = messageHandler(clientId, frame);
+                Send<TServerMethod, THeader>(clientId, new MethodFrame<TServerMethod>(frame.Channel, response));
             });
         }
 
