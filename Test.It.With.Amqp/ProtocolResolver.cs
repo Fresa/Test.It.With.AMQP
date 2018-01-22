@@ -14,6 +14,8 @@ namespace Test.It.With.Amqp
                     Protocol = new Amq091Protocol();
                     ExpectationStateMachine = new Amqp091ExpectationStateMachine();
                     FrameFactory = new Amqp091FrameFactory();
+                    AmqpReaderFactory = new Amqp091ReaderFactory();
+                    AmqpWriterFactory = new Amqp091WriterFactory();
                     return;
             }
         }
@@ -23,5 +25,9 @@ namespace Test.It.With.Amqp
         public IExpectationStateMachine ExpectationStateMachine { get; }
 
         public IFrameFactory FrameFactory { get; }
+
+        public IAmqpReaderFactory AmqpReaderFactory { get; }
+
+        public IAmqpWriterFactory AmqpWriterFactory { get; }
     }
 }

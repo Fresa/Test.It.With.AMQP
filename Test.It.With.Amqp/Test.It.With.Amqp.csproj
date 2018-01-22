@@ -49,7 +49,6 @@
     <Compile Include="ConnectionId.cs" />
     <Compile Include="Extensions\HeartbeatExtensions.cs" />
     <Compile Include="Extensions\MethodExtensions.cs" />
-    <Compile Include="MessageClient\ContentBodyFrameClient.cs" />
     <Compile Include="MessageClient\FrameClient.cs" />
     <Compile Include="MessageClient\IChainableTypedMessageClient.cs" />
     <Compile Include="MessageClient\ITypedMessageClient.cs" />
@@ -77,7 +76,6 @@
     <Compile Include="NetworkClient\INetworkClientFactory.cs" />
     <Compile Include="NetworkClient\InternalRoutedNetworkClient.cs" />
     <Compile Include="NetworkClient\InternalRoutedNetworkClientFactory.cs" />
-    <Compile Include="NetworkClient\NetworkClientExtensions.cs" />
     <Compile Include="NetworkClient\NetworkClientFactory.cs" />
     <Compile Include="NetworkClient\NetworkClientStream.cs" />
     <Compile Include="NetworkClient\ReceivedEventArgs.cs" />

@@ -1,5 +1,4 @@
-﻿
-// WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
+﻿// WARNING! THIS FILE IS AUTO-GENERATED! DO NOT EDIT.
 
 using System;
 using System.Linq;
@@ -8,8 +7,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using Validation;
-using Test.It.With.Amqp.Protocol;
-using Test.It.With.Amqp.Protocol.Extensions;
 using Log.It;
 
 namespace Test.It.With.Amqp.Protocol._091

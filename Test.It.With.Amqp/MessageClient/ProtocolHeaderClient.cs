@@ -1,21 +1,23 @@
 using System;
+using System.IO;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
-using Test.It.With.Amqp.Protocol._091;
 
 namespace Test.It.With.Amqp.MessageClient
 {
     internal class ProtocolHeaderClient : ITypedMessageClient<ProtocolHeaderFrame, IFrame>, IChainableTypedMessageClient<ReceivedEventArgs, IFrame>
     {
         private readonly INetworkClient _client;
+        private readonly IAmqpWriterFactory _amqpWriterFactory;
 
-        public ProtocolHeaderClient(INetworkClient networkClient, IProtocol protocol)
+        public ProtocolHeaderClient(INetworkClient networkClient, IProtocol protocol, IAmqpReaderFactory amqpReaderFactory, IAmqpWriterFactory amqpWriterFactory)
         {
             _client = networkClient;
+            _amqpWriterFactory = amqpWriterFactory;
             _client.BufferReceived += (sender, args) =>
             {
-                var reader = new Amqp091Reader(args.Buffer);
+                var reader = amqpReaderFactory.Create(args.Buffer);
                 if (reader.PeekByte() == 'A')
                 {
                     var header = protocol.GetProtocolHeader(reader);
@@ -50,7 +52,15 @@ namespace Test.It.With.Amqp.MessageClient
 
         public void Send(IFrame frame)
         {
-            _client.Send(frame);
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = _amqpWriterFactory.Create(stream))
+                {
+                    frame.WriteTo(writer);
+                }
+                var bytes = stream.ToArray();
+                _client.Send(bytes, 0, bytes.Length);
+            }
         }
     }
 }

@@ -37,6 +37,8 @@ namespace Test.It.With.Amqp
             _expectationStateMachine = protocolResolver.ExpectationStateMachine;
             _frameFactory = protocolResolver.FrameFactory;
             var protocol = protocolResolver.Protocol;
+            var amqpReaderFactory = protocolResolver.AmqpReaderFactory;
+            var amqpWriterFactory = protocolResolver.AmqpWriterFactory;
 
             var networkClientFactory = new InternalRoutedNetworkClientFactory();
             networkClientFactory.OnException += exception =>
@@ -53,14 +55,14 @@ namespace Test.It.With.Amqp
             var contentBodyFrameHandler = new ContentBodyFrameHandler();
             var heartbeatFrameHandler = new HeartbeatFrameHandler();
 
-            var heartbeatFrameRouter = new HeartbeatFrameRouter(null, protocol, heartbeatFrameHandler);
-            var contentBodyFrameRouter = new ContentBodyFrameRouter(heartbeatFrameRouter, protocol, contentBodyFrameHandler);
-            var contentHeaderFrameRouter = new ContentHeaderFrameRouter(contentBodyFrameRouter, protocol, contentHeaderFrameHandler);
-            var methodFrameRouter = new MethodFrameRouter(contentHeaderFrameRouter, protocol, methodFrameHandler);
+            var heartbeatFrameRouter = new HeartbeatFrameRouter(null, protocol, heartbeatFrameHandler, amqpReaderFactory);
+            var contentBodyFrameRouter = new ContentBodyFrameRouter(heartbeatFrameRouter, protocol, contentBodyFrameHandler, amqpReaderFactory);
+            var contentHeaderFrameRouter = new ContentHeaderFrameRouter(contentBodyFrameRouter, protocol, contentHeaderFrameHandler, amqpReaderFactory);
+            var methodFrameRouter = new MethodFrameRouter(contentHeaderFrameRouter, protocol, methodFrameHandler, amqpReaderFactory);
 
-            var protocolHeaderClient = new ProtocolHeaderClient(serverNetworkClient, protocol);
+            var protocolHeaderClient = new ProtocolHeaderClient(serverNetworkClient, protocol, amqpReaderFactory, amqpWriterFactory);
             protocolHeaderClient.Received += protocolHeaderHandler.Handle;
-            var frameClient = new FrameClient(protocolHeaderClient);
+            var frameClient = new FrameClient(protocolHeaderClient, amqpReaderFactory, _frameFactory);
             frameClient.Received += methodFrameRouter.Handle;
             _frameClient = frameClient;
 

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Test.It.With.Amqp.Protocol._091
 {
-    public class Amqp091Writer : IDisposable, IByteWriter, IAmqpWriter
+    public class Amqp091Writer : IByteWriter, IAmqpWriter
     {
         private readonly Stream _buffer;
         private readonly BitWriter _bitWriter;
@@ -48,8 +48,7 @@ namespace Test.It.With.Amqp.Protocol._091
             var bytes = Encoding.UTF8.GetBytes(value);
             if (bytes.Length > 255)
             {
-                throw new ArgumentOutOfRangeException(nameof(value),
-                    "Short string cannot be longer than 255 characters.");
+                throw new SyntaxErrorException("Short string cannot be longer than 255 characters.");
             }
 
             WriteByte((byte)bytes.Length);
@@ -187,7 +186,7 @@ namespace Test.It.With.Amqp.Protocol._091
 
             if (value > int.MaxValue || value < int.MinValue)
             {
-                throw new NotSupportedException($"{value} is out of AMQP bounds.");
+                throw new SyntaxErrorException($"{value} is out of AMQP bounds.");
             }
 
             WriteByte(scale);
@@ -286,7 +285,7 @@ namespace Test.It.With.Amqp.Protocol._091
                     WriteLongString(convertedValue.Bytes);
                     return;
                 default:
-                    throw new InvalidOperationException($"Unknown field value type: {value.GetType()}");
+                    throw new SyntaxErrorException($"Unknown field value type: {value.GetType()}");
             }
         }
 

@@ -31,51 +31,42 @@ namespace Test.It.With.RabbitMQ.Tests
             {
                 var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
 
-                testServer.On<ProtocolHeader>((clientId, handler) =>
+                testServer.On<ProtocolHeader>((connectionId, handler) => testServer.Send(connectionId, new MethodFrame<Connection.Start>(handler.Channel, new Connection.Start
                 {
-                    testServer.Send(clientId, new MethodFrame<Connection.Start>(handler.Channel, new Connection.Start
-                    {
-                        VersionMajor = Octet.From((byte) ((IProtocolHeader) handler.Message).Version.Major),
-                        VersionMinor = Octet.From((byte) ((IProtocolHeader) handler.Message).Version.Minor),
-                        Locales = Longstr.From(Encoding.UTF8.GetBytes("en_US")),
-                        Mechanisms = Longstr.From(Encoding.UTF8.GetBytes("PLAIN")),
-                    }));
-                });
-                testServer.On<Connection.StartOk>((client, frame) =>
+                    VersionMajor = Octet.From((byte) ((IProtocolHeader) handler.Message).Version.Major),
+                    VersionMinor = Octet.From((byte) ((IProtocolHeader) handler.Message).Version.Minor),
+                    Locales = Longstr.From(Encoding.UTF8.GetBytes("en_US")),
+                    Mechanisms = Longstr.From(Encoding.UTF8.GetBytes("PLAIN")),
+                })));
+                testServer.On<Connection.StartOk>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Secure>(frame.Channel, new Connection.Secure
                 {
-                    testServer.Send(client, new MethodFrame<Connection.Secure>(frame.Channel, new Connection.Secure
-                    {
-                        Challenge = Longstr.From(Encoding.UTF8.GetBytes("challenge"))
-                    }));
-                });
-                testServer.On<Connection.SecureOk>((clientId, frame) =>
+                    Challenge = Longstr.From(Encoding.UTF8.GetBytes("challenge"))
+                })));
+                testServer.On<Connection.SecureOk>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Tune>(frame.Channel, new Connection.Tune
                 {
-                    testServer.Send(clientId, new MethodFrame<Connection.Tune>(frame.Channel, new Connection.Tune
-                    {
-                        ChannelMax = Short.From(0),
-                        FrameMax = Long.From(0),
-                        Heartbeat = Short.From(5)
-                    }));
-                });
+                    ChannelMax = Short.From(0),
+                    FrameMax = Long.From(0),
+                    Heartbeat = Short.From(5)
+                })));
                 testServer.On<Connection.TuneOk>((__, _) => { });
-                testServer.On<Connection.Open, Connection.OpenOk>((clientId, frame) => new Connection.OpenOk());
-                testServer.On<Connection.Close, Connection.CloseOk>((clientId, frame) => new Connection.CloseOk());
-                testServer.On<Channel.Open, Channel.OpenOk>((clientId, frame) => new Channel.OpenOk());
-                testServer.On<Channel.Close>((clientId, frame) =>
+                testServer.On<Connection.Open, Connection.OpenOk>((connectionId, frame) => new Connection.OpenOk());
+                testServer.On<Connection.Close, Connection.CloseOk>((connectionId, frame) => new Connection.CloseOk());
+                testServer.On<Channel.Open, Channel.OpenOk>((connectionId, frame) => new Channel.OpenOk());
+                testServer.On<Channel.Close>((connectionId, frame) =>
                 {
-                    testServer.Send(clientId, new MethodFrame<Channel.CloseOk>(frame.Channel, new Channel.CloseOk()));
+                    testServer.Send(connectionId, new MethodFrame<Channel.CloseOk>(frame.Channel, new Channel.CloseOk()));
 
                     if (_basicPublish.Count == 4)
                     {
                         ServiceController.Stop();
                     }
                 });
-                testServer.On<Exchange.Declare, Exchange.DeclareOk>((clientId, frame) =>
+                testServer.On<Exchange.Declare, Exchange.DeclareOk>((connectionId, frame) =>
                 {
                     _exchangeDeclare.Add(frame);
                     return new Exchange.DeclareOk();
                 });
-                testServer.On<Basic.Publish>((clientId, frame) =>
+                testServer.On<Basic.Publish>((connectionId, frame) =>
                 {
                     _basicPublish.Add(frame);
                 });

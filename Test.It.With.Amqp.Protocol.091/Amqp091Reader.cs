@@ -23,7 +23,7 @@ namespace Test.It.With.Amqp.Protocol._091
         {
             if (_position < Length)
             {
-                throw new Exception("Has more data.");
+                throw new FrameErrorException("Frame had unexpected length.");
             }
         }
 
@@ -73,7 +73,7 @@ namespace Test.It.With.Amqp.Protocol._091
             var length = ReadLongUnsignedInteger();
             if (length > int.MaxValue)
             {
-                throw new NotSupportedException($"Cannot handle long strings larger than {int.MaxValue}. Length detected: {length}.");
+                throw new SyntaxErrorException($"Cannot handle long strings larger than {int.MaxValue}. Length detected: {length}.");
             }
             return ReadBytes((int)length);
         }
@@ -156,7 +156,7 @@ namespace Test.It.With.Amqp.Protocol._091
             var scale = ReadByte();
             if (scale > 28)
             {
-                throw new NotSupportedException("Decimals support up to a precision/scale of 28 digits.");
+                throw new SyntaxErrorException("Decimals support up to a precision/scale of 28 digits.");
             }
 
             // NOTE! Contradiction in the AMQP 0.9.1 protocol description. 4.2.5.5 says "They are encoded as an octet representing the number of places followed by a long signed integer." But the 4.2.1. formal protocol grammar states a decimal as "scale long-uint". 
@@ -222,7 +222,7 @@ namespace Test.It.With.Amqp.Protocol._091
                     return new ByteArray(ReadLongString());
 
                 default:
-                    throw new InvalidOperationException($"Unknown field: {name}");
+                    throw new SyntaxErrorException($"Unknown field: {name}");
             }
         }
 
@@ -296,7 +296,7 @@ namespace Test.It.With.Amqp.Protocol._091
         {
             if (_buffer.Length < _position + length)
             {
-                throw new ArgumentOutOfRangeException(nameof(length), $"Tried to read outside the buffer. Buffer length: {_buffer.Length}, Position: {_position}, Read request length: {length}.");
+                throw new InternalErrorException($"Tried to read outside the buffer. Buffer length: {_buffer.Length}, Position: {_position}, Read request length: {length}.");
             }
 
             var bytes = new byte[length];

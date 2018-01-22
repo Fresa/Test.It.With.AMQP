@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Test.It.With.Amqp.Protocol
 {
-    public interface IAmqpWriter
+    public interface IAmqpWriter : IDisposable
     {
         void WriteShortUnsignedInteger(ushort value);
         void WriteLongUnsignedInteger(uint value);
@@ -26,6 +26,5 @@ namespace Test.It.With.Amqp.Protocol
         void WriteFieldValue(object value);
         void WritePropertyFlags(bool[] flags);
         void WriteBit(bool value);
-        void Dispose();
     }
 }

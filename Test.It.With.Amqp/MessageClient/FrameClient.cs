@@ -1,7 +1,6 @@
 using System;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
-using Test.It.With.Amqp.Protocol._091;
 
 namespace Test.It.With.Amqp.MessageClient
 {  
@@ -9,13 +8,13 @@ namespace Test.It.With.Amqp.MessageClient
     {
         private readonly IChainableTypedMessageClient<ReceivedEventArgs, IFrame> _networkClient;
 
-        public FrameClient(IChainableTypedMessageClient<ReceivedEventArgs, IFrame> networkClient)
+        public FrameClient(IChainableTypedMessageClient<ReceivedEventArgs, IFrame> networkClient, IAmqpReaderFactory readerFactory, IFrameFactory frameFactory)
         {
             _networkClient = networkClient;
             networkClient.Next += args =>
             {
-                var reader = new Amqp091Reader(args.Buffer);
-                var frame = Amqp091Frame.ReadFrom(reader);
+                var reader = readerFactory.Create(args.Buffer);
+                var frame = frameFactory.Create(reader);
                 reader.ThrowIfMoreData();
 
                 if (Received == null)

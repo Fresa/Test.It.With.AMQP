@@ -21,5 +21,10 @@
         {
             return new Amqp091Frame(Constants.FrameBody, channel, body);
         }
+
+        public IFrame Create(IAmqpReader reader)
+        {
+            return Amqp091Frame.ReadFrom(reader);
+        }
     }
 }

@@ -47,7 +47,9 @@
     <Compile Include="Amqp091ExpectationManager.cs" />
     <Compile Include="Amqp091FrameFactory.cs" />
     <Compile Include="Amqp091Reader.cs" />
+    <Compile Include="Amqp091ReaderFactory.cs" />
     <Compile Include="Amqp091Writer.cs" />
+    <Compile Include="Amqp091WriterFactory.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\ExpectedMethodBuilder.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\ExpectedMethodManager.cs" />
     <Compile Include="Expectations\MethodExpectationBuilders\MethodExpectationBuilder.cs" />
