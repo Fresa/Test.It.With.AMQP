@@ -3,7 +3,6 @@
 <#@ assembly name="System.Xml" #>
 <#@ assembly name="System.Text.RegularExpressions" #>
 <#@ assembly name="$(SolutionDir)\Test.It.With.Amqp.Protocol\bin\Debug\Test.It.With.Amqp.Protocol.dll" #>
-<#@ assembly name="$(SolutionDir)\packages\Log.It.1.0.0\lib\net462\Log.It.dll" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.IO" #>
@@ -78,7 +77,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using Validation;
-using Log.It;
 
 namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#= protocol.Revision #><# Block(() =>
 {
@@ -183,7 +181,15 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 	    {
 	        #>public int Major { get; } = <#= protocol.Major #>;<# _();
 	        #>public int Minor { get; } = <#= protocol.Minor #>;<# _();
-	        #>public int Revision { get; } = <#= protocol.Revision #>;<#
+	        #>public int Revision { get; } = <#= protocol.Revision #>;<# _(2);
+
+			#>public void ReadFrom(IAmqpReader reader)<# Block(() =>
+			{
+			}); _(2);
+
+			#>public void WriteTo(IAmqpWriter writer)<# Block(() =>
+			{
+	        });
 	    });
 	}); _(2);
 	
@@ -481,7 +487,7 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 					Block(() =>
 					{
 						#>writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);<# _();
-						#>writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);<# _(2);
+						#>writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);<# if (method.Fields.Values.Any()) { _(2); } 
 
 						PrintOnNewRowForEach(method.Fields.Values, field =>
 						{
@@ -498,51 +504,29 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 	// Protocol Header
 	#>public class ProtocolHeader : IProtocolHeader, IRespond<Connection.Start><# Block(() => 
 	{
-		#>private readonly ILogger _logger = LogFactory.Create<<#= amqpClass #>>();<# _(2);
-
-		#>public string Protocol { get; } = "AMQP";<# _();
-		#>public IVersion Version { get; private set; } <# _();
-		#>private const byte ProtocolId = 0;<# _(2);
-
+		#>public string Protocol { get; set; }<# _();
+		#>private const string ValidProtocol = "AMQP";<# _(2);
+		#>public IVersion Version { get; set; } <# _();
+		#>private readonly IVersion _validVersion = new Amq091Protocol().Version;<# _(2);
+		#>public int Constant { get; set; }<# _();
+		#>private const int ValidConstant = 0;<# _(2);
+		
 		#>public void WriteTo(IAmqpWriter writer)<# Block(() => 
 		{
 			#>writer.WriteBytes(Encoding.UTF8.GetBytes(Protocol));<# _();
-			#>writer.WriteByte(ProtocolId);<# _();
-			#>writer.WriteByte((byte)Version.Major);<# _();
-			#>writer.WriteByte((byte)Version.Minor);<# _();
-			#>writer.WriteByte((byte)Version.Revision);<#
+			#>writer.WriteByte((byte)Constant);<# _();
+			#>Version.WriteTo(writer);<#
 		}); _(2);
 
 		#>public void ReadFrom(IAmqpReader reader)<# Block(() => 
 		{
-			#>var protocol = Encoding.UTF8.GetString(reader.ReadBytes(4));<# _(2);
-
-			#>var constant = reader.ReadByte();<# _(2);
-
-			#>Version = new ProtocolHeaderVersion(reader);<# _(2);
-
-			#>if (protocol != Protocol || constant != ProtocolId)<# Block(() => 
-			{
-				#>IsValid = false;<# _();
-				#>_logger.Error($"Incorrect header. Expected '{Protocol}{ProtocolId}<major version><minor version><revision>'. Got '{protocol}{constant}{Version.Major}{Version.Minor}{Version.Revision}'.");<#
-			});
+			#>Protocol = Encoding.UTF8.GetString(reader.ReadBytes(4));<# _();
+			#>Constant = reader.ReadByte();<# _();
+			#>Version = new ProtocolHeaderVersion();<# _();
+			#>Version.ReadFrom(reader);<#
 		}); _(2);
 
-		#>public bool IsValid { get; private set; } = true;<# _(2);
-
-		#>private class ProtocolHeaderVersion : IVersion<# Block(() => 
-		{
-			#>public ProtocolHeaderVersion(IAmqpReader reader)<# Block(() => 
-			{
-				#>Major = reader.ReadByte();<# _();
-				#>Minor = reader.ReadByte();<# _();
-				#>Revision = reader.ReadByte();<#
-			}); _(2);
-            
-			#>public int Major { get; }<# _();
-			#>public int Minor { get; }<# _();
-			#>public int Revision { get; }<#
-		}); _(2);
+		#>public bool IsValid => ValidProtocol == Protocol && ValidConstant == Constant && _validVersion.Major == Version?.Major && _validVersion.Minor == Version?.Minor && _validVersion.Revision == Version?.Revision;<# _(2);
 
 		#>public Connection.Start Respond(Connection.Start method)<# Block(() => 
 		{
@@ -552,6 +536,27 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 		#>public ProtocolHeader Respond(ProtocolHeader protocolHeader)<# Block(() => 
 		{
 			#>return protocolHeader;<#
+		});
+	}); _(2);
+
+	#>public class ProtocolHeaderVersion : IVersion<# Block(() => 
+	{
+		#>public int Major { get; set; }<# _();
+		#>public int Minor { get; set; }<# _();
+		#>public int Revision { get; set; }<# _(2);
+
+		#>public void WriteTo(IAmqpWriter writer)<# Block(() => 
+		{
+			#>writer.WriteByte((byte)Major);<# _();
+			#>writer.WriteByte((byte)Minor);<# _();
+			#>writer.WriteByte((byte)Revision);<#
+		}); _(2);
+		    
+		#>public void ReadFrom(IAmqpReader reader)<# Block(() => 
+		{
+			#>Major = reader.ReadByte();<# _();
+			#>Minor = reader.ReadByte();<# _();
+			#>Revision = reader.ReadByte();<#
 		});
 	}); _(2);
 

@@ -5,5 +5,7 @@
         int Major { get; }
         int Minor { get; }
         int Revision { get; }
+        void WriteTo(IAmqpWriter writer);
+        void ReadFrom(IAmqpReader reader);
     }
 }

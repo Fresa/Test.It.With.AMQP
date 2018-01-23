@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using Validation;
-using Log.It;
 
 namespace Test.It.With.Amqp.Protocol._091
 {
@@ -150,6 +149,16 @@ namespace Test.It.With.Amqp.Protocol._091
 			public int Major { get; } = 0;
 			public int Minor { get; } = 9;
 			public int Revision { get; } = 1;
+
+			public void ReadFrom(IAmqpReader reader)
+			{
+
+			}
+
+			public void WriteTo(IAmqpWriter writer)
+			{
+
+			}
 		}
 	}
 
@@ -2339,8 +2348,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 	}
@@ -2672,8 +2679,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 	}
@@ -2885,8 +2890,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 
@@ -3007,8 +3010,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 	}
@@ -3421,8 +3422,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 
@@ -3560,8 +3559,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 
@@ -4339,8 +4336,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 
@@ -5498,8 +5493,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 	}
@@ -5556,8 +5549,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 
@@ -5589,8 +5580,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 
@@ -5627,8 +5616,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 
@@ -5660,8 +5647,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 
@@ -5700,8 +5685,6 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 
@@ -5733,59 +5716,37 @@ namespace Test.It.With.Amqp.Protocol._091
 			{
 				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
 				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
-
-
 			}
 		}
 	}
 
 	public class ProtocolHeader : IProtocolHeader, IRespond<Connection.Start>
 	{
-		private readonly ILogger _logger = LogFactory.Create<Amq091Protocol>();
+		public string Protocol { get; set; }
+		private const string ValidProtocol = "AMQP";
 
-		public string Protocol { get; } = "AMQP";
-		public IVersion Version { get; private set; } 
-		private const byte ProtocolId = 0;
+		public IVersion Version { get; set; } 
+		private readonly IVersion _validVersion = new Amq091Protocol().Version;
+
+		public int Constant { get; set; }
+		private const int ValidConstant = 0;
 
 		public void WriteTo(IAmqpWriter writer)
 		{
 			writer.WriteBytes(Encoding.UTF8.GetBytes(Protocol));
-			writer.WriteByte(ProtocolId);
-			writer.WriteByte((byte)Version.Major);
-			writer.WriteByte((byte)Version.Minor);
-			writer.WriteByte((byte)Version.Revision);
+			writer.WriteByte((byte)Constant);
+			Version.WriteTo(writer);
 		}
 
 		public void ReadFrom(IAmqpReader reader)
 		{
-			var protocol = Encoding.UTF8.GetString(reader.ReadBytes(4));
-
-			var constant = reader.ReadByte();
-
-			Version = new ProtocolHeaderVersion(reader);
-
-			if (protocol != Protocol || constant != ProtocolId)
-			{
-				IsValid = false;
-				_logger.Error($"Incorrect header. Expected '{Protocol}{ProtocolId}<major version><minor version><revision>'. Got '{protocol}{constant}{Version.Major}{Version.Minor}{Version.Revision}'.");
-			}
+			Protocol = Encoding.UTF8.GetString(reader.ReadBytes(4));
+			Constant = reader.ReadByte();
+			Version = new ProtocolHeaderVersion();
+			Version.ReadFrom(reader);
 		}
 
-		public bool IsValid { get; private set; } = true;
-
-		private class ProtocolHeaderVersion : IVersion
-		{
-			public ProtocolHeaderVersion(IAmqpReader reader)
-			{
-				Major = reader.ReadByte();
-				Minor = reader.ReadByte();
-				Revision = reader.ReadByte();
-			}
-
-			public int Major { get; }
-			public int Minor { get; }
-			public int Revision { get; }
-		}
+		public bool IsValid => ValidProtocol == Protocol && ValidConstant == Constant && _validVersion.Major == Version?.Major && _validVersion.Minor == Version?.Minor && _validVersion.Revision == Version?.Revision;
 
 		public Connection.Start Respond(Connection.Start method)
 		{
@@ -5795,6 +5756,27 @@ namespace Test.It.With.Amqp.Protocol._091
 		public ProtocolHeader Respond(ProtocolHeader protocolHeader)
 		{
 			return protocolHeader;
+		}
+	}
+
+	public class ProtocolHeaderVersion : IVersion
+	{
+		public int Major { get; set; }
+		public int Minor { get; set; }
+		public int Revision { get; set; }
+
+		public void WriteTo(IAmqpWriter writer)
+		{
+			writer.WriteByte((byte)Major);
+			writer.WriteByte((byte)Minor);
+			writer.WriteByte((byte)Revision);
+		}
+
+		public void ReadFrom(IAmqpReader reader)
+		{
+			Major = reader.ReadByte();
+			Minor = reader.ReadByte();
+			Revision = reader.ReadByte();
 		}
 	}
 
