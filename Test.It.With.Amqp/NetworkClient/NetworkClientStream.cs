@@ -11,8 +11,6 @@ namespace Test.It.With.Amqp.NetworkClient
 
         public NetworkClientStream(INetworkClient networkClient)
         {
-            _bufferedReadStream.ReadTimeout = 5000;
-
             _networkClient = networkClient;
             _networkClient.BufferReceived +=
                 (sender, args) => _bufferedReadStream.Write(args.Buffer, args.Offset, args.Count);
@@ -50,6 +48,17 @@ namespace Test.It.With.Amqp.NetworkClient
         public override bool CanSeek => false;
         public override bool CanWrite => true;
         public override long Length => 0;
+
+        public override int ReadTimeout
+        {
+            get => _bufferedReadStream.ReadTimeout;
+            set => _bufferedReadStream.ReadTimeout = value;
+        }
+
+        public override int WriteTimeout
+        {
+            set { }
+        }
 
         public override long Position
         {

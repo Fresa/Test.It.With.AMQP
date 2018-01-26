@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Impl;
 using RabbitMQ.Util;
@@ -12,12 +13,13 @@ namespace Test.It.With.RabbitMQ
     {
         private readonly NetworkBinaryReader _reader;
         private readonly NetworkBinaryWriter _writer;
+        private readonly NetworkClientStream _stream;
 
         public TestFrameHandler(INetworkClient networkClient)
         {
-            var stream = new NetworkClientStream(networkClient);
-            _reader = new NetworkBinaryReader(stream);
-            _writer = new NetworkBinaryWriter(stream);
+            _stream = new NetworkClientStream(networkClient);
+            _reader = new NetworkBinaryReader(_stream);
+            _writer = new NetworkBinaryWriter(_stream);
         }
 
         public void Close()
@@ -93,19 +95,20 @@ namespace Test.It.With.RabbitMQ
         }
 
         public AmqpTcpEndpoint Endpoint { get; } = new AmqpTcpEndpoint();
+
         public EndPoint LocalEndPoint { get; } = new IPEndPoint(IPAddress.Any, 0);
+
         public int LocalPort { get; } = 0;
+
         public EndPoint RemoteEndPoint { get; } = new IPEndPoint(IPAddress.Any, 0);
+
         public int RemotePort { get; } = 0;
 
         public int ReadTimeout
         {
-            set { }
+            set => _stream.ReadTimeout = value == 0 ? Timeout.Infinite : value;
         }
 
-        public int WriteTimeout
-        {
-            set { }
-        }
+        public int WriteTimeout { set => _stream.WriteTimeout = value; }
     }
 }

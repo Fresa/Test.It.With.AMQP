@@ -107,8 +107,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationWrapper.cs" />
     <Compile Include="Assertion\ArrayExtensions.cs" />
     <Compile Include="Assertion\ExtendedContain.cs" />
+    <Compile Include="TestApplication\HeartbeatApplicationSpecification.cs" />
+    <Compile Include="TestApplication\IApplication.cs" />
     <Compile Include="TestApplication\ISerializer.cs" />
     <Compile Include="Assertion\ShouldExtensions.cs" />
     <Compile Include="TestApplication\DictionaryExtensions.cs" />
@@ -119,7 +122,7 @@
     <Compile Include="TestApplication\RabbitMqMessagePublisherFactory.cs" />
     <Compile Include="TestApplication\SimpleInjectorDependencyResolver.cs" />
     <Compile Include="TestApplication\NewtonsoftSerializer.cs" />
-    <Compile Include="TestApplication\TestApplicationSpecification.cs" />
+    <Compile Include="TestApplication\MessageSendingApplicationSpecification.cs" />
     <Compile Include="TestApplication\TestMessage.cs" />
     <Compile Include="XUnit\TestOutputHelperTextWriter.cs" />
     <Compile Include="When_publishing_a_message.cs" />

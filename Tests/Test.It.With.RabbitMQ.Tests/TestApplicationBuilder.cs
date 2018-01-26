@@ -1,57 +1,21 @@
-﻿using System;
-using System.Linq;
-using Test.It.Specifications;
+﻿using Test.It.Specifications;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.RabbitMQ.Tests.TestApplication;
 
 namespace Test.It.With.RabbitMQ.Tests
 {
-    public class TestApplicationBuilder : DefaultWindowsServiceBuilder
+    public class TestApplicationBuilder<TApplication> : DefaultWindowsServiceBuilder where TApplication : IApplication, new()
     {
         public override IWindowsService Create(ITestConfigurer configurer)
         {
-            var testApplicationSpecification = new TestApplicationSpecification();
+            var testApplicationSpecification = new TApplication();
             testApplicationSpecification.Configure(resolver =>
             {
                 resolver.AllowOverridingRegistrations();
                 configurer.Configure(resolver);
                 resolver.DisallowOverridingRegistrations();
             });
-            return new TestConsoleApplicationWrapper(testApplicationSpecification);
-        }
-
-        private class TestConsoleApplicationWrapper : IWindowsService
-        {
-            private readonly TestApplicationSpecification _app;
-            private bool _stopping;
-
-            public TestConsoleApplicationWrapper(TestApplicationSpecification app)
-            {
-                _app = app;
-                app.OnUnhandledException += exception =>
-                {
-                    OnUnhandledException?.Invoke(exception);
-                };
-            }
-            
-            public int Start(params string[] args)
-            {
-                _app.Start(int.Parse(args.First()));
-                return 0;
-            }
-
-            public int Stop()
-            {
-                if (_stopping)
-                {
-                    return 0;
-                }
-                _stopping = true;
-                _app.Stop();
-                return 0;
-            }
-
-            public event Action<Exception> OnUnhandledException;
+            return new ApplicationWrapper(testApplicationSpecification);
         }
     }
 }

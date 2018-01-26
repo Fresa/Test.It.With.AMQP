@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
 using RabbitMQ.Client;
 
 namespace Test.It.With.RabbitMQ.Tests.TestApplication

@@ -1,5 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Text;
+using System.Threading.Tasks;
 using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.Amqp;
@@ -16,7 +18,7 @@ namespace Test.It.With.RabbitMQ.Tests
 {
     namespace Given_a_rabbitmq_client
     {
-        public class When_publishing_a_message : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<TestApplicationBuilder>>
+        public class When_publishing_a_message : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<TestApplicationBuilder<MessageSendingApplicationSpecification>>>
         {
             private readonly ConcurrentBag<MethodFrame<Exchange.Declare>> _exchangeDeclare = new ConcurrentBag<MethodFrame<Exchange.Declare>>();
             private readonly ConcurrentBag<MethodFrame<Basic.Publish>> _basicPublish = new ConcurrentBag<MethodFrame<Basic.Publish>>();
@@ -31,10 +33,10 @@ namespace Test.It.With.RabbitMQ.Tests
             {
                 var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
 
-                testServer.On<ProtocolHeader>((connectionId, handler) => testServer.Send(connectionId, new MethodFrame<Connection.Start>(handler.Channel, new Connection.Start
+                testServer.On<ProtocolHeader>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Start>(frame.Channel, new Connection.Start
                 {
-                    VersionMajor = Octet.From((byte) ((IProtocolHeader) handler.Message).Version.Major),
-                    VersionMinor = Octet.From((byte) ((IProtocolHeader) handler.Message).Version.Minor),
+                    VersionMajor = Octet.From((byte) frame.Message.Version.Major),
+                    VersionMinor = Octet.From((byte) frame.Message.Version.Minor),
                     Locales = Longstr.From(Encoding.UTF8.GetBytes("en_US")),
                     Mechanisms = Longstr.From(Encoding.UTF8.GetBytes("PLAIN")),
                 })));
@@ -118,6 +120,57 @@ namespace Test.It.With.RabbitMQ.Tests
             public void It_should_have_declared_an_exchange_with_type()
             {
                 _exchangeDeclare.Should().Contain.Any(frame => frame.Message.Type.Equals(Shortstr.From("topic")));
+            }
+        }
+
+        public class When_sending_and_receiving_heartbeats : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<TestApplicationBuilder<HeartbeatApplicationSpecification>>>
+        {
+            private readonly ConcurrentBag<HeartbeatFrame<Heartbeat>> _heartbeats = new ConcurrentBag<HeartbeatFrame<Heartbeat>>();
+
+            public When_sending_and_receiving_heartbeats(ITestOutputHelper output) : base(output)
+            {
+            }
+
+            protected override void Given(IServiceContainer container)
+            {
+                var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
+
+                testServer.On<ProtocolHeader>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Start>(frame.Channel, new Connection.Start
+                {
+                    VersionMajor = Octet.From((byte)frame.Message.Version.Major),
+                    VersionMinor = Octet.From((byte)frame.Message.Version.Minor),
+                    Locales = Longstr.From(Encoding.UTF8.GetBytes("en_US")),
+                    Mechanisms = Longstr.From(Encoding.UTF8.GetBytes("PLAIN")),
+                })));
+                testServer.On<Connection.StartOk>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Secure>(frame.Channel, new Connection.Secure
+                {
+                    Challenge = Longstr.From(Encoding.UTF8.GetBytes("challenge"))
+                })));
+                testServer.On<Connection.SecureOk>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Tune>(frame.Channel, new Connection.Tune
+                {
+                    ChannelMax = Short.From(0),
+                    FrameMax = Long.From(0),
+                    Heartbeat = Short.From(1)
+                })));
+                testServer.On<Connection.TuneOk>((connectionId, frame) =>
+                {
+                   // Parallel. testServer.Send();
+                });
+                testServer.On<Connection.Open, Connection.OpenOk>((connectionId, frame) => new Connection.OpenOk());
+                testServer.On<Connection.Close, Connection.CloseOk>((connectionId, frame) => new Connection.CloseOk());
+                testServer.On<Heartbeat>((connectionId, frame) =>
+                {
+                    _heartbeats.Add(frame);
+                    ServiceController.Stop();
+                });
+
+                container.RegisterSingleton(() => testServer.ConnectionFactory.ToRabbitMqConnectionFactory());
+            }
+
+            [Fact]
+            public void It_should_have_received_heartbeats()
+            {
+                _heartbeats.Should().Count.AtLeast(1);
             }
         }
     }

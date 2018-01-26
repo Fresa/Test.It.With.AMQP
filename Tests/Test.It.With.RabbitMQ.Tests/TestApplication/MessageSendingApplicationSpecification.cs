@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
@@ -6,7 +7,7 @@ using SimpleInjector;
 
 namespace Test.It.With.RabbitMQ.Tests.TestApplication
 {
-    public class TestApplicationSpecification
+    public class MessageSendingApplicationSpecification : IApplication
     {
         private SimpleInjectorDependencyResolver _configurer;
 
@@ -22,8 +23,9 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
             _configurer.Verify();
         }
 
-        public void Start(int messagesToPublish)
+        public void Start(params string[] args)
         {
+            var messagesToPublish = int.Parse(args.First());
             var messagePublisherFactory = _configurer.Resolve<IMessagePublisherFactory>();
 
             Task.Run(() =>
