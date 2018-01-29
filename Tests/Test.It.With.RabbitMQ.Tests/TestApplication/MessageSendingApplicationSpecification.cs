@@ -10,9 +10,11 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
     public class MessageSendingApplicationSpecification : IApplication
     {
         private SimpleInjectorDependencyResolver _configurer;
+        private RabbitMqLogEventListener _rabbitmqLogger;
 
         public void Configure(Action<SimpleInjectorDependencyResolver> reconfigurer)
         {
+            _rabbitmqLogger = new RabbitMqLogEventListener();
             var container = new Container();
             container.RegisterSingleton<IConnectionFactory, ConnectionFactory>();
             container.RegisterSingleton<ISerializer>(() => new NewtonsoftSerializer(Encoding.UTF8));
@@ -47,6 +49,7 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
         public void Stop()
         {
             _configurer.Dispose();
+            _rabbitmqLogger.Dispose();
         }
 
         public event Action<Exception> OnUnhandledException;

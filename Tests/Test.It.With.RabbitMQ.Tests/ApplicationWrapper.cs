@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.RabbitMQ.Tests.TestApplication;
 

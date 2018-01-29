@@ -8,9 +8,11 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
     {
         private SimpleInjectorDependencyResolver _configurer;
         private IConnection _connection;
+        private RabbitMqLogEventListener _rabbitmqLogger;
 
         public void Configure(Action<SimpleInjectorDependencyResolver> reconfigurer)
         {
+            _rabbitmqLogger = new RabbitMqLogEventListener();
             var container = new Container();
             container.RegisterSingleton<IConnectionFactory, ConnectionFactory>();
 
@@ -29,6 +31,7 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
         {
             _connection.Dispose();
             _configurer.Dispose();
+            _rabbitmqLogger.Dispose();
         }
 
         public event Action<Exception> OnUnhandledException;

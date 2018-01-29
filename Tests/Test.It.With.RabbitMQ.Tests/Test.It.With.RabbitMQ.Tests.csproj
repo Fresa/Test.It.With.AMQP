@@ -118,6 +118,7 @@
     <Compile Include="TestApplication\IMessagePublisher.cs" />
     <Compile Include="TestApplication\IMessagePublisherFactory.cs" />
     <Compile Include="TestApplication\IMessageQueueApplication.cs" />
+    <Compile Include="TestApplication\RabbitMqLogEventListener.cs" />
     <Compile Include="TestApplication\RabbitMqMessagePublisher.cs" />
     <Compile Include="TestApplication\RabbitMqMessagePublisherFactory.cs" />
     <Compile Include="TestApplication\SimpleInjectorDependencyResolver.cs" />

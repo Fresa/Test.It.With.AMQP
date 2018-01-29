@@ -36,8 +36,8 @@ namespace Test.It.With.RabbitMQ.Tests
 
                 testServer.On<ProtocolHeader>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Start>(frame.Channel, new Connection.Start
                 {
-                    VersionMajor = Octet.From((byte) frame.Message.Version.Major),
-                    VersionMinor = Octet.From((byte) frame.Message.Version.Minor),
+                    VersionMajor = Octet.From((byte)frame.Message.Version.Major),
+                    VersionMinor = Octet.From((byte)frame.Message.Version.Minor),
                     Locales = Longstr.From(Encoding.UTF8.GetBytes("en_US")),
                     Mechanisms = Longstr.From(Encoding.UTF8.GetBytes("PLAIN")),
                 })));
@@ -177,7 +177,7 @@ namespace Test.It.With.RabbitMQ.Tests
                     _heartbeatCancelationToken.Cancel(true);
                     _heartbeats.Add(frame);
                     _heartbeatCancelationToken = new CancellationTokenSource();
-                    Task.Delay(1200)
+                    Task.Delay(2000)
                         .ContinueWith(task =>
                         {
                             _missingHeartbeat = true;
