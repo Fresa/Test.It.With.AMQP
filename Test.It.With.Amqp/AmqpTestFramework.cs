@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Extensions;
+using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp
 {
@@ -11,30 +13,32 @@ namespace Test.It.With.Amqp
     {
         private readonly ConcurrentBag<IDisposable> _disposables = new ConcurrentBag<IDisposable>();
 
-        private readonly ConcurrentDictionary<Type, Action<ConnectionId, MethodFrame>> _methodSubscriptions = new ConcurrentDictionary<Type, Action<ConnectionId, MethodFrame>>();
-        private readonly ConcurrentDictionary<Type, Action<ConnectionId, ProtocolHeaderFrame>> _protocolHeaderSubscriptions = new ConcurrentDictionary<Type, Action<ConnectionId, ProtocolHeaderFrame>>();
-        private readonly ConcurrentDictionary<Type, Action<ConnectionId, HeartbeatFrame>> _heartbeatSubscriptions = new ConcurrentDictionary<Type, Action<ConnectionId, HeartbeatFrame>>();
+        private readonly ConcurrentDictionary<Type, IMethodSubscription> _methodSubscriptionCollections = new ConcurrentDictionary<Type, IMethodSubscription>();
 
-        private readonly ConcurrentDictionary<ConnectionId, AmqpTestServer> _connections = new ConcurrentDictionary<ConnectionId, AmqpTestServer>();
+        //private readonly ConcurrentBag<MethodSubscription> _methodSubscriptions = new ConcurrentBag<MethodSubscription>();
+        private readonly ConcurrentBag<ProtocolHeaderSubscription> _protocolHeaderSubscriptions = new ConcurrentBag<ProtocolHeaderSubscription>();
+        private readonly ConcurrentBag<HeartbeatSubscription> _heartbeatSubscriptions = new ConcurrentBag<HeartbeatSubscription>();
+
+        private readonly ConcurrentDictionary<ConnectionId, AmqpConnectionSession> _sessions = new ConcurrentDictionary<ConnectionId, AmqpConnectionSession>();
 
         public AmqpTestFramework(ProtocolVersion protocolVersion)
         {
             var networkClientFactory = new NetworkClientFactory(protocolVersion);
-            networkClientFactory.OnNetworkClientCreated(server =>
+            networkClientFactory.OnNetworkClientCreated(session =>
             {
-                _disposables.Add(server);
+                _disposables.Add(session);
 
-                var connectionId = new ConnectionId(Guid.NewGuid());
-                if (_connections.TryAdd(connectionId, server) == false)
+                var connectionId = session.ConnectionId;
+                if (_sessions.TryAdd(connectionId, session) == false)
                 {
                     throw new NotSupportedException($"Client with id {connectionId} has already been registered.");
                 }
 
-                lock (_methodSubscriptions)
+                lock (_methodSubscriptionCollections)
                 {
-                    foreach (var methodSubscription in _methodSubscriptions)
+                    foreach (var methodSubscription in _methodSubscriptionCollections)
                     {
-                        server.On(methodSubscription.Key, frame => methodSubscription.Value(connectionId, frame));
+                        session.On(methodSubscription.Key, frame => methodSubscription.Value.Handle(connectionId, frame));
                     }
                 }
 
@@ -42,7 +46,7 @@ namespace Test.It.With.Amqp
                 {
                     foreach (var protocolHeaderSubscription in _protocolHeaderSubscriptions)
                     {
-                        server.On(protocolHeaderSubscription.Key, frame => protocolHeaderSubscription.Value(connectionId, frame));
+                        session.On(protocolHeaderSubscription.Id, frame => protocolHeaderSubscription.Subscription(connectionId, frame));
                     }
                 }
 
@@ -50,7 +54,7 @@ namespace Test.It.With.Amqp
                 {
                     foreach (var heartbeatSubscription in _heartbeatSubscriptions)
                     {
-                        server.On(heartbeatSubscription.Key, frame => heartbeatSubscription.Value(connectionId, frame));
+                        session.On(heartbeatSubscription.Id, frame => heartbeatSubscription.Subscription(connectionId, frame));
                     }
                 }
             });
@@ -59,118 +63,139 @@ namespace Test.It.With.Amqp
 
         public INetworkClientFactory ConnectionFactory { get; }
 
-        public void Send<TMessage>(ConnectionId connectionId, MethodFrame<TMessage> frame) where TMessage : class, INonContentMethod, IServerMethod
+        public AmqpTestFramework Send<TMessage>(ConnectionId connectionId, MethodFrame<TMessage> frame) where TMessage : class, INonContentMethod, IServerMethod
         {
-            _connections[connectionId].Send(new MethodFrame(frame.Channel, frame.Message));
+            _sessions[connectionId].Send(new MethodFrame(frame.Channel, frame.Message));
+
+            return this;
         }
 
-        public void Send<TMessage, THeader>(ConnectionId connectionId, MethodFrame<TMessage> frame) 
+        public AmqpTestFramework Send<TMessage, THeader>(ConnectionId connectionId, MethodFrame<TMessage> frame)
             where TMessage : class, IContentMethod<THeader>, IServerMethod
             where THeader : IContentHeader
         {
-            _connections[connectionId].Send(new MethodFrame(frame.Channel, frame.Message));
-            _connections[connectionId].Send(new ContentHeaderFrame(frame.Channel, frame.Message.ContentHeader));
+            _sessions[connectionId].Send(new MethodFrame(frame.Channel, frame.Message));
+            _sessions[connectionId].Send(new ContentHeaderFrame(frame.Channel, frame.Message.ContentHeader));
             foreach (var contentBodyFragment in frame.Message.ContentBodyFragments)
             {
-                _connections[connectionId].Send(new ContentBodyFrame(frame.Channel, contentBodyFragment));
+                _sessions[connectionId].Send(new ContentBodyFrame(frame.Channel, contentBodyFragment));
             }
-         }
 
-        public void Send<TMessage>(ConnectionId connectionId, HeartbeatFrame<TMessage> frame) where TMessage : class, IHeartbeat
-        {
-            _connections[connectionId].Send(new HeartbeatFrame(frame.Channel, frame.Message));
+            return this;
         }
 
-        public void On<TClientMethod>(Action<ConnectionId, MethodFrame<TClientMethod>> messageHandler)
-            where TClientMethod : class, IClientMethod
+        public AmqpTestFramework Send<TMessage>(ConnectionId connectionId, HeartbeatFrame<TMessage> frame) where TMessage : class, IHeartbeat
+        {
+            _sessions[connectionId].Send(new HeartbeatFrame(frame.Channel, frame.Message));
+
+            return this;
+        }
+
+        public AmqpTestFramework On<TReceivingMethod>(Action<ConnectionId, MethodFrame<TReceivingMethod>> messageHandler)
+            where TReceivingMethod : class, IClientMethod
         {
             void FrameHandler(ConnectionId connectionId, MethodFrame frame)
             {
                 messageHandler(connectionId,
-                    new MethodFrame<TClientMethod>(frame.Channel, (TClientMethod)frame.Message));
+                    new MethodFrame<TReceivingMethod>(frame.Channel, (TReceivingMethod)frame.Message));
             }
 
-            lock (_methodSubscriptions)
+            lock (_methodSubscriptionCollections)
             {
-                foreach (var connection in _connections)
-                {
-                    connection.Value.On(typeof(TClientMethod), frame => FrameHandler(connection.Key, frame));
-                }
+                _methodSubscriptionCollections.AddOrUpdate(
+                    typeof(TReceivingMethod), type =>
+                    {
+                        var subscription = new MethodSubscription<TReceivingMethod>().Add(FrameHandler);
+                        foreach (var connection in _sessions)
+                        {
+                            connection.Value.On(typeof(TReceivingMethod), frame => subscription.Handle(connection.Key, frame));
+                        }
+                        return subscription;
+                    },
+                    (type, collection) => collection.Add(FrameHandler));
 
-                if (_methodSubscriptions.TryAdd(typeof(TClientMethod), FrameHandler) == false)
-                {
-                    ThrowDuplicateSubscriptionException<TClientMethod>();
-                }
+                //foreach (var connection in _sessions)
+                //{
+                //    connection.Value.On(typeof(TReceivingMethod), frame => FrameHandler(connection.Key, frame));
+                //}
+
+                //_methodSubscriptions.Add(MethodSubscription.Create<TReceivingMethod>(FrameHandler));
             }
+
+            return this;
         }
 
-        public void On<TClientMethod, TServerMethod>(Func<ConnectionId, MethodFrame<TClientMethod>, TServerMethod> messageHandler)
-            where TClientMethod : class, IClientMethod, IRespond<TServerMethod>
-            where TServerMethod : class, IServerMethod, INonContentMethod
+        public AmqpTestFramework On<TReceivingMethod, TSendingMethod>(Func<ConnectionId, MethodFrame<TReceivingMethod>, TSendingMethod> messageHandler)
+            where TReceivingMethod : class, IClientMethod, IRespond<TSendingMethod>
+            where TSendingMethod : class, IServerMethod, INonContentMethod
         {
-            On<TClientMethod>((clientId, frame) =>
+            On<TReceivingMethod>((clientId, frame) =>
             {
                 var response = messageHandler(clientId, frame);
-                Send(clientId, new MethodFrame<TServerMethod>(frame.Channel, response));
+                Send(clientId, new MethodFrame<TSendingMethod>(frame.Channel, response));
             });
+
+            return this;
         }
 
-        public void On<TClientMethod, TServerMethod, THeader>(Func<ConnectionId, MethodFrame<TClientMethod>, TServerMethod> messageHandler)
-            where TClientMethod : class, IClientMethod, IRespond<TServerMethod>
-            where TServerMethod : class, IServerMethod, IContentMethod<THeader>
+        public AmqpTestFramework On<TReceivingMethod, TSendingMethod, THeader>(Func<ConnectionId, MethodFrame<TReceivingMethod>, TSendingMethod> messageHandler)
+            where TReceivingMethod : class, IClientMethod, IRespond<TSendingMethod>
+            where TSendingMethod : class, IServerMethod, IContentMethod<THeader>
             where THeader : class, IContentHeader
         {
-            On<TClientMethod>((clientId, frame) =>
+            On<TReceivingMethod>((clientId, frame) =>
             {
                 var response = messageHandler(clientId, frame);
-                Send<TServerMethod, THeader>(clientId, new MethodFrame<TServerMethod>(frame.Channel, response));
+                Send<TSendingMethod, THeader>(clientId, new MethodFrame<TSendingMethod>(frame.Channel, response));
             });
+
+            return this;
         }
 
-        public void On<TProtocolHeader>(Action<ConnectionId, ProtocolHeaderFrame<TProtocolHeader>> messageHandler)
-            where TProtocolHeader : class, IProtocolHeader
+        public AmqpTestFramework On<TReceivingProtocolHeader>(Action<ConnectionId, ProtocolHeaderFrame<TReceivingProtocolHeader>> messageHandler)
+            where TReceivingProtocolHeader : class, IProtocolHeader
         {
             void FrameHandler(ConnectionId connectionId, ProtocolHeaderFrame frame)
             {
                 messageHandler(connectionId,
-                    new ProtocolHeaderFrame<TProtocolHeader>(frame.Channel, (TProtocolHeader)frame.Message));
+                    new ProtocolHeaderFrame<TReceivingProtocolHeader>(frame.Channel, (TReceivingProtocolHeader)frame.Message));
             }
 
             lock (_protocolHeaderSubscriptions)
             {
-                foreach (var connection in _connections)
+                foreach (var connection in _sessions)
                 {
-                    connection.Value.On(typeof(TProtocolHeader), frame => FrameHandler(connection.Key, frame));
+                    connection.Value.On(typeof(TReceivingProtocolHeader), frame => FrameHandler(connection.Key, frame));
                 }
 
-                if (_protocolHeaderSubscriptions.TryAdd(typeof(TProtocolHeader), FrameHandler) == false)
-                {
-                    ThrowDuplicateSubscriptionException<TProtocolHeader>();
-                }
+                _protocolHeaderSubscriptions.Add(
+                    ProtocolHeaderSubscription.Create<TReceivingProtocolHeader>(FrameHandler));
+
             }
+
+            return this;
         }
-        
-        public void On<THeartbeat>(Action<ConnectionId, HeartbeatFrame<THeartbeat>> messageHandler)
-            where THeartbeat : class, IHeartbeat
+
+        public AmqpTestFramework On<TReceivingHeartbeat>(Action<ConnectionId, HeartbeatFrame<TReceivingHeartbeat>> messageHandler)
+            where TReceivingHeartbeat : class, IHeartbeat
         {
             void FrameHandler(ConnectionId connectionId, HeartbeatFrame frame)
             {
                 messageHandler(connectionId,
-                    new HeartbeatFrame<THeartbeat>(frame.Channel, (THeartbeat)frame.Message));
+                    new HeartbeatFrame<TReceivingHeartbeat>(frame.Channel, (TReceivingHeartbeat)frame.Message));
             }
 
             lock (_heartbeatSubscriptions)
             {
-                foreach (var connection in _connections)
+                foreach (var connection in _sessions)
                 {
-                    connection.Value.On(typeof(THeartbeat), frame => FrameHandler(connection.Key, frame));
+                    connection.Value.On(typeof(TReceivingHeartbeat), frame => FrameHandler(connection.Key, frame));
                 }
 
-                if (_heartbeatSubscriptions.TryAdd(typeof(THeartbeat), FrameHandler) == false)
-                {
-                    ThrowDuplicateSubscriptionException<THeartbeat>();
-                }
+                _heartbeatSubscriptions.Add(HeartbeatSubscription.Create<TReceivingHeartbeat>(FrameHandler));
             }
+
+            return this;
         }
 
         public void Dispose()
@@ -179,11 +204,6 @@ namespace Test.It.With.Amqp
             {
                 disposable.Dispose();
             }
-        }
-
-        private static void ThrowDuplicateSubscriptionException<TSubscription>()
-        {
-            throw new InvalidOperationException($"There is already a subscription on {typeof(TSubscription).GetPrettyFullName()}. There can only be one subscription per method type.");
         }
     }
 }

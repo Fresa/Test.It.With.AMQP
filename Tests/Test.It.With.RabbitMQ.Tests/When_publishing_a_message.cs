@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol._091;
 using Test.It.With.RabbitMQ.Tests.Assertion;
+using Test.It.With.RabbitMQ.Tests.FrameworkExtensions;
 using Test.It.With.RabbitMQ.Tests.TestApplication;
 using Test.It.With.RabbitMQ.Tests.XUnit;
 using Xunit;
@@ -140,38 +142,13 @@ namespace Test.It.With.RabbitMQ.Tests
             {
                 var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
 
-                testServer.On<ProtocolHeader>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Start>(frame.Channel, new Connection.Start
-                {
-                    VersionMajor = Octet.From((byte)frame.Message.Version.Major),
-                    VersionMinor = Octet.From((byte)frame.Message.Version.Minor),
-                    Locales = Longstr.From(Encoding.UTF8.GetBytes("en_US")),
-                    Mechanisms = Longstr.From(Encoding.UTF8.GetBytes("PLAIN")),
-                })));
-                testServer.On<Connection.StartOk>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Secure>(frame.Channel, new Connection.Secure
-                {
-                    Challenge = Longstr.From(Encoding.UTF8.GetBytes("challenge"))
-                })));
-                testServer.On<Connection.SecureOk>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Tune>(frame.Channel, new Connection.Tune
-                {
-                    ChannelMax = Short.From(0),
-                    FrameMax = Long.From(0),
-                    Heartbeat = Short.From(1)
-                })));
-                testServer.On<Connection.TuneOk>((connectionId, frame) =>
-                {
-                    void SendHeartbeat()
-                    {
-                        testServer.Send(connectionId, new HeartbeatFrame<Heartbeat>(0, new Heartbeat()));
-                    }
-
-                    void Schedule()
-                    {
-                        Task.Delay(500).ContinueWith(task => SendHeartbeat()).ContinueWith(task => Schedule());
-                    }
-                    Schedule();
-                });
-                testServer.On<Connection.Open, Connection.OpenOk>((connectionId, frame) => new Connection.OpenOk());
-                testServer.On<Connection.Close, Connection.CloseOk>((connectionId, frame) => new Connection.CloseOk());
+                testServer
+                    .WithDefaultProtocolHeaderNegotiation()
+                    .WithDefaultSecurityNegotiation(heartbeatInterval:TimeSpan.FromSeconds(1))
+                    .WithDefaultConnectionOpenNegotiation()
+                    .WithHeartbeats(interval:TimeSpan.FromMilliseconds(500))
+                    .WithDefaultConnectionCloseNegotiation();
+                    
                 testServer.On<Heartbeat>((connectionId, frame) =>
                 {
                     _heartbeatCancelationToken.Cancel(true);

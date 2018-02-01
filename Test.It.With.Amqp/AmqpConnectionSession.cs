@@ -15,9 +15,9 @@ using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp
 {
-    internal class AmqpTestServer : IDisposable
+    internal class AmqpConnectionSession : IDisposable
     {
-        private readonly ILogger _logger = LogFactory.Create<AmqpTestServer>();
+        private readonly ILogger _logger = LogFactory.Create<AmqpConnectionSession>();
         private readonly ITypedMessageClient<IFrame, IFrame> _frameClient;
         private readonly IPublishProtocolHeader _protocolHeaderPublisher;
         private readonly IPublishMethod _methodFramePublisher;
@@ -28,10 +28,9 @@ namespace Test.It.With.Amqp
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
         private readonly IExpectationStateMachine _expectationStateMachine;
-        private readonly List<Type> _subscribedMethods = new List<Type>();
         private readonly IFrameFactory _frameFactory;
 
-        public AmqpTestServer(ProtocolVersion protocolVersion)
+        public AmqpConnectionSession(ProtocolVersion protocolVersion)
         {
             var protocolResolver = new ProtocolResolver(protocolVersion);
             _expectationStateMachine = protocolResolver.ExpectationStateMachine;
@@ -73,21 +72,13 @@ namespace Test.It.With.Amqp
             _heartbeatFramePublisher = heartbeatFrameHandler;
         }
 
-        public AmqpTestServer(ProtocolVersion protocolVersion, IExpectationStateMachine expectationStateMachine) : this(protocolVersion)
+        public ConnectionId ConnectionId { get; } = new ConnectionId(Guid.NewGuid());
+
+        public AmqpConnectionSession(ProtocolVersion protocolVersion, IExpectationStateMachine expectationStateMachine) : this(protocolVersion)
         {
             _expectationStateMachine = expectationStateMachine;
         }
-
-        private void AssertNoDuplicateSubscriptions(Type type)
-        {
-            if (_subscribedMethods.Contains(type))
-            {
-                throw new InvalidOperationException($"There is already a subscription on {type.GetPrettyFullName()}. There can only be one subscription per method type.");
-            }
-
-            _subscribedMethods.Add(type);
-        }
-
+        
         public INetworkClient Client { get; }
         
         public void Send(MethodFrame frame)
@@ -116,8 +107,6 @@ namespace Test.It.With.Amqp
         
         public void On(Type methodType, Action<MethodFrame> messageHandler)
         {
-            AssertNoDuplicateSubscriptions(methodType);
-
             var methodSubscription = _methodFramePublisher.Subscribe(methodType, frame =>
             {
                 if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Message))
@@ -171,8 +160,6 @@ namespace Test.It.With.Amqp
 
         public void On(Type type, Action<ProtocolHeaderFrame> messageHandler)
         {
-            AssertNoDuplicateSubscriptions(type);
-
             var protocolHeaderSubscription = _protocolHeaderPublisher.Subscribe(type, frame =>
             {
                 if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Message))
@@ -187,8 +174,6 @@ namespace Test.It.With.Amqp
 
         public void On(Type type, Action<HeartbeatFrame> messageHandler)
         {
-            AssertNoDuplicateSubscriptions(type);
-
             var heartbeatSubscription = _heartbeatFramePublisher.Subscribe(type, frame =>
             {
                 if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Message))

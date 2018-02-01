@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmqpTestServer.cs" />
+    <Compile Include="AmqpConnectionSession.cs" />
     <Compile Include="AmqpTestFramework.cs" />
     <Compile Include="ConnectionId.cs" />
     <Compile Include="Extensions\HeartbeatExtensions.cs" />
@@ -82,10 +82,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolResolver.cs" />
     <Compile Include="ProtocolVersion.cs" />
+    <Compile Include="Subscriptions\BaseSubscription.cs" />
+    <Compile Include="Subscriptions\HeartbeatSubscription.cs" />
     <Compile Include="Subscriptions\IPublish.cs" />
     <Compile Include="Subscriptions\IPublishHeartbeat.cs" />
     <Compile Include="Subscriptions\IPublishMethod.cs" />
     <Compile Include="Subscriptions\IPublishProtocolHeader.cs" />
+    <Compile Include="Subscriptions\MethodSubscription.cs" />
+    <Compile Include="Subscriptions\ProtocolHeaderSubscription.cs" />
     <Compile Include="Subscriptions\Subscriber.cs" />
     <Compile Include="Subscriptions\TypeSubscriber.cs" />
     <Compile Include="Subscriptions\Unsubscriber.cs" />
