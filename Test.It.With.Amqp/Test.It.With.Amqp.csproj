@@ -84,6 +84,10 @@
     <Compile Include="ProtocolVersion.cs" />
     <Compile Include="Subscriptions\BaseSubscription.cs" />
     <Compile Include="Subscriptions\HeartbeatSubscription.cs" />
+    <Compile Include="Subscriptions\IBaseSubscription.cs" />
+    <Compile Include="Subscriptions\IHeartbeatSubscription.cs" />
+    <Compile Include="Subscriptions\IMethodSubscription.cs" />
+    <Compile Include="Subscriptions\IProtocolHeaderSubscription.cs" />
     <Compile Include="Subscriptions\IPublish.cs" />
     <Compile Include="Subscriptions\IPublishHeartbeat.cs" />
     <Compile Include="Subscriptions\IPublishMethod.cs" />

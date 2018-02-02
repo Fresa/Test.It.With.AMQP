@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Concurrent;
-using System.ComponentModel;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
-using Test.It.With.Amqp.Protocol.Extensions;
 using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp
@@ -14,10 +12,8 @@ namespace Test.It.With.Amqp
         private readonly ConcurrentBag<IDisposable> _disposables = new ConcurrentBag<IDisposable>();
 
         private readonly ConcurrentDictionary<Type, IMethodSubscription> _methodSubscriptionCollections = new ConcurrentDictionary<Type, IMethodSubscription>();
-
-        //private readonly ConcurrentBag<MethodSubscription> _methodSubscriptions = new ConcurrentBag<MethodSubscription>();
-        private readonly ConcurrentBag<ProtocolHeaderSubscription> _protocolHeaderSubscriptions = new ConcurrentBag<ProtocolHeaderSubscription>();
-        private readonly ConcurrentBag<HeartbeatSubscription> _heartbeatSubscriptions = new ConcurrentBag<HeartbeatSubscription>();
+        private readonly ConcurrentDictionary<Type, IProtocolHeaderSubscription> _protocolHeaderSubscriptions = new ConcurrentDictionary<Type, IProtocolHeaderSubscription>();
+        private readonly ConcurrentDictionary<Type, IHeartbeatSubscription> _heartbeatSubscriptions = new ConcurrentDictionary<Type, IHeartbeatSubscription>();
 
         private readonly ConcurrentDictionary<ConnectionId, AmqpConnectionSession> _sessions = new ConcurrentDictionary<ConnectionId, AmqpConnectionSession>();
 
@@ -46,7 +42,7 @@ namespace Test.It.With.Amqp
                 {
                     foreach (var protocolHeaderSubscription in _protocolHeaderSubscriptions)
                     {
-                        session.On(protocolHeaderSubscription.Id, frame => protocolHeaderSubscription.Subscription(connectionId, frame));
+                        session.On(protocolHeaderSubscription.Key, frame => protocolHeaderSubscription.Value.Handle(connectionId, frame));
                     }
                 }
 
@@ -54,7 +50,7 @@ namespace Test.It.With.Amqp
                 {
                     foreach (var heartbeatSubscription in _heartbeatSubscriptions)
                     {
-                        session.On(heartbeatSubscription.Id, frame => heartbeatSubscription.Subscription(connectionId, frame));
+                        session.On(heartbeatSubscription.Key, frame => heartbeatSubscription.Value.Handle(connectionId, frame));
                     }
                 }
             });
@@ -91,35 +87,38 @@ namespace Test.It.With.Amqp
             return this;
         }
 
-        public AmqpTestFramework On<TReceivingMethod>(Action<ConnectionId, MethodFrame<TReceivingMethod>> messageHandler)
+        public AmqpTestFramework On<TReceivingMethod>(Action<ConnectionId, MethodFrame<TReceivingMethod>> handleFrame)
             where TReceivingMethod : class, IClientMethod
         {
-            void FrameHandler(ConnectionId connectionId, MethodFrame frame)
+            void HandleFrame(ConnectionId connectionId, MethodFrame frame)
             {
-                messageHandler(connectionId,
+                handleFrame(connectionId,
                     new MethodFrame<TReceivingMethod>(frame.Channel, (TReceivingMethod)frame.Message));
+            }
+
+            IMethodSubscription AddSubscription(Type type)
+            {
+                var subscription = new MethodSubscription<TReceivingMethod>()
+                    .Add(HandleFrame);
+
+                foreach (var session in _sessions)
+                {
+                    session.Value.On(typeof(TReceivingMethod),
+                        frame => subscription.Handle(session.Key, frame));
+                }
+
+                return subscription;
+            }
+
+            IMethodSubscription UpdateSubscription(Type type, IMethodSubscription subscription)
+            {
+                return subscription.Add(HandleFrame);
             }
 
             lock (_methodSubscriptionCollections)
             {
                 _methodSubscriptionCollections.AddOrUpdate(
-                    typeof(TReceivingMethod), type =>
-                    {
-                        var subscription = new MethodSubscription<TReceivingMethod>().Add(FrameHandler);
-                        foreach (var connection in _sessions)
-                        {
-                            connection.Value.On(typeof(TReceivingMethod), frame => subscription.Handle(connection.Key, frame));
-                        }
-                        return subscription;
-                    },
-                    (type, collection) => collection.Add(FrameHandler));
-
-                //foreach (var connection in _sessions)
-                //{
-                //    connection.Value.On(typeof(TReceivingMethod), frame => FrameHandler(connection.Key, frame));
-                //}
-
-                //_methodSubscriptions.Add(MethodSubscription.Create<TReceivingMethod>(FrameHandler));
+                    typeof(TReceivingMethod), AddSubscription, UpdateSubscription);
             }
 
             return this;
@@ -152,47 +151,75 @@ namespace Test.It.With.Amqp
             return this;
         }
 
-        public AmqpTestFramework On<TReceivingProtocolHeader>(Action<ConnectionId, ProtocolHeaderFrame<TReceivingProtocolHeader>> messageHandler)
+        public AmqpTestFramework On<TReceivingProtocolHeader>(Action<ConnectionId, ProtocolHeaderFrame<TReceivingProtocolHeader>> handleFrame)
             where TReceivingProtocolHeader : class, IProtocolHeader
         {
-            void FrameHandler(ConnectionId connectionId, ProtocolHeaderFrame frame)
+            void HandleFrame(ConnectionId connectionId, ProtocolHeaderFrame frame)
             {
-                messageHandler(connectionId,
+                handleFrame(connectionId,
                     new ProtocolHeaderFrame<TReceivingProtocolHeader>(frame.Channel, (TReceivingProtocolHeader)frame.Message));
+            }
+
+            IProtocolHeaderSubscription AddSubscription(Type type)
+            {
+                var subscription = new ProtocolHeaderSubscription<TReceivingProtocolHeader>()
+                    .Add(HandleFrame);
+
+                foreach (var session in _sessions)
+                {
+                    session.Value.On(typeof(TReceivingProtocolHeader), 
+                        frame => subscription.Handle(session.Key, frame));
+                }
+
+                return subscription;
+            }
+
+            IProtocolHeaderSubscription UpdateSubscription(Type type, IProtocolHeaderSubscription subscription)
+            {
+                return subscription.Add(HandleFrame);
             }
 
             lock (_protocolHeaderSubscriptions)
             {
-                foreach (var connection in _sessions)
-                {
-                    connection.Value.On(typeof(TReceivingProtocolHeader), frame => FrameHandler(connection.Key, frame));
-                }
-
-                _protocolHeaderSubscriptions.Add(
-                    ProtocolHeaderSubscription.Create<TReceivingProtocolHeader>(FrameHandler));
-
+                _protocolHeaderSubscriptions.AddOrUpdate(
+                    typeof(TReceivingProtocolHeader), AddSubscription, UpdateSubscription);
             }
 
             return this;
         }
 
-        public AmqpTestFramework On<TReceivingHeartbeat>(Action<ConnectionId, HeartbeatFrame<TReceivingHeartbeat>> messageHandler)
+        public AmqpTestFramework On<TReceivingHeartbeat>(Action<ConnectionId, HeartbeatFrame<TReceivingHeartbeat>> handleFrame)
             where TReceivingHeartbeat : class, IHeartbeat
         {
-            void FrameHandler(ConnectionId connectionId, HeartbeatFrame frame)
+            void HandleFrame(ConnectionId connectionId, HeartbeatFrame frame)
             {
-                messageHandler(connectionId,
+                handleFrame(connectionId,
                     new HeartbeatFrame<TReceivingHeartbeat>(frame.Channel, (TReceivingHeartbeat)frame.Message));
+            }
+
+            IHeartbeatSubscription AddSubscription(Type type)
+            {
+                var subscription = new HeartbeatSubscription<TReceivingHeartbeat>()
+                    .Add(HandleFrame);
+
+                foreach (var connection in _sessions)
+                {
+                    connection.Value.On(typeof(TReceivingHeartbeat), 
+                        frame => subscription.Handle(connection.Key, frame));
+                }
+
+                return subscription;
+            }
+
+            IHeartbeatSubscription UpdateSubscription(Type type, IHeartbeatSubscription subscription)
+            {
+                return subscription.Add(HandleFrame);
             }
 
             lock (_heartbeatSubscriptions)
             {
-                foreach (var connection in _sessions)
-                {
-                    connection.Value.On(typeof(TReceivingHeartbeat), frame => FrameHandler(connection.Key, frame));
-                }
-
-                _heartbeatSubscriptions.Add(HeartbeatSubscription.Create<TReceivingHeartbeat>(FrameHandler));
+                _heartbeatSubscriptions.AddOrUpdate(
+                    typeof(TReceivingHeartbeat), AddSubscription, UpdateSubscription);
             }
 
             return this;

@@ -3,15 +3,14 @@ using Test.It.With.Amqp.Messages;
 
 namespace Test.It.With.Amqp.Subscriptions
 {
-    internal class ProtocolHeaderSubscription : BaseSubscription<Action<ConnectionId, ProtocolHeaderFrame>>
+    internal class ProtocolHeaderSubscription<T> : BaseSubscription<ProtocolHeaderFrame>, IProtocolHeaderSubscription
     {
-        public ProtocolHeaderSubscription(Type id, Action<ConnectionId, ProtocolHeaderFrame> subscription) : base(id, subscription)
-        {
-        }
+        public override Type Id => typeof(T);
 
-        public static ProtocolHeaderSubscription Create<T>(Action<ConnectionId, ProtocolHeaderFrame> subscription)
+        public new IProtocolHeaderSubscription Add(Action<ConnectionId, ProtocolHeaderFrame> subscription)
         {
-            return new ProtocolHeaderSubscription(typeof(T), subscription);
+            base.Add(subscription);
+            return this;
         }
     }
 }

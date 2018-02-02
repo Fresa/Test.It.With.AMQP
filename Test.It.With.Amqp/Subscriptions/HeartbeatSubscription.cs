@@ -3,15 +3,14 @@ using Test.It.With.Amqp.Messages;
 
 namespace Test.It.With.Amqp.Subscriptions
 {
-    internal class HeartbeatSubscription : BaseSubscription<Action<ConnectionId, HeartbeatFrame>>
+    internal class HeartbeatSubscription<T> : BaseSubscription<HeartbeatFrame>, IHeartbeatSubscription
     {
-        public HeartbeatSubscription(Type id, Action<ConnectionId, HeartbeatFrame> subscription) : base(id, subscription)
-        {
-        }
+        public override Type Id => typeof(T);
 
-        public static HeartbeatSubscription Create<T>(Action<ConnectionId, HeartbeatFrame> subscription)
+        public new IHeartbeatSubscription Add(Action<ConnectionId, HeartbeatFrame> subscription)
         {
-            return new HeartbeatSubscription(typeof(T), subscription);
+            base.Add(subscription);
+            return this;
         }
     }
 }
