@@ -19,11 +19,19 @@ namespace Test.It.With.Amqp.NetworkClient
         public override int ReadTimeout { get; set; } = Timeout.Infinite;
         public override int WriteTimeout { get; set; } = Timeout.Infinite;
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Tries to read to the current stream within the specified timeout period.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <exception cref="T:System.TimeoutException"></exception>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            foreach (var b in buffer.Skip(offset).Take(count))
+            foreach (var bytes in buffer.Skip(offset).Take(count))
             {
-                if (_buffer.TryAdd(b, WriteTimeout) == false)
+                if (_buffer.TryAdd(bytes, WriteTimeout) == false)
                 {
                     throw new TimeoutException($"Waited to write for {WriteTimeout}ms.");
                 }
@@ -45,6 +53,15 @@ namespace Test.It.With.Amqp.NetworkClient
 
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Tries to read from the current stream within the specified timeout period.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <exception cref="T:System.TimeoutException"></exception>
+        /// <returns>Bytes read</returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
             for (var i = 0; i < count; i++)
@@ -56,6 +73,12 @@ namespace Test.It.With.Amqp.NetworkClient
                 buffer[i + offset] = data;
             }
             return count;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            _buffer.Dispose();
         }
     }
 }

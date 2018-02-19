@@ -5,7 +5,7 @@ namespace Test.It.With.Amqp.Subscriptions
 {
     internal abstract class BaseSubscription<T> : IBaseSubscription<T>
     {
-        private readonly ConcurrentDictionary<int, Action<ConnectionId, T>> _subscriptions = new ConcurrentDictionary<int, Action<ConnectionId, T>>();
+        private readonly ConcurrentBag<Action<ConnectionId, T>> _subscriptions = new ConcurrentBag<Action<ConnectionId, T>>();
 
         public abstract Type Id { get; }
 
@@ -13,14 +13,13 @@ namespace Test.It.With.Amqp.Subscriptions
         {
             foreach (var subscription in _subscriptions)
             {
-                subscription.Value(connectionId, frame);
+                subscription(connectionId, frame);
             }
         }
 
         protected void Add(Action<ConnectionId, T> subscription)
         {
-            _subscriptions.TryAdd(subscription.GetHashCode(), subscription);
+            _subscriptions.Add(subscription);
         }
-
     }
 }

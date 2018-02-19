@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using RabbitMQ.Client;
 using SimpleInjector;
 
@@ -23,8 +24,14 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
 
         public void Start(params string[] args)
         {
-            var connectionFactory = _configurer.Resolve<IConnectionFactory>();
-            _connection = connectionFactory.CreateConnection();
+            Task.Run(() =>
+            {
+                var connectionFactory = _configurer.Resolve<IConnectionFactory>();
+                _connection = connectionFactory.CreateConnection();
+            }).ContinueWith(task =>
+            {
+                OnUnhandledException?.Invoke(task.Exception);
+            }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
         public void Stop()

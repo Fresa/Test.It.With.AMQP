@@ -16,18 +16,17 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
 
         protected override void OnEventWritten(EventWrittenEventArgs eventData)
         {
-            foreach (var pl in eventData.Payload)
+            foreach (var payload in eventData.Payload)
             {
-                var dict = pl as IDictionary<string, object>;
+                var payloadAsDictionary = payload as IDictionary<string, object>;
                 string message;
-                if (dict != null)
+                if (payloadAsDictionary != null)
                 {
-                    var rex = new RabbitMqExceptionDetail(dict);
-                    message = rex.ToString();
+                    message = new RabbitMqExceptionDetail(payloadAsDictionary).ToString();
                 }
                 else
                 {
-                    message = pl.ToString();
+                    message = payload.ToString();
                 }
 
                 switch (eventData.Level)

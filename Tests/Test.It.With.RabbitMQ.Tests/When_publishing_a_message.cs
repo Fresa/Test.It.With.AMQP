@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.Amqp;
 using Test.It.With.Amqp.Messages;
-using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol._091;
 using Test.It.With.RabbitMQ.Tests.Assertion;
 using Test.It.With.RabbitMQ.Tests.FrameworkExtensions;
@@ -30,52 +27,46 @@ namespace Test.It.With.RabbitMQ.Tests
             {
             }
 
-            protected override string[] StartParameters { get; } = { "4" };
+            private const int NumberOfPublishes = 4;
+
+            protected override string[] StartParameters { get; } = { NumberOfPublishes.ToString() };
+
+            protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
 
             protected override void Given(IServiceContainer container)
             {
-                var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
-
-                testServer.On<ProtocolHeader>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Start>(frame.Channel, new Connection.Start
+                var closedChannels = new ConcurrentBag<short>();
+                void TryStop()
                 {
-                    VersionMajor = Octet.From((byte)frame.Message.Version.Major),
-                    VersionMinor = Octet.From((byte)frame.Message.Version.Minor),
-                    Locales = Longstr.From(Encoding.UTF8.GetBytes("en_US")),
-                    Mechanisms = Longstr.From(Encoding.UTF8.GetBytes("PLAIN")),
-                })));
-                testServer.On<Connection.StartOk>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Secure>(frame.Channel, new Connection.Secure
-                {
-                    Challenge = Longstr.From(Encoding.UTF8.GetBytes("challenge"))
-                })));
-                testServer.On<Connection.SecureOk>((connectionId, frame) => testServer.Send(connectionId, new MethodFrame<Connection.Tune>(frame.Channel, new Connection.Tune
-                {
-                    ChannelMax = Short.From(0),
-                    FrameMax = Long.From(0),
-                    Heartbeat = Short.From(5)
-                })));
-                testServer.On<Connection.TuneOk>((__, _) => { });
-                testServer.On<Connection.Open, Connection.OpenOk>((connectionId, frame) => new Connection.OpenOk());
-                testServer.On<Connection.Close, Connection.CloseOk>((connectionId, frame) => new Connection.CloseOk());
-                testServer.On<Channel.Open, Channel.OpenOk>((connectionId, frame) => new Channel.OpenOk());
-                testServer.On<Channel.Close>((connectionId, frame) =>
-                {
-                    testServer.Send(connectionId, new MethodFrame<Channel.CloseOk>(frame.Channel, new Channel.CloseOk()));
-
-                    if (_basicPublish.Count == 4)
+                    if (closedChannels.Count == NumberOfPublishes && _basicPublish.Count == NumberOfPublishes)
                     {
                         ServiceController.Stop();
                     }
-                });
+                }
+                var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
+                testServer
+                    .WithDefaultProtocolHeaderNegotiation()
+                    .WithDefaultSecurityNegotiation(heartbeatInterval: TimeSpan.FromSeconds(5))
+                    .WithDefaultConnectionOpenNegotiation()
+                    .WithHeartbeats(interval: TimeSpan.FromSeconds(5))
+                    .WithDefaultConnectionCloseNegotiation();
+
+                testServer.On<Channel.Open, Channel.OpenOk>((connectionId, frame) => new Channel.OpenOk());
+                testServer.On<Channel.Close, Channel.CloseOk>((connectionId, frame) => new Channel.CloseOk());
                 testServer.On<Exchange.Declare, Exchange.DeclareOk>((connectionId, frame) =>
                 {
                     _exchangeDeclare.Add(frame);
                     return new Exchange.DeclareOk();
                 });
+                testServer.On<Channel.Close>((id, frame) =>
+                {
+                    closedChannels.Add(frame.Channel);
+                    TryStop();
+                });
                 testServer.On<Basic.Publish>((connectionId, frame) =>
                 {
                     _basicPublish.Add(frame);
                 });
-                testServer.On<Heartbeat>((__, _) => { });
 
                 container.RegisterSingleton(() => testServer.ConnectionFactory.ToRabbitMqConnectionFactory());
             }
@@ -144,17 +135,17 @@ namespace Test.It.With.RabbitMQ.Tests
 
                 testServer
                     .WithDefaultProtocolHeaderNegotiation()
-                    .WithDefaultSecurityNegotiation(heartbeatInterval:TimeSpan.FromSeconds(1))
+                    .WithDefaultSecurityNegotiation(heartbeatInterval: TimeSpan.FromSeconds(1))
                     .WithDefaultConnectionOpenNegotiation()
-                    .WithHeartbeats(interval:TimeSpan.FromMilliseconds(500))
+                    .WithHeartbeats(interval: TimeSpan.FromSeconds(1))
                     .WithDefaultConnectionCloseNegotiation();
-                    
+
                 testServer.On<Heartbeat>((connectionId, frame) =>
                 {
                     _heartbeatCancelationToken.Cancel(true);
                     _heartbeats.Add(frame);
                     _heartbeatCancelationToken = new CancellationTokenSource();
-                    Task.Delay(2000)
+                    Task.Delay(4000)
                         .ContinueWith(task =>
                         {
                             _missingHeartbeat = true;
@@ -162,7 +153,10 @@ namespace Test.It.With.RabbitMQ.Tests
                         }, _heartbeatCancelationToken.Token);
                 });
 
-                Task.Delay(TimeSpan.FromSeconds(10)).ContinueWith(task => ServiceController.Stop());
+                Task.Delay(TimeSpan.FromSeconds(10)).ContinueWith(task =>
+                {
+                    ServiceController.Stop();
+                });
 
                 container.RegisterSingleton(() => testServer.ConnectionFactory.ToRabbitMqConnectionFactory());
             }

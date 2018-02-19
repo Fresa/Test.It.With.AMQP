@@ -17,6 +17,11 @@ namespace Test.It.With.RabbitMQ
 
         public TestFrameHandler(INetworkClient networkClient)
         {
+            networkClient.Disconnected += (sender, args) =>
+            {
+                Close();
+            };
+
             _stream = new NetworkClientStream(networkClient);
             _reader = new NetworkBinaryReader(_stream);
             _writer = new NetworkBinaryWriter(_stream);
@@ -32,6 +37,7 @@ namespace Test.It.With.RabbitMQ
             {
                 _writer.Close();
             }
+            _stream.Close();
         }
 
         public InboundFrame ReadFrame()

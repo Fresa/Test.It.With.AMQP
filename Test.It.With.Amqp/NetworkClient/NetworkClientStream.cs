@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net.Sockets;
 
 namespace Test.It.With.Amqp.NetworkClient
 {
@@ -12,8 +13,12 @@ namespace Test.It.With.Amqp.NetworkClient
         public NetworkClientStream(INetworkClient networkClient)
         {
             _networkClient = networkClient;
-            _networkClient.BufferReceived +=
-                (sender, args) => _bufferedReadStream.Write(args.Buffer, args.Offset, args.Count);
+            _networkClient.BufferReceived += OnBufferReceived;
+        }
+
+        private void OnBufferReceived(object sender, ReceivedEventArgs args)
+        {
+            _bufferedReadStream.Write(args.Buffer, args.Offset, args.Count);
         }
 
         public override void Flush()
@@ -36,7 +41,14 @@ namespace Test.It.With.Amqp.NetworkClient
 
         public override int Read(byte[] buffer, int offset, int count)
         {
+          try
+          {
             return _bufferedReadStream.Read(buffer, offset, count);
+          }
+          catch (TimeoutException ex)
+          {
+            throw new IOException(ex.Message, new SocketException((int)SocketError.TimedOut));
+          }
         }
 
         public override void Write(byte[] buffer, int offset, int count)
@@ -64,6 +76,23 @@ namespace Test.It.With.Amqp.NetworkClient
         {
             get { return 0; }
             set { }
+        }
+
+        public override void Close()
+        {
+            _bufferedWriteStream.Close();
+            _bufferedReadStream.Close();
+            base.Close();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            if (disposing)
+            {
+                _networkClient.BufferReceived -= OnBufferReceived;
+                _networkClient.Dispose();
+            }
         }
     }
 }

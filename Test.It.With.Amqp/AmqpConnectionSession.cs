@@ -73,11 +73,6 @@ namespace Test.It.With.Amqp
         }
 
         public ConnectionId ConnectionId { get; } = new ConnectionId(Guid.NewGuid());
-
-        public AmqpConnectionSession(ProtocolVersion protocolVersion, IExpectationStateMachine expectationStateMachine) : this(protocolVersion)
-        {
-            _expectationStateMachine = expectationStateMachine;
-        }
         
         public INetworkClient Client { get; }
         
