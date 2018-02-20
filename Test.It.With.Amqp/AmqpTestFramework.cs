@@ -61,8 +61,10 @@ namespace Test.It.With.Amqp
 
         public AmqpTestFramework Send<TMessage>(ConnectionId connectionId, MethodFrame<TMessage> frame) where TMessage : class, INonContentMethod, IServerMethod
         {
-            _sessions[connectionId].Send(new MethodFrame(frame.Channel, frame.Message));
-
+            lock (_sessions[connectionId])
+            {
+                _sessions[connectionId].Send(new MethodFrame(frame.Channel, frame.Message));
+            }
             return this;
         }
 
@@ -70,20 +72,24 @@ namespace Test.It.With.Amqp
             where TMessage : class, IContentMethod<THeader>, IServerMethod
             where THeader : IContentHeader
         {
-            _sessions[connectionId].Send(new MethodFrame(frame.Channel, frame.Message));
-            _sessions[connectionId].Send(new ContentHeaderFrame(frame.Channel, frame.Message.ContentHeader));
-            foreach (var contentBodyFragment in frame.Message.ContentBodyFragments)
+            lock (_sessions[connectionId])
             {
-                _sessions[connectionId].Send(new ContentBodyFrame(frame.Channel, contentBodyFragment));
+                _sessions[connectionId].Send(new MethodFrame(frame.Channel, frame.Message));
+                _sessions[connectionId].Send(new ContentHeaderFrame(frame.Channel, frame.Message.ContentHeader));
+                foreach (var contentBodyFragment in frame.Message.ContentBodyFragments)
+                {
+                    _sessions[connectionId].Send(new ContentBodyFrame(frame.Channel, contentBodyFragment));
+                }
             }
-
             return this;
         }
 
         public AmqpTestFramework Send<TMessage>(ConnectionId connectionId, HeartbeatFrame<TMessage> frame) where TMessage : class, IHeartbeat
         {
-            _sessions[connectionId].Send(new HeartbeatFrame(frame.Channel, frame.Message));
-
+            lock (_sessions[connectionId])
+            {
+                _sessions[connectionId].Send(new HeartbeatFrame(frame.Channel, frame.Message));
+            }
             return this;
         }
 

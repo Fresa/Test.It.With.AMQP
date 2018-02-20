@@ -25,7 +25,7 @@ namespace Test.It.With.Amqp.Protocol._091
                     message.WriteTo(writer);
                 }
 
-                Payload = memoryStream.GetBuffer();
+                Payload = memoryStream.ToArray();
             }
 
             Size = Payload.Length;

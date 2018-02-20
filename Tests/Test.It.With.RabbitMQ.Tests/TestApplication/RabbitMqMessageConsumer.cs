@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -25,7 +23,15 @@ namespace Test.It.With.RabbitMQ.Tests.TestApplication
 
         private void OnReceived(object sender, BasicDeliverEventArgs args)
         {
-            _subscription.Invoke(_serializer.Deserialize<TMessage>(args.Body));
+            try
+            {
+                _subscription.Invoke(_serializer.Deserialize<TMessage>(args.Body));
+                _consumer.Model.BasicAck(args.DeliveryTag, false);
+            }
+            catch
+            {
+                _consumer.Model.BasicNack(args.DeliveryTag, false, false);
+            }
         }
 
         public void Dispose()
