@@ -3859,7 +3859,7 @@ namespace Test.It.With.Amqp.Protocol._091
 		{
 			public int ClassId { get; } = 60;
 
-			public long BodySize { get; private set; }
+			public long BodySize { get; set; }
 
 			public bool SentOnValidChannel(int channel)
 			{
@@ -4653,15 +4653,16 @@ namespace Test.It.With.Amqp.Protocol._091
 				return channel > 0;
 			}
 
-			public Basic.ContentHeader ContentHeader { get; private set; }
+			public Basic.ContentHeader ContentHeader { get; set; }
 
-			public void SetContentHeader(IContentHeader contentHeader)
+			public IContentMethod SetContentHeader(IContentHeader contentHeader)
 			{
 				if (typeof(Basic.ContentHeader) != contentHeader.GetType())
 				{
 					throw new UnexpectedFrameException($"Did not expect {contentHeader.GetType()}, expected {typeof(Basic.ContentHeader)}.");
 				}
 				ContentHeader = (Basic.ContentHeader) contentHeader;
+				return this;
 			}
 
 			public byte[] ContentBody => _contentBodyFragments.SelectMany(fragment => fragment.Payload).ToArray();
@@ -4669,9 +4670,19 @@ namespace Test.It.With.Amqp.Protocol._091
 			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
 
 			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
-			public void AddContentBody(IContentBody contentBody)
+			public IContentMethod AddContentBody(IContentBody contentBody)
 			{
 				_contentBodyFragments.Add(contentBody);
+				return this;
+			}
+
+			public Publish AddContentBodyFragments(params IContentBody[] contentBodyFragments)
+			{
+				foreach (var contentBodyFragment in contentBodyFragments)
+				{
+					AddContentBody(contentBodyFragment);
+				}
+				return this;
 			}
 
 			public Type[] Responses() 
@@ -4787,15 +4798,16 @@ namespace Test.It.With.Amqp.Protocol._091
 				return channel > 0;
 			}
 
-			public Basic.ContentHeader ContentHeader { get; private set; }
+			public Basic.ContentHeader ContentHeader { get; set; }
 
-			public void SetContentHeader(IContentHeader contentHeader)
+			public IContentMethod SetContentHeader(IContentHeader contentHeader)
 			{
 				if (typeof(Basic.ContentHeader) != contentHeader.GetType())
 				{
 					throw new UnexpectedFrameException($"Did not expect {contentHeader.GetType()}, expected {typeof(Basic.ContentHeader)}.");
 				}
 				ContentHeader = (Basic.ContentHeader) contentHeader;
+				return this;
 			}
 
 			public byte[] ContentBody => _contentBodyFragments.SelectMany(fragment => fragment.Payload).ToArray();
@@ -4803,9 +4815,19 @@ namespace Test.It.With.Amqp.Protocol._091
 			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
 
 			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
-			public void AddContentBody(IContentBody contentBody)
+			public IContentMethod AddContentBody(IContentBody contentBody)
 			{
 				_contentBodyFragments.Add(contentBody);
+				return this;
+			}
+
+			public Return AddContentBodyFragments(params IContentBody[] contentBodyFragments)
+			{
+				foreach (var contentBodyFragment in contentBodyFragments)
+				{
+					AddContentBody(contentBodyFragment);
+				}
+				return this;
 			}
 
 			public Type[] Responses() 
@@ -4896,15 +4918,16 @@ namespace Test.It.With.Amqp.Protocol._091
 				return channel > 0;
 			}
 
-			public Basic.ContentHeader ContentHeader { get; private set; }
+			public Basic.ContentHeader ContentHeader { get; set; }
 
-			public void SetContentHeader(IContentHeader contentHeader)
+			public IContentMethod SetContentHeader(IContentHeader contentHeader)
 			{
 				if (typeof(Basic.ContentHeader) != contentHeader.GetType())
 				{
 					throw new UnexpectedFrameException($"Did not expect {contentHeader.GetType()}, expected {typeof(Basic.ContentHeader)}.");
 				}
 				ContentHeader = (Basic.ContentHeader) contentHeader;
+				return this;
 			}
 
 			public byte[] ContentBody => _contentBodyFragments.SelectMany(fragment => fragment.Payload).ToArray();
@@ -4912,9 +4935,19 @@ namespace Test.It.With.Amqp.Protocol._091
 			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
 
 			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
-			public void AddContentBody(IContentBody contentBody)
+			public IContentMethod AddContentBody(IContentBody contentBody)
 			{
 				_contentBodyFragments.Add(contentBody);
+				return this;
+			}
+
+			public Deliver AddContentBodyFragments(params IContentBody[] contentBodyFragments)
+			{
+				foreach (var contentBodyFragment in contentBodyFragments)
+				{
+					AddContentBody(contentBodyFragment);
+				}
+				return this;
 			}
 
 			public Type[] Responses() 
@@ -5098,15 +5131,16 @@ namespace Test.It.With.Amqp.Protocol._091
 				return channel > 0;
 			}
 
-			public Basic.ContentHeader ContentHeader { get; private set; }
+			public Basic.ContentHeader ContentHeader { get; set; }
 
-			public void SetContentHeader(IContentHeader contentHeader)
+			public IContentMethod SetContentHeader(IContentHeader contentHeader)
 			{
 				if (typeof(Basic.ContentHeader) != contentHeader.GetType())
 				{
 					throw new UnexpectedFrameException($"Did not expect {contentHeader.GetType()}, expected {typeof(Basic.ContentHeader)}.");
 				}
 				ContentHeader = (Basic.ContentHeader) contentHeader;
+				return this;
 			}
 
 			public byte[] ContentBody => _contentBodyFragments.SelectMany(fragment => fragment.Payload).ToArray();
@@ -5114,9 +5148,19 @@ namespace Test.It.With.Amqp.Protocol._091
 			public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();
 
 			private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();
-			public void AddContentBody(IContentBody contentBody)
+			public IContentMethod AddContentBody(IContentBody contentBody)
 			{
 				_contentBodyFragments.Add(contentBody);
+				return this;
+			}
+
+			public GetOk AddContentBodyFragments(params IContentBody[] contentBodyFragments)
+			{
+				foreach (var contentBodyFragment in contentBodyFragments)
+				{
+					AddContentBody(contentBodyFragment);
+				}
+				return this;
 			}
 
 			public Type[] Responses() 
@@ -5782,7 +5826,7 @@ namespace Test.It.With.Amqp.Protocol._091
 
 	public class ContentBody : IContentBody
 	{
-		public byte[] Payload { get; private set; }
+		public byte[] Payload { get; set; }
 
 		public bool SentOnValidChannel(int channel)
 		{

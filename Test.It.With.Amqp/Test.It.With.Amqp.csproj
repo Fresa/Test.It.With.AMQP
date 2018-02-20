@@ -52,7 +52,6 @@
     <Compile Include="MessageClient\FrameClient.cs" />
     <Compile Include="MessageClient\IChainableTypedMessageClient.cs" />
     <Compile Include="MessageClient\ITypedMessageClient.cs" />
-    <Compile Include="MessageClient\MethodFrameClient.cs" />
     <Compile Include="MessageClient\ProtocolHeaderClient.cs" />
     <Compile Include="MessageHandlers\ContentBodyFrameHandler.cs" />
     <Compile Include="MessageHandlers\ContentHeaderFrameHandler.cs" />

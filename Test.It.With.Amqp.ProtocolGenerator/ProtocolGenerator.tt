@@ -316,7 +316,7 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 				{
 					#>public int ClassId { get; } = <#= @class.Index #>;<# _(2);
 					
-					#>public long BodySize { get; private set; }<# _(2);
+					#>public long BodySize { get; set; }<# _(2);
 
 					#>public bool SentOnValidChannel(int channel)<# Block(() =>
 				    {
@@ -416,16 +416,17 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 
 					if (method.HasContent)
 					{
-						#>public <#= className + "." + contentHeaderName #> ContentHeader { get; private set; }<# _(2);
+						#>public <#= className + "." + contentHeaderName #> ContentHeader { get; set; }<# _(2);
 
-						#>public void SetContentHeader(IContentHeader contentHeader)<# Block(() =>
+						#>public IContentMethod SetContentHeader(IContentHeader contentHeader)<# Block(() =>
 						{
 							#>if (typeof(<#= className + "." + contentHeaderName #>) != contentHeader.GetType())<# Block(() =>
 						    {
 						        #>throw new UnexpectedFrameException($"Did not expect {contentHeader.GetType()}, expected {typeof(<#= className + "." + contentHeaderName #>)}.");<#
 						    }); _();
 
-							#>ContentHeader = (<#= className + "." + contentHeaderName #>) contentHeader;<#
+							#>ContentHeader = (<#= className + "." + contentHeaderName #>) contentHeader;<# _();
+							#>return this;<#
 						}); _(2);
 
 						#>public byte[] ContentBody => _contentBodyFragments.SelectMany(fragment => fragment.Payload).ToArray();<# _(2);
@@ -433,9 +434,19 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
 						#>public IContentBody[] ContentBodyFragments => _contentBodyFragments.ToArray();<# _(2);
 						
 						#>private readonly List<IContentBody> _contentBodyFragments = new List<IContentBody>();<# _();
-						#>public void AddContentBody(IContentBody contentBody)<# Block(() => {
+						#>public IContentMethod AddContentBody(IContentBody contentBody)<# Block(() => {
 						{
-						    #>_contentBodyFragments.Add(contentBody);<#
+						    #>_contentBodyFragments.Add(contentBody);<# _();
+							#>return this;<#
+						}}); _(2);
+
+						#>public <#= methodName #> AddContentBodyFragments(params IContentBody[] contentBodyFragments)<# Block(() => {
+						{
+							#>foreach (var contentBodyFragment in contentBodyFragments)<# Block(() =>
+						    {
+						        #>AddContentBody(contentBodyFragment);<#
+						    }); _();
+						    #>return this;<#
 						}}); _(2);
 					}
 
@@ -563,7 +574,7 @@ namespace Test.It.With.Amqp.Protocol._<#= protocol.Major #><#=protocol.Minor#><#
     // Content Body
 	#>public class ContentBody : IContentBody<# Block(() =>
     {
-		#>public byte[] Payload { get; private set; }<# _(2);
+		#>public byte[] Payload { get; set; }<# _(2);
 
         #>public bool SentOnValidChannel(int channel)<# Block(() =>
 		{

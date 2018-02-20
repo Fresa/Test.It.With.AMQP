@@ -38,8 +38,8 @@ namespace Test.It.With.Amqp.Protocol
                 result |= (_values[i] ? 1 : 0) << i;
             }
 
-            _writer.WriteByte((byte)result);
             _values.Clear();
+            _writer.WriteByte((byte)result);
         }
 
         public void Dispose()

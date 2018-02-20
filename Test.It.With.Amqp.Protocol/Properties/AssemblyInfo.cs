@@ -19,6 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Test.It.With.Amqp.ProtocolGenerator")]
 [assembly: InternalsVisibleTo("Test.It.With.Amqp.Protocol.091")]
 [assembly: InternalsVisibleTo("Test.It.With.Amqp.Protocol.091.Tests")]
+[assembly: InternalsVisibleTo("Test.It.With.Amqp.Protocol.Tests")]
 [assembly: InternalsVisibleTo("Test.It.With.Amqp")]
 
 // Setting ComVisible to false makes the types in this assembly not visible

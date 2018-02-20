@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.Amqp;
@@ -129,7 +131,7 @@ namespace Test.It.With.RabbitMQ.Tests
             {
             }
 
-            private const int Parallelism = 4;
+            private const int Parallelism = 1;
 
             protected override string[] StartParameters { get; } = { Parallelism.ToString() };
 
@@ -184,10 +186,25 @@ namespace Test.It.With.RabbitMQ.Tests
                 {
                     var consumerTag = Guid.NewGuid().ToString();
                     _basicConsumes.TryAdd(consumerTag, frame);
-                    Task.Run(() => testServer.Send<Basic.Publish>(connectionId, new MethodFrame<Basic.Publish>(frame.Channel, new Basic.Publish()
+                    Task.Run(() =>
                     {
-                        
-                    })))
+                        var testMessage = new TestMessage($"This is sent on channel {frame.Channel} within connection {connectionId}.");
+                        var payload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(testMessage));
+
+                        testServer.Send<Basic.Deliver, Basic.ContentHeader>(connectionId, new MethodFrame<Basic.Deliver>(frame.Channel, 
+                            new Basic.Deliver
+                            {
+                                ConsumerTag =  ConsumerTag.From(consumerTag),
+                                ContentHeader = new Basic.ContentHeader
+                                {
+                                    BodySize = payload.Length
+                                }
+                            }
+                            .AddContentBodyFragments(new ContentBody
+                            {
+                                Payload = payload
+                            })));
+                    });
                     return new Basic.ConsumeOk { ConsumerTag = ConsumerTag.From(consumerTag) };
                 });
                 testServer.On<Basic.Cancel, Basic.CancelOk>((connectionId, frame) =>

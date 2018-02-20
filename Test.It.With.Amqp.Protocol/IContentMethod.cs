@@ -2,8 +2,8 @@
 {
     public interface IContentMethod : IMethod
     {
-        void SetContentHeader(IContentHeader contentHeader);
-        void AddContentBody(IContentBody contentBody);
+        IContentMethod SetContentHeader(IContentHeader contentHeader);
+        IContentMethod AddContentBody(IContentBody contentBody);
     }
 
     public interface IContentMethod<out THeader> : IContentMethod
