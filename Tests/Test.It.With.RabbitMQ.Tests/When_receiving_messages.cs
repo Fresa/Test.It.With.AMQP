@@ -23,20 +23,12 @@ namespace Test.It.With.RabbitMQ.Tests
         public class When_consuming_messages : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<
             TestApplicationBuilder<MessageConsumingApplicationSpecification>>>
         {
-            private readonly ConcurrentBag<MethodFrame<Exchange.Declare>> _exchangesDeclared =
-                new ConcurrentBag<MethodFrame<Exchange.Declare>>();
-
-            private readonly ConcurrentBag<MethodFrame<Queue.Declare>> _queuesDeclared =
-                new ConcurrentBag<MethodFrame<Queue.Declare>>();
-
-            private readonly ConcurrentBag<MethodFrame<Queue.Bind>> _queuesBound =
-                new ConcurrentBag<MethodFrame<Queue.Bind>>();
-
-            private readonly ConcurrentBag<MethodFrame<Basic.Publish>> _basicPublishes =
-                new ConcurrentBag<MethodFrame<Basic.Publish>>();
-
-            private readonly ConcurrentBag<MethodFrame<Basic.Consume>> _basicConsumes =
-                new ConcurrentBag<MethodFrame<Basic.Consume>>();
+            private readonly ConcurrentBag<MethodFrame<Exchange.Declare>> _exchangesDeclared = new ConcurrentBag<MethodFrame<Exchange.Declare>>();
+            private readonly ConcurrentBag<MethodFrame<Queue.Declare>> _queuesDeclared = new ConcurrentBag<MethodFrame<Queue.Declare>>();
+            private readonly ConcurrentBag<MethodFrame<Queue.Bind>> _queuesBound = new ConcurrentBag<MethodFrame<Queue.Bind>>();
+            private readonly ConcurrentBag<MethodFrame<Basic.Publish>> _basicPublishes = new ConcurrentBag<MethodFrame<Basic.Publish>>();
+            private readonly ConcurrentBag<MethodFrame<Basic.Consume>> _basicConsumes = new ConcurrentBag<MethodFrame<Basic.Consume>>();
+            private readonly ConcurrentBag<MethodFrame<Basic.Ack>> _acks = new ConcurrentBag<MethodFrame<Basic.Ack>>();
 
             public When_consuming_messages(ITestOutputHelper output) : base(output)
             {
@@ -44,7 +36,7 @@ namespace Test.It.With.RabbitMQ.Tests
 
             private const int Parallelism = 2;
 
-            protected override string[] StartParameters { get; } = {Parallelism.ToString()};
+            protected override string[] StartParameters { get; } = { Parallelism.ToString() };
 
             protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
 
@@ -54,7 +46,7 @@ namespace Test.It.With.RabbitMQ.Tests
 
                 void TryStop()
                 {
-                    if (closedChannels.Count == Parallelism && _basicPublishes.Count == Parallelism)
+                    if (closedChannels.Count == Parallelism && _basicPublishes.Count == Parallelism && _acks.Count == Parallelism)
                     {
                         ServiceController.Stop();
                     }
@@ -115,23 +107,27 @@ namespace Test.It.With.RabbitMQ.Tests
                         testServer.Send<Basic.Deliver, Basic.ContentHeader>(connectionId,
                             new MethodFrame<Basic.Deliver>(frame.Channel,
                                 new Basic.Deliver
+                                {
+                                    ConsumerTag = ConsumerTag.From(consumerTag),
+                                    ContentHeader = new Basic.ContentHeader
                                     {
-                                        ConsumerTag = ConsumerTag.From(consumerTag),
-                                        ContentHeader = new Basic.ContentHeader
-                                        {
-                                            BodySize = payload.Length
-                                        }
+                                        BodySize = payload.Length
                                     }
-                                    .AddContentBodyFragments(new ContentBody
-                                    {
-                                        Payload = payload
-                                    })));
+                                }
+                                .AddContentBodyFragments(new ContentBody
+                                {
+                                    Payload = payload
+                                })));
                     });
                 });
                 testServer.On<Basic.Cancel, Basic.CancelOk>((connectionId, frame) =>
-                    new Basic.CancelOk {ConsumerTag = frame.Message.ConsumerTag});
-                testServer.On<Basic.Ack>((connectionId, frame) => { });
-
+                    new Basic.CancelOk { ConsumerTag = frame.Message.ConsumerTag });
+                testServer.On<Basic.Ack>((connectionId, frame) =>
+                {
+                    _acks.Add(frame);
+                    TryStop();
+                });
+                
                 container.RegisterSingleton(() => testServer.ConnectionFactory.ToRabbitMqConnectionFactory());
             }
 
@@ -184,6 +180,43 @@ namespace Test.It.With.RabbitMQ.Tests
             }
 
             [Fact]
+            public void It_should_have_declared_queues()
+            {
+                _queuesDeclared.Should().Count.Exactly(2);
+            }
+
+            [Fact]
+            public void It_should_have_declared_queues_with_name()
+            {
+                _queuesDeclared.Should().Contain()
+                    .One(frame => frame.Message.Queue.Equals(QueueName.From("queue0")));
+                _queuesDeclared.Should().Contain()
+                    .One(frame => frame.Message.Queue.Equals(QueueName.From("queue1")));
+            }
+
+            [Fact]
+            public void It_should_have_bound_the_queues()
+            {
+                _queuesBound.Should().Count.Exactly(2);
+            }
+
+            [Fact]
+            public void It_should_have_bound_queues_to_exchanges()
+            {
+                _queuesBound.Should().Contain()
+                    .One(frame => 
+                        frame.Message.Queue.Equals(QueueName.From("queue0")) &&
+                        frame.Message.Exchange.Equals(ExchangeName.From("myExchange0")) &&
+                        frame.Message.RoutingKey.Equals(Shortstr.From("routing0")));
+
+                _queuesBound.Should().Contain()
+                    .One(frame => 
+                        frame.Message.Queue.Equals(QueueName.From("queue1")) &&
+                        frame.Message.Exchange.Equals(ExchangeName.From("myExchange1")) &&
+                        frame.Message.RoutingKey.Equals(Shortstr.From("routing1")));
+            }
+
+            [Fact]
             public void It_should_have_declared_an_exchange_with_type()
             {
                 _exchangesDeclared.Should().Contain.Any(frame => frame.Message.Type.Equals(Shortstr.From("topic")));
@@ -192,14 +225,21 @@ namespace Test.It.With.RabbitMQ.Tests
             [Fact]
             public void It_should_have_starting_consuming_messages()
             {
+                _basicConsumes.Should().Count.Exactly(2);
+            }
+
+            [Fact]
+            public void It_should_have_starting_consuming_messages_from_queues()
+            {
                 _basicConsumes.Should().Contain.One(frame => frame.Message.Queue.Equals(QueueName.From("queue0")));
                 _basicConsumes.Should().Contain.One(frame => frame.Message.Queue.Equals(QueueName.From("queue1")));
             }
 
-            // Todo: Check if there are more stuff that needs to be tested within this test
+            [Fact]
+            public void It_should_have_acked_consumed_messages()
+            {
+                _acks.Should().Count.Exactly(2);
+            }
         }
     }
-    
-
-    // todo: add test that sends content
 }

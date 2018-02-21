@@ -127,6 +127,4 @@ namespace Test.It.With.RabbitMQ.Tests
             }
         }
     }
-
-    // todo: add test that sends content
 }
