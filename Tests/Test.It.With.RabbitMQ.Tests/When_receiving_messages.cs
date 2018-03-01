@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
+using Test.It.While.Hosting.Your.Windows.Service.Delegates;
 using Test.It.With.Amqp;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol._091;
@@ -38,7 +40,7 @@ namespace Test.It.With.RabbitMQ.Tests
 
             protected override string[] StartParameters { get; } = { Parallelism.ToString() };
 
-            protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
+            protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(50);
 
             protected override void Given(IServiceContainer container)
             {
@@ -127,7 +129,12 @@ namespace Test.It.With.RabbitMQ.Tests
                     _acks.Add(frame);
                     TryStop();
                 });
-                
+
+                ServiceController.OnStopped += code =>
+                {
+                    testServer.Dispose();
+                };
+
                 container.RegisterSingleton(() => testServer.ConnectionFactory.ToRabbitMqConnectionFactory());
             }
 

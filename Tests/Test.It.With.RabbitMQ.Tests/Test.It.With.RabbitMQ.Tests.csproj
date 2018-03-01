@@ -87,8 +87,8 @@
     <Reference Include="Test.It, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Test.It.1.2.0\lib\net462\Test.It.dll</HintPath>
     </Reference>
-    <Reference Include="Test.It.While.Hosting.Your.Windows.Service, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Test.It.While.Hosting.Your.Windows.Service.2.1.0\lib\net462\Test.It.While.Hosting.Your.Windows.Service.dll</HintPath>
+    <Reference Include="Test.It.While.Hosting.Your.Windows.Service, Version=2.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Test.It.While.Hosting.Your.Windows.Service.2.1.3\lib\net462\Test.It.While.Hosting.Your.Windows.Service.dll</HintPath>
     </Reference>
     <Reference Include="Test.It.With.XUnit, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Test.It.With.XUnit.1.0.1\lib\net462\Test.It.With.XUnit.dll</HintPath>

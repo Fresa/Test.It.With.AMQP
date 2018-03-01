@@ -29,23 +29,16 @@ namespace Test.It.With.RabbitMQ
 
         public void Close()
         {
-            lock (_reader)
-            {
-                _reader.Close();
-            }
+            _reader.Close();
             lock (_writer)
             {
                 _writer.Close();
             }
-            _stream.Close();
         }
 
         public InboundFrame ReadFrame()
         {
-            lock (_reader)
-            {
-                return InboundFrame.ReadFrom(_reader);
-            }
+            return InboundFrame.ReadFrom(_reader);
         }
 
         public void SendHeader()

@@ -78,7 +78,10 @@ namespace Test.It.With.Amqp.NetworkClient
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            _buffer.Dispose();
+            if (disposing)
+            {
+                _buffer.Dispose();
+            }
         }
     }
 }
