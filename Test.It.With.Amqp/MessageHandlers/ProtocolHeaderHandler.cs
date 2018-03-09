@@ -53,7 +53,7 @@ namespace Test.It.With.Amqp.MessageHandlers
                     $"There are no subscriptions on {protocolHeader.Message.GetType().FullName}.");
             }
 
-            _logger.Debug($"Received method {protocolHeader.Message.GetType().GetPrettyFullName()} on channel {protocolHeader.Channel}. {protocolHeader.Message.Serialize()}");
+            _logger.Debug($"Received method {protocolHeader.Message.GetType().GetPrettyFullName()}. {protocolHeader.Message.Serialize()}");
             foreach (var subscription in subscriptions)
             {
                 subscription(new ProtocolHeaderFrame<IProtocolHeader>(protocolHeader.Channel, protocolHeader.Message));

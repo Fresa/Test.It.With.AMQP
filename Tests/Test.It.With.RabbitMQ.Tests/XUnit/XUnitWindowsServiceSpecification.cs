@@ -1,4 +1,6 @@
 ﻿using System;
+using Log.It;
+using Log.It.With.NLog;
 using NLog.Config;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Xunit;
@@ -24,6 +26,11 @@ namespace Test.It.With.RabbitMQ.Tests.XUnit
                 {
                     return new XUnit2Target(Output);
                 }
+                if (type == typeof(NLogLogContextLayoutRenderer))
+                {
+                    return new NLogLogContextLayoutRenderer(new LogicalThreadContext());
+                }
+
                 return defaultInstanceCreator(type);
             };
 

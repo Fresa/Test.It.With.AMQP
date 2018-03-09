@@ -54,7 +54,7 @@ namespace Test.It.With.Amqp.MessageHandlers
                     $"There are no subscriptions on {heartbeatFrame.Message.GetType().FullName}.");
             }
 
-            _logger.Debug($"Received heartbeat {heartbeatFrame.Message.GetType().GetPrettyFullName()} on channel {heartbeatFrame.Channel}. {heartbeatFrame.Message.Serialize()}");
+            _logger.Debug($"Received heartbeat {heartbeatFrame.Message.GetType().GetPrettyFullName()}. {heartbeatFrame.Message.Serialize()}");
             foreach (var subscription in subscriptions)
             {
                 subscription(new HeartbeatFrame<IHeartbeat>(heartbeatFrame.Channel,

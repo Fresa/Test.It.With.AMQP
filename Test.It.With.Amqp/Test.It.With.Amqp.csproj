@@ -33,8 +33,8 @@
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Log.It, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Log.It.1.0.0\lib\net462\Log.It.dll</HintPath>
+    <Reference Include="Log.It, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Log.It.1.0.1\lib\net462\Log.It.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -49,6 +49,7 @@
     <Compile Include="ConnectionId.cs" />
     <Compile Include="Extensions\HeartbeatExtensions.cs" />
     <Compile Include="Extensions\MethodExtensions.cs" />
+    <Compile Include="LogicalLogContextKeys.cs" />
     <Compile Include="MessageClient\FrameClient.cs" />
     <Compile Include="MessageClient\IChainableTypedMessageClient.cs" />
     <Compile Include="MessageClient\ITypedMessageClient.cs" />
@@ -114,9 +115,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Expectations\MethodExpectationBuilders\" />
-    <Folder Include="Protocol\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
