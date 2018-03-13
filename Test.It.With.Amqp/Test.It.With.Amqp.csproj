@@ -1,120 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0F31E538-8FFC-4A6D-97D9-CFA18CEB6D47}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test.It.With.Amqp</RootNamespace>
-    <AssemblyName>Test.It.With.Amqp</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Log.It, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Log.It.1.0.1\lib\net462\Log.It.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AmqpConnectionSession.cs" />
-    <Compile Include="AmqpTestFramework.cs" />
-    <Compile Include="ConnectionId.cs" />
-    <Compile Include="Extensions\HeartbeatExtensions.cs" />
-    <Compile Include="Extensions\MethodExtensions.cs" />
-    <Compile Include="LogicalLogContextKeys.cs" />
-    <Compile Include="MessageClient\FrameClient.cs" />
-    <Compile Include="MessageClient\IChainableTypedMessageClient.cs" />
-    <Compile Include="MessageClient\ITypedMessageClient.cs" />
-    <Compile Include="MessageClient\ProtocolHeaderClient.cs" />
-    <Compile Include="MessageHandlers\ContentBodyFrameHandler.cs" />
-    <Compile Include="MessageHandlers\ContentHeaderFrameHandler.cs" />
-    <Compile Include="MessageHandlers\HeartbeatFrameHandler.cs" />
-    <Compile Include="MessageHandlers\IHandle.cs" />
-    <Compile Include="MessageHandlers\MethodFrameHandler.cs" />
-    <Compile Include="MessageHandlers\ProtocolHeaderHandler.cs" />
-    <Compile Include="MessageRouters\ContentBodyFrameRouter.cs" />
-    <Compile Include="MessageRouters\ContentHeaderFrameRouter.cs" />
-    <Compile Include="MessageRouters\FrameRouter.cs" />
-    <Compile Include="MessageRouters\HeartbeatFrameRouter.cs" />
-    <Compile Include="MessageRouters\MethodFrameRouter.cs" />
-    <Compile Include="Messages\BaseFrame.cs" />
-    <Compile Include="Messages\ContentBodyFrame.cs" />
-    <Compile Include="Messages\ContentHeaderFrame.cs" />
-    <Compile Include="Messages\HeartbeatFrame.cs" />
-    <Compile Include="Messages\ProtocolHeaderFrame.cs" />
-    <Compile Include="Messages\MethodFrame.cs" />
-    <Compile Include="NetworkClient\BlockingStream.cs" />
-    <Compile Include="NetworkClient\INetworkClient.cs" />
-    <Compile Include="NetworkClient\INetworkClientFactory.cs" />
-    <Compile Include="NetworkClient\InternalRoutedNetworkClient.cs" />
-    <Compile Include="NetworkClient\InternalRoutedNetworkClientFactory.cs" />
-    <Compile Include="NetworkClient\NetworkClientFactory.cs" />
-    <Compile Include="NetworkClient\NetworkClientStream.cs" />
-    <Compile Include="NetworkClient\ReceivedEventArgs.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProtocolResolver.cs" />
-    <Compile Include="ProtocolVersion.cs" />
-    <Compile Include="Subscriptions\BaseSubscription.cs" />
-    <Compile Include="Subscriptions\HeartbeatSubscription.cs" />
-    <Compile Include="Subscriptions\IBaseSubscription.cs" />
-    <Compile Include="Subscriptions\IHeartbeatSubscription.cs" />
-    <Compile Include="Subscriptions\IMethodSubscription.cs" />
-    <Compile Include="Subscriptions\IProtocolHeaderSubscription.cs" />
-    <Compile Include="Subscriptions\IPublish.cs" />
-    <Compile Include="Subscriptions\IPublishHeartbeat.cs" />
-    <Compile Include="Subscriptions\IPublishMethod.cs" />
-    <Compile Include="Subscriptions\IPublishProtocolHeader.cs" />
-    <Compile Include="Subscriptions\MethodSubscription.cs" />
-    <Compile Include="Subscriptions\ProtocolHeaderSubscription.cs" />
-    <Compile Include="Subscriptions\Subscriber.cs" />
-    <Compile Include="Subscriptions\TypeSubscriber.cs" />
-    <Compile Include="Subscriptions\Unsubscriber.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Test.It.With.Amqp.Protocol.091\Test.It.With.Amqp.Protocol.091.csproj">
-      <Project>{868541AE-B137-47ED-ABC8-4CDA157A57B5}</Project>
-      <Name>Test.It.With.Amqp.Protocol.091</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Test.It.With.Amqp.ProtocolGenerator\Test.It.With.Amqp.ProtocolGenerator.csproj">
-      <Project>{F630B0CE-0E14-416C-B6C6-0239AABD6859}</Project>
-      <Name>Test.It.With.Amqp.ProtocolGenerator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj">
-      <Project>{672EC94A-A850-4018-A656-93A1EABC1DA0}</Project>
-      <Name>Test.It.With.Amqp.Protocol</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net47</TargetFramework>
+        <Authors>Fredrik Arvidsson</Authors>
+        <Company />
+        <Copyright>Copyright ©  2017</Copyright>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Test.It.With.Amqp.Protocol.091\Test.It.With.Amqp.Protocol.091.csproj" />
+        <ProjectReference Include="..\Test.It.With.Amqp.ProtocolGenerator\Test.It.With.Amqp.ProtocolGenerator.csproj" />
+        <ProjectReference Include="..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Log.It" version="1.0.1" />
+        <PackageReference Include="Newtonsoft.Json" version="10.0.2" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Properties\" />
+    </ItemGroup>
 </Project>
