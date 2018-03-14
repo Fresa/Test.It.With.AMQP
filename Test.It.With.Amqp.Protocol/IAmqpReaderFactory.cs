@@ -1,6 +1,6 @@
 namespace Test.It.With.Amqp.Protocol
 {
-    internal interface IAmqpReaderFactory
+    public interface IAmqpReaderFactory
     {
         IAmqpReader Create(byte[] data);
     }

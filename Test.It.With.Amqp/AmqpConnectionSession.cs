@@ -30,10 +30,9 @@ namespace Test.It.With.Amqp
         private readonly IExpectationStateMachine _expectationStateMachine;
         private readonly IFrameFactory _frameFactory;
 
-        public AmqpConnectionSession(ProtocolVersion protocolVersion)
+        public AmqpConnectionSession(IProtocolResolver protocolResolver)
         {
-            var protocolResolver = new ProtocolResolver(protocolVersion);
-            _expectationStateMachine = protocolResolver.ExpectationStateMachine;
+            _expectationStateMachine = protocolResolver.ExpectationStateMachineFactory.Create();
             _frameFactory = protocolResolver.FrameFactory;
             var protocol = protocolResolver.Protocol;
             var amqpReaderFactory = protocolResolver.AmqpReaderFactory;

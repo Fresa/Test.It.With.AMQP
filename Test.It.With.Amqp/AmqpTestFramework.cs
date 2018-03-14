@@ -17,9 +17,9 @@ namespace Test.It.With.Amqp
 
         private readonly ConcurrentDictionary<ConnectionId, AmqpConnectionSession> _sessions = new ConcurrentDictionary<ConnectionId, AmqpConnectionSession>();
 
-        public AmqpTestFramework(ProtocolVersion protocolVersion)
+        public AmqpTestFramework(IProtocolResolver protocolResolver)
         {
-            var networkClientFactory = new NetworkClientFactory(protocolVersion);
+            var networkClientFactory = new NetworkClientFactory(protocolResolver);
             networkClientFactory.OnNetworkClientCreated(session =>
             {
                 _disposables.Add(session);

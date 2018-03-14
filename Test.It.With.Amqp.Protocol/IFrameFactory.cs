@@ -1,6 +1,6 @@
 namespace Test.It.With.Amqp.Protocol
 {
-    internal interface IFrameFactory
+    public interface IFrameFactory
     {
         IFrame Create(short channel, IMethod method);
         IFrame Create(short channel, IHeartbeat heartbeat);

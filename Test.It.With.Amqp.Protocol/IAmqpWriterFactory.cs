@@ -2,7 +2,7 @@ using System.IO;
 
 namespace Test.It.With.Amqp.Protocol
 {
-    internal interface IAmqpWriterFactory
+    public interface IAmqpWriterFactory
     {
         IAmqpWriter Create(Stream stream);
     }

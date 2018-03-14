@@ -11,7 +11,6 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Test.It.With.Amqp.Protocol.091\Test.It.With.Amqp.Protocol.091.csproj" />
         <ProjectReference Include="..\Test.It.With.Amqp.ProtocolGenerator\Test.It.With.Amqp.ProtocolGenerator.csproj" />
         <ProjectReference Include="..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj" />
     </ItemGroup>

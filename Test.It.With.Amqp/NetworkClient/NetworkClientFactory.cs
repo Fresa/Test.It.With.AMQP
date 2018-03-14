@@ -1,15 +1,16 @@
 using System;
+using Test.It.With.Amqp.Protocol;
 
 namespace Test.It.With.Amqp.NetworkClient
 {
     internal class NetworkClientFactory : INetworkClientFactory
     {
-        private readonly ProtocolVersion _protocolVersion;
+        private readonly IProtocolResolver _protocolResolver;
         private Action<AmqpConnectionSession> _subscription;
 
-        public NetworkClientFactory(ProtocolVersion protocolVersion)
+        public NetworkClientFactory(IProtocolResolver protocolResolver)
         {
-            _protocolVersion = protocolVersion;
+            _protocolResolver = protocolResolver;
         }
 
         public void OnNetworkClientCreated(Action<AmqpConnectionSession> subscription)
@@ -19,7 +20,7 @@ namespace Test.It.With.Amqp.NetworkClient
 
         public INetworkClient Create()
         {
-            var framework  = new AmqpConnectionSession(_protocolVersion);
+            var framework  = new AmqpConnectionSession(_protocolResolver);
             _subscription(framework);
             return framework.Client;
         }

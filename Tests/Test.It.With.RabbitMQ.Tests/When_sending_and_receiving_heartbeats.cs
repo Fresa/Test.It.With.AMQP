@@ -6,6 +6,7 @@ using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.Amqp;
 using Test.It.With.Amqp.Messages;
+using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol._091;
 using Test.It.With.RabbitMQ.Tests.FrameworkExtensions;
 using Test.It.With.RabbitMQ.Tests.TestApplication;
@@ -31,7 +32,7 @@ namespace Test.It.With.RabbitMQ.Tests
 
             protected override void Given(IServiceContainer container)
             {
-                var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
+                var testServer = new AmqpTestFramework(Amqp091.ProtocolResolver);
 
                 testServer
                     .WithDefaultProtocolHeaderNegotiation()

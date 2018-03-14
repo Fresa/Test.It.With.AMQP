@@ -30,7 +30,7 @@ namespace Test.It.With.Amqp.Protocol.Expectations
             if (expectation is TExpectation == false)
             {
                 ThrowUnexpectedFrameException(
-                    $"Expected {expectation.Name}, got {typeof(TExpectation).FullName}.");
+                    $"Expected {expectation.GetType().Name}, got {typeof(TExpectation).Name}.");
             }
 
             return (TExpectation)expectation;

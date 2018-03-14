@@ -1,6 +1,6 @@
 ﻿namespace Test.It.With.Amqp.Protocol._091
 {
-    public class Amqp091FrameFactory : IFrameFactory
+    internal class Amqp091FrameFactory : IFrameFactory
     {
         public IFrame Create(short channel, IMethod method)
         {

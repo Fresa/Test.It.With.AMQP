@@ -4,6 +4,7 @@ using Should.Fluent;
 using Test.It.While.Hosting.Your.Windows.Service;
 using Test.It.With.Amqp;
 using Test.It.With.Amqp.Messages;
+using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol._091;
 using Test.It.With.RabbitMQ.Tests.Assertion;
 using Test.It.With.RabbitMQ.Tests.FrameworkExtensions;
@@ -47,7 +48,7 @@ namespace Test.It.With.RabbitMQ.Tests
                     }
                 }
 
-                var testServer = new AmqpTestFramework(ProtocolVersion.AMQP091);
+                var testServer = new AmqpTestFramework(Amqp091.ProtocolResolver);
                 testServer
                     .WithDefaultProtocolHeaderNegotiation()
                     .WithDefaultSecurityNegotiation(heartbeatInterval: TimeSpan.FromSeconds(5))
