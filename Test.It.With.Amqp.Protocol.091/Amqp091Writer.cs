@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Test.It.With.Amqp.Protocol._091
 {
-    public class Amqp091Writer : IByteWriter, IAmqpWriter
+    internal class Amqp091Writer : IByteWriter, IAmqpWriter
     {
         private readonly Stream _buffer;
         private readonly BitWriter _bitWriter;
@@ -196,7 +196,7 @@ namespace Test.It.With.Amqp.Protocol._091
             WriteLongInteger((int)value);
         }
 
-        public void WriteFieldValue(object value)
+        public virtual void WriteFieldValue(object value)
         {
             _bitWriter.Flush();
 
@@ -278,12 +278,6 @@ namespace Test.It.With.Amqp.Protocol._091
                     WriteByte((byte)'V');
                     return;
 
-                // todo: should be extracted to a rabbitmq / qpit specific amqp writer
-                // NOTE! RabbitMQ / Qpid special, https://www.rabbitmq.com/amqp-0-9-1-errata.html#section_3
-                case ByteArray convertedValue:
-                    WriteByte((byte)'x');
-                    WriteLongString(convertedValue.Bytes);
-                    return;
                 default:
                     throw new SyntaxErrorException($"Unknown field value type: {value.GetType()}");
             }

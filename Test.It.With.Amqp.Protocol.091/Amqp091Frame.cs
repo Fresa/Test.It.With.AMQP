@@ -11,7 +11,7 @@ namespace Test.It.With.Amqp.Protocol._091
             return new Amqp091Frame(reader);
         }
         
-        internal Amqp091Frame(int type, short channel, IMessage message)
+        internal Amqp091Frame(int type, short channel, IMessage message, IAmqpWriterFactory amqpWriterFactory)
         {
             Type = type;
             AssertValidFrameType(Type);
@@ -20,7 +20,7 @@ namespace Test.It.With.Amqp.Protocol._091
 
             using (var memoryStream = new MemoryStream())
             {
-                using (var writer = new Amqp091Writer(memoryStream))
+                using (var writer = amqpWriterFactory.Create(memoryStream))
                 {
                     message.WriteTo(writer);
                 }

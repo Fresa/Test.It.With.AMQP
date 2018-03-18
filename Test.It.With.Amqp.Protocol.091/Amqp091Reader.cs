@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Test.It.With.Amqp.Protocol._091
 {
-    public class Amqp091Reader : IByteReader, IAmqpReader
+    internal class Amqp091Reader : IByteReader, IAmqpReader
     {
         private readonly byte[] _buffer;
         private int _position;
@@ -18,7 +18,7 @@ namespace Test.It.With.Amqp.Protocol._091
 
             _bitReader = new BitReader(this);
         }
-
+        
         public void ThrowIfMoreData()
         {
             if (_position < Length)
@@ -172,7 +172,7 @@ namespace Test.It.With.Amqp.Protocol._091
             return _bitReader.Read();
         }
 
-        public object ReadFieldValue()
+        public virtual object ReadFieldValue()
         {
             _bitReader.Reset();
             var name = Convert.ToChar(ReadByte());
@@ -215,11 +215,6 @@ namespace Test.It.With.Amqp.Protocol._091
                     return ReadTable();
                 case 'V':
                     return null;
-
-                // todo: should be moved to an explicit RabbitMqReader
-                // NOTE! RabbitMQ / Qpid special, https://www.rabbitmq.com/amqp-0-9-1-errata.html#section_3
-                case 'x':
-                    return new ByteArray(ReadLongString());
 
                 default:
                     throw new SyntaxErrorException($"Unknown field: {name}");

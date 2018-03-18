@@ -17,7 +17,7 @@
         <ProjectReference Include="..\..\Test.It.With.Amqp.ProtocolGenerator\Test.It.With.Amqp.ProtocolGenerator.csproj" />
         <ProjectReference Include="..\..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj" />
         <ProjectReference Include="..\..\Test.It.With.Amqp\Test.It.With.Amqp.csproj" />
-        <ProjectReference Include="..\..\Test.It.With.RabbitMQ\Test.It.With.RabbitMQ.csproj" />
+        <ProjectReference Include="..\..\Test.It.With.RabbitMQ\Test.It.With.RabbitMQ.091.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="FakeItEasy" version="3.3.2" />

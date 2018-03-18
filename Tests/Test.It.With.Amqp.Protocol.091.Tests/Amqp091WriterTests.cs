@@ -905,29 +905,6 @@ namespace Test.It.With.Amqp.Protocol._091.Tests
         }
     }
 
-    public class When_writing_rabbitmq_qpid_array_field_value_via_amqp : XUnit2Specification
-    {
-        private Amqp091Writer _reader;
-        private readonly byte[] _buffer = new byte[10];
-
-        protected override void Given()
-        {
-            var stream = new MemoryStream(_buffer);
-            _reader = new Amqp091Writer(stream);
-        }
-
-        protected override void When()
-        {
-            _reader.WriteFieldValue(new ByteArray(new byte[] { 0, 6, 1, 2, 3 }));
-        }
-
-        [Fact]
-        public void It_should_parse_correctly()
-        {
-            _buffer.Should().Equal(new byte[] { (byte)'x', 0, 0, 0, 5, 0, 6, 1, 2, 3 });
-        }
-    }
-
     public class When_writing_one_full_property_flag_set : XUnit2Specification
     {
         private bool[] _array;

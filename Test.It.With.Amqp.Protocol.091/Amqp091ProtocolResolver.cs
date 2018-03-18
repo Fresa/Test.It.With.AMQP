@@ -9,9 +9,9 @@ namespace Test.It.With.Amqp.Protocol
         {
             Protocol = new Amq091Protocol();
             ExpectationStateMachineFactory = new Amqp091ExpectationStateMachineFactory();
-            FrameFactory = new Amqp091FrameFactory();
             AmqpReaderFactory = new Amqp091ReaderFactory();
             AmqpWriterFactory = new Amqp091WriterFactory();
+            FrameFactory = new Amqp091FrameFactory(AmqpWriterFactory);
         }
 
         public static IProtocolResolver Create()

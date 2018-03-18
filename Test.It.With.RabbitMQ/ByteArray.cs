@@ -1,4 +1,4 @@
-namespace Test.It.With.Amqp.Protocol
+namespace Test.It.With.RabbitMQ
 {
     internal class ByteArray
     {

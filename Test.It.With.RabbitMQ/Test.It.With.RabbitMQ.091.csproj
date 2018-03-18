@@ -13,6 +13,8 @@
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\External\rabbitmq-dotnet-client\projects\client\RabbitMQ.Client\RabbitMQ.Client.csproj" />
+        <ProjectReference Include="..\Test.It.With.Amqp.Protocol.091\Test.It.With.Amqp.Protocol.091.csproj" />
+        <ProjectReference Include="..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj" />
         <ProjectReference Include="..\Test.It.With.Amqp\Test.It.With.Amqp.csproj" />
     </ItemGroup>
 </Project>
