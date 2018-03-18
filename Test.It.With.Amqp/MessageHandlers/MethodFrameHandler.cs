@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Reflection;
 using Log.It;
 using Test.It.With.Amqp.Extensions;
+using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Extensions;
@@ -12,8 +14,16 @@ namespace Test.It.With.Amqp.MessageHandlers
 {
     internal class MethodFrameHandler : IHandle<MethodFrame>, IPublishMethod
     {
+        private readonly bool _automaticReplyOnMissingSubscription;
+        private readonly ISender<MethodFrame> _sender;
         private readonly ILogger _logger = LogFactory.Create<MethodFrameHandler>();
         private readonly ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>> _methodSubscriptions = new ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>>();
+
+        public MethodFrameHandler(bool automaticReplyOnMissingSubscription, ISender<MethodFrame> sender)
+        {
+            _automaticReplyOnMissingSubscription = automaticReplyOnMissingSubscription;
+            _sender = sender;
+        }
 
         public IDisposable Subscribe<TMethod>(Action<MethodFrame<TMethod>> subscription) 
             where TMethod : class, IMethod
@@ -42,6 +52,8 @@ namespace Test.It.With.Amqp.MessageHandlers
 
         public void Handle(MethodFrame methodFrame)
         {
+            _logger.Debug($"Received method {methodFrame.Message.GetType().GetPrettyFullName()}. {methodFrame.Message.Serialize()}");
+
             var subscriptions = _methodSubscriptions
                 .Where(pair => pair.Value.Id == methodFrame.Message.GetType())
                 .Select(pair => pair.Value.Subscription)
@@ -49,11 +61,16 @@ namespace Test.It.With.Amqp.MessageHandlers
 
             if (subscriptions.IsEmpty())
             {
+                if (_automaticReplyOnMissingSubscription && methodFrame.Message.Responses().Any())
+                {
+                    _sender.Send(new MethodFrame(methodFrame.Channel, (IMethod)Activator.CreateInstance(methodFrame.Message.Responses().First(), BindingFlags.CreateInstance)));
+                    return;
+                }
+
                 throw new InvalidOperationException(
                     $"There are no subscriptions on {methodFrame.Message.GetType().FullName}.");
             }
 
-            _logger.Debug($"Received method {methodFrame.Message.GetType().GetPrettyFullName()}. {methodFrame.Message.Serialize()}");
             foreach (var subscription in subscriptions)
             {
                 subscription(new MethodFrame<IMethod>(methodFrame.Channel, methodFrame.Message));

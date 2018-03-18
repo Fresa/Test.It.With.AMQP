@@ -2,10 +2,8 @@ using System;
 
 namespace Test.It.With.Amqp.MessageClient
 {    
-    public interface ITypedMessageClient<out TReceive, in TSend>
+    internal interface ITypedMessageClient<out TReceive, in TSend> : ISender<TSend>, IReceiver<TReceive>
     {
-        event Action<TReceive> Received;
         event Action Disconnected;
-        void Send(TSend message);
     }
 }

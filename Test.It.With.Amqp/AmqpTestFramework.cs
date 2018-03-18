@@ -7,8 +7,24 @@ using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp
 {
+    public interface IConfiguration
+    {
+        bool AutomaticReply { get; }
+    }
+
+    internal class DefaultConfiguration : IConfiguration
+    {
+        public DefaultConfiguration(bool automaticReply = false)
+        {
+            AutomaticReply = automaticReply;
+        }
+
+        public bool AutomaticReply { get; }
+    }
+
     public class AmqpTestFramework : IDisposable
     {
+        private readonly IConfiguration _configuration = new DefaultConfiguration();
         private readonly ConcurrentBag<IDisposable> _disposables = new ConcurrentBag<IDisposable>();
 
         private readonly ConcurrentDictionary<Type, IMethodSubscription> _methodSubscriptionCollections = new ConcurrentDictionary<Type, IMethodSubscription>();
@@ -19,7 +35,7 @@ namespace Test.It.With.Amqp
 
         public AmqpTestFramework(IProtocolResolver protocolResolver)
         {
-            var networkClientFactory = new NetworkClientFactory(protocolResolver);
+            var networkClientFactory = new NetworkClientFactory(protocolResolver, _configuration);
             networkClientFactory.OnNetworkClientCreated(session =>
             {
                 _disposables.Add(session);
@@ -55,6 +71,11 @@ namespace Test.It.With.Amqp
                 }
             });
             ConnectionFactory = networkClientFactory;
+        }
+
+        public AmqpTestFramework(IProtocolResolver protocolResolver, IConfiguration configuration) : this(protocolResolver)
+        {
+            _configuration = configuration;
         }
 
         public INetworkClientFactory ConnectionFactory { get; }
