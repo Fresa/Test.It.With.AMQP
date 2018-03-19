@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using Should.Fluent;
+using Test.It.With.XUnit;
+using Xunit;
 
 namespace Test.It.With.RabbitMQ.Tests
 {

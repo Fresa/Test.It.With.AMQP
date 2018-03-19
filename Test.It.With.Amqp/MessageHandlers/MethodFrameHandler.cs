@@ -63,7 +63,7 @@ namespace Test.It.With.Amqp.MessageHandlers
             {
                 if (_automaticReplyOnMissingSubscription && methodFrame.Message.Responses().Any())
                 {
-                    _sender.Send(new MethodFrame(methodFrame.Channel, (IMethod)Activator.CreateInstance(methodFrame.Message.Responses().First(), BindingFlags.CreateInstance)));
+                    _sender.Send(new MethodFrame(methodFrame.Channel, (IMethod)Activator.CreateInstance(methodFrame.Message.Responses().First())));
                     return;
                 }
 

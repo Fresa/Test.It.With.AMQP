@@ -1,8 +1,12 @@
 ﻿using System;
+using FakeItEasy;
+using Should.Fluent;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.MessageHandlers;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
+using Test.It.With.XUnit;
+using Xunit;
 
 namespace Test.It.With.Amqp.Tests.MessageHandlers
 {
@@ -18,7 +22,7 @@ namespace Test.It.With.Amqp.Tests.MessageHandlers
             protected override void Given()
             {
                 var method = A.Fake<IMethod>();
-                A.CallTo(() => method.Responses.Returns(new[] {typeof(RespondingMethod)}));
+                A.CallTo(() => method.Responses()).Returns(new[] {typeof(RespondingMethod)});
                 _methodFrame = new MethodFrame(0, method);
                 _sender = A.Fake<ISender<MethodFrame>>();
                 A.CallTo(() => _sender.Send(A<MethodFrame>.Ignored)).Invokes((MethodFrame methodFrame) => _methodFrameSent = methodFrame);
@@ -33,17 +37,17 @@ namespace Test.It.With.Amqp.Tests.MessageHandlers
             [Fact]
             public void It_should_send_a_method_frame_on_same_channel_as_the_receiving_frame()
             {
-                _methodFrameSent.Channel.Should().Equal(0);
+                _methodFrameSent.Channel.Should().Equal((short)0);
             }
 
             [Fact]
             public void It_should_send_a_default_instance_of_the_first_response_method()
             {
-                _methodFrameSent.Message.GetType().Should().Be.OfType<RespondingMethod>();
+                _methodFrameSent.Message.Should().Be.OfType<RespondingMethod>();
             }
         }
 
-        internal class RespondingMethod : IMethod
+        public class RespondingMethod : IMethod
         {
             public bool SentOnValidChannel(int channel)
             {
