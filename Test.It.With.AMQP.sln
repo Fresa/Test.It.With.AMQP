@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.It.With.Amqp.Protocol.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.It.With.Amqp.Protocol.091.Tests", "Tests\Test.It.With.Amqp.Protocol.091.Tests\Test.It.With.Amqp.Protocol.091.Tests.csproj", "{FD386404-1DE7-44E1-8CC4-9CE2037CB31F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.RabbitMQ.Integration.Tests", "Tests\Test.It.With.RabbitMQ.Integration.Tests\Test.It.With.RabbitMQ.Integration.Tests.csproj", "{2CF43A3D-E5EC-4A87-B2CB-E2DF3B980A15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,12 @@ Global
 		{FD386404-1DE7-44E1-8CC4-9CE2037CB31F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD386404-1DE7-44E1-8CC4-9CE2037CB31F}.SignedRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{FD386404-1DE7-44E1-8CC4-9CE2037CB31F}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
+		{2CF43A3D-E5EC-4A87-B2CB-E2DF3B980A15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CF43A3D-E5EC-4A87-B2CB-E2DF3B980A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CF43A3D-E5EC-4A87-B2CB-E2DF3B980A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CF43A3D-E5EC-4A87-B2CB-E2DF3B980A15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CF43A3D-E5EC-4A87-B2CB-E2DF3B980A15}.SignedRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{2CF43A3D-E5EC-4A87-B2CB-E2DF3B980A15}.SignedRelease|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +109,7 @@ Global
 		{7AA8B5EB-D671-4D79-A013-0A055626A901} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
 		{D289C3E5-4737-4CB5-BF3B-D48C89B1B6A0} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
 		{FD386404-1DE7-44E1-8CC4-9CE2037CB31F} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
+		{2CF43A3D-E5EC-4A87-B2CB-E2DF3B980A15} = {4AA9FA82-1CF5-4017-8D0B-588B446CA315}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F86A6A97-6E21-4052-9893-60EAE07F3E79}
