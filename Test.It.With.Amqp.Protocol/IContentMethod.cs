@@ -6,7 +6,8 @@
         IContentMethod AddContentBody(IContentBody contentBody);
     }
 
-    public interface IContentMethod<out THeader> : IContentMethod
+    public interface IContentMethod<out THeader> : IContentMethod 
+        where THeader : IContentHeader
     {
         byte[] ContentBody { get; }
         IContentBody[] ContentBodyFragments { get; }
