@@ -894,4 +894,29 @@ namespace Test.It.With.Amqp.Protocol._091.Tests
                 .Should().Equal(new[] { false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false });
         }
     }
+
+    public class When_cloning_the_reader : XUnit2Specification
+    {
+        private Amqp091Reader _reader;
+        private byte[] _readData;
+
+        protected override void Given()
+        {
+            _reader = new Amqp091Reader(new byte[] { 0, 3, 128, 0 });
+        }
+
+        protected override void When()
+        {
+            _reader.ReadByte();
+            var clonedReader = _reader.Clone();
+            _readData = _reader.ReadBytes(clonedReader.Length);
+        }
+
+        [Fact]
+        public void It_should_have_cloned_the_data_not_read()
+        {
+            _readData
+                .Should().Equal(new byte[] { 3, 128, 0 });
+        }
+    }
 }

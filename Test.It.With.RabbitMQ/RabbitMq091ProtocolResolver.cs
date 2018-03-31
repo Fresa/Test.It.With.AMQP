@@ -12,6 +12,7 @@ namespace Test.It.With.RabbitMQ
             _amqpResolver = Amqp091ProtocolResolver.Create();
             AmqpReaderFactory = new RabbitMq091ReaderFactory();
             AmqpWriterFactory = new RabbitMq091WriterFactory();
+            Protocol = new RabbitMq091ProtocolGeneratorDecorator(_amqpResolver.Protocol);
         }
 
         public static IProtocolResolver Create()
@@ -19,7 +20,7 @@ namespace Test.It.With.RabbitMQ
             return new RabbitMq091ProtocolResolver();
         }
 
-        public IProtocol Protocol => _amqpResolver.Protocol;
+        public IProtocol Protocol { get; }
 
         public IExpectationStateMachineFactory ExpectationStateMachineFactory =>
             _amqpResolver.ExpectationStateMachineFactory;

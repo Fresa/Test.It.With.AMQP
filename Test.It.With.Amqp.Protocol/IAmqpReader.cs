@@ -5,6 +5,7 @@ namespace Test.It.With.Amqp.Protocol
 {
     public interface IAmqpReader
     {
+        IAmqpReader Clone();
         void ThrowIfMoreData();
         int Length { get; }
         ushort ReadShortUnsignedInteger();

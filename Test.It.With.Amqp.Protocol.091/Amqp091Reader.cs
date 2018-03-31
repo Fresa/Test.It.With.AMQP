@@ -18,7 +18,12 @@ namespace Test.It.With.Amqp.Protocol._091
 
             _bitReader = new BitReader(this);
         }
-        
+
+        public IAmqpReader Clone()
+        {
+            return new Amqp091Reader(_buffer.Skip(_position).ToArray());
+        }
+
         public void ThrowIfMoreData()
         {
             if (_position < Length)
