@@ -1,4 +1,5 @@
 ﻿using Should.Fluent;
+using Test.It.With.RabbitMQ._091;
 using Test.It.With.XUnit;
 using Xunit;
 

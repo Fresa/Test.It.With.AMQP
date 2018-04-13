@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Test.It.With.Amqp.Protocol;
-using Test.It.With.Amqp.Protocol._091;
 
-namespace Test.It.With.RabbitMQ
+namespace Test.It.With.RabbitMQ._091
 {
     internal class RabbitMq091ProtocolExtensions
     {
@@ -39,7 +38,7 @@ namespace Test.It.With.RabbitMQ
     {
         public const int ClassId = 85;
 
-        public class Select : IMethod, IRespond<SelectOk>
+        public class Select : IRespond<SelectOk>, IClientMethod
         {
             internal const int MethodId = 10;
             public int ProtocolClassId { get; } = ClassId;
@@ -73,7 +72,7 @@ namespace Test.It.With.RabbitMQ
             }
         }
 
-        public class SelectOk : IMethod
+        public class SelectOk : IServerMethod, INonContentMethod
         {
             internal const int MethodId = 11;
             public int ProtocolClassId { get; } = ClassId;
@@ -90,6 +89,8 @@ namespace Test.It.With.RabbitMQ
 
             public void WriteTo(IAmqpWriter writer)
             {
+                writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+                writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
             }
 
             public Type[] Responses()
@@ -97,5 +98,10 @@ namespace Test.It.With.RabbitMQ
                 return new Type[0];
             }
         }
+    }
+
+    public class Basic
+    {
+        public class Ack : Test.It.With.Amqp.Protocol._091.Basic.Ack, IServerMethod { }
     }
 }

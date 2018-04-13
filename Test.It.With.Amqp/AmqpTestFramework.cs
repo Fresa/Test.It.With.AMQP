@@ -7,21 +7,6 @@ using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp
 {
-    public interface IConfiguration
-    {
-        bool AutomaticReply { get; }
-    }
-
-    internal class DefaultConfiguration : IConfiguration
-    {
-        public DefaultConfiguration(bool automaticReply = false)
-        {
-            AutomaticReply = automaticReply;
-        }
-
-        public bool AutomaticReply { get; }
-    }
-
     public class AmqpTestFramework : IDisposable
     {
         private readonly IConfiguration _configuration = new DefaultConfiguration();

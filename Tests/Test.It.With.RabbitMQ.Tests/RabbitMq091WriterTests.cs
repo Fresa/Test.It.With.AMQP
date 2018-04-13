@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using Should.Fluent;
+using Test.It.With.RabbitMQ._091;
 using Test.It.With.XUnit;
 using Xunit;
 

@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using SimpleInjector;
 
-namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication
+namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication.Specifications
 {
-    public class MessageConsumingApplicationSpecification : IApplication
+    public class MessageSendingApplication : IApplication
     {
         private SimpleInjectorDependencyResolver _configurer;
         private RabbitMqLogEventListener _rabbitmqLogger;
-        private readonly ConcurrentBag<IMessageConsumer> _messageConsumers = new ConcurrentBag<IMessageConsumer>();
 
         public void Configure(Action<SimpleInjectorDependencyResolver> reconfigurer)
         {
@@ -20,8 +18,8 @@ namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication
             var container = new Container();
             container.RegisterSingleton<IConnectionFactory, ConnectionFactory>();
             container.RegisterSingleton<ISerializer>(() => new NewtonsoftSerializer(Encoding.UTF8));
-            container.RegisterSingleton<IMessageConsumerFactory, RabbitMqMessageConsumerFactory>();
             container.RegisterSingleton<IMessagePublisherFactory, RabbitMqMessagePublisherFactory>();
+            container.RegisterSingleton<IRabbitMqPublisherSettings, DefaultRabbitMqPublisherSettings>();
 
             _configurer = new SimpleInjectorDependencyResolver(container);
             reconfigurer(_configurer);
@@ -30,26 +28,18 @@ namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication
 
         public void Start(params string[] args)
         {
-            var threads = int.Parse(args.First());
-            var messageConsumerFactory = _configurer.Resolve<IMessageConsumerFactory>();
+            var messagesToPublish = int.Parse(args.First());
             var messagePublisherFactory = _configurer.Resolve<IMessagePublisherFactory>();
 
             Task.Run(() =>
             {
-                Parallel.For(0, threads, i =>
+                Parallel.For(0, messagesToPublish, i =>
                 {
-                    _messageConsumers.Add(messageConsumerFactory.Consume<TestMessage>(
-                        "myExchange" + i % 2,
-                        "queue" + i % 2, 
-                        "routing" + i % 2,
-                        message =>
-                        {
-                            using (var messagePublisher = messagePublisherFactory.Create("myExchange" + i % 2))
-                            {
-                                messagePublisher.Publish("myMessage",
-                                    new TestMessage(i + ": " + message.Message));
-                            }
-                        }));
+                    using (var messagePublisher = messagePublisherFactory.Create("myExchange" + i % 2))
+                    {
+                        messagePublisher.Publish("myMessage",
+                            new TestMessage("Testing sending a message using RabbitMQ"));
+                    }
                 });
             }).ContinueWith(task =>
             {
@@ -59,10 +49,6 @@ namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication
 
         public void Stop()
         {
-            foreach (var messageConsumer in _messageConsumers)
-            {
-                messageConsumer.Dispose();
-            }
             _configurer.Dispose();
             _rabbitmqLogger.Dispose();
         }

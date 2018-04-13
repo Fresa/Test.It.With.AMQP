@@ -10,7 +10,9 @@ using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol._091;
 using Test.It.With.RabbitMQ.Integration.Tests.FrameworkExtensions;
 using Test.It.With.RabbitMQ.Integration.Tests.TestApplication;
+using Test.It.With.RabbitMQ.Integration.Tests.TestApplication.Specifications;
 using Test.It.With.RabbitMQ.Integration.Tests.XUnit;
+using Test.It.With.RabbitMQ._091;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +20,7 @@ namespace Test.It.With.RabbitMQ.Integration.Tests
 {
     namespace Given_a_client_application_sending_and_receiving_heartbeats_over_rabbitmq
     {
-        public class When_sending_and_receiving_heartbeats : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<TestApplicationBuilder<HeartbeatApplicationSpecification>>>
+        public class When_sending_and_receiving_heartbeats : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<TestApplicationBuilder<HeartbeatApplication>>>
         {
             private readonly ConcurrentBag<HeartbeatFrame<Heartbeat>> _heartbeats = new ConcurrentBag<HeartbeatFrame<Heartbeat>>();
             private CancellationTokenSource _heartbeatCancelationToken = new CancellationTokenSource();

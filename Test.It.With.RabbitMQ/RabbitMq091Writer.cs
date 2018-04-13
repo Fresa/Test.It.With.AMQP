@@ -1,8 +1,7 @@
 using System.IO;
-using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol._091;
 
-namespace Test.It.With.RabbitMQ
+namespace Test.It.With.RabbitMQ._091
 {
     internal class RabbitMq091Writer : Amqp091Writer
     {

@@ -7,7 +7,7 @@ using RabbitMQ.Client.Impl;
 using RabbitMQ.Util;
 using Test.It.With.Amqp.NetworkClient;
 
-namespace Test.It.With.RabbitMQ
+namespace Test.It.With.RabbitMQ._091
 {
     public class TestFrameHandler : IFrameHandler
     {

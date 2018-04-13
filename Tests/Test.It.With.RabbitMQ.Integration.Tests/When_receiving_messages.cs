@@ -12,16 +12,19 @@ using Test.It.With.Amqp.Protocol._091;
 using Test.It.With.RabbitMQ.Integration.Tests.Assertion;
 using Test.It.With.RabbitMQ.Integration.Tests.FrameworkExtensions;
 using Test.It.With.RabbitMQ.Integration.Tests.TestApplication;
+using Test.It.With.RabbitMQ.Integration.Tests.TestApplication.Specifications;
 using Test.It.With.RabbitMQ.Integration.Tests.XUnit;
+using Test.It.With.RabbitMQ._091;
 using Xunit;
 using Xunit.Abstractions;
+using Basic = Test.It.With.Amqp.Protocol._091.Basic;
 
 namespace Test.It.With.RabbitMQ.Integration.Tests
 {
     namespace Given_a_client_application_receiving_messages_over_rabbitmq
     {
         public class When_consuming_messages : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<
-            TestApplicationBuilder<MessageConsumingApplicationSpecification>>>
+            TestApplicationBuilder<MessageConsumingApplication>>>
         {
             private readonly ConcurrentBag<MethodFrame<Exchange.Declare>> _exchangesDeclared = new ConcurrentBag<MethodFrame<Exchange.Declare>>();
             private readonly ConcurrentBag<MethodFrame<Queue.Declare>> _queuesDeclared = new ConcurrentBag<MethodFrame<Queue.Declare>>();

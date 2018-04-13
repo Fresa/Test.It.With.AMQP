@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using SimpleInjector;
 
-namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication
+namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication.Specifications
 {
-    public class MessageSendingApplicationSpecification : IApplication
+    public class ConfirmSelectApplication : IApplication
     {
         private SimpleInjectorDependencyResolver _configurer;
         private RabbitMqLogEventListener _rabbitmqLogger;
@@ -19,6 +18,10 @@ namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication
             container.RegisterSingleton<IConnectionFactory, ConnectionFactory>();
             container.RegisterSingleton<ISerializer>(() => new NewtonsoftSerializer(Encoding.UTF8));
             container.RegisterSingleton<IMessagePublisherFactory, RabbitMqMessagePublisherFactory>();
+            container.RegisterSingleton<IRabbitMqPublisherSettings>(() => new DefaultRabbitMqPublisherSettings
+            {
+                EnablePublisherConfirms = true
+            });
 
             _configurer = new SimpleInjectorDependencyResolver(container);
             reconfigurer(_configurer);
@@ -27,19 +30,32 @@ namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication
 
         public void Start(params string[] args)
         {
-            var messagesToPublish = int.Parse(args.First());
             var messagePublisherFactory = _configurer.Resolve<IMessagePublisherFactory>();
 
             Task.Run(() =>
             {
-                Parallel.For(0, messagesToPublish, i =>
+                var publishConfirmTimeOut = TimeSpan.FromSeconds(3);
+                using (var messagePublisher = messagePublisherFactory.Create("myExchange0"))
                 {
-                    using (var messagePublisher = messagePublisherFactory.Create("myExchange" + i % 2))
+                    var confirmed = messagePublisher
+                        .Publish("myMessage",
+                            new TestMessage("Testing sending a message using RabbitMQ"))
+                        .WaitForConfirm(publishConfirmTimeOut, out var timedOut);
+
+                    if (confirmed == false)
                     {
-                        messagePublisher.Publish("myMessage",
-                            new TestMessage("Testing sending a message using RabbitMQ"));
+                        throw new InvalidOperationException("Failed waiting for publish confirm.");
                     }
-                });
+
+                    if (timedOut)
+                    {
+                        throw new TimeoutException($"Timed out waiting for confirms. Waited for {publishConfirmTimeOut.TotalSeconds}s.");
+                    }
+
+                    messagePublisher
+                        .Publish("messageConfirmed",
+                            new TestMessage("Test message has been confirmed"));
+                }
             }).ContinueWith(task =>
             {
                 OnUnhandledException?.Invoke(task.Exception);

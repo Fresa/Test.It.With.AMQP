@@ -2,8 +2,8 @@
 
 namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication
 {
-    public interface IMessagePublisher : IDisposable
+    internal interface IMessagePublisher : IDisposable
     {
-        string Publish<TMessage>(string key, TMessage message);
+        PublishResult Publish<TMessage>(string key, TMessage message);
     }
 }

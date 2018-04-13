@@ -1,7 +1,7 @@
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Expectations;
 
-namespace Test.It.With.RabbitMQ
+namespace Test.It.With.RabbitMQ._091
 {
     internal class RabbitMq091ProtocolResolver : IProtocolResolver
     {

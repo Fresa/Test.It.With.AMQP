@@ -17,7 +17,7 @@ namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication
             _serializer = serializer;
         }
 
-        public string Publish<TMessage>(string key, TMessage message)
+        public PublishResult Publish<TMessage>(string key, TMessage message)
         {
             var correlationId = Guid.NewGuid().ToString();
             _model.BasicPublish(_exchange, key, new BasicProperties
@@ -25,7 +25,7 @@ namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication
                 Type = message.GetType().FullName,
                 CorrelationId = correlationId
             }, _serializer.Serialize(message));
-            return correlationId;
+            return new PublishResult(_model, correlationId);
         }
 
         public void Dispose()

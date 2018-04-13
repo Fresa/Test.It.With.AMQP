@@ -1,4 +1,4 @@
-namespace Test.It.With.RabbitMQ
+namespace Test.It.With.RabbitMQ._091
 {
     internal class ByteArray
     {

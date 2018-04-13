@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using RabbitMQ.Client;
 using SimpleInjector;
 
-namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication
+namespace Test.It.With.RabbitMQ.Integration.Tests.TestApplication.Specifications
 {
-    public class HeartbeatApplicationSpecification : IApplication
+    public class HeartbeatApplication : IApplication
     {
         private SimpleInjectorDependencyResolver _configurer;
         private IConnection _connection;
