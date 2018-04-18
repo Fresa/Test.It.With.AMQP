@@ -18,5 +18,6 @@
         <PackageReference Include="Test.It" version="1.2.0" />
         <PackageReference Include="Test.It.With.XUnit" version="1.0.1" />
         <PackageReference Include="xunit" version="2.3.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     </ItemGroup>
 </Project>
