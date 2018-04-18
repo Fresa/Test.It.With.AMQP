@@ -27,7 +27,7 @@
         <PackageReference Include="Test.It" version="1.2.0" />
         <PackageReference Include="Test.It.While.Hosting.Your.Windows.Service" Version="2.1.3" />
         <PackageReference Include="Test.It.With.XUnit" version="1.0.1" />
-        <PackageReference Include="Log.It" version="1.0.1" />
+        <PackageReference Include="Log.It" version="1.0.6" />
         <PackageReference Include="Log.It.With.NLog" version="1.0.3" />
         <PackageReference Include="xunit" version="2.3.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />

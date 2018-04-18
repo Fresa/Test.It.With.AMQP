@@ -11,7 +11,7 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="FakeItEasy" version="3.3.2" />
-        <PackageReference Include="Log.It" Version="1.0.1" />
+        <PackageReference Include="Log.It" Version="1.0.6" />
         <PackageReference Include="Log.It.With.NLog" Version="1.0.3" />
         <PackageReference Include="Owin" version="1.0" />
         <PackageReference Include="ShouldFluent" version="1.1.19" />

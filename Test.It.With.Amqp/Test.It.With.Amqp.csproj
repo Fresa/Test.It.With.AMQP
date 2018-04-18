@@ -15,7 +15,7 @@
         <ProjectReference Include="..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Log.It" version="1.0.1" />
+        <PackageReference Include="Log.It" version="1.0.6" />
         <PackageReference Include="Newtonsoft.Json" version="10.0.2" />
     </ItemGroup>
     <ItemGroup>
