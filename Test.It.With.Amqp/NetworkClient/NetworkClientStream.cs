@@ -23,6 +23,8 @@ namespace Test.It.With.Amqp.NetworkClient
 
         public override void Flush()
         {
+            if (_bufferedWriteStream.Length == 0) return;
+
             var buffer = new byte[_bufferedWriteStream.Length];
             _bufferedWriteStream.Position = 0;
             var bytesRead = _bufferedWriteStream.Read(buffer, 0, buffer.Length);

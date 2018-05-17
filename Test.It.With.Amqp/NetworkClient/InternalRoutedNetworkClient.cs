@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Test.It.With.Amqp.NetworkClient
 {
@@ -12,7 +13,10 @@ namespace Test.It.With.Amqp.NetworkClient
 
         public void Send(byte[] buffer, int offset, int count)
         {
-            SendReceived?.Invoke(this, new ReceivedEventArgs(buffer, offset, count));
+            if (buffer.Any())
+            {
+                SendReceived?.Invoke(this, new ReceivedEventArgs(buffer, offset, count));
+            }
         }
 
         public void Dispose()
@@ -32,7 +36,10 @@ namespace Test.It.With.Amqp.NetworkClient
 
         public void TriggerReceive(object sender, ReceivedEventArgs e)
         {
-            BufferReceived?.Invoke(sender, e);
+            if (e.Buffer.Any())
+            {
+                BufferReceived?.Invoke(sender, e);
+            }
         }
     }
 }
