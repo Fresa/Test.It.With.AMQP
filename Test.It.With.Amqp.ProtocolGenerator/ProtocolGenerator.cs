@@ -1932,10 +1932,10 @@ namespace Test.It.With.Amqp.Protocol._091
 
 			public void WriteTo(IAmqpWriter writer)
 			{
-                writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
-                writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolClassId);
+				writer.WriteShortUnsignedInteger((ushort)ProtocolMethodId);
 
-                writer.WriteLongString(_response.Value);
+				writer.WriteLongString(_response.Value);
 			}
 		}
 

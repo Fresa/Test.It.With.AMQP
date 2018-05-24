@@ -6,10 +6,6 @@
         <Copyright>Copyright ©  2017</Copyright>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\Test.It.With.Amqp.Protocol.091\Test.It.With.Amqp.Protocol.091.csproj" />
-        <ProjectReference Include="..\..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj" />
-    </ItemGroup>
-    <ItemGroup>
         <PackageReference Include="Owin" version="1.0" />
         <PackageReference Include="ShouldFluent" version="1.1.19" />
         <PackageReference Include="Test.It" version="1.2.0" />

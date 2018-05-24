@@ -9,10 +9,9 @@
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Xml" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\Test.It.With.Amqp.ProtocolGenerator\Test.It.With.Amqp.ProtocolGenerator.csproj" />
-        <ProjectReference Include="..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj" />
+        <Reference Include="Test.It.With.Amqp.Protocol">
+          <HintPath>..\..\Test.It.With.AMQP.Protocol\Test.It.With.Amqp.Protocol\bin\Debug\net47\Test.It.With.Amqp.Protocol.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Log.It" version="1.0.6" />

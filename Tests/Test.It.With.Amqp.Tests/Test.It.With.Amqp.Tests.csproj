@@ -6,7 +6,6 @@
         <Copyright>Copyright ©  2017</Copyright>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj" />
         <ProjectReference Include="..\..\Test.It.With.Amqp\Test.It.With.Amqp.csproj" />
     </ItemGroup>
     <ItemGroup>
@@ -19,5 +18,10 @@
         <PackageReference Include="Test.It.With.XUnit" version="1.0.1" />
         <PackageReference Include="xunit" version="2.3.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    </ItemGroup>
+    <ItemGroup>
+      <Reference Include="Test.It.With.Amqp.Protocol">
+        <HintPath>..\..\..\Test.It.With.AMQP.Protocol\Test.It.With.Amqp.Protocol\bin\Debug\net47\Test.It.With.Amqp.Protocol.dll</HintPath>
+      </Reference>
     </ItemGroup>
 </Project>

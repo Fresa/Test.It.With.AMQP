@@ -12,18 +12,25 @@
         <LangVersion>7.1</LangVersion>
     </PropertyGroup>
     <ItemGroup>
-        <Content Include="ProtocolGenerator.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ProtocolGenerator.cs</LastGenOutput>
-        </Content>
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj" />
-    </ItemGroup>
-    <ItemGroup>
         <Folder Include="amqp0-9-1\" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Validation" version="2.4.15" />
+    </ItemGroup>
+    <ItemGroup>
+      <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="ProtocolGenerator.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ProtocolGenerator.tt</DependentUpon>
+      </Compile>
+    </ItemGroup>
+    <ItemGroup>
+      <None Update="ProtocolGenerator.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>ProtocolGenerator.cs</LastGenOutput>
+      </None>
     </ItemGroup>
 </Project>

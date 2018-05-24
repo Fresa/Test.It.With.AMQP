@@ -10,6 +10,5 @@
     </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Test.It.With.Amqp.ProtocolGenerator\Test.It.With.Amqp.ProtocolGenerator.csproj" />
-    <ProjectReference Include="..\Test.It.With.Amqp.Protocol\Test.It.With.Amqp.Protocol.csproj" />
   </ItemGroup>
 </Project>
