@@ -2,7 +2,7 @@
 
 namespace Test.It.With.Amqp.Messages
 {
-    public class ContentBodyFrame : BaseFrame<IContentBody>
+    internal class ContentBodyFrame : BaseFrame<IContentBody>
     {
         public ContentBodyFrame(short channel, IContentBody contentBody)
         {

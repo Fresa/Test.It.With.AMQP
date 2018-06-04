@@ -39,16 +39,10 @@ namespace Test.It.With.Amqp.MessageClient
                     Next.Invoke(args);
                 }
             };
-
-            networkClient.Disconnected += (sender, args) =>
-            {
-                Disconnected?.Invoke();
-            };
         }
 
         public event Action<ProtocolHeaderFrame> Received;
         public event Action<ReceivedEventArgs> Next;
-        public event Action Disconnected;
 
         public void Send(IFrame frame)
         {

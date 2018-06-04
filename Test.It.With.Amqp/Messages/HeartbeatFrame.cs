@@ -2,7 +2,7 @@
 
 namespace Test.It.With.Amqp.Messages
 {
-    public class HeartbeatFrame : BaseFrame<IHeartbeat>
+    internal class HeartbeatFrame : BaseFrame<IHeartbeat>
     {
         public HeartbeatFrame(short channel, IHeartbeat heartbeat)
         {

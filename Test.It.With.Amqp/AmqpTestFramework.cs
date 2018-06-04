@@ -239,7 +239,7 @@ namespace Test.It.With.Amqp
 
         public void Dispose()
         {
-            foreach (var disposable in _disposables)
+            while (_disposables.TryTake(out var disposable))
             {
                 disposable.Dispose();
             }

@@ -10,14 +10,12 @@ using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Protocol.Expectations;
-using Test.It.With.Amqp.Protocol.Extensions;
 using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp
 {
     internal class AmqpConnectionSession : IDisposable, ISender<MethodFrame>
     {
-        private readonly IConfiguration _configuration;
         private readonly ILogger _logger = LogFactory.Create<AmqpConnectionSession>();
         private readonly ITypedMessageClient<IFrame, IFrame> _frameClient;
         private readonly IPublishProtocolHeader _protocolHeaderPublisher;
@@ -33,7 +31,6 @@ namespace Test.It.With.Amqp
 
         public AmqpConnectionSession(IProtocolResolver protocolResolver, IConfiguration configuration)
         {
-            _configuration = configuration;
             _expectationStateMachine = protocolResolver.ExpectationStateMachineFactory.Create();
             _frameFactory = protocolResolver.FrameFactory;
             var protocol = protocolResolver.Protocol;
@@ -50,7 +47,7 @@ namespace Test.It.With.Amqp
 
             
             var protocolHeaderHandler = new ProtocolHeaderHandler();
-            var methodFrameHandler = new MethodFrameHandler(_configuration.AutomaticReply, this);
+            var methodFrameHandler = new MethodFrameHandler(configuration.AutomaticReply, this);
             var contentHeaderFrameHandler = new ContentHeaderFrameHandler();
             var contentBodyFrameHandler = new ContentBodyFrameHandler();
             var heartbeatFrameHandler = new HeartbeatFrameHandler();

@@ -24,12 +24,9 @@ namespace Test.It.With.Amqp.MessageClient
 
                 Received.Invoke(frame);
             };
-
-            networkClient.Disconnected += Disconnected;
         }
 
         public event Action<IFrame> Received;
-        public event Action Disconnected;
 
         public void Send(IFrame frame)
         {

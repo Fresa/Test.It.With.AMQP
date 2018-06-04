@@ -2,7 +2,7 @@
 
 namespace Test.It.With.Amqp.Messages
 {
-    public class MethodFrame : BaseFrame<IMethod>
+    internal class MethodFrame : BaseFrame<IMethod>
     {
         public MethodFrame(short channel, IMethod method)
         {

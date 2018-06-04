@@ -2,7 +2,7 @@
 
 namespace Test.It.With.Amqp.Messages
 {
-    public class ProtocolHeaderFrame : BaseFrame<IProtocolHeader>
+    internal class ProtocolHeaderFrame : BaseFrame<IProtocolHeader>
     {
         public ProtocolHeaderFrame(short channel, IProtocolHeader protocolHeader)
         {

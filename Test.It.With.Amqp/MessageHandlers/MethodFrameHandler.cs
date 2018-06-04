@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Reflection;
 using Log.It;
 using Test.It.With.Amqp.Extensions;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
-using Test.It.With.Amqp.Protocol.Extensions;
 using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp.MessageHandlers
@@ -23,19 +21,6 @@ namespace Test.It.With.Amqp.MessageHandlers
         {
             _automaticReplyOnMissingSubscription = automaticReplyOnMissingSubscription;
             _sender = sender;
-        }
-
-        public IDisposable Subscribe<TMethod>(Action<MethodFrame<TMethod>> subscription) 
-            where TMethod : class, IMethod
-        {
-            var subscriptionId = Guid.NewGuid();
-            
-            _methodSubscriptions.TryAdd(subscriptionId, 
-                new TypeSubscriber<TMethod, MethodFrame<IMethod>>(
-                    frame => 
-                        subscription(new MethodFrame<TMethod>(frame.Channel, (TMethod) frame.Message))));
-            
-            return new Unsubscriber(() => _methodSubscriptions.TryRemove(subscriptionId, out _));
         }
 
         public IDisposable Subscribe(Type type, Action<MethodFrame> subscription)

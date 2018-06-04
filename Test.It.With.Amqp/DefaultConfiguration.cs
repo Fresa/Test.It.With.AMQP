@@ -1,6 +1,6 @@
 namespace Test.It.With.Amqp
 {
-    public class DefaultConfiguration : IConfiguration
+    internal class DefaultConfiguration : IConfiguration
     {
         public DefaultConfiguration(bool automaticReply = false)
         {
