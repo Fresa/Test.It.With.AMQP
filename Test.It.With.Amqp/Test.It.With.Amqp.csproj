@@ -1,21 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net47</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <Authors>Fredrik Arvidsson</Authors>
         <Company />
         <Copyright>Copyright ©  2017</Copyright>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="System" />
-        <Reference Include="System.Core" />
-        <Reference Include="System.Xml" />
-        <Reference Include="Test.It.With.Amqp.Protocol">
-          <HintPath>..\..\Test.It.With.AMQP.Protocol\Test.It.With.Amqp.Protocol\bin\Debug\net47\Test.It.With.Amqp.Protocol.dll</HintPath>
-        </Reference>
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Log.It" version="1.0.6" />
-        <PackageReference Include="Newtonsoft.Json" version="10.0.2" />
+        <PackageReference Include="Log.It" version="1.1.2" />
+        <PackageReference Include="Test.It.With.Amqp.Protocol" Version="1.0.3" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Properties\" />

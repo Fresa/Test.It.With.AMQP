@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using Log.It;
 using Test.It.With.Amqp.Extensions;
 using Test.It.With.Amqp.Messages;
-using Test.It.With.Amqp.Protocol.Extensions;
 using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp.MessageHandlers
@@ -31,7 +30,7 @@ namespace Test.It.With.Amqp.MessageHandlers
                     $"There are no subscribers that can handle {typeof(ContentHeaderFrame).FullName}.");
             }
 
-            _logger.Debug($"Received content body {frame.Message.GetType().GetPrettyFullName()}. {frame.Message.Serialize()}");
+            _logger.Debug("Received content body {MessageName}. {@Message}", frame.Message.GetType().GetPrettyFullName(), frame.Message);
             foreach (var subscription in _subscriptions.Values)
             {
                 subscription(frame);

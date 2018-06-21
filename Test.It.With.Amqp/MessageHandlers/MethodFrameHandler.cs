@@ -14,7 +14,7 @@ namespace Test.It.With.Amqp.MessageHandlers
     {
         private readonly bool _automaticReplyOnMissingSubscription;
         private readonly ISender<MethodFrame> _sender;
-        private readonly ILogger _logger = LogFactory.Create<MethodFrameHandler>();
+        private static readonly ILogger Logger = LogFactory.Create();
         private readonly ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>> _methodSubscriptions = new ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>>();
 
         public MethodFrameHandler(bool automaticReplyOnMissingSubscription, ISender<MethodFrame> sender)
@@ -37,7 +37,7 @@ namespace Test.It.With.Amqp.MessageHandlers
 
         public void Handle(MethodFrame methodFrame)
         {
-            _logger.Debug($"Received method {methodFrame.Message.GetType().GetPrettyFullName()}. {methodFrame.Message.Serialize()}");
+            Logger.Debug("Received method {Name}. {@Message}", methodFrame.Message.GetType().GetPrettyFullName(), methodFrame.Message);
 
             var subscriptions = _methodSubscriptions
                 .Where(pair => pair.Value.Id == methodFrame.Message.GetType())

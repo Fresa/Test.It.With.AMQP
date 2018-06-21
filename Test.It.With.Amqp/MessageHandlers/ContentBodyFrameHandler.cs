@@ -30,7 +30,7 @@ namespace Test.It.With.Amqp.MessageHandlers
                     $"There are no subscribers that can handle {typeof(ContentBodyFrame).FullName}.");
             }
 
-            _logger.Debug($"Received content header {frame.Message.GetType().GetPrettyFullName()}. {frame.Message.Serialize()}");
+            _logger.Debug("Received content header {MessageName}. {@Message}", frame.Message.GetType().GetPrettyFullName(), frame.Message);
             foreach (var subscription in _subscriptions.Values)
             {
                 subscription(frame);

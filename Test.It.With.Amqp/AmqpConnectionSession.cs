@@ -90,25 +90,25 @@ namespace Test.It.With.Amqp
         
         public void Send(MethodFrame frame)
         {
-            _logger.Debug($"Sending {nameof(MethodFrame)} {frame.Message.GetType().GetPrettyFullName()}. {frame.Message.Serialize()}");
+            _logger.Debug("Sending {MethodFrameName} {MessageName}. {@Message}", nameof(MethodFrame), frame.Message.GetType().GetPrettyFullName(), frame.Message);
             _frameClient.Send(_frameFactory.Create(frame.Channel, frame.Message));
         }
 
         public void Send(HeartbeatFrame frame)
         {
-            _logger.Debug($"Sending {nameof(HeartbeatFrame)} {frame.Message.GetType().GetPrettyFullName()}. {frame.Message.Serialize()}");
+            _logger.Debug("Sending {HeartbeatFrameName} {MessageName}. {@Message}", nameof(HeartbeatFrame), frame.Message.GetType().GetPrettyFullName(), frame.Message);
             _frameClient.Send(_frameFactory.Create(frame.Channel, frame.Message));
         }
 
         public void Send(ContentHeaderFrame frame)
         {
-            _logger.Debug($"Sending {nameof(ContentHeaderFrame)} {frame.Message.GetType().GetPrettyFullName()}. {frame.Message.Serialize()}");
+            _logger.Debug("Sending {ContentHeaderFrameName} {MessageName}. {@Message}", nameof(ContentHeaderFrame), frame.Message.GetType().GetPrettyFullName(), frame.Message);
             _frameClient.Send(_frameFactory.Create(frame.Channel, frame.Message));
         }
 
         public void Send(ContentBodyFrame frame)
         {
-            _logger.Debug($"Sending {nameof(ContentBodyFrame)} {frame.Message.GetType().GetPrettyFullName()}.");
+            _logger.Debug("Sending {ContentBodyFrameName} {MessageName}. {@Message}", nameof(ContentBodyFrame), frame.Message.GetType().GetPrettyFullName(), frame.Message);
             _frameClient.Send(_frameFactory.Create(frame.Channel, frame.Message));
         }
         
@@ -118,7 +118,7 @@ namespace Test.It.With.Amqp
             {
                 if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Message))
                 {
-                    _logger.Debug($"Method {methodType.GetPrettyFullName()} was expected.");
+                    _logger.Debug("Method {Method} was expected.", methodType.GetPrettyFullName());
                     messageHandler(new MethodFrame(
                         frame.Channel,
                         frame.Message));
@@ -139,7 +139,7 @@ namespace Test.It.With.Amqp
                         }
 
                         _logger.Debug(
-                            $"Content header {frame.Message.GetType().GetPrettyFullName()} for method {method.GetType().Name} was expected.");
+                            "Content header {MessageType} for method {MethodType} was expected.", frame.Message.GetType().GetPrettyFullName(), method.GetType().Name);
                         messageHandler(new MethodFrame(frame.Channel, method));
                     }
                 });
@@ -156,7 +156,7 @@ namespace Test.It.With.Amqp
                         }
 
                         _logger.Debug(
-                            $"Content body {frame.Message.GetType().GetPrettyFullName()} for method {method.GetType().Name} was expected.");
+                            "Content body {MessageType} for method {MethodType} was expected.", frame.Message.GetType().GetPrettyFullName(), method.GetType().Name);
                         messageHandler(new MethodFrame(frame.Channel, method));
                     }
                 });
@@ -171,7 +171,7 @@ namespace Test.It.With.Amqp
             {
                 if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Message))
                 {
-                    _logger.Debug($"{type.GetPrettyFullName()} was expected.");
+                    _logger.Debug("{MethodType} was expected.", type.GetPrettyFullName());
                     messageHandler(frame);
                 }
             });
@@ -185,7 +185,7 @@ namespace Test.It.With.Amqp
             {
                 if (_expectationStateMachine.ShouldPass(frame.Channel, frame.Message))
                 {
-                    _logger.Debug($"{type.GetPrettyFullName()} was expected.");
+                    _logger.Debug("{MethodType} was expected.", type.GetPrettyFullName());
                     messageHandler(frame);
                 }
             });
