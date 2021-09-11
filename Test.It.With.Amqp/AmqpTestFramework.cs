@@ -1,16 +1,42 @@
 using System;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using Test.It.With.Amqp.Messages;
-using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Subscriptions;
 
 namespace Test.It.With.Amqp
 {
-    public class AmqpTestFramework : IDisposable
+    public abstract class AmqpTestFramework : IAsyncDisposable
     {
-        private readonly IConfiguration _configuration = new DefaultConfiguration();
-        private readonly ConcurrentBag<IDisposable> _disposables = new ConcurrentBag<IDisposable>();
+        public static InMemoryAmqpTestFramework InMemory(
+            IProtocolResolver protocolResolver)
+        {
+            return new InMemoryAmqpTestFramework(protocolResolver);
+        }
+
+        public static InMemoryAmqpTestFramework InMemory(
+            IProtocolResolver protocolResolver,
+            IConfiguration configuration)
+        {
+            return new InMemoryAmqpTestFramework(protocolResolver, configuration);
+        }
+
+        public static SocketAmqpTestFramework WithSocket(
+            IProtocolResolver protocolResolver)
+        {
+            return new SocketAmqpTestFramework(protocolResolver);
+        }
+        
+        public static SocketAmqpTestFramework WithSocket(
+            IProtocolResolver protocolResolver,
+            INetworkConfiguration configuration)
+        {
+            return new SocketAmqpTestFramework(protocolResolver, configuration);
+        }
+
+        protected readonly ConcurrentBag<IDisposable> Disposables = new ConcurrentBag<IDisposable>();
+        protected readonly ConcurrentBag<IAsyncDisposable> AsyncDisposables = new ConcurrentBag<IAsyncDisposable>();
 
         private readonly ConcurrentDictionary<Type, IMethodSubscription> _methodSubscriptionCollections = new ConcurrentDictionary<Type, IMethodSubscription>();
         private readonly ConcurrentDictionary<Type, IProtocolHeaderSubscription> _protocolHeaderSubscriptions = new ConcurrentDictionary<Type, IProtocolHeaderSubscription>();
@@ -18,52 +44,40 @@ namespace Test.It.With.Amqp
 
         private readonly ConcurrentDictionary<ConnectionId, AmqpConnectionSession> _sessions = new ConcurrentDictionary<ConnectionId, AmqpConnectionSession>();
 
-        public AmqpTestFramework(IProtocolResolver protocolResolver)
+        internal void AddSession(AmqpConnectionSession session)
         {
-            var networkClientFactory = new NetworkClientFactory(protocolResolver, _configuration);
-            networkClientFactory.OnNetworkClientCreated(session =>
+            Disposables.Add(session);
+
+            var connectionId = session.ConnectionId;
+            if (_sessions.TryAdd(connectionId, session) == false)
             {
-                _disposables.Add(session);
+                throw new NotSupportedException($"Client with id {connectionId} has already been registered.");
+            }
 
-                var connectionId = session.ConnectionId;
-                if (_sessions.TryAdd(connectionId, session) == false)
+            lock (_methodSubscriptionCollections)
+            {
+                foreach (var methodSubscription in _methodSubscriptionCollections)
                 {
-                    throw new NotSupportedException($"Client with id {connectionId} has already been registered.");
+                    session.On(methodSubscription.Key, frame => methodSubscription.Value.Handle(connectionId, frame));
                 }
+            }
 
-                lock (_methodSubscriptionCollections)
+            lock (_protocolHeaderSubscriptions)
+            {
+                foreach (var protocolHeaderSubscription in _protocolHeaderSubscriptions)
                 {
-                    foreach (var methodSubscription in _methodSubscriptionCollections)
-                    {
-                        session.On(methodSubscription.Key, frame => methodSubscription.Value.Handle(connectionId, frame));
-                    }
+                    session.On(protocolHeaderSubscription.Key, frame => protocolHeaderSubscription.Value.Handle(connectionId, frame));
                 }
+            }
 
-                lock (_protocolHeaderSubscriptions)
+            lock (_heartbeatSubscriptions)
+            {
+                foreach (var heartbeatSubscription in _heartbeatSubscriptions)
                 {
-                    foreach (var protocolHeaderSubscription in _protocolHeaderSubscriptions)
-                    {
-                        session.On(protocolHeaderSubscription.Key, frame => protocolHeaderSubscription.Value.Handle(connectionId, frame));
-                    }
+                    session.On(heartbeatSubscription.Key, frame => heartbeatSubscription.Value.Handle(connectionId, frame));
                 }
-
-                lock (_heartbeatSubscriptions)
-                {
-                    foreach (var heartbeatSubscription in _heartbeatSubscriptions)
-                    {
-                        session.On(heartbeatSubscription.Key, frame => heartbeatSubscription.Value.Handle(connectionId, frame));
-                    }
-                }
-            });
-            ConnectionFactory = networkClientFactory;
+            }
         }
-
-        public AmqpTestFramework(IProtocolResolver protocolResolver, IConfiguration configuration) : this(protocolResolver)
-        {
-            _configuration = configuration;
-        }
-
-        public INetworkClientFactory ConnectionFactory { get; }
 
         public AmqpTestFramework Send<TMessage>(ConnectionId connectionId, MethodFrame<TMessage> frame) where TMessage : class, INonContentMethod, IServerMethod
         {
@@ -236,12 +250,18 @@ namespace Test.It.With.Amqp
 
             return this;
         }
-
-        public void Dispose()
+        
+        public async ValueTask DisposeAsync()
         {
-            while (_disposables.TryTake(out var disposable))
+            while (Disposables.TryTake(out var disposable))
             {
                 disposable.Dispose();
+            }
+
+            while (AsyncDisposables.TryTake(out var disposable))
+            {
+                await disposable.DisposeAsync()
+                    .ConfigureAwait(false);
             }
         }
     }

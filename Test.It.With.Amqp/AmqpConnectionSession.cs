@@ -29,7 +29,10 @@ namespace Test.It.With.Amqp
         private readonly IExpectationStateMachine _expectationStateMachine;
         private readonly IFrameFactory _frameFactory;
 
-        public AmqpConnectionSession(IProtocolResolver protocolResolver, IConfiguration configuration)
+        public AmqpConnectionSession(
+            IProtocolResolver protocolResolver, 
+            IConfiguration configuration, 
+            INetworkClient serverNetworkClient)
         {
             _expectationStateMachine = protocolResolver.ExpectationStateMachineFactory.Create();
             _frameFactory = protocolResolver.FrameFactory;
@@ -37,15 +40,6 @@ namespace Test.It.With.Amqp
             var amqpReaderFactory = protocolResolver.AmqpReaderFactory;
             var amqpWriterFactory = protocolResolver.AmqpWriterFactory;
 
-            var networkClientFactory = new InternalRoutedNetworkClientFactory();
-            networkClientFactory.OnException += exception =>
-            {
-                _logger.Error(exception, "Test framework error.");
-            };
-            Client = networkClientFactory.Create(out var serverNetworkClient);
-            _disposables.Add(serverNetworkClient);
-
-            
             var protocolHeaderHandler = new ProtocolHeaderHandler();
             var methodFrameHandler = new MethodFrameHandler(configuration.AutomaticReply, this);
             var contentHeaderFrameHandler = new ContentHeaderFrameHandler();
@@ -85,8 +79,6 @@ namespace Test.It.With.Amqp
         }
 
         public ConnectionId ConnectionId { get; } = new ConnectionId(Guid.NewGuid());
-        
-        public INetworkClient Client { get; }
         
         public void Send(MethodFrame frame)
         {

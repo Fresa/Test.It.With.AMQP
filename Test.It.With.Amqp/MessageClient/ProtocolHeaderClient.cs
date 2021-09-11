@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
@@ -17,7 +18,17 @@ namespace Test.It.With.Amqp.MessageClient
             _amqpWriterFactory = amqpWriterFactory;
             _client.BufferReceived += (sender, args) =>
             {
-                var reader = amqpReaderFactory.Create(args.Buffer);
+                if (args.Count == 0)
+                {
+                    return;
+                }
+
+                var reader = amqpReaderFactory.Create(
+                    args.Buffer
+                        .Skip(args.Offset)
+                        .Take(args.Count)
+                        .ToArray());
+
                 if (reader.PeekByte() == 'A')
                 {
                     var header = protocol.GetProtocolHeader(reader);
