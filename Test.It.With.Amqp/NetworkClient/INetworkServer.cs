@@ -5,7 +5,7 @@ namespace Test.It.With.Amqp.NetworkClient
 {
     internal interface INetworkServer
     {
-        Task<INetworkClient> WaitForConnectedClientAsync
+        Task<IStartableNetworkClient> WaitForConnectedClientAsync
             (CancellationToken cancellationToken = default);
     }
 }

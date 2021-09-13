@@ -2,16 +2,13 @@ using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Test.It.With.Amqp.System;
 
 namespace Test.It.With.Amqp.NetworkClient
 {
-    internal sealed class SocketNetworkClient : INetworkClient
+    internal sealed class SocketNetworkClient : IStartableNetworkClient
     {
         private readonly Socket _socket;
-        private readonly CancellationTokenSource _cancellationTokenSource =
-            new CancellationTokenSource();
-
-        private Task _receivingTask;
 
         public SocketNetworkClient(Socket socket)
         {
@@ -22,10 +19,8 @@ namespace Test.It.With.Amqp.NetworkClient
         {
             try
             {
-                _cancellationTokenSource.Cancel();
                 _socket.Shutdown(SocketShutdown.Both);
                 _socket.Close();
-                _receivingTask?.GetAwaiter().GetResult();
             }
             finally
             {
@@ -50,18 +45,23 @@ namespace Test.It.With.Amqp.NetworkClient
             }
         }
 
-        public void StartReceiving()
+        public IAsyncDisposable StartReceiving()
         {
             if (BufferReceived == null)
             {
                 throw new ArgumentNullException(nameof(BufferReceived), "There is no message receiver registered");
             }
 
-            _receivingTask = Task.Run(
+            var cancellationTokenSource =
+                new CancellationTokenSource();
+
+            // ReSharper disable once MethodSupportsCancellation
+            // Handled by the returned disposable action
+            var receivingTask = Task.Run(
                 async () =>
                 {
                     var buffer = new ArraySegment<byte>(new byte[_socket.ReceiveBufferSize]);
-                    while (_cancellationTokenSource.IsCancellationRequested == false)
+                    while (cancellationTokenSource.IsCancellationRequested == false)
                     {
                         try
                         {
@@ -71,14 +71,19 @@ namespace Test.It.With.Amqp.NetworkClient
 
                             BufferReceived.Invoke(this, new ReceivedEventArgs(buffer.Array, 0, length));
                         }
-                        catch when (_cancellationTokenSource.IsCancellationRequested)
+                        catch when (cancellationTokenSource.IsCancellationRequested)
                         {
                             return;
                         }
                     }
                 });
-        }
 
+            return new AsyncDisposableAction(() =>
+            {
+                cancellationTokenSource.Cancel();
+                return new ValueTask(receivingTask);
+            });
+        }
 
         public event EventHandler<ReceivedEventArgs> BufferReceived;
         public event EventHandler Disconnected;

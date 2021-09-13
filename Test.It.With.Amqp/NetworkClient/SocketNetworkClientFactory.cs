@@ -16,12 +16,13 @@ namespace Test.It.With.Amqp.NetworkClient
         private readonly CancellationTokenSource _cancellationTokenSource =
             new CancellationTokenSource();
 
+
         private List<Task> _tasks = new List<Task>();
 
         public SocketNetworkClientFactory(
-            INetworkServer networkServer, 
-            IProtocolResolver protocolResolver, 
-            IConfiguration configuration, 
+            INetworkServer networkServer,
+            IProtocolResolver protocolResolver,
+            IConfiguration configuration,
             Action<AmqpConnectionSession> subscription)
         {
             _networkServer = networkServer;
@@ -34,28 +35,30 @@ namespace Test.It.With.Amqp.NetworkClient
         {
             var cts = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token);
             var token = cts.Token;
+            var messageReceivers = new List<IAsyncDisposable>();
+
             // ReSharper disable once MethodSupportsCancellation
             // Will be handled by the disposable returned
             var clientReceivingTask = Task.Run(
-                async () =>
-                {
-                    while (cts.IsCancellationRequested == false)
+                    async () =>
                     {
-                        try
+                        while (cts.IsCancellationRequested == false)
                         {
-                            var client = await _networkServer
-                                .WaitForConnectedClientAsync(token)
-                                .ConfigureAwait(false);
-                            var session = new AmqpConnectionSession(_protocolResolver, _configuration, client);
-                            _subscription(session);
-                            ((SocketNetworkClient) client).StartReceiving();
+                            try
+                            {
+                                var client = await _networkServer
+                                    .WaitForConnectedClientAsync(token)
+                                    .ConfigureAwait(false);
+                                var session = new AmqpConnectionSession(_protocolResolver, _configuration, client);
+                                _subscription(session);
+                                messageReceivers.Add(client.StartReceiving());
+                            }
+                            catch when (cts.IsCancellationRequested)
+                            {
+                                return;
+                            }
                         }
-                        catch when (cts.IsCancellationRequested)
-                        {
-                            return;
-                        }
-                    }
-                });
+                    });
             _tasks.Add(clientReceivingTask);
 
             return new AsyncDisposableAction(async () =>
@@ -63,17 +66,18 @@ namespace Test.It.With.Amqp.NetworkClient
                 cts.Cancel();
                 await clientReceivingTask
                     .ConfigureAwait(false);
+                await messageReceivers.DisposeAllAsync()
+                    .ConfigureAwait(false);
                 cts.Dispose();
             });
         }
-        
+
         public async ValueTask DisposeAsync()
         {
             _cancellationTokenSource.Cancel();
             await Task.WhenAll(_tasks)
                 .ConfigureAwait(false);
             _cancellationTokenSource.Dispose();
-
         }
     }
 }

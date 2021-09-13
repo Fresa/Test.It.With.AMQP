@@ -16,7 +16,7 @@ namespace Test.It.With.Amqp
             Address = Equals(configuration.IpAddress, IPAddress.Any) ? IPAddress.Loopback : configuration.IpAddress;
             _factory = new SocketNetworkClientFactory(server, protocolResolver, configuration, AddSession);
             AsyncDisposables.Add(_factory);
-            Disposables.Add(server);
+            AsyncDisposables.Add(server);
         }
 
         internal SocketAmqpTestFramework(IProtocolResolver protocolResolver) 

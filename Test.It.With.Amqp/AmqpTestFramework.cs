@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
@@ -253,15 +256,40 @@ namespace Test.It.With.Amqp
         
         public async ValueTask DisposeAsync()
         {
+            var exceptions = new List<Exception>();
             while (Disposables.TryTake(out var disposable))
             {
-                disposable.Dispose();
+                try
+                {
+                    disposable.Dispose();
+                }
+                catch (Exception e)
+                {
+                    exceptions.Add(e);
+                }
             }
 
             while (AsyncDisposables.TryTake(out var disposable))
             {
-                await disposable.DisposeAsync()
-                    .ConfigureAwait(false);
+                try
+                {
+                    await disposable.DisposeAsync()
+                        .ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    exceptions.Add(e);
+                }
+            }
+
+            if (exceptions.Count == 1)
+            {
+                ExceptionDispatchInfo.Capture(exceptions.First()).Throw();
+            }
+
+            if (exceptions.Any())
+            {
+                throw new AggregateException(exceptions);
             }
         }
     }

@@ -8,10 +8,10 @@ using Log.It;
 
 namespace Test.It.With.Amqp.NetworkClient
 {
-    internal class SocketServer : INetworkServer, IDisposable
+    internal class SocketServer : INetworkServer, IAsyncDisposable
     {
         private readonly ConcurrentQueue<INetworkClient> _clients = new ConcurrentQueue<INetworkClient>();
-        private readonly ConcurrentQueue<INetworkClient> _waitingClients = new ConcurrentQueue<INetworkClient>();
+        private readonly ConcurrentQueue<SocketNetworkClient> _waitingClients = new ConcurrentQueue<SocketNetworkClient>();
         private readonly SemaphoreSlim _clientAvailable = new SemaphoreSlim(0);
         private readonly CancellationTokenSource _cancellationSource = new CancellationTokenSource();
         private Task _acceptingClientsBackgroundTask;
@@ -21,7 +21,7 @@ namespace Test.It.With.Amqp.NetworkClient
         internal int Port { get; private set; }
         internal IPAddress Address { get; private set; } = IPAddress.Any;
 
-        public async Task<INetworkClient> WaitForConnectedClientAsync(CancellationToken cancellationToken = default)
+        public async Task<IStartableNetworkClient> WaitForConnectedClientAsync(CancellationToken cancellationToken = default)
         {
             await _clientAvailable
                 .WaitAsync(cancellationToken)
@@ -88,8 +88,8 @@ namespace Test.It.With.Amqp.NetworkClient
             _clientAcceptingSocket.Listen(100);
             Logger.Info("Listening on {@endpoint}", localEndPoint);
         }
-
-        public void Dispose()
+        
+        public async ValueTask DisposeAsync()
         {
             _cancellationSource.Cancel();
             try
@@ -105,7 +105,9 @@ namespace Test.It.With.Amqp.NetworkClient
                 _clientAcceptingSocket.Dispose();
             }
 
-            _acceptingClientsBackgroundTask.GetAwaiter().GetResult();
+            await _acceptingClientsBackgroundTask
+                .ConfigureAwait(false);
+
             while (_clients.TryDequeue(out var client))
             {
                 client.Dispose();
