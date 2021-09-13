@@ -61,6 +61,7 @@ jobs:
 
         echo "::set-output name=is_prerelease::$is_prerelease"
         echo "::set-output name=tag::v$version"
+        echo "::set-output name=version::$version"
         echo "::set-output name=from_ref_exclusive::$from_ref_exclusive"
     - name: Create Tag
       uses: actions/github-script@v3
@@ -101,6 +102,6 @@ jobs:
           tag-name: v${{ steps.gitversion.outputs.major }}.${{ steps.gitversion.outputs.minor }}
           description: ${{ steps.release.outputs.tag }}
     - name: Pack
-      run: dotnet pack Test.It.With.Amqp/Test.It.With.Amqp.csproj -c Release -o nuget-packages -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }} -p:PackageReleaseNotes="${{ steps.release_notes.outputs.release_notes }}"
+      run: dotnet pack Test.It.With.Amqp/Test.It.With.Amqp.csproj -c Release -o nuget-packages -p:PackageVersion=${{ steps.release.outputs.version }} -p:PackageReleaseNotes="${{ steps.release_notes.outputs.release_notes }}"
     - name: Publish to nuget.org
       run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
