@@ -1,9 +1,7 @@
 # Test.It.With.AMQP
 An application and integration independent test framework for the AMQP protocol.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/an6ehc4093jii5s9?svg=true)](https://ci.appveyor.com/project/Fresa/test-it-with-amqp/)
-
-[![Build history](https://buildstats.info/appveyor/chart/Fresa/test-it-with-amqp)](https://ci.appveyor.com/project/Fresa/test-it-with-amqp/history)
+![Continuous Delivery](https://github.com/Fresa/test-it-with-amqp/workflows/Continuous%20Delivery/badge.svg)
 
 ## Download
 https://www.nuget.org/packages/Test.It.With.Amqp/
@@ -14,6 +12,17 @@ The following is an example how an integration test might look like. Be aware th
 
 ## Getting Started
 [AmqpTestFramework.cs] is the test framework entry point where you set up your test scenario by subscribing on and sending protocol methods. It exposes a `ConnectionFactory` property  which you can jack into your application during integration testing in order to divert any AMQP communication to the test framework. This makes the AMQP integration completly isolated in memory during the test session.
+The test server can be used in-memory or connected to clients over TCP.
+
+### Upgrading from 1.x -> 2.x
+Previously the test framework was initialized by instantiating [AmqpTestFramework.cs]:
+```c#
+var testServer = new AmqpTestFramework(...);
+``` 
+This has been moved to a static method:
+```c#
+await using var testFramework = AmqpTestFramework.InMemory(...);
+``` 
 
 ### Protocol Definitions
 You can find the complete protocol definitions here:
