@@ -101,6 +101,6 @@ jobs:
           tag-name: v${{ steps.gitversion.outputs.major }}.${{ steps.gitversion.outputs.minor }}
           description: ${{ steps.release.outputs.tag }}
     - name: Pack
-      run: dotnet pack Test.It.With.Amqp/Test.It.With.Amqp.csproj -c Release -o nuget-packages --no-build -p:PackageVersion=${{ steps.release.outputs.tag }} -p:PackageReleaseNotes="${{ steps.release_notes.outputs.release_notes }}"
+      run: dotnet pack Test.It.With.Amqp/Test.It.With.Amqp.csproj -c Release -o nuget-packages -p:PackageVersion=${{ steps.release.outputs.tag }} -p:PackageReleaseNotes="${{ steps.release_notes.outputs.release_notes }}"
     - name: Publish to nuget.org
       run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
