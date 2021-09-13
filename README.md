@@ -11,8 +11,9 @@ The following is an example how an integration test might look like. Be aware th
 [Given_a_client_application_sending_messages_over_rabbitmq When_publishing_a_message][TestExample]
 
 ## Getting Started
-[AmqpTestFramework.cs] is the test framework entry point where you set up your test scenario by subscribing on and sending protocol methods. It exposes a `ConnectionFactory` property  which you can jack into your application during integration testing in order to divert any AMQP communication to the test framework. This makes the AMQP integration completly isolated in memory during the test session.
-The test server can be used in-memory or connected to clients over TCP.
+[AmqpTestFramework.cs] is the test framework entry point where you set up your test scenario by subscribing on and sending protocol methods. The in-memory version exposes a `ConnectionFactory` property  which you can jack into your application during integration testing in order to divert any AMQP communication to the test framework. This makes the AMQP integration completly isolated in memory during the test session.
+
+It's also possible to configure the test framework to listen on a TCP socket by instantiate it with `AmqpTestFramework.WithSocket(...)`.
 
 ### Upgrading from 1.x -> 2.x
 Previously the test framework was initialized by instantiating [AmqpTestFramework.cs]:
