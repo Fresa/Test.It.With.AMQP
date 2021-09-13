@@ -104,4 +104,4 @@ jobs:
     - name: Pack
       run: dotnet pack Test.It.With.Amqp/Test.It.With.Amqp.csproj -c Release -o nuget-packages -p:PackageVersion=${{ steps.release.outputs.version }} -p:PackageReleaseNotes="${{ steps.release_notes.outputs.release_notes }}"
     - name: Publish to nuget.org
-      run: dotnet nuget push nuget-packages/*.nupkg;-:nuget-packages/*.symbols.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push nuget-packages/Test.It.With.Amqp.${{ steps.release.outputs.version }}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
