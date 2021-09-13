@@ -1,5 +1,5 @@
 ﻿using FakeItEasy;
-using Should.Fluent;
+using FluentAssertions;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.MessageHandlers;
 using Test.It.With.Amqp.Messages;
@@ -39,13 +39,13 @@ namespace Given_a_automatic_replying_method_frame_handler
         [Fact]
         public void It_should_send_a_method_frame_on_same_channel_as_the_receiving_frame()
         {
-            _methodFrameSent.Channel.Should().Equal((short)0);
+            _methodFrameSent.Channel.Should().Be(0);
         }
 
         [Fact]
         public void It_should_send_a_default_instance_of_the_first_response_method()
         {
-            _methodFrameSent.Message.Should().Be.OfType<RespondingMethod>();
+            _methodFrameSent.Message.Should().BeOfType<RespondingMethod>();
         }
     }
 }
