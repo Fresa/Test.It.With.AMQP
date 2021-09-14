@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Subscriptions;
+using Test.It.With.Amqp.System;
 
 namespace Test.It.With.Amqp
 {
@@ -38,8 +37,7 @@ namespace Test.It.With.Amqp
             return new SocketAmqpTestFramework(protocolResolver, configuration);
         }
 
-        protected readonly ConcurrentBag<IDisposable> Disposables = new ConcurrentBag<IDisposable>();
-        protected readonly ConcurrentBag<IAsyncDisposable> AsyncDisposables = new ConcurrentBag<IAsyncDisposable>();
+        protected readonly List<IAsyncDisposable> AsyncDisposables = new List<IAsyncDisposable>();
 
         private readonly ConcurrentDictionary<Type, IMethodSubscription> _methodSubscriptionCollections = new ConcurrentDictionary<Type, IMethodSubscription>();
         private readonly ConcurrentDictionary<Type, IProtocolHeaderSubscription> _protocolHeaderSubscriptions = new ConcurrentDictionary<Type, IProtocolHeaderSubscription>();
@@ -49,8 +47,6 @@ namespace Test.It.With.Amqp
 
         internal void AddSession(AmqpConnectionSession session)
         {
-            Disposables.Add(session);
-
             var connectionId = session.ConnectionId;
             if (_sessions.TryAdd(connectionId, session) == false)
             {
@@ -254,43 +250,9 @@ namespace Test.It.With.Amqp
             return this;
         }
         
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            var exceptions = new List<Exception>();
-            while (Disposables.TryTake(out var disposable))
-            {
-                try
-                {
-                    disposable.Dispose();
-                }
-                catch (Exception e)
-                {
-                    exceptions.Add(e);
-                }
-            }
-
-            while (AsyncDisposables.TryTake(out var disposable))
-            {
-                try
-                {
-                    await disposable.DisposeAsync()
-                        .ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    exceptions.Add(e);
-                }
-            }
-
-            if (exceptions.Count == 1)
-            {
-                ExceptionDispatchInfo.Capture(exceptions.First()).Throw();
-            }
-
-            if (exceptions.Any())
-            {
-                throw new AggregateException(exceptions);
-            }
+            return new ValueTask(AsyncDisposables.DisposeAllAsync());
         }
     }
 }

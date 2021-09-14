@@ -24,7 +24,7 @@ namespace Test.It.With.Amqp
         private readonly IPublish<ContentBodyFrame> _contentBodyFramePublisher;
         private readonly IPublishHeartbeat _heartbeatFramePublisher;
 
-        private readonly List<IDisposable> _disposables = new List<IDisposable>();
+        private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
         private readonly IExpectationStateMachine _expectationStateMachine;
         private readonly IFrameFactory _frameFactory;
@@ -117,7 +117,7 @@ namespace Test.It.With.Amqp
                 }
             });
 
-            _disposables.Add(methodSubscription);
+            _subscriptions.Add(methodSubscription);
 
             if (methodType.GetInterfaces().Contains(typeof(IContentMethod)))
             {
@@ -136,7 +136,7 @@ namespace Test.It.With.Amqp
                     }
                 });
 
-                _disposables.Add(contentHeaderSubscription);
+                _subscriptions.Add(contentHeaderSubscription);
 
                 var contentBodySubscription = _contentBodyFramePublisher.Subscribe(frame =>
                 {
@@ -153,7 +153,7 @@ namespace Test.It.With.Amqp
                     }
                 });
 
-                _disposables.Add(contentBodySubscription);
+                _subscriptions.Add(contentBodySubscription);
             }
         }
 
@@ -168,7 +168,7 @@ namespace Test.It.With.Amqp
                 }
             });
 
-            _disposables.Add(protocolHeaderSubscription);
+            _subscriptions.Add(protocolHeaderSubscription);
         }
 
         public void On(Type type, Action<HeartbeatFrame> messageHandler)
@@ -182,12 +182,12 @@ namespace Test.It.With.Amqp
                 }
             });
 
-            _disposables.Add(heartbeatSubscription);
+            _subscriptions.Add(heartbeatSubscription);
         }
 
         public void Dispose()
         {
-            foreach (var disposable in _disposables)
+            foreach (var disposable in _subscriptions)
             {
                 disposable.Dispose();
             }

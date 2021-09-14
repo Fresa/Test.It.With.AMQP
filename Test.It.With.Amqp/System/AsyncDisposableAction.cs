@@ -5,7 +5,11 @@ namespace Test.It.With.Amqp.System
 {
     internal sealed class AsyncDisposableAction : IAsyncDisposable
     {
-        private readonly Func<ValueTask> _onDispose;
+        private readonly Func<ValueTask> _onDispose = () => new ValueTask();
+
+        public AsyncDisposableAction()
+        {
+        }
 
         public AsyncDisposableAction(Func<ValueTask> onDispose)
         {

@@ -34,12 +34,9 @@ namespace Test.It.With.Amqp.NetworkClient
             {
                 _socket.Send(buffer, offset, count, SocketFlags.None);
             }
-            catch (Exception)
+            catch (Exception) when (!_socket.Connected)
             {
-                if (!_socket.Connected)
-                {
-                    Disconnected?.Invoke(this, EventArgs.Empty);
-                }
+                Disconnected?.Invoke(this, EventArgs.Empty);
 
                 throw;
             }
