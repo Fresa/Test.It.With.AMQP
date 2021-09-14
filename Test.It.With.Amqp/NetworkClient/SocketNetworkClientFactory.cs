@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Test.It.With.Amqp.Protocol;
@@ -34,8 +35,8 @@ namespace Test.It.With.Amqp.NetworkClient
         {
             var cts = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token);
             var token = cts.Token;
-            IAsyncDisposable networkClient = new AsyncDisposableAction();
-            IDisposable connectionSession = null;
+            var networkClientReceiver = new List<IAsyncDisposable>();
+            var connectionSession = new List<IDisposable>();
 
             // ReSharper disable once MethodSupportsCancellation
             // Will be handled by the disposable returned
@@ -51,8 +52,8 @@ namespace Test.It.With.Amqp.NetworkClient
                                     .ConfigureAwait(false);
                                 var session = new AmqpConnectionSession(_protocolResolver, _configuration, client);
                                 _subscription(session);
-                                networkClient = client.StartReceiving();
-                                connectionSession = session;
+                                networkClientReceiver.Add(client.StartReceiving());
+                                connectionSession.Add(session);
                             }
                             catch when (cts.IsCancellationRequested)
                             {
@@ -69,12 +70,16 @@ namespace Test.It.With.Amqp.NetworkClient
                     .ConfigureAwait(false);
                 try
                 {
-                    await networkClient.DisposeAsync()
+                    await networkClientReceiver.DisposeAllAsync()
                         .ConfigureAwait(false);
                 }
                 finally
                 {
-                    connectionSession?.Dispose();
+                    await Task.WhenAll(connectionSession.Select(disposable =>
+                    {
+                        disposable.Dispose();
+                        return Task.CompletedTask;
+                    }));
                     cts.Dispose();
                 }
             });
@@ -83,8 +88,14 @@ namespace Test.It.With.Amqp.NetworkClient
         public async ValueTask DisposeAsync()
         {
             _cancellationTokenSource.Cancel();
-            await Task.WhenAll(_tasks)
-                .ConfigureAwait(false);
+            try
+            {
+                await Task.WhenAll(_tasks)
+                    .ConfigureAwait(false);
+            }
+            catch 
+            {
+            }
             _cancellationTokenSource.Dispose();
         }
     }

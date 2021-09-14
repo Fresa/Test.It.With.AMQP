@@ -20,12 +20,19 @@ namespace Test.It.With.Amqp.NetworkClient
             try
             {
                 _socket.Shutdown(SocketShutdown.Both);
+            }
+            catch
+            {
+            }
+
+            try
+            {
                 _socket.Close();
             }
-            finally
+            catch
             {
-                _socket.Dispose();
             }
+            _socket.Dispose();
         }
 
         public void Send(byte[] buffer, int offset, int count)

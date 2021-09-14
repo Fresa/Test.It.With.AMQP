@@ -95,15 +95,18 @@ namespace Test.It.With.Amqp.NetworkClient
             try
             {
                 _clientAcceptingSocket.Shutdown(SocketShutdown.Both);
-                _clientAcceptingSocket.Close();
             }
             catch
             {
             } // Ignore unhandled exceptions during shutdown 
-            finally
+            try
             {
-                _clientAcceptingSocket.Dispose();
+                _clientAcceptingSocket.Close();
             }
+            catch
+            {
+            }
+            _clientAcceptingSocket.Dispose();
 
             await _acceptingClientsBackgroundTask
                 .ConfigureAwait(false);
