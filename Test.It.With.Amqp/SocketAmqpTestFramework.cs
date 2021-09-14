@@ -13,7 +13,9 @@ namespace Test.It.With.Amqp
         {
             var server = SocketServer.Start(configuration.IpAddress, configuration.Port);
             Port = server.Port;
-            Address = Equals(configuration.IpAddress, IPAddress.Any) ? IPAddress.Loopback : configuration.IpAddress;
+            Address = configuration.IpAddress.Equals(IPAddress.Any) ? IPAddress.Loopback :
+                configuration.IpAddress.Equals(IPAddress.IPv6Any) ? IPAddress.IPv6Loopback : 
+                configuration.IpAddress;
             _factory = new SocketNetworkClientFactory(server, protocolResolver, configuration, AddSession);
             AsyncDisposables.Add(_factory);
             AsyncDisposables.Add(server);

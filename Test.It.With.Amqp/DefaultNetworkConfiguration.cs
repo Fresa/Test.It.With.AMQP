@@ -10,7 +10,7 @@ namespace Test.It.With.Amqp
             Port = port;
         }
 
-        public DefaultNetworkConfiguration() : this(IPAddress.Any)
+        public DefaultNetworkConfiguration() : this(IPAddress.IPv6Any)
         {
 
         }
