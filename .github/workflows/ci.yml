@@ -56,7 +56,7 @@ jobs:
           is_prerelease=true
 
         [[ $is_prerelease == true ]] && \
-          version=${{ steps.gitversion.outputs.majorMinorPatch }}-pre-${{ steps.gitversion.outputs.shortSha }} || \
+          version=${{ steps.gitversion.outputs.majorMinorPatch }}-pre-${{ steps.gitversion.outputs.commitsSinceVersionSource }} || \
           version=${{ steps.gitversion.outputs.majorMinorPatch }}
 
         echo "::set-output name=is_prerelease::$is_prerelease"
