@@ -1,5 +1,3 @@
-using System;
-using System.Net;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
 
@@ -7,33 +5,27 @@ namespace Test.It.With.Amqp
 {
     public sealed class SocketAmqpTestFramework : AmqpTestFramework
     {
-        private readonly SocketNetworkClientFactory _factory;
+        private readonly IProtocolResolver _protocolResolver;
+        private readonly INetworkConfiguration _configuration;
 
-        internal SocketAmqpTestFramework(IProtocolResolver protocolResolver, INetworkConfiguration configuration) 
+        internal SocketAmqpTestFramework(IProtocolResolver protocolResolver, INetworkConfiguration configuration)
         {
-            var server = SocketServer.Start(configuration.IpAddress, configuration.Port);
-            Port = server.Port;
-            Address = configuration.IpAddress.Equals(IPAddress.Any) ? IPAddress.Loopback :
-                configuration.IpAddress.Equals(IPAddress.IPv6Any) ? IPAddress.IPv6Loopback : 
-                configuration.IpAddress;
-            _factory = new SocketNetworkClientFactory(server, protocolResolver, configuration, AddSession);
-            AsyncDisposables.Add(_factory);
-            AsyncDisposables.Add(server);
+            _protocolResolver = protocolResolver;
+            _configuration = configuration;
         }
 
-        internal SocketAmqpTestFramework(IProtocolResolver protocolResolver) 
+        internal SocketAmqpTestFramework(IProtocolResolver protocolResolver)
             : this(protocolResolver, new DefaultNetworkConfiguration())
         {
-            
+
         }
 
-        public int Port { get; set; }
-
-        public IPAddress Address { get; }
-
-        public IAsyncDisposable Start()
+        public IServer Start()
         {
-            return _factory.StartReceivingClients();
+            var socketServer = SocketServer.Connect(_configuration.IpAddress, _configuration.Port);
+            var socketNetworkClientFactory = new SocketNetworkClientFactory(_protocolResolver, _configuration, AddSession);
+
+            return SocketClientServer.StartForwardingClients(socketServer, socketNetworkClientFactory);
         }
     }
 }

@@ -10,7 +10,6 @@ namespace Test.It.With.Amqp.NetworkClient
 {
     internal class SocketNetworkClientFactory : IAsyncDisposable
     {
-        private readonly INetworkServer _networkServer;
         private readonly IProtocolResolver _protocolResolver;
         private readonly IConfiguration _configuration;
         private readonly Action<AmqpConnectionSession> _subscription;
@@ -20,18 +19,16 @@ namespace Test.It.With.Amqp.NetworkClient
         private readonly List<Task> _tasks = new List<Task>();
 
         public SocketNetworkClientFactory(
-            INetworkServer networkServer,
             IProtocolResolver protocolResolver,
             IConfiguration configuration,
             Action<AmqpConnectionSession> subscription)
         {
-            _networkServer = networkServer;
             _protocolResolver = protocolResolver;
             _configuration = configuration;
             _subscription = subscription;
         }
 
-        public IAsyncDisposable StartReceivingClients()
+        public IAsyncDisposable StartReceivingClients(INetworkClientServer networkClientServer)
         {
             var cts = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token);
             var token = cts.Token;
@@ -47,7 +44,7 @@ namespace Test.It.With.Amqp.NetworkClient
                         {
                             try
                             {
-                                var client = await _networkServer
+                                var client = await networkClientServer
                                     .WaitForConnectedClientAsync(token)
                                     .ConfigureAwait(false);
                                 var session = new AmqpConnectionSession(_protocolResolver, _configuration, client);
