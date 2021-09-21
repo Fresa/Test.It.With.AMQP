@@ -1,5 +1,5 @@
 using System;
-using Log.It;
+using Test.It.With.Amqp.Logging;
 using Test.It.With.Amqp.Protocol;
 
 namespace Test.It.With.Amqp.NetworkClient
@@ -10,7 +10,7 @@ namespace Test.It.With.Amqp.NetworkClient
         private readonly IConfiguration _configuration;
         private Action<AmqpConnectionSession> _subscription;
         private readonly InternalRoutedNetworkClientFactory _networkClientFactory = new InternalRoutedNetworkClientFactory();
-        private readonly ILogger _logger = LogFactory.Create<InMemoryNetworkClientFactory>();
+        private readonly InternalLogger _logger = LogFactory.Create<InMemoryNetworkClientFactory>();
 
         public InMemoryNetworkClientFactory(IProtocolResolver protocolResolver, IConfiguration configuration)
         {

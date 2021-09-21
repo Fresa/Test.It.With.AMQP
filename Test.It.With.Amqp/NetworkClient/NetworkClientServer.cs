@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Log.It;
+using Test.It.With.Amqp.Logging;
 
 namespace Test.It.With.Amqp.NetworkClient
 {
@@ -18,7 +18,7 @@ namespace Test.It.With.Amqp.NetworkClient
         private readonly SemaphoreSlim _clientAvailable = new SemaphoreSlim(0);
         private readonly CancellationTokenSource _cancellationSource = new CancellationTokenSource();
         private Task _acceptingClientsBackgroundTask = Task.CompletedTask;
-        private static readonly ILogger Logger = LogFactory.Create<NetworkClientServer>();
+        private static readonly InternalLogger Logger = LogFactory.Create<NetworkClientServer>();
 
         private NetworkClientServer(Socket clientAcceptingSocket)
         {

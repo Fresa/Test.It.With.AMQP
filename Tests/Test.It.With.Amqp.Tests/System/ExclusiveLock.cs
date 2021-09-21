@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Test.It.With.Amqp.System;
 
 namespace Test.It.With.Amqp.Tests.System
 {

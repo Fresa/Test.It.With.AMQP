@@ -30,9 +30,11 @@ This has been moved to a static method:
 await using var testFramework = AmqpTestFramework.InMemory(...);
 ``` 
 
+Logs with [Log.It](https://github.com/Fresa/Log.It) has been replaced by an internal logging abstraction, see below how to use it.
+
 ### Protocol Definitions
 You can find the complete protocol definitions here:
 - [AMQP 0.9.1](https://github.com/Fresa/Test.It.With.AMQP.091.Protocol)
 
 ### Logging
-The test framework uses structured logging as logging strategy with the [Log.It](https://github.com/Fresa/Log.It) log abstraction.
+The test framework uses structured logging as logging strategy. Implement `Test.It.With.Amqp.Logging.Logger` and register it by calling `Test.It.With.Amqp.Logging.LogFactory.TryInitializeOnce`. Make sure to call `Test.It.With.Amqp.Logging.LogFactory.Flush` before shutting down.

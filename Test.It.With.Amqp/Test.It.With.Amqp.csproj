@@ -15,7 +15,6 @@
         <IncludeSymbols>True</IncludeSymbols>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Log.It" version="3.0.3" />
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.0.0" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
           <PrivateAssets>all</PrivateAssets>
@@ -29,5 +28,13 @@
 
   <PropertyGroup Condition="'$(NCrunch)' == '1'">
     <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Test.It.With.Amqp.Tests.System
+namespace Test.It.With.Amqp.System
 {
     internal class DisposableActions : IDisposable
     {

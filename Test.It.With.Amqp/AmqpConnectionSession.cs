@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Log.It;
 using Test.It.With.Amqp.Extensions;
+using Test.It.With.Amqp.Logging;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.MessageHandlers;
 using Test.It.With.Amqp.MessageRouters;
@@ -16,7 +16,7 @@ namespace Test.It.With.Amqp
 {
     internal class AmqpConnectionSession : IDisposable, ISender<MethodFrame>
     {
-        private readonly ILogger _logger = LogFactory.Create<AmqpConnectionSession>();
+        private readonly InternalLogger _logger = LogFactory.Create<AmqpConnectionSession>();
         private readonly ITypedMessageClient<IFrame, IFrame> _frameClient;
         private readonly IPublishProtocolHeader _protocolHeaderPublisher;
         private readonly IPublishMethod _methodFramePublisher;
@@ -74,8 +74,8 @@ namespace Test.It.With.Amqp
 
         private void SetupLogicalLogThreadContextsForFrame(short channel)
         {
-            _logger.LogicalThread.Set(LogicalLogContextKeys.ConnectionId, ConnectionId);
-            _logger.LogicalThread.Set(LogicalLogContextKeys.ChannelId, channel);
+            _logger.LogicalThreadContext.Set(LogicalLogContextKeys.ConnectionId, ConnectionId);
+            _logger.LogicalThreadContext.Set(LogicalLogContextKeys.ChannelId, channel);
         }
 
         public ConnectionId ConnectionId { get; } = new ConnectionId(Guid.NewGuid());

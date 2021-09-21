@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Log.It;
+using Test.It.With.Amqp.Logging;
 
 namespace Test.It.With.Amqp.NetworkClient
 {
@@ -11,7 +11,7 @@ namespace Test.It.With.Amqp.NetworkClient
     {
         private readonly CancellationTokenSource _cancellationSource = new CancellationTokenSource();
         private Socket _clientAcceptingSocket;
-        private static readonly ILogger Logger = LogFactory.Create<SocketServer>();
+        private static readonly InternalLogger Logger = LogFactory.Create<SocketServer>();
 
         internal int Port { get; private set; }
         internal IPAddress Address { get; private set; } = IPAddress.Any;
