@@ -10,7 +10,7 @@ namespace Test.It.With.Amqp.NetworkClient
         private readonly IConfiguration _configuration;
         private Action<AmqpConnectionSession> _subscription;
         private readonly InternalRoutedNetworkClientFactory _networkClientFactory = new InternalRoutedNetworkClientFactory();
-        private readonly InternalLogger _logger = LogFactory.Create<InMemoryNetworkClientFactory>();
+        private readonly Logger _logger = Logger.Create<InMemoryNetworkClientFactory>();
 
         public InMemoryNetworkClientFactory(IProtocolResolver protocolResolver, IConfiguration configuration)
         {

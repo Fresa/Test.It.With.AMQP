@@ -14,7 +14,7 @@ namespace Test.It.With.Amqp.MessageHandlers
     {
         private readonly bool _automaticReplyOnMissingSubscription;
         private readonly ISender<MethodFrame> _sender;
-        private static readonly InternalLogger Logger = LogFactory.Create<MethodFrameHandler>();
+        private static readonly Logger Logger = Logger.Create<MethodFrameHandler>();
         private readonly ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>> _methodSubscriptions = new ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>>();
 
         public MethodFrameHandler(bool automaticReplyOnMissingSubscription, ISender<MethodFrame> sender)

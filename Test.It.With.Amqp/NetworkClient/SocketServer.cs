@@ -11,7 +11,7 @@ namespace Test.It.With.Amqp.NetworkClient
     {
         private readonly CancellationTokenSource _cancellationSource = new CancellationTokenSource();
         private Socket _clientAcceptingSocket;
-        private static readonly InternalLogger Logger = LogFactory.Create<SocketServer>();
+        private static readonly Logger Logger = Logger.Create<SocketServer>();
 
         internal int Port { get; private set; }
         internal IPAddress Address { get; private set; } = IPAddress.Any;

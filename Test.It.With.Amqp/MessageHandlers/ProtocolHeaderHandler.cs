@@ -11,7 +11,7 @@ namespace Test.It.With.Amqp.MessageHandlers
 {
     internal class ProtocolHeaderHandler : IHandle<ProtocolHeaderFrame>, IPublishProtocolHeader
     {
-        private readonly InternalLogger _logger = LogFactory.Create<ProtocolHeaderHandler>();
+        private readonly Logger _logger = Logger.Create<ProtocolHeaderHandler>();
         private readonly ConcurrentDictionary<Guid, Subscriber<ProtocolHeaderFrame<IProtocolHeader>>> _subscriptions = new ConcurrentDictionary<Guid, Subscriber<ProtocolHeaderFrame<IProtocolHeader>>>();
 
         public IDisposable Subscribe(Type type, Action<ProtocolHeaderFrame> subscription)

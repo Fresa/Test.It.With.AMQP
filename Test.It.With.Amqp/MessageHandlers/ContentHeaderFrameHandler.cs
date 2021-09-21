@@ -9,7 +9,7 @@ namespace Test.It.With.Amqp.MessageHandlers
 {
     internal class ContentHeaderFrameHandler : IHandle<ContentHeaderFrame>, IPublish<ContentHeaderFrame>
     {
-        private readonly InternalLogger _logger = LogFactory.Create<ContentHeaderFrameHandler>();
+        private readonly Logger _logger = Logger.Create<ContentHeaderFrameHandler>();
         private readonly ConcurrentDictionary<Guid, Action<ContentHeaderFrame>> _subscriptions =
             new ConcurrentDictionary<Guid, Action<ContentHeaderFrame>>();
 

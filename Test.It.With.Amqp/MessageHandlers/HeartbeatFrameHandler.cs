@@ -11,7 +11,7 @@ namespace Test.It.With.Amqp.MessageHandlers
 {
     internal class HeartbeatFrameHandler : IHandle<HeartbeatFrame>, IPublishHeartbeat
     {
-        private readonly InternalLogger _logger = LogFactory.Create<HeartbeatFrameHandler>();
+        private readonly Logger _logger = Logger.Create<HeartbeatFrameHandler>();
         private readonly ConcurrentDictionary<Guid, Subscriber<HeartbeatFrame<IHeartbeat>>> _subscriptions =
             new ConcurrentDictionary<Guid, Subscriber<HeartbeatFrame<IHeartbeat>>>();
 

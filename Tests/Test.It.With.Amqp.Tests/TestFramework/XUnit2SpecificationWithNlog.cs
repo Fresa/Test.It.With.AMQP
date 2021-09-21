@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Test.It.With.Amqp.Tests.Logging;
 using Test.It.With.XUnit;
 using Xunit.Abstractions;
-using LogFactory = Test.It.With.Amqp.Logging.LogFactory;
+using Logger = Test.It.With.Amqp.Logging.Logger;
 
 namespace Test.It.With.Amqp.Tests.TestFramework
 {
@@ -18,21 +18,13 @@ namespace Test.It.With.Amqp.Tests.TestFramework
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build());
-            NLogCapturingTargetExtensions.RegisterOutputOnce();
-            LogFactory.TryInitializeOnce(new NLogLogger());
+            NLogExtensions.RegisterLoggingOnce();
         }
 
         public XUnit2SpecificationWithNLog(ITestOutputHelper testOutputHelper) : base(testOutputHelper, false)
         {
             _outputWriter = XUnit.Output.WriteTo(testOutputHelper);
-            try
-            {
-                Setup();
-            }
-            finally
-            {
-                LogFactory.Flush();
-            }
+            Setup();
         }
 
         protected override void Dispose(bool disposing)

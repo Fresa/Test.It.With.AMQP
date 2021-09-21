@@ -37,4 +37,4 @@ You can find the complete protocol definitions here:
 - [AMQP 0.9.1](https://github.com/Fresa/Test.It.With.AMQP.091.Protocol)
 
 ### Logging
-The test framework uses structured logging as logging strategy. Implement `Test.It.With.Amqp.Logging.Logger` and register it by calling `Test.It.With.Amqp.Logging.LogFactory.TryInitializeOnce`. Make sure to call `Test.It.With.Amqp.Logging.LogFactory.Flush` before shutting down.
+The test framework uses structured logging as logging strategy. Subscribe for logs with `Test.It.With.Amqp.Logging.Logger.OnLog` and extract logical thread contexts from `Test.It.With.Amqp.Logging.Logger.GetLogicalThreadContexts()`.

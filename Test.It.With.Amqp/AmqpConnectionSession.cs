@@ -16,7 +16,7 @@ namespace Test.It.With.Amqp
 {
     internal class AmqpConnectionSession : IDisposable, ISender<MethodFrame>
     {
-        private readonly InternalLogger _logger = LogFactory.Create<AmqpConnectionSession>();
+        private readonly Logger _logger = Logger.Create<AmqpConnectionSession>();
         private readonly ITypedMessageClient<IFrame, IFrame> _frameClient;
         private readonly IPublishProtocolHeader _protocolHeaderPublisher;
         private readonly IPublishMethod _methodFramePublisher;

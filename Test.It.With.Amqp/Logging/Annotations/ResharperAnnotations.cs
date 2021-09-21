@@ -55,7 +55,7 @@ namespace Test.It.With.Amqp.Logging.Annotations
   /// }
   /// </code></example>
   [AttributeUsage(
-    AttributeTargets.Constructor | AttributeTargets.Method,
+    AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Delegate,
     AllowMultiple = false, Inherited = true)]
   internal sealed class StringFormatMethodAttribute : Attribute
   {

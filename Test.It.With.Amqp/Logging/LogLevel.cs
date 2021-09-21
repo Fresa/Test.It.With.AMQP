@@ -1,6 +1,6 @@
 ﻿namespace Test.It.With.Amqp.Logging
 {
-    internal enum LogLevel
+    public enum LogLevel
     {
         Trace,
         Debug,

@@ -18,7 +18,7 @@ namespace Test.It.With.Amqp.NetworkClient
         private readonly SemaphoreSlim _clientAvailable = new SemaphoreSlim(0);
         private readonly CancellationTokenSource _cancellationSource = new CancellationTokenSource();
         private Task _acceptingClientsBackgroundTask = Task.CompletedTask;
-        private static readonly InternalLogger Logger = LogFactory.Create<NetworkClientServer>();
+        private static readonly Logger Logger = Logger.Create<NetworkClientServer>();
 
         private NetworkClientServer(Socket clientAcceptingSocket)
         {
