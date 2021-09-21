@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,11 +10,30 @@ namespace Test.It.With.Amqp.Logging
         private static readonly ConcurrentQueue<(LogMessage, ExecutionContext)> LogMessages =
             new ConcurrentQueue<(LogMessage, ExecutionContext)>();
 
+        private static readonly CancellationTokenSource Cts = new CancellationTokenSource();
+        private static CancellationToken CancellationToken => Cts.Token;
+
         private static int _logMessagesInFlight;
         private const int LogMessageBuffer = 1000;
 
         private static readonly SemaphoreSlim LogsAvailable = new SemaphoreSlim(0);
         private static Logger _logger;
+
+        static LogFactory()
+        {
+            AppDomain.CurrentDomain.DomainUnload += (sender, args) =>
+            {
+                try
+                {
+                    Cts.Cancel();
+                }
+                finally
+                {
+                    LogsAvailable.Dispose();
+                    Cts.Dispose();    
+                }
+            };
+        }
 
         public static bool TryInitializeOnce(Logger logger)
         {
@@ -40,7 +60,7 @@ namespace Test.It.With.Amqp.Logging
                 {
                     Send();
                 }
-            } 
+            }
         }
 
         internal static InternalLogger Create<T>()
@@ -55,13 +75,13 @@ namespace Test.It.With.Amqp.Logging
 
         private static void EnqueueLogMessage(LogMessage message)
         {
-            if (LogMessages.Count > LogMessageBuffer)
+            if (LogMessages.Count > LogMessageBuffer &&
+                LogMessages.TryDequeue(out _))
             {
-                LogMessages.TryDequeue(out _);
                 LogMessages.Enqueue((message, ExecutionContext.Capture()));
                 return;
             }
-          
+
             Interlocked.Increment(ref _logMessagesInFlight);
             LogMessages.Enqueue((message, ExecutionContext.Capture()));
             LogsAvailable.Release();
@@ -71,11 +91,23 @@ namespace Test.It.With.Amqp.Logging
         {
             Task.Run(async () =>
             {
-                while (true)
+                try
                 {
-                    await LogsAvailable.WaitAsync()
-                        .ConfigureAwait(false);
-                    Send();
+                    while (!Cts.IsCancellationRequested)
+                    {
+                        await LogsAvailable.WaitAsync(CancellationToken)
+                            .ConfigureAwait(false);
+                        Send();
+                    }
+                }
+                catch when (CancellationToken.IsCancellationRequested)
+                {
+                }
+                catch (Exception ex)
+                {
+                    _logger?.Fatal(typeof(LogFactory).GetPrettyName(), "Caught unhandled exception when sending logs",
+                        new object[0], ex);
+                    _logger = null;
                 }
             });
         }
@@ -92,38 +124,33 @@ namespace Test.It.With.Amqp.Logging
             switch (message.LogLevel)
             {
                 case LogLevel.Fatal:
-                    ExecutionContext.Run(executionContext,
-                        _ => _logger.Fatal(message.LoggerName, message.Template, message.Arguments,
-                            message.Exception), null);
+                    Log(_logger.Fatal);
                     break;
                 case LogLevel.Trace:
-                    ExecutionContext.Run(executionContext,
-                        _ => _logger.Fatal(message.LoggerName, message.Template, message.Arguments,
-                            message.Exception), null);
+                    Log(_logger.Trace);
                     break;
                 case LogLevel.Debug:
-                    ExecutionContext.Run(executionContext,
-                        _ => _logger.Fatal(message.LoggerName, message.Template, message.Arguments,
-                            message.Exception), null);
+                    Log(_logger.Debug);
                     break;
                 case LogLevel.Info:
-                    ExecutionContext.Run(executionContext,
-                        _ => _logger.Fatal(message.LoggerName, message.Template, message.Arguments,
-                            message.Exception), null);
+                    Log(_logger.Info);
                     break;
                 case LogLevel.Warning:
-                    ExecutionContext.Run(executionContext,
-                        _ => _logger.Fatal(message.LoggerName, message.Template, message.Arguments,
-                            message.Exception), null);
+                    Log(_logger.Warning);
                     break;
                 case LogLevel.Error:
-                    ExecutionContext.Run(executionContext,
-                        _ => _logger.Fatal(message.LoggerName, message.Template, message.Arguments,
-                            message.Exception), null);
+                    Log(_logger.Error);
                     break;
             }
 
             Interlocked.Decrement(ref _logMessagesInFlight);
+
+            void Log(Action<string, string, object[], Exception> log)
+            {
+                ExecutionContext.Run(executionContext,
+                    _ => log(message.LoggerName, message.Template, message.Arguments,
+                        message.Exception), null);
+            }
         }
     }
 }
