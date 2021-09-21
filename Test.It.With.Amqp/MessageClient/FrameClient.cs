@@ -1,9 +1,11 @@
 using System;
+using System.Linq;
+using Test.It.With.Amqp.Extensions;
 using Test.It.With.Amqp.NetworkClient;
 using Test.It.With.Amqp.Protocol;
 
 namespace Test.It.With.Amqp.MessageClient
-{  
+{
     internal class FrameClient : ITypedMessageClient<IFrame, IFrame>
     {
         private readonly IChainableTypedMessageClient<ReceivedEventArgs, IFrame> _networkClient;
@@ -13,16 +15,22 @@ namespace Test.It.With.Amqp.MessageClient
             _networkClient = networkClient;
             networkClient.Next += args =>
             {
-                var reader = readerFactory.Create(args.Buffer);
-                var frame = frameFactory.Create(reader);
-                reader.ThrowIfMoreData();
-
-                if (Received == null)
+                var reader = readerFactory.Create(
+                    args.Buffer
+                        .Skip(args.Offset)
+                        .Take(args.Count)
+                        .ToArray());
+                do
                 {
-                    throw new InvalidOperationException($"Missing subscription on {frame.GetType().FullName}.");
-                }
+                    var frame = frameFactory.Create(reader);
 
-                Received.Invoke(frame);
+                    if (Received == null)
+                    {
+                        throw new InvalidOperationException($"Missing subscription on {frame.GetType().FullName}.");
+                    }
+
+                    Received.Invoke(frame);
+                } while (reader.HasMore());
             };
         }
 

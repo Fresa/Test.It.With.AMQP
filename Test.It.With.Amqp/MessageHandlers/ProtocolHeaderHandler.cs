@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using Log.It;
 using Test.It.With.Amqp.Extensions;
+using Test.It.With.Amqp.Logging;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
 using Test.It.With.Amqp.Subscriptions;
@@ -11,7 +11,7 @@ namespace Test.It.With.Amqp.MessageHandlers
 {
     internal class ProtocolHeaderHandler : IHandle<ProtocolHeaderFrame>, IPublishProtocolHeader
     {
-        private readonly ILogger _logger = LogFactory.Create<ProtocolHeaderHandler>();
+        private readonly Logger _logger = Logger.Create<ProtocolHeaderHandler>();
         private readonly ConcurrentDictionary<Guid, Subscriber<ProtocolHeaderFrame<IProtocolHeader>>> _subscriptions = new ConcurrentDictionary<Guid, Subscriber<ProtocolHeaderFrame<IProtocolHeader>>>();
 
         public IDisposable Subscribe(Type type, Action<ProtocolHeaderFrame> subscription)

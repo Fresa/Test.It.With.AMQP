@@ -51,3 +51,4 @@ Test.It.With.AMQP.sln.DotSettings.user
 Tests/Test.It.With.RabbitMQ.Integration.Tests/Test.It.With.RabbitMQ.Integration.Tests.csproj.DotSettings
 Tests/Test.It.With.RabbitMQ.Integration.Tests/bin/
 Tests/Test.It.With.RabbitMQ.Integration.Tests/obj/
+Test.It.With.Amqp/Test.It.With.Amqp.csproj.user

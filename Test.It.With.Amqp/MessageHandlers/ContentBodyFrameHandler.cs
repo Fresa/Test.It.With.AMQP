@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Concurrent;
-using Log.It;
 using Test.It.With.Amqp.Extensions;
+using Test.It.With.Amqp.Logging;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Subscriptions;
 
@@ -9,7 +9,7 @@ namespace Test.It.With.Amqp.MessageHandlers
 {
     internal class ContentBodyFrameHandler : IHandle<ContentBodyFrame>, IPublish<ContentBodyFrame>
     {
-        private readonly ILogger _logger = LogFactory.Create<ContentBodyFrameHandler>();
+        private readonly Logger _logger = Logger.Create<ContentBodyFrameHandler>();
         private readonly ConcurrentDictionary<Guid, Action<ContentBodyFrame>> _subscriptions =
             new ConcurrentDictionary<Guid, Action<ContentBodyFrame>>();
 

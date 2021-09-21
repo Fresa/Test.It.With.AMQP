@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net47</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
         <Authors>Fredrik Arvidsson</Authors>
         <Company />
         <Copyright>Copyright ©  2017</Copyright>
@@ -10,14 +10,27 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="FakeItEasy" version="3.3.2" />
-        <PackageReference Include="Log.It" Version="1.1.2" />
-        <PackageReference Include="Log.It.With.NLog" Version="1.1.2" />
-        <PackageReference Include="NLog" Version="4.5.6" />
-        <PackageReference Include="ShouldFluent" version="1.1.19" />
-        <PackageReference Include="Test.It" version="2.1.0" />
+        <PackageReference Include="FluentAssertions" Version="6.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+        <PackageReference Include="NLog" Version="4.7.11" />
+        <PackageReference Include="NLog.Extensions.Logging" Version="1.7.4" />
+        <PackageReference Include="NLog.Web.AspNetCore" Version="4.14.0" />
+        <PackageReference Include="Test.It" version="3.0.3" />
         <PackageReference Include="Test.It.With.Amqp.Protocol" Version="1.0.3" />
-        <PackageReference Include="Test.It.With.XUnit" version="2.2.0" />
-        <PackageReference Include="xunit" version="2.3.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+        <PackageReference Include="Test.It.With.XUnit" version="3.0.2" />
+        <PackageReference Include="xunit" version="2.4.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 </Project>

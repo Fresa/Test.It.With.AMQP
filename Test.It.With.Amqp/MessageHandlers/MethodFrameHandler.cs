@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using Log.It;
 using Test.It.With.Amqp.Extensions;
+using Test.It.With.Amqp.Logging;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.Messages;
 using Test.It.With.Amqp.Protocol;
@@ -14,7 +14,7 @@ namespace Test.It.With.Amqp.MessageHandlers
     {
         private readonly bool _automaticReplyOnMissingSubscription;
         private readonly ISender<MethodFrame> _sender;
-        private static readonly ILogger Logger = LogFactory.Create();
+        private static readonly Logger Logger = Logger.Create<MethodFrameHandler>();
         private readonly ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>> _methodSubscriptions = new ConcurrentDictionary<Guid, Subscriber<MethodFrame<IMethod>>>();
 
         public MethodFrameHandler(bool automaticReplyOnMissingSubscription, ISender<MethodFrame> sender)
@@ -24,7 +24,7 @@ namespace Test.It.With.Amqp.MessageHandlers
         }
 
         public IDisposable Subscribe(Type type, Action<MethodFrame> subscription)
-        {            
+        {
             var subscriptionId = Guid.NewGuid();
 
             _methodSubscriptions.TryAdd(subscriptionId,

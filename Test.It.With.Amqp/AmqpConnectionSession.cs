@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Log.It;
 using Test.It.With.Amqp.Extensions;
+using Test.It.With.Amqp.Logging;
 using Test.It.With.Amqp.MessageClient;
 using Test.It.With.Amqp.MessageHandlers;
 using Test.It.With.Amqp.MessageRouters;
@@ -16,7 +16,7 @@ namespace Test.It.With.Amqp
 {
     internal class AmqpConnectionSession : IDisposable, ISender<MethodFrame>
     {
-        private readonly ILogger _logger = LogFactory.Create<AmqpConnectionSession>();
+        private readonly Logger _logger = Logger.Create<AmqpConnectionSession>();
         private readonly ITypedMessageClient<IFrame, IFrame> _frameClient;
         private readonly IPublishProtocolHeader _protocolHeaderPublisher;
         private readonly IPublishMethod _methodFramePublisher;
@@ -24,12 +24,15 @@ namespace Test.It.With.Amqp
         private readonly IPublish<ContentBodyFrame> _contentBodyFramePublisher;
         private readonly IPublishHeartbeat _heartbeatFramePublisher;
 
-        private readonly List<IDisposable> _disposables = new List<IDisposable>();
+        private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
         private readonly IExpectationStateMachine _expectationStateMachine;
         private readonly IFrameFactory _frameFactory;
 
-        public AmqpConnectionSession(IProtocolResolver protocolResolver, IConfiguration configuration)
+        public AmqpConnectionSession(
+            IProtocolResolver protocolResolver, 
+            IConfiguration configuration, 
+            INetworkClient serverNetworkClient)
         {
             _expectationStateMachine = protocolResolver.ExpectationStateMachineFactory.Create();
             _frameFactory = protocolResolver.FrameFactory;
@@ -37,15 +40,6 @@ namespace Test.It.With.Amqp
             var amqpReaderFactory = protocolResolver.AmqpReaderFactory;
             var amqpWriterFactory = protocolResolver.AmqpWriterFactory;
 
-            var networkClientFactory = new InternalRoutedNetworkClientFactory();
-            networkClientFactory.OnException += exception =>
-            {
-                _logger.Error(exception, "Test framework error.");
-            };
-            Client = networkClientFactory.Create(out var serverNetworkClient);
-            _disposables.Add(serverNetworkClient);
-
-            
             var protocolHeaderHandler = new ProtocolHeaderHandler();
             var methodFrameHandler = new MethodFrameHandler(configuration.AutomaticReply, this);
             var contentHeaderFrameHandler = new ContentHeaderFrameHandler();
@@ -80,13 +74,11 @@ namespace Test.It.With.Amqp
 
         private void SetupLogicalLogThreadContextsForFrame(short channel)
         {
-            _logger.LogicalThread.Set(LogicalLogContextKeys.ConnectionId, ConnectionId);
-            _logger.LogicalThread.Set(LogicalLogContextKeys.ChannelId, channel);
+            _logger.LogicalThreadContext.Set(LogicalLogContextKeys.ConnectionId, ConnectionId);
+            _logger.LogicalThreadContext.Set(LogicalLogContextKeys.ChannelId, channel);
         }
 
         public ConnectionId ConnectionId { get; } = new ConnectionId(Guid.NewGuid());
-        
-        public INetworkClient Client { get; }
         
         public void Send(MethodFrame frame)
         {
@@ -125,7 +117,7 @@ namespace Test.It.With.Amqp
                 }
             });
 
-            _disposables.Add(methodSubscription);
+            _subscriptions.Add(methodSubscription);
 
             if (methodType.GetInterfaces().Contains(typeof(IContentMethod)))
             {
@@ -144,7 +136,7 @@ namespace Test.It.With.Amqp
                     }
                 });
 
-                _disposables.Add(contentHeaderSubscription);
+                _subscriptions.Add(contentHeaderSubscription);
 
                 var contentBodySubscription = _contentBodyFramePublisher.Subscribe(frame =>
                 {
@@ -161,7 +153,7 @@ namespace Test.It.With.Amqp
                     }
                 });
 
-                _disposables.Add(contentBodySubscription);
+                _subscriptions.Add(contentBodySubscription);
             }
         }
 
@@ -176,7 +168,7 @@ namespace Test.It.With.Amqp
                 }
             });
 
-            _disposables.Add(protocolHeaderSubscription);
+            _subscriptions.Add(protocolHeaderSubscription);
         }
 
         public void On(Type type, Action<HeartbeatFrame> messageHandler)
@@ -190,12 +182,12 @@ namespace Test.It.With.Amqp
                 }
             });
 
-            _disposables.Add(heartbeatSubscription);
+            _subscriptions.Add(heartbeatSubscription);
         }
 
         public void Dispose()
         {
-            foreach (var disposable in _disposables)
+            foreach (var disposable in _subscriptions)
             {
                 disposable.Dispose();
             }
