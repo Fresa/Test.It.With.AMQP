@@ -42,7 +42,13 @@ namespace Test.It.With.Amqp.NetworkClient
             Port = localEndPoint.Port;
             Address = localEndPoint.Address;
             _clientAcceptingSocket.Listen(100);
-            Logger.Info("Listening on {@endpoint}", localEndPoint);
+            Logger.Info("Listening on {@endpoint}", new
+            {
+                IPAddress = localEndPoint.Address.ToString(),
+                localEndPoint.Port,
+                localEndPoint.AddressFamily,
+                _clientAcceptingSocket.ProtocolType
+            });
         }
 
         public ValueTask DisposeAsync()

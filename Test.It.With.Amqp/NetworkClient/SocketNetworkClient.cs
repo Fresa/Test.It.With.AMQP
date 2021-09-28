@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,10 +10,27 @@ namespace Test.It.With.Amqp.NetworkClient
     internal sealed class SocketNetworkClient : IStartableNetworkClient
     {
         private readonly Socket _socket;
+        private object _serialized;
 
         public SocketNetworkClient(Socket socket)
         {
             _socket = socket;
+        }
+
+        internal object Serialize()
+        {
+            if (_serialized != null) return _serialized;
+
+            var localAddress = _socket.LocalEndPoint as IPEndPoint;
+            _serialized = new
+            {
+                _socket.AddressFamily,
+                _socket.ProtocolType,
+                IPAddress = localAddress?.Address.ToString(),
+                localAddress?.Port
+            };
+
+            return _serialized;
         }
 
         public void Dispose()
