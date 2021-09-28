@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.ExceptionServices;
 using System.Threading;
@@ -45,10 +46,11 @@ namespace Test.It.With.Amqp.NetworkClient
                         var clientSocket = await _clientAcceptingSocket
                             .AcceptAsync()
                             .ConfigureAwait(false);
-                        Logger.Debug("Client connected {@clientSocket}", clientSocket);
 
-                        _waitingClients.Enqueue(
-                            new SocketNetworkClient(clientSocket));
+                        var networkClient = new SocketNetworkClient(clientSocket);
+                        Logger.Debug("Client connected {@clientSocket}", networkClient.Serialize());
+
+                        _waitingClients.Enqueue(networkClient);
                         _clientAvailable.Release();
                     }
                     catch when (cts.IsCancellationRequested)
@@ -66,7 +68,7 @@ namespace Test.It.With.Amqp.NetworkClient
                 .ConfigureAwait(false);
 
             _waitingClients.TryDequeue(out var client);
-            Logger.Debug("Client accepted {@client}", client);
+            Logger.Debug("Client accepted {@client}", client.Serialize());
             _clients.Enqueue(client);
             return client;
         }
