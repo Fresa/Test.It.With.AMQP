@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Test.It.With.Amqp.Logging;
 using Test.It.With.Amqp.System;
 
 namespace Test.It.With.Amqp.NetworkClient
@@ -95,6 +96,12 @@ namespace Test.It.With.Amqp.NetworkClient
                         }
                         catch when (cancellationTokenSource.IsCancellationRequested)
                         {
+                            return;
+                        }
+                        catch when (!_socket.Connected)
+                        {
+                            Logger.Create<SocketNetworkClient>().Info("Socket disconnected");
+                            Disconnected?.Invoke(this, EventArgs.Empty);
                             return;
                         }
                     }
