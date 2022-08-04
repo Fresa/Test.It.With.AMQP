@@ -45,7 +45,7 @@ namespace Test.It.With.Amqp
 
         private readonly ConcurrentDictionary<ConnectionId, AmqpConnectionSession> _sessions = new ConcurrentDictionary<ConnectionId, AmqpConnectionSession>();
 
-        internal void AddSession(AmqpConnectionSession session)
+        internal IDisposable AddSession(AmqpConnectionSession session)
         {
             var connectionId = session.ConnectionId;
             if (_sessions.TryAdd(connectionId, session) == false)
@@ -76,6 +76,8 @@ namespace Test.It.With.Amqp
                     session.On(heartbeatSubscription.Key, frame => heartbeatSubscription.Value.Handle(connectionId, frame));
                 }
             }
+
+            return new DisposableActions(() => _sessions.TryRemove(connectionId, out _));
         }
 
         public AmqpTestFramework Send<TMessage>(ConnectionId connectionId, MethodFrame<TMessage> frame) where TMessage : class, INonContentMethod, IServerMethod

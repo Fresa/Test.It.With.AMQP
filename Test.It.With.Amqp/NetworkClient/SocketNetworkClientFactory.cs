@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -12,7 +13,7 @@ namespace Test.It.With.Amqp.NetworkClient
     {
         private readonly IProtocolResolver _protocolResolver;
         private readonly IConfiguration _configuration;
-        private readonly Action<AmqpConnectionSession> _subscription;
+        private readonly Func<AmqpConnectionSession, IDisposable> _subscribe;
         private readonly CancellationTokenSource _cancellationTokenSource =
             new CancellationTokenSource();
 
@@ -21,19 +22,21 @@ namespace Test.It.With.Amqp.NetworkClient
         public SocketNetworkClientFactory(
             IProtocolResolver protocolResolver,
             IConfiguration configuration,
-            Action<AmqpConnectionSession> subscription)
+            Func<AmqpConnectionSession, IDisposable> subscribe)
         {
             _protocolResolver = protocolResolver;
             _configuration = configuration;
-            _subscription = subscription;
+            _subscribe = subscribe;
         }
 
-        public IAsyncDisposable StartReceivingClients(INetworkClientServer networkClientServer)
+        public ClientSessions StartReceivingClients(INetworkClientServer networkClientServer)
         {
             var cts = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token);
             var token = cts.Token;
-            var networkClientReceiver = new List<IAsyncDisposable>();
-            var connectionSession = new List<IDisposable>();
+
+            var sessions = new ConcurrentDictionary<ConnectionId, Func<CancellationToken, ValueTask>>();
+            var disconnectedSessions = new ConcurrentQueue<ConnectionId>();
+            var disconnectedSessionSignaler = new SemaphoreSlim(0);
 
             // ReSharper disable once MethodSupportsCancellation
             // Will be handled by the disposable returned
@@ -48,9 +51,26 @@ namespace Test.It.With.Amqp.NetworkClient
                                     .WaitForConnectedClientAsync(token)
                                     .ConfigureAwait(false);
                                 var session = new AmqpConnectionSession(_protocolResolver, _configuration, client);
-                                _subscription(session);
-                                networkClientReceiver.Add(client.StartReceiving());
-                                connectionSession.Add(session);
+                                var unsubscribe = _subscribe(session);
+
+                                client.Disconnected += OnClientOnDisconnected;
+                                var receiver = client.StartReceiving();
+                                
+                                sessions.TryAdd(session.ConnectionId, _ =>
+                                {
+                                    unsubscribe.Dispose();
+                                    session.Dispose();
+                                    client.Dispose();
+                                    return receiver.DisposeAsync();
+                                });
+
+                                void OnClientOnDisconnected(object sender, EventArgs args)
+                                {
+                                    client.Disconnected -= OnClientOnDisconnected;
+                                    disconnectedSessions.Enqueue(session.ConnectionId);
+                                    disconnectedSessionSignaler.Release();
+                                }
+
                             }
                             catch when (cts.IsCancellationRequested)
                             {
@@ -60,26 +80,54 @@ namespace Test.It.With.Amqp.NetworkClient
                     });
             _tasks.Add(clientReceivingTask);
 
-            return new AsyncDisposableAction(async () =>
+            // ReSharper disable once MethodSupportsCancellation
+            // Will be handled by the disposable returned
+            var clientsDisconnectingTask = Task.Run(
+                async () =>
+                {
+                    while (cts.IsCancellationRequested == false)
+                    {
+                        try
+                        {
+                            await disconnectedSessionSignaler.WaitAsync(token)
+                                .ConfigureAwait(false);
+                            if (!disconnectedSessions.TryDequeue(out var disconnectedSession))
+                            {
+                                throw new InvalidOperationException(
+                                    "Got signal about disconnect session but no disconnected session found");
+                            }
+
+                            Func<CancellationToken, ValueTask> disconnectAsync;
+                            while (!sessions.TryRemove(disconnectedSession, out disconnectAsync))
+                            {
+                                // Race condition: a client disconnected fast and no session subscriptions have been registered yet
+                                Thread.SpinWait(1);
+                            }
+
+                            await disconnectAsync(default)
+                                .ConfigureAwait(false);
+                        }
+                        catch when (cts.IsCancellationRequested)
+                        {
+                            return;
+                        }
+                    }
+                }
+            );
+            _tasks.Add(clientsDisconnectingTask);
+
+            return new ClientSessions(sessions, new AsyncDisposableAction(async () =>
             {
                 cts.Cancel();
-                await clientReceivingTask
+                await Task.WhenAll(clientReceivingTask, clientsDisconnectingTask)
                     .ConfigureAwait(false);
-                try
-                {
-                    await networkClientReceiver.DisposeAllAsync()
-                        .ConfigureAwait(false);
-                }
-                finally
-                {
-                    await Task.WhenAll(connectionSession.Select(disposable =>
-                    {
-                        disposable.Dispose();
-                        return Task.CompletedTask;
-                    }));
-                    cts.Dispose();
-                }
-            });
+
+                await sessions.Values.Select(disconnect => disconnect(default))
+                    .WhenAllAsync()
+                    .ConfigureAwait(false);
+                
+                cts.Dispose();
+            }));
         }
 
         public async ValueTask DisposeAsync()

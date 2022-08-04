@@ -8,7 +8,7 @@ namespace Test.It.With.Amqp.NetworkClient
     {
         private readonly IProtocolResolver _protocolResolver;
         private readonly IConfiguration _configuration;
-        private Action<AmqpConnectionSession> _subscription;
+        private Func<AmqpConnectionSession, IDisposable> _subscription;
         private readonly InternalRoutedNetworkClientFactory _networkClientFactory = new InternalRoutedNetworkClientFactory();
         private readonly Logger _logger = Logger.Create<InMemoryNetworkClientFactory>();
 
@@ -20,7 +20,7 @@ namespace Test.It.With.Amqp.NetworkClient
                 _logger.Error(exception, "Test framework error.");
         }
 
-        public void OnNetworkClientCreated(Action<AmqpConnectionSession> subscription)
+        public void OnNetworkClientCreated(Func<AmqpConnectionSession, IDisposable> subscription)
         {
             _subscription = subscription;
         }
@@ -29,7 +29,8 @@ namespace Test.It.With.Amqp.NetworkClient
         {
             var client = _networkClientFactory.Create(out var serverNetworkClient);
             var session = new AmqpConnectionSession(_protocolResolver, _configuration, serverNetworkClient);
-            _subscription(session);
+            var unsubscribe = _subscription(session);
+            client.Disconnected += (sender, args) => unsubscribe.Dispose();
             return client;
         }
     }

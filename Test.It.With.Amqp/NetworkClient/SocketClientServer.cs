@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Test.It.With.Amqp.System;
 
@@ -10,7 +11,7 @@ namespace Test.It.With.Amqp.NetworkClient
     {
         private readonly SocketServer _socketServer;
         private readonly SocketNetworkClientFactory _socketNetworkClientFactory;
-        private readonly IAsyncDisposable _clientReceiver;
+        private readonly ClientSessions _clientSessions;
         private readonly INetworkClientServer _networkClientServer;
 
         private SocketClientServer(SocketServer server, SocketNetworkClientFactory socketNetworkClientFactory)
@@ -24,7 +25,7 @@ namespace Test.It.With.Amqp.NetworkClient
                 server.Address;
 
             _networkClientServer = server.StartAcceptingClients();
-            _clientReceiver = socketNetworkClientFactory.StartReceivingClients(_networkClientServer);
+            _clientSessions = socketNetworkClientFactory.StartReceivingClients(_networkClientServer);
         }
 
         internal static IServer StartForwardingClients(SocketServer server, SocketNetworkClientFactory socketNetworkClientFactory)
@@ -36,7 +37,7 @@ namespace Test.It.With.Amqp.NetworkClient
             new ValueTask(
                 new List<IAsyncDisposable>
                 {
-                    _clientReceiver,
+                    _clientSessions,
                     _networkClientServer,
                     _socketNetworkClientFactory,
                     _socketServer,
@@ -44,5 +45,7 @@ namespace Test.It.With.Amqp.NetworkClient
 
         public int Port { get; }
         public IPAddress Address { get; }
+        public ValueTask DisconnectAsync(ConnectionId connectionId, CancellationToken cancellation = default) => 
+            _clientSessions.DisconnectAsync(connectionId, cancellation);
     }
 }
