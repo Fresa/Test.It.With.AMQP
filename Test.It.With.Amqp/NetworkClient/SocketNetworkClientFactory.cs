@@ -34,7 +34,7 @@ namespace Test.It.With.Amqp.NetworkClient
             var cts = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token);
             var token = cts.Token;
 
-            var sessions = new ConcurrentDictionary<ConnectionId, Func<CancellationToken, ValueTask>>();
+            var activeSessions = new ConcurrentDictionary<ConnectionId, DisconnectSessionAsync>();
             var disconnectedSessions = new ConcurrentQueue<ConnectionId>();
             var disconnectedSessionSignaler = new SemaphoreSlim(0);
 
@@ -52,25 +52,39 @@ namespace Test.It.With.Amqp.NetworkClient
                                     .ConfigureAwait(false);
                                 var session = new AmqpConnectionSession(_protocolResolver, _configuration, client);
                                 var unsubscribe = _subscribe(session);
-
-                                client.Disconnected += OnClientOnDisconnected;
+                                var signalDisconnect = new SemaphoreSlim(0);
+                                client.Disconnected += SignalDisconnectOnStart;
                                 var receiver = client.StartReceiving();
-                                
-                                sessions.TryAdd(session.ConnectionId, _ =>
+
+                                activeSessions.TryAdd(session.ConnectionId, Disconnect);
+                                client.Disconnected += OnClientDisconnected;
+                                // Disconnection happened before we could start accept disconnections
+                                if (signalDisconnect.CurrentCount > 0)
                                 {
+                                    OnClientDisconnected(this, EventArgs.Empty);
+                                }
+                                client.Disconnected -= SignalDisconnectOnStart;
+
+                                void SignalDisconnectOnStart(object sender, EventArgs args)
+                                {
+                                    signalDisconnect.Release();
+                                }
+
+                                async ValueTask Disconnect(CancellationToken _)
+                                {
+                                    // Dispose in reverse dependency order
+                                    await receiver.DisposeAsync()
+                                        .ConfigureAwait(false);
                                     unsubscribe.Dispose();
                                     session.Dispose();
                                     client.Dispose();
-                                    return receiver.DisposeAsync();
-                                });
+                                }
 
-                                void OnClientOnDisconnected(object sender, EventArgs args)
+                                void OnClientDisconnected(object sender, EventArgs args)
                                 {
-                                    client.Disconnected -= OnClientOnDisconnected;
                                     disconnectedSessions.Enqueue(session.ConnectionId);
                                     disconnectedSessionSignaler.Release();
                                 }
-
                             }
                             catch when (cts.IsCancellationRequested)
                             {
@@ -91,21 +105,17 @@ namespace Test.It.With.Amqp.NetworkClient
                         {
                             await disconnectedSessionSignaler.WaitAsync(token)
                                 .ConfigureAwait(false);
-                            if (!disconnectedSessions.TryDequeue(out var disconnectedSession))
+                            if (!disconnectedSessions.TryDequeue(out var disconnectedSessionId))
                             {
                                 throw new InvalidOperationException(
                                     "Got signal about disconnect session but no disconnected session found");
                             }
 
-                            Func<CancellationToken, ValueTask> disconnectAsync;
-                            while (!sessions.TryRemove(disconnectedSession, out disconnectAsync))
+                            if (activeSessions.TryRemove(disconnectedSessionId, out var disconnectSessionAsync))
                             {
-                                // Race condition: a client disconnected fast and no session subscriptions have been registered yet
-                                Thread.SpinWait(1);
+                                await disconnectSessionAsync(token)
+                                    .ConfigureAwait(false);
                             }
-
-                            await disconnectAsync(default)
-                                .ConfigureAwait(false);
                         }
                         catch when (cts.IsCancellationRequested)
                         {
@@ -115,14 +125,17 @@ namespace Test.It.With.Amqp.NetworkClient
                 }
             );
             _tasks.Add(clientsDisconnectingTask);
-
-            return new ClientSessions(sessions, new AsyncDisposableAction(async () =>
+            
+            return new ClientSessions(activeSessions, new AsyncDisposableAction(async () =>
             {
                 cts.Cancel();
                 await Task.WhenAll(clientReceivingTask, clientsDisconnectingTask)
                     .ConfigureAwait(false);
 
-                await sessions.Values.Select(disconnect => disconnect(default))
+                await activeSessions.Keys.Select(id =>
+                        activeSessions.TryRemove(id, out var disconnectSessionAsync)
+                            ? disconnectSessionAsync(_cancellationTokenSource.Token)
+                            : new ValueTask())
                     .WhenAllAsync()
                     .ConfigureAwait(false);
                 

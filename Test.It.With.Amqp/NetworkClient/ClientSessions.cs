@@ -7,17 +7,17 @@ namespace Test.It.With.Amqp.NetworkClient
 {
     internal sealed class ClientSessions : IAsyncDisposable
     {
-        private readonly ConcurrentDictionary<ConnectionId, Func<CancellationToken, ValueTask>> _sessions;
+        private readonly ConcurrentDictionary<ConnectionId, DisconnectSessionAsync> _sessions;
         private readonly IAsyncDisposable _stop;
 
-        public ClientSessions(ConcurrentDictionary<ConnectionId, Func<CancellationToken, ValueTask>> sessions, IAsyncDisposable stop)
+        public ClientSessions(ConcurrentDictionary<ConnectionId, DisconnectSessionAsync> sessions, IAsyncDisposable stop)
         {
             _sessions = sessions;
             _stop = stop;
         }
 
         internal ValueTask DisconnectAsync(ConnectionId connectionId, CancellationToken cancellationToken = default) => 
-            _sessions.TryRemove(connectionId, out var disconnectAsync) ? disconnectAsync(cancellationToken) : default;
+            _sessions.TryRemove(connectionId, out var disconnectSessionAsync) ? disconnectSessionAsync(cancellationToken) : default;
 
         public ValueTask DisposeAsync()
         {
