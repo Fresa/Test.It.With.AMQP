@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,15 +8,13 @@ using Test.It.With.Amqp.System;
 
 namespace Test.It.With.Amqp.NetworkClient
 {
-    internal class SocketNetworkClientFactory : IAsyncDisposable
+    internal class SocketNetworkClientFactory
     {
         private readonly IProtocolResolver _protocolResolver;
         private readonly IConfiguration _configuration;
         private readonly Func<AmqpConnectionSession, IDisposable> _subscribe;
         private readonly CancellationTokenSource _cancellationTokenSource =
             new CancellationTokenSource();
-
-        private readonly List<Task> _tasks = new List<Task>();
 
         public SocketNetworkClientFactory(
             IProtocolResolver protocolResolver,
@@ -92,7 +89,6 @@ namespace Test.It.With.Amqp.NetworkClient
                             }
                         }
                     });
-            _tasks.Add(clientReceivingTask);
 
             // ReSharper disable once MethodSupportsCancellation
             // Will be handled by the disposable returned
@@ -124,7 +120,6 @@ namespace Test.It.With.Amqp.NetworkClient
                     }
                 }
             );
-            _tasks.Add(clientsDisconnectingTask);
             
             return new ClientSessions(activeSessions, new AsyncDisposableAction(async () =>
             {
@@ -134,27 +129,13 @@ namespace Test.It.With.Amqp.NetworkClient
 
                 await activeSessions.Keys.Select(id =>
                         activeSessions.TryRemove(id, out var disconnectSessionAsync)
-                            ? disconnectSessionAsync(_cancellationTokenSource.Token)
+                            ? disconnectSessionAsync(CancellationToken.None)
                             : new ValueTask())
                     .WhenAllAsync()
                     .ConfigureAwait(false);
                 
                 cts.Dispose();
             }));
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            _cancellationTokenSource.Cancel();
-            try
-            {
-                await Task.WhenAll(_tasks)
-                    .ConfigureAwait(false);
-            }
-            catch 
-            {
-            }
-            _cancellationTokenSource.Dispose();
         }
     }
 }

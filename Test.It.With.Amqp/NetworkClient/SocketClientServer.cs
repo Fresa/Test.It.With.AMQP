@@ -39,7 +39,6 @@ namespace Test.It.With.Amqp.NetworkClient
                 {
                     _clientSessions,
                     _networkClientServer,
-                    _socketNetworkClientFactory,
                     _socketServer,
                 }.DisposeAllAsync());
 
