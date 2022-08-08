@@ -33,36 +33,31 @@ jobs:
       with:
         # Fetches entire history, so we can analyze commits since last tag
         fetch-depth: 0
-    - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.7
-      with:
-        versionSpec: '5.x'
-    - name: Determine Version
-      id: gitversion
-      uses: gittools/actions/gitversion/execute@v0
-      with:
-        useConfigFile: true
-        configFilePath: .github/version_config.yml
     - name: Determine Release Info
       id: release
+      uses: Fresa/trunk-based-release-versioning@v0
+    - name: Determine Version
+      id: version
       run: |
-        from_tag=$(git tag --points-at ${{ steps.gitversion.outputs.versionSourceSha }} | grep -m 1 ^v[0-9]*\.[0-9]*\.[0-9]* | head -1)
-        [[ -z "$from_tag" ]] && \
-          from_ref_exclusive=${{ steps.gitversion.outputs.versionSourceSha }} || \
-          from_ref_exclusive=$from_tag
+        version=${{ steps.release.outputs.version }}
+        if ${{ steps.release.outputs.is-prerelease }}; then
+          version="$version-${{ github.ref_name }}-$(echo ${{ steps.release.outputs.release-ref }} | cut -c1-8)"
+        fi
 
-        [[ -z "${{ steps.gitversion.outputs.preReleaseTag }}" ]] && \
-          is_prerelease=false || \
-          is_prerelease=true
-
-        [[ $is_prerelease == true ]] && \
-          version=${{ steps.gitversion.outputs.majorMinorPatch }}-pre-${{ steps.gitversion.outputs.commitsSinceVersionSource }} || \
-          version=${{ steps.gitversion.outputs.majorMinorPatch }}
-
-        echo "::set-output name=is_prerelease::$is_prerelease"
-        echo "::set-output name=tag::v$version"
         echo "::set-output name=version::$version"
-        echo "::set-output name=from_ref_exclusive::$from_ref_exclusive"
+    - name: Convert Commit Logs to JSON
+      id: convert-commit-logs
+      uses: mikefarah/yq@v4.25.2
+      with:
+        cmd: yq ea -o=json 'select(. != null) | [.]' "$(echo "${{ steps.release.outputs.commit-logs-path }}" | sed "s|^${{ github.workspace }}/||")" | tee commit_logs.json
+    - name: Generate Release Notes
+      id: release_notes
+      uses: Fresa/release-notes-generator@v1
+      with:
+        version: v${{ steps.version.outputs.version }}
+        last_release_ref: ${{ steps.versioning.outputs.last-release-ref }}
+        release_ref: ${{ steps.versioning.outputs.release-ref }}
+        path_to_commits: ./commit_logs.json
     - name: Create Tag
       uses: actions/github-script@v3
       with:
@@ -70,38 +65,33 @@ jobs:
           github.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: "refs/tags/${{ steps.release.outputs.tag }}",
-            sha: "${{ steps.gitversion.outputs.sha }}"
+            ref: "refs/tags/v${{ steps.version.outputs.version }}",
+            sha: "${{ steps.release.outputs.release-ref }}"
           });
-    - name: Generate Release Notes
-      id: release_notes
-      uses: Fresa/release-notes-generator@v0
-      with:
-          version: ${{ steps.release.outputs.tag }}
-          from_ref_exclusive: ${{ steps.release.outputs.from_ref_exclusive }}
-          to_ref_inclusive: ${{ steps.release.outputs.tag }}
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
           body: ${{ steps.release_notes.outputs.release_notes }}
-          tag_name: ${{ steps.release.outputs.tag }}
-          prerelease: ${{ steps.release.outputs.is_prerelease }}
+          tag_name: v${{ steps.version.outputs.version }}
+          prerelease: ${{ steps.release.outputs.is-prerelease }}
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Update Latest Minor Tag
       uses: EndBug/latest-tag@v1
-      if: steps.release.outputs.is_prerelease == 'false'
+      if: steps.release.outputs.is-prerelease == 'false'
       with:
-          tag-name: v${{ steps.gitversion.outputs.major }}
-          description: ${{ steps.release.outputs.tag }}
+          tag-name: v${{ steps.release.outputs.major-version }}
+          description: v${{ steps.version.outputs.version }}
     - name: Update Latest Patch Tag
       uses: EndBug/latest-tag@v1
-      if: steps.release.outputs.is_prerelease == 'false'
+      if: steps.release.outputs.is-prerelease == 'false'
       with:
-          tag-name: v${{ steps.gitversion.outputs.major }}.${{ steps.gitversion.outputs.minor }}
-          description: ${{ steps.release.outputs.tag }}
+          tag-name: v${{ steps.release.outputs.major-version }}.${{ steps.release.outputs.minor-version }}
+          description: v${{ steps.version.outputs.version }}
     - name: Pack
-      run: dotnet pack Test.It.With.Amqp/Test.It.With.Amqp.csproj -c Release -o nuget-packages -p:PackageVersion=${{ steps.release.outputs.version }} -p:PackageReleaseNotes="${{ steps.release_notes.outputs.release_notes }}"
+      env:
+          release_notes: ${{ steps.release_notes.outputs.release_notes }}
+      run: dotnet pack Test.It.With.Amqp/Test.It.With.Amqp.csproj -c Release -o nuget-packages -p:PackageVersion=${{ steps.version.outputs.version }} -p:PackageReleaseNotes="$release_notes"
     - name: Publish to nuget.org
-      run: dotnet nuget push nuget-packages/Test.It.With.Amqp.${{ steps.release.outputs.version }}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push nuget-packages/Test.It.With.Amqp.${{ steps.version.outputs.version }}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
